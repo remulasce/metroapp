@@ -1,0 +1,13 @@
+*.apk
+*.ap_
+
+*.dek
+*.class
+
+bin/
+gen/
+local.properties
+
+Thumbs.db
+.classpath
+.project
