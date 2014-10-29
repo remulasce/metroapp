@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">lametroapp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="AgencyChoices">
+        <item >lametro-rail</item>
+        <item >lametro</item>
+    </string-array>
+
+</resources>
