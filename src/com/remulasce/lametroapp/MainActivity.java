@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
         		
         		Intent i = new Intent(MainActivity.this, ArrivalNotifyService.class);
 
-        		i.putExtra("Agency", getAgencyFromRoute(route, stopnum));
+        		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
         		i.putExtra("StopID", stopnum);
 
         		if (route != null && !route.isEmpty()) {
@@ -116,21 +116,7 @@ public class MainActivity extends ActionBarActivity {
     
     
     
-    protected String getAgencyFromRoute(String routeName, int stopId) {
-    	if (routeName == null || routeName.isEmpty()) {
-    		if (stopId > 80000 && stopId < 81000) {
-    			return "lametro-rail";
-    		}
-    			
-    		return "lametro";
-    	}
-    	int route = Integer.valueOf(routeName);
-    	if ( route / 100 == 8 ) { return "lametro-rail"; }
-    	else if (route > 0 && route < 1000) { return "lametro"; }
-    	else {
-	    	return "lametro";
-    	}
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

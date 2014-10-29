@@ -64,6 +64,10 @@ public class TripPopulator {
 	protected class UpdateRunner implements Runnable {
 		protected boolean run = false;
 		
+		
+		//protected StopProdection stopPrediction
+		//protected RoutePrediction routePrediction
+		
 		protected void updateRoute( int route ) {
 			tripDriver = TripDriver.ROUTE;
 			
