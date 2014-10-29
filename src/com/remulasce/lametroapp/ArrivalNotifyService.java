@@ -24,12 +24,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,54 +42,52 @@ public class ArrivalNotifyService extends Service {
 	String routeName;
 	
 	int runNum = 0;
-	int lastMinutes = -1;
+	//int lastMinutes = -1;
+	
+	long arrivalTime = 0;
+	long arrivalUpdatedAt = 0;
+	int lastDisplayedSeconds = 10000;
+	
+	
+	String lastDestination = "";
 
-	private Thread taskThread;
+	private Thread netThread;
+	private Thread notificationThread;
+	
+	
 	private Runnable waitTask = new Runnable () {
 
 		@Override
 		public void run() {
 			Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
-
+			StrictMode.ThreadPolicy policy = new StrictMode.
+					ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+			
 			toast("Arrival Notification Service Started");
 
 			while (run) {
-				StrictMode.ThreadPolicy policy = new StrictMode.
-						ThreadPolicy.Builder().permitAll().build();
-				StrictMode.setThreadPolicy(policy);
 
 
-				//toast("Getting Predictions for "+routeName);
 				
 				final String response = getXMLArrivalString(stopID, agency);				
-				final int minutes = getFirstArrivalTime(response);
-				lastMinutes = minutes;
-				updateNotificationText();
- 
-				if (runNum == 0 && minutes != 0) {
-					toast ("Next arrival: "+minutes+" minutes");
+				final int seconds = getFirstArrivalTime(response);
+
+				if (seconds != -1) {
+					long lastArrivalTime = arrivalTime;
+					arrivalTime = System.currentTimeMillis() + seconds * 1000;
+					arrivalUpdatedAt = System.currentTimeMillis();
+	 
+					if (runNum == 0) {
+						toast ("Next arrival: "+seconds+" seconds");
+					}
 				}
-					 
-				
-				if (minutes == 0)
-				{
-					toast("Next arrival: "+minutes+" minutes");
-					
-					Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-					v.vibrate(1000);
-					
-					run = false;
-					break;
-				}
-				
 				runNum++;
-				if (runNum == 100) {
-					Log.e("NotifyService", "Timed out after "+runNum+" checks, exiting");
-					run = false;
-				}
+				if (runNum == 100) run = false;
+				
 				
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(15000);
 				} catch (InterruptedException e) {}
 			}
 
@@ -99,28 +97,44 @@ public class ArrivalNotifyService extends Service {
 				@Override
 				public void run() {
 					stopForeground(true);
-					
 				}
 			});
 			
 		}
 	};
 
+	private Runnable notificationTask = new Runnable() {
+		
+		@Override
+		public void run() {
+
+			while (run) {
+				updateNotificationText();
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {}
+			}
+		}
+		
+	};
+	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		agency = intent.getExtras().getString("Agency");
 		stopID = intent.getExtras().getInt("StopID");
 		routeName = intent.getExtras().getString("Route");
 
-		Log.d("NotifyService", "Started notification service for agency "+agency+", stopID "+stopID+", route "+routeName);
 		
 		updateNotificationText();
 		
-		runNum = 0;
+		
 		run = true;
 		
-		taskThread = new Thread(waitTask);
-		taskThread.start();
+		netThread = new Thread(waitTask);
+		netThread.start();
+		
+		notificationThread = new Thread(notificationTask);
+		notificationThread.start();
 
 		return Service.START_NOT_STICKY;
 	}
@@ -151,48 +165,74 @@ public class ArrivalNotifyService extends Service {
 	}
 	
 	public void updateNotificationText() {
-		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
-
+		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());		
+		
 		h.post(new Runnable() {
 			@Override
 			public void run() {
 				
 				String msg1;
-				String msg2 = "Next arrival: "+lastMinutes+" minutes";
+				String msg2;
+				
+				int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
+				int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
+				
+				if (secondsTillArrival < 0) { return; }
+				if (minutesSinceEstimate < 0 ) { return; }
+				
+				if (secondsTillArrival <= 90) {
+					msg2 = "Next arrival: "+secondsTillArrival+" seconds";
+				}
+				else {
+					msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
+				}
+					
+				if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
+				msg2 += "\n" + lastDestination;
 				if (routeName != null && !routeName.isEmpty()) {
 					msg1 = "Waiting for line "+routeName;
 				}
 				else {
 					msg1 = "Waiting at stop "+stopID;
 				}
-				
-				/*
-				//Define Notification Manager
-				NotificationManager notificationManager = (NotificationManager) ArrivalNotifyService.this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-				//Define sound URI
-				Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				NotificationCompat.Builder mBuilder =
+				        new NotificationCompat.Builder(ArrivalNotifyService.this)
+				        .setSmallIcon(R.drawable.ic_launcher);
+				
+				NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+				bigTextStyle.setBigContentTitle(msg1);
+				bigTextStyle.bigText(msg2);
 
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
-				        .setSmallIcon(R.drawable.ic_launcher)
-				        .setContentTitle("Metro Arrival Alert")
-				        .setContentText(msg1)
-				        .setSubText(msg2)
-				        .setSound(soundUri); //This sets the sound to play
+				mBuilder.setStyle(bigTextStyle);
 
-				//Display notification
-				notificationManager.notify(0, mBuilder.build());
-				*/
+				if (secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
+					mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+					toast("Next arrival: "+secondsTillArrival+" seconds");
+					
+					Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+					v.vibrate(2000);
+				}
 				
+				Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
+
+				TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
+				stackBuilder.addParentStack(MainActivity.class);
+				stackBuilder.addNextIntent(resultIntent);
+				PendingIntent resultPendingIntent =
+				        stackBuilder.getPendingIntent(
+				            0,
+				            PendingIntent.FLAG_UPDATE_CURRENT
+				        );
+				mBuilder.setContentIntent(resultPendingIntent);
+				NotificationManager mNotificationManager =
+				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+				Notification n = mBuilder.build();
+				startForeground(294, n);
+				mNotificationManager.notify(294, n);	
 				
-				Notification notification = new Notification(R.drawable.ic_launcher, ("Metro Arrival Alert"),
-				        System.currentTimeMillis());
-				Intent notificationIntent = new Intent(ArrivalNotifyService.this, ArrivalNotifyService.class);
-				PendingIntent pendingIntent = PendingIntent.getActivity(ArrivalNotifyService.this, 0, notificationIntent, 0);
-				
-				notification.setLatestEventInfo(ArrivalNotifyService.this, msg1,
-				        msg2, pendingIntent);
-				startForeground(294, notification);
+				lastDisplayedSeconds = secondsTillArrival;
 				
 			}
 		});
@@ -209,6 +249,7 @@ public class ArrivalNotifyService extends Service {
 
 			xpp.setInput(new StringReader (xml));
 			int eventType = xpp.getEventType();
+			String curDirection = "";
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_DOCUMENT) {
 					System.out.println("Start document");
@@ -217,14 +258,17 @@ public class ArrivalNotifyService extends Service {
 				} else if(eventType == XmlPullParser.START_TAG) {
 					String name = xpp.getName();
 					System.out.println("Start tag "+name);
+					
+					if(name.equals("direction")) { curDirection = xpp.getAttributeValue(null, "title"); }
 					if(name.equals( "prediction" )) {
 
-						String timeString = xpp.getAttributeValue(null, "minutes");
+						String timeString = xpp.getAttributeValue(null, "seconds");
 
 						int predTime = Integer.valueOf(timeString); 
 						if (predTime >= 0 && ( predTime < time || time < 0) )
 						{
 							time = predTime;
+							lastDestination = curDirection;
 						}
 					}
 				} else if(eventType == XmlPullParser.END_TAG) {
