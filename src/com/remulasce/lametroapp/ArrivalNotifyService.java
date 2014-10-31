@@ -87,7 +87,7 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(15000);
+					Thread.sleep(15000 + seconds * 100);
 				} catch (InterruptedException e) {}
 			}
 
@@ -111,7 +111,7 @@ public class ArrivalNotifyService extends Service {
 			while (run) {
 				updateNotificationText();
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {}
 			}
 		}

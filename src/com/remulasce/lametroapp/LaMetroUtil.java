@@ -41,8 +41,10 @@ public class LaMetroUtil {
 		return URI;
 	}
 
-	public static void parsePredictionsResponse( Arrival arrival, String response ) {
-
+	
+	public static List<Arrival> parseAllArrivals( String response ) {
+		List<Arrival> ret = new ArrayList<Arrival>();
+		
 		XmlPullParserFactory factory;
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -53,6 +55,7 @@ public class LaMetroUtil {
 			int eventType = xpp.getEventType();
 			
 			String curDirection = "";
+			String shortDir = "";
 			int time = -1;
 			
 			while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -68,7 +71,78 @@ public class LaMetroUtil {
 					if(name.equals( "direction" ) ) { curDirection = xpp.getAttributeValue( null, "title" ); }
 					if(name.equals( "prediction" ) ) {
 
-						if ( curDirection == arrival.getDirection() )
+						Arrival a = new Arrival();
+						
+						String timeString = xpp.getAttributeValue( null, "seconds" );
+						int seconds = Integer.valueOf( timeString ); 
+						
+						boolean updated = false;
+						for (Arrival aa : ret) {
+							if (aa.getDirection().equals(curDirection)) {
+								updated = true;
+								if (aa.getEstimatedArrivalSeconds() > seconds) {
+									aa.setEstimatedArrivalSeconds(seconds);
+								}
+							}
+						}
+						
+						if (!updated) {
+							a.setDirection(curDirection);
+							a.setEstimatedArrivalSeconds(seconds);
+							
+							ret.add(a);
+						}
+					 }
+				} else if(eventType == XmlPullParser.END_TAG) {
+					System.out.println("End tag "+xpp.getName());
+				} else if(eventType == XmlPullParser.TEXT) {
+					System.out.println("Text "+xpp.getText());
+				}
+				eventType = xpp.next();
+			}
+		} catch (XmlPullParserException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return ret;
+	}
+	
+	
+	
+	
+	public static void parseFirstArrival( Arrival arrival, String response ) {
+
+		XmlPullParserFactory factory;
+		try {
+			factory = XmlPullParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+			XmlPullParser xpp = factory.newPullParser();
+
+			xpp.setInput(new StringReader (response));
+			int eventType = xpp.getEventType();
+			
+			String curDirection = "";
+			String shortDir = "";
+			int time = -1;
+			
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				if(eventType == XmlPullParser.START_DOCUMENT) {
+					System.out.println("Start document");
+				} else if(eventType == XmlPullParser.END_DOCUMENT) {
+					System.out.println("End document");
+				} else if(eventType == XmlPullParser.START_TAG) {
+					String name = xpp.getName();
+					System.out.println("Start tag "+name);
+
+					
+					if(name.equals( "direction" ) ) { curDirection = xpp.getAttributeValue( null, "title" ); }
+					if(name.equals( "prediction" ) ) {
+
+						if ( true || arrival.getDirection().isEmpty() || curDirection == arrival.getDirection() )
 						{
 							String timeString = xpp.getAttributeValue( null, "seconds" );
 	
@@ -76,6 +150,7 @@ public class LaMetroUtil {
 							if ( predTime >= 0 && ( predTime < time || time < 0 ) )
 							{
 								time = predTime;
+								shortDir = curDirection;
 							}
 						}
 					}
@@ -89,7 +164,10 @@ public class LaMetroUtil {
 			
 		if ( time != -1 ) {
 			arrival.setEstimatedArrivalSeconds(time);
+			arrival.setDirection(shortDir);
 		}
+		
+		
 		
 		} catch (XmlPullParserException e1) {
 			// TODO Auto-generated catch block

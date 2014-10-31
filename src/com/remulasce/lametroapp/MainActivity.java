@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp;
 
+import com.remulasce.lametroapp.pred.PredictionManager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -71,10 +73,21 @@ public class MainActivity extends ActionBarActivity {
         populator = new TripPopulator( tripList );
         populator.StartPopulating();
         
+        populator.StopSelectionChanged(stopField.getText().toString());
+        //PredictionManager.getInstance().
+        
+    }
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	PredictionManager.getInstance().pauseTracking();
     }
     
-    
-
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	PredictionManager.getInstance().resumeTracking();
+    }
     
     protected TextWatcher RouteTextWatcher = new TextWatcher() {
 
