@@ -18,6 +18,8 @@ public class TripPopulator {
 	private static final String TAG = "TripPopulator";
 	enum TripDriver { NONE, ROUTE, STOP };
 	
+	protected final static int UPDATE_INTERVAL = 2000;
+	
 	protected ListView list;
 	protected ArrayAdapter<Trip> adapter;
 	protected List<Trip> activeTrips = new ArrayList<Trip>();
@@ -30,8 +32,6 @@ public class TripPopulator {
 	
 	protected String routeName;
 	protected String stopName;
-	
-	protected boolean updatesAvailable = true;
 	
 	public TripPopulator( ListView list ) {
 		this.list = list;
@@ -47,6 +47,7 @@ public class TripPopulator {
 			Log.w(TAG, "Started an already-populating populator");
 			return;
 		}
+		running = true;
 		
 		updateRunner = new UpdateRunner();
 		updateThread = new Thread(updateRunner);
@@ -61,16 +62,12 @@ public class TripPopulator {
 	public void RouteSelectionChanged (String routeName) {
 		Log.d(TAG, "Route changed: "+routeName);
 		
-		this.routeName = routeName;
-		updatesAvailable = true;
-		
+		this.routeName = routeName;		
 	}
 	public void StopSelectionChanged (String stopName) {
 		Log.d(TAG, "Stop changed: "+stopName);
 		
-		this.stopName = stopName;
-		updatesAvailable = true;
-	
+		this.stopName = stopName;	
 	}
 	
 	
@@ -94,8 +91,7 @@ public class TripPopulator {
 				}
 				Log.d(TAG, "Updating stop prediction");
 				activeTrips.clear();
-				
-				
+
 				stopPrediction.stopPredicting();
 			}
 				
@@ -123,7 +119,6 @@ public class TripPopulator {
 				}
 				
 				updateAvailable.release();
-				updatesAvailable = true;
 			}
 		};
 		
@@ -133,14 +128,8 @@ public class TripPopulator {
 			Log.d(TAG, "UpdateRunner starting");
 			
 			while (run) {
-				
-				if (updatesAvailable) {
-					if (LaMetroUtil.isValidRoute(routeName) || LaMetroUtil.isValidStop(stopName)) {
-						updateList();
-					}
-					updatesAvailable = false;
-					// Sync error here ^
-					
+				if (LaMetroUtil.isValidRoute(routeName) || LaMetroUtil.isValidStop(stopName)) {
+					updateList();
 				}
 				
 				uiHandler.post(new Runnable() {
@@ -150,13 +139,11 @@ public class TripPopulator {
 						adapter.addAll(activeTrips);
 						adapter.notifyDataSetChanged();
 					}
-					
 				});
 				
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(UPDATE_INTERVAL);
 				} catch (InterruptedException e) {}
-				
 				
 			}
 			Log.d(TAG, "UpdateRunner ending");

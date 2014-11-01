@@ -50,6 +50,12 @@ public class Arrival {
 	public void setDirection(String s) {
 		this.direction = s;
 	}
+	public void setStopID( String stopID ) {
+		if (!LaMetroUtil.isValidStop(stopID)) {
+			return;
+		}
+		this.stopID = stopID;
+	}
 	
 	public String getRoute() { return route; }
 	public String getStopID() { return stopID; }

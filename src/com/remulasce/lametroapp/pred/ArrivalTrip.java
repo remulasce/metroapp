@@ -1,6 +1,10 @@
 package com.remulasce.lametroapp.pred;
 
+import android.content.Context;
+import android.os.Looper;
+
 import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.MainActivity;
 
 public class ArrivalTrip extends Trip {
 
@@ -22,5 +26,12 @@ public class ArrivalTrip extends Trip {
 						//+ " ("+seconds+"s)";		
 	}
 	
+
+	public void executeAction(Context context) {
+		int stopNum = Integer.valueOf(parentArrival.stopID);
+		String route = parentArrival.route;
+		MainActivity.SetNotifyService(stopNum, route, context);
+	}
 	
 }
+

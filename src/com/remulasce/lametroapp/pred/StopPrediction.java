@@ -79,16 +79,17 @@ public class StopPrediction extends Prediction {
 		List<Arrival> arrivals = LaMetroUtil.parseAllArrivals( response );
 		
 		for (Arrival newA : arrivals) {
-			if ( !arrivalTracked( newA )) { continue; } 
-			Arrival a = directionMap.get(newA.getDirection());
-			if (a == null) {
-				directionMap.put(newA.getDirection(), newA);
-				a = newA;
+			if ( arrivalTracked( newA )) {
+				Arrival a = directionMap.get(newA.getDirection());
+				if (a == null) {
+					directionMap.put(newA.getDirection(), newA);
+					a = newA;
+				}
+				else {
+					a.setEstimatedArrivalSeconds(newA.getEstimatedArrivalSeconds());
+				}
+				callback.tripUpdated(a.getFirstTrip());
 			}
-			else {
-				a.setEstimatedArrivalSeconds(newA.getEstimatedArrivalSeconds());
-			}
-			callback.tripUpdated(a.getFirstTrip());
 		}
 	}
 

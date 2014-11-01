@@ -56,6 +56,7 @@ public class LaMetroUtil {
 			
 			String curDirection = "";
 			String curRoute = "";
+			String curStop = "";
 			
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_DOCUMENT) {
@@ -66,6 +67,7 @@ public class LaMetroUtil {
 					String name = xpp.getName();
 					//System.out.println("Start tag "+name);
 
+					if(name.equals( "predictions"))	{ curStop = xpp.getAttributeValue( null, "stopTag" ); }
 					if(name.equals( "predictions")) { curRoute = xpp.getAttributeValue( null, "routeTag" ); }
 					if(name.equals( "direction" ) ) { curDirection = xpp.getAttributeValue( null, "title" ); }
 					if(name.equals( "prediction" ) ) {
@@ -86,8 +88,11 @@ public class LaMetroUtil {
 						}
 						
 						if (!updated) {
+							curStop = curStop.substring(0, curStop.indexOf('_'));
+							
 							a.setDirection(curDirection);
 							a.setRoute(curRoute);
+							a.setStopID(curStop);
 							a.setEstimatedArrivalSeconds(seconds);
 							
 							ret.add(a);

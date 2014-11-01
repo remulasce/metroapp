@@ -1,7 +1,9 @@
 package com.remulasce.lametroapp;
 
 import com.remulasce.lametroapp.pred.PredictionManager;
+import com.remulasce.lametroapp.pred.Trip;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -45,17 +49,7 @@ public class MainActivity extends ActionBarActivity {
         		int stopnum = Integer.valueOf(stopText);
         		String route = routeField.getText().toString();
         		
-        		Intent i = new Intent(MainActivity.this, ArrivalNotifyService.class);
-
-        		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
-        		i.putExtra("StopID", stopnum);
-
-        		if (route != null && !route.isEmpty()) {
-        			i.putExtra("Route", route);
-        		}
-        		
-        		MainActivity.this.stopService(i);
-        		MainActivity.this.startService(i);
+        		SetNotifyService(stopnum, route, MainActivity.this);
         	}
         });
        
@@ -71,21 +65,45 @@ public class MainActivity extends ActionBarActivity {
         routeField.addTextChangedListener(RouteTextWatcher);
 
         populator = new TripPopulator( tripList );
-        populator.StartPopulating();
         
         populator.StopSelectionChanged(stopField.getText().toString());
-        //PredictionManager.getInstance().
         
+        tripList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				Trip t = (Trip)parent.getItemAtPosition(position);
+				t.executeAction(MainActivity.this);
+			}
+        });        
     }
+    
+    
+	public static void SetNotifyService(int stopnum, String route, Context context) {
+		Intent i = new Intent(context, ArrivalNotifyService.class);
+
+		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
+		i.putExtra("StopID", stopnum);
+
+		if (route != null && !route.isEmpty()) {
+			i.putExtra("Route", route);
+		}
+		
+		context.stopService(i);
+		context.startService(i);
+	}
+    
     @Override
     protected void onStop() {
     	super.onStop();
     	PredictionManager.getInstance().pauseTracking();
+    	populator.StopPopulating();
     }
     
     @Override
     protected void onResume() {
     	super.onResume();
+    	populator.StartPopulating();
     	PredictionManager.getInstance().resumeTracking();
     }
     
