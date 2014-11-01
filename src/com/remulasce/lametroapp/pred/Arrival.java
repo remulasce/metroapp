@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.pred;
 
+import com.remulasce.lametroapp.LaMetroUtil;
+
 
 /** One arrival is one route-direction's arrival at one stop.
  * This is the building block of all information
@@ -22,7 +24,7 @@ public class Arrival {
 	Trip firstTrip;
 	
 	public Arrival() {
-		firstTrip = new Trip();
+		firstTrip = new ArrivalTrip(this);
 	}
 	
 	/** In seconds from now */
@@ -32,6 +34,9 @@ public class Arrival {
 	public void setEstimatedArrivalSeconds( int secondsTillArrival ) {
 		lastPrediction = System.currentTimeMillis() + secondsTillArrival*1000;
 		lastUpdate = System.currentTimeMillis();
+	}
+	public void setRoute( String route ) {
+		this.route = route;
 	}
 	//In ms
 	public long getTimeSinceLastEstimation() {
@@ -51,7 +56,10 @@ public class Arrival {
 	public String getDirection() { return direction; }
 	
 	public Trip getFirstTrip() {
-		firstTrip.setText(getDirection() + " \n" + "Arriving in: "+ getEstimatedArrivalSeconds() +"s" );
+		/*
+		firstTrip.setText(getRoute() + ": "+ getDirection() + " \n"
+					+ "Arriving in "+ LaMetroUtil.secondsToDisplay( getEstimatedArrivalSeconds()) );
+					*/
 		return firstTrip;
 	
 	}

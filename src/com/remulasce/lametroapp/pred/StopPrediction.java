@@ -12,14 +12,15 @@ import com.remulasce.lametroapp.LaMetroUtil;
  * on input. Etc.
  */
 public class StopPrediction extends Prediction {
-
+	protected final int MINIMUM_UPDATE_INTERVAL = 5000;
+	protected final int INTERVAL_INCREASE_PER_SECOND = 100;
+	
+	
 	protected String stopID;
 	//if available
 	protected String routeName;
 	protected TripUpdateCallback callback;
-	
-	List<Trip> stopTrips = new ArrayList<Trip>();
-	
+		
 	Map<String, Arrival> directionMap = new HashMap<String, Arrival>();
 	
 	Arrival firstArrival;
@@ -54,12 +55,23 @@ public class StopPrediction extends Prediction {
 	public String getRequestString() {
 		return LaMetroUtil.makePredictionsRequest(stopID, routeName);
 	}
+	
+	public String getStop() {
+		return stopID;
+	}
 
 	@Override
 	public long getTimeSinceLastUpdate() {
 		return System.currentTimeMillis() - lastUpdate;
 	}
 
+	protected boolean arrivalTracked( Arrival a ) {
+		if (!LaMetroUtil.isValidRoute(routeName)) { return true; }
+		if (a.getRoute().equals(routeName)) { return true; }
+		
+		return false;
+	}
+	
 	@Override
 	public void handleResponse(String response) {
 		lastUpdate = System.currentTimeMillis();
@@ -67,7 +79,8 @@ public class StopPrediction extends Prediction {
 		List<Arrival> arrivals = LaMetroUtil.parseAllArrivals( response );
 		
 		for (Arrival newA : arrivals) {
-			Arrival a = directionMap.get(newA);
+			if ( !arrivalTracked( newA )) { continue; } 
+			Arrival a = directionMap.get(newA.getDirection());
 			if (a == null) {
 				directionMap.put(newA.getDirection(), newA);
 				a = newA;
@@ -77,36 +90,43 @@ public class StopPrediction extends Prediction {
 			}
 			callback.tripUpdated(a.getFirstTrip());
 		}
-		/*
-		for (Arrival a : arrivals) {
-			for (Trip t : stopTrips) {
-				if (t)
-			}
-		}
-		*/
-		
-		/*
-		
-		LaMetroUtil.parseFirstArrival(firstArrival, response);
-		
-		if (firstArrival.direction != null && !firstArrival.direction.isEmpty() && firstArrival.getEstimatedArrivalSeconds() != -1) {
-			firstTrip.setText( firstArrival.getDirection() + " \n" + "Arriving in: "+ firstArrival.getEstimatedArrivalSeconds() +"s" );
-			
-			callback.tripUpdated(firstTrip);			
-		}
-		*/
-		
-		//firstArrival.get
-		// Parse out all of the individual trips
-		// Callback each individually
-		
-		
 	}
 
 	@Override
 	public void setUpdated() {
 		this.lastUpdate = System.currentTimeMillis();
 		
+	}
+
+	public String getRouteName() {
+		return routeName;
+	}
+	
+	protected Arrival firstArrival() {
+		Arrival first = null;
+		for (Arrival a : directionMap.values()) {
+			if (first == null || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds())
+			{
+				if (a.getEstimatedArrivalSeconds() != -1) {
+					first = a;
+				}
+			}
+		}
+		return first;
+	}
+	
+	@Override
+	public int getRequestedUpdateInterval() {
+		Arrival first = firstArrival();
+		int firstTime;
+		
+		if (first == null) {
+			firstTime = 15;
+		} else {
+			firstTime = first.getEstimatedArrivalSeconds();
+		}
+		
+		return Math.max(MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND);
 	}
 
 }

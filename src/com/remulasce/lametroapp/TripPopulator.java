@@ -2,6 +2,7 @@ package com.remulasce.lametroapp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -21,8 +22,6 @@ public class TripPopulator {
 	protected ArrayAdapter<Trip> adapter;
 	protected List<Trip> activeTrips = new ArrayList<Trip>();
 	protected List<Trip> inactiveTrips = new ArrayList<Trip>();
-	
-	protected TripDriver tripDriver = TripDriver.NONE;
 	
 	protected Handler uiHandler;
 	protected UpdateRunner updateRunner;
@@ -53,7 +52,6 @@ public class TripPopulator {
 		updateThread = new Thread(updateRunner);
 		
 		updateThread.start();
-		
 	}
 	
 	public void StopPopulating() {
@@ -79,33 +77,29 @@ public class TripPopulator {
 	protected class UpdateRunner implements Runnable {
 		protected boolean run = false;
 		
+		protected Semaphore updateAvailable = new Semaphore(1);
+		
 		
 		protected StopPrediction stopPrediction;
 		//protected RoutePrediction routePrediction
 		
-		protected void updateRoute( int route ) {
-			tripDriver = TripDriver.ROUTE;
-			
-			Log.d(TAG, "Updating based on route");
-		}
-		protected void updateStop( String stop ) {
-			tripDriver = TripDriver.STOP;
+		protected void updateList() {
+			Log.d(TAG, "Updating predictions");
 			
 			if (stopPrediction != null) {
+				if (stopName.equals(stopPrediction.getStop())) {
+					if (!LaMetroUtil.isValidRoute(routeName)) { return; }
+					if (routeName.equals(stopPrediction.getRouteName())) { return; }
+
+				}
 				Log.d(TAG, "Updating stop prediction");
 				activeTrips.clear();
 				
-				uiHandler.post( new Runnable() {
-					@Override
-					public void run() {
-						adapter.clear();	
-					}
-				});
 				
 				stopPrediction.stopPredicting();
 			}
 				
-			stopPrediction = new StopPrediction( stop, null );
+			stopPrediction = new StopPrediction( stopName, routeName );
 			stopPrediction.setTripCallback(callback);
 			
 			stopPrediction.startPredicting();
@@ -119,28 +113,17 @@ public class TripPopulator {
 		protected TripUpdateCallback callback = new TripUpdateCallback() {
 			@Override
 			public void tripUpdated(final Trip trip) {
+				if (inactiveTrips.contains(trip)) {
+					Log.d(TAG, "Skipped old trip callback");
+					return;
+				}
 				
-				uiHandler.post( new Runnable() {
-
-					@Override
-					public void run() {
-						if (inactiveTrips.contains(trip)) {
-							Log.d(TAG, "Skipped old trip callback");
-							return;
-						}
-						
-						if (!activeTrips.contains(trip)) {
-							activeTrips.add(trip);
-							adapter.add(trip);
-						}
-						
-						// Update UI
-						adapter.notifyDataSetChanged();
-					}
-					
-				});
+				if (!activeTrips.contains(trip)) {
+					activeTrips.add(trip);
+				}
 				
-
+				updateAvailable.release();
+				updatesAvailable = true;
 			}
 		};
 		
@@ -152,43 +135,28 @@ public class TripPopulator {
 			while (run) {
 				
 				if (updatesAvailable) {
-
-					boolean validRoute = LaMetroUtil.isValidRoute( routeName );
-					boolean validStop = LaMetroUtil.isValidStop( stopName );
-
-					switch (tripDriver) {
-					case NONE:
-						if (validRoute) {
-							updateRoute( Integer.valueOf( routeName ) );
-							break;
-						}
-						if (validStop) {
-							updateStop( stopName );
-							break;
-						}
-						break;
-					case ROUTE:
-						if (validRoute) {
-							updateRoute( Integer.valueOf( routeName ) );
-							break;
-						}
-						break;
-					case STOP:
-						if (validStop) {
-							updateStop( stopName );
-							break;
-						}
-						break;
-					
+					if (LaMetroUtil.isValidRoute(routeName) || LaMetroUtil.isValidStop(stopName)) {
+						updateList();
 					}
-					
 					updatesAvailable = false;
 					// Sync error here ^
 					
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {}
 				}
+				
+				uiHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						adapter.clear();
+						adapter.addAll(activeTrips);
+						adapter.notifyDataSetChanged();
+					}
+					
+				});
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {}
+				
 				
 			}
 			Log.d(TAG, "UpdateRunner ending");

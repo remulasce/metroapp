@@ -12,6 +12,7 @@ public abstract class Prediction {
 	public abstract void stopPredicting();
 	
 	//ms
+	public abstract int getRequestedUpdateInterval();
 	public abstract long getTimeSinceLastUpdate();
 	public abstract void setUpdated();
 	

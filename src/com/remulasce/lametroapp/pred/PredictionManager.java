@@ -20,7 +20,7 @@ import android.util.Log;
 
 public class PredictionManager {
 	static final String TAG = "PredictionManager";
-	static final int UPDATE_INTERVAL = 10000;
+	static final int UPDATE_INTERVAL = 5000;
 	
 	static PredictionManager manager;
 	public static PredictionManager getInstance() {
@@ -70,7 +70,9 @@ public class PredictionManager {
 			while (run) {
 			
 				for (Prediction p : trackingList) {
-					if (p.getTimeSinceLastUpdate() >= UPDATE_INTERVAL) {
+					int requestedInterval = p.getRequestedUpdateInterval();
+					if (p.getTimeSinceLastUpdate() >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+						Log.d(TAG, "Getting update after "+requestedInterval);
 						p.setUpdated();
 						GetUpdate( p );
 					}
@@ -106,12 +108,12 @@ public class PredictionManager {
 
 			//String request = LaMetroUtil.makePredictionsRequest(prediction.getStopID(), prediction.getRoute());
 			String request = prediction.getRequestString();
-			Log.d(TAG, "Handling request "+request);
+			Log.v(TAG, "Handling request "+request);
 			// Consolidate all predictions that rely on this request, etc.
 			
 			String response = sendRequest( request );
 			
-			Log.d(TAG, "Response received: "+response);
+			Log.v(TAG, "Response received: "+response);
 			prediction.handleResponse(response);
 			
 		}

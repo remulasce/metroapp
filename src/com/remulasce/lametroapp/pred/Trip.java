@@ -14,8 +14,9 @@ public class Trip {
 	protected String text = "...";
 	
 	public String getInfo() {
-		return text;
+		return toString();
 	}
+	
 	public void setText( String text ) {
 		this.text = text;
 	}

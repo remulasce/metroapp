@@ -55,19 +55,18 @@ public class LaMetroUtil {
 			int eventType = xpp.getEventType();
 			
 			String curDirection = "";
-			String shortDir = "";
-			int time = -1;
+			String curRoute = "";
 			
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_DOCUMENT) {
-					System.out.println("Start document");
+					//System.out.println("Start document");
 				} else if(eventType == XmlPullParser.END_DOCUMENT) {
-					System.out.println("End document");
+					//System.out.println("End document");
 				} else if(eventType == XmlPullParser.START_TAG) {
 					String name = xpp.getName();
-					System.out.println("Start tag "+name);
+					//System.out.println("Start tag "+name);
 
-					
+					if(name.equals( "predictions")) { curRoute = xpp.getAttributeValue( null, "routeTag" ); }
 					if(name.equals( "direction" ) ) { curDirection = xpp.getAttributeValue( null, "title" ); }
 					if(name.equals( "prediction" ) ) {
 
@@ -88,15 +87,16 @@ public class LaMetroUtil {
 						
 						if (!updated) {
 							a.setDirection(curDirection);
+							a.setRoute(curRoute);
 							a.setEstimatedArrivalSeconds(seconds);
 							
 							ret.add(a);
 						}
 					 }
 				} else if(eventType == XmlPullParser.END_TAG) {
-					System.out.println("End tag "+xpp.getName());
+					//System.out.println("End tag "+xpp.getName());
 				} else if(eventType == XmlPullParser.TEXT) {
-					System.out.println("Text "+xpp.getText());
+					//System.out.println("Text "+xpp.getText());
 				}
 				eventType = xpp.next();
 			}
@@ -179,6 +179,13 @@ public class LaMetroUtil {
 
 	}
 
+	public static String secondsToDisplay( int seconds ) {
+		if (seconds > 60) { return String.valueOf( seconds / 60 ) + " min"; }
+		if (seconds > 1) { return String.valueOf( seconds ) + "s"; }
+		if (seconds == 0) { return "1s"; }
+		return "error";
+	}
+	
 	public static String getAgencyFromRoute(String routeName, int stopId) {
 		if (routeName == null || routeName.isEmpty()) {
 			if (stopId > 80000 && stopId < 81000) {
