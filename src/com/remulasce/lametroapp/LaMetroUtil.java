@@ -88,7 +88,10 @@ public class LaMetroUtil {
 						}
 						
 						if (!updated) {
-							curStop = curStop.substring(0, curStop.indexOf('_'));
+							int indexOf_ = curStop.indexOf('_');
+							if (indexOf_ > 0) {
+								curStop = curStop.substring(0, curStop.indexOf('_'));
+							}
 							
 							a.setDirection(curDirection);
 							a.setRoute(curRoute);
