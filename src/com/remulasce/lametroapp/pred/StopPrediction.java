@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.remulasce.lametroapp.LaMetroUtil;
 
@@ -27,6 +28,7 @@ public class StopPrediction extends Prediction {
 	Trip firstTrip;
 	
 	long lastUpdate;
+	boolean inUpdate = false;
 	
 	public StopPrediction(String stopID, String routeName) {
 		this.stopID = stopID;
@@ -62,6 +64,7 @@ public class StopPrediction extends Prediction {
 
 	@Override
 	public long getTimeSinceLastUpdate() {
+		if (inUpdate) { return 0; }
 		return System.currentTimeMillis() - lastUpdate;
 	}
 
@@ -95,8 +98,10 @@ public class StopPrediction extends Prediction {
 
 	@Override
 	public void setUpdated() {
-		this.lastUpdate = System.currentTimeMillis();
-		
+		synchronized (this) {
+			inUpdate = false;
+			this.lastUpdate = System.currentTimeMillis();
+		}
 	}
 
 	public String getRouteName() {
@@ -116,6 +121,7 @@ public class StopPrediction extends Prediction {
 		return first;
 	}
 	
+	
 	@Override
 	public int getRequestedUpdateInterval() {
 		Arrival first = firstArrival();
@@ -128,6 +134,25 @@ public class StopPrediction extends Prediction {
 		}
 		
 		return Math.max(MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND);
+	}
+
+	@Override
+	public void setGettingUpdate() {
+		synchronized (this) {
+			inUpdate = true;
+		}
+		
+	}
+
+	@Override
+	public List<Trip> getAllSentTrips() {
+		List<Trip> ret = new ArrayList<Trip>();
+		
+		for (Entry<String, Arrival> e : directionMap.entrySet()) {
+			ret.add(e.getValue().getFirstTrip());
+		}
+		
+		return ret;
 	}
 
 }

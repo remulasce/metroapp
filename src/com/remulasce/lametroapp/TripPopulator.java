@@ -1,7 +1,11 @@
 package com.remulasce.lametroapp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
 import android.os.Handler;
@@ -30,8 +34,13 @@ public class TripPopulator {
 	protected Thread updateThread;
 	protected boolean running = false;
 	
-	protected String routeName;
-	protected String stopName;
+	// These should be replaced by Lists of valid-only routes.
+	//protected String routeName;
+	//protected String stopName;
+	
+	// These should be set to only valid routes.
+	protected List<String> routes = new ArrayList<String>();
+	protected List<String> stops = new ArrayList<String>();
 	
 	public TripPopulator( ListView list ) {
 		this.list = list;
@@ -59,15 +68,42 @@ public class TripPopulator {
 		updateRunner.run = false;
 	}
 	
+	
+	protected void setRoutes( String rawRoutes ) {
+		if (rawRoutes == null) { return; }
+		String[] split = rawRoutes.split(" ");
+		
+		routes.clear();
+		for (String s : split) {
+			if (LaMetroUtil.isValidRoute(s)) {
+				routes.add(s);
+			}
+		}
+	}
+	
+	protected void setStops( String rawStops ) {
+		if (rawStops == null) { return; }
+		String[] split = rawStops.split(" ");
+		
+		stops.clear();
+		for (String s : split) {
+			if (LaMetroUtil.isValidStop(s)) {
+				stops.add(s);
+			}
+		}
+	}
+	
 	public void RouteSelectionChanged (String routeName) {
 		Log.d(TAG, "Route changed: "+routeName);
 		
-		this.routeName = routeName;		
+		//this.routeName = routeName;
+		setRoutes( routeName );
 	}
 	public void StopSelectionChanged (String stopName) {
 		Log.d(TAG, "Stop changed: "+stopName);
 		
-		this.stopName = stopName;	
+		//this.stopName = stopName;
+		setStops( stopName );
 	}
 	
 	
@@ -77,12 +113,51 @@ public class TripPopulator {
 		protected Semaphore updateAvailable = new Semaphore(1);
 		
 		
-		protected StopPrediction stopPrediction;
+		//protected StopPrediction stopPrediction;
+		//protected List<StopPrediction> stopPredictions = new ArrayList<StopPrediction>();
+		
+		Map<String, StopPrediction> stopMap = new HashMap<String, StopPrediction>();
 		//protected RoutePrediction routePrediction
 		
 		protected void updateList() {
 			Log.d(TAG, "Updating predictions");
 			
+			
+			/*
+			for (Entry t : stopMap.entrySet()) {
+				((StopPrediction)t.getValue()).stopPredicting();
+			}
+			activeTrips.clear();
+			stopMap.clear();
+			*/
+			for (String stop : stops) {
+				if (!stopMap.containsKey(stop)) {
+					StopPrediction stopPrediction = new StopPrediction( stop, null );
+					stopPrediction.setTripCallback(callback);
+					
+					stopMap.put(stop, stopPrediction);
+					stopPrediction.startPredicting();
+				}
+			}
+			
+			ArrayList<String> rem = new ArrayList<String>();
+			for (Entry t : stopMap.entrySet()) {
+				boolean stillTracked = false;
+				for (String s : stops) {
+					if (s.equals((String)t.getKey())) {
+						stillTracked = true;
+						break;
+					}
+				}
+				if (!stillTracked) {
+					rem.add((String) t.getKey());
+				}
+			}
+			for (String s : rem) {
+				inactiveTrips.addAll(stopMap.get(s).getAllSentTrips());
+				stopMap.remove(s);
+			}
+			/*
 			if (stopPrediction != null) {
 				if (stopName.equals(stopPrediction.getStop())) {
 					if (!LaMetroUtil.isValidRoute(routeName)) { return; }
@@ -99,7 +174,7 @@ public class TripPopulator {
 			stopPrediction.setTripCallback(callback);
 			
 			stopPrediction.startPredicting();
-		
+			*/
 			
 			
 			Log.d(TAG, "Updating based on stop");
@@ -128,9 +203,11 @@ public class TripPopulator {
 			Log.d(TAG, "UpdateRunner starting");
 			
 			while (run) {
+				updateList();
+				/*
 				if (LaMetroUtil.isValidRoute(routeName) || LaMetroUtil.isValidStop(stopName)) {
 					updateList();
-				}
+				}*/
 				
 				uiHandler.post(new Runnable() {
 					@Override

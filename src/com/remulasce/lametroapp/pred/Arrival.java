@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.pred;
 
+import java.util.List;
+
 import com.remulasce.lametroapp.LaMetroUtil;
 
 
@@ -62,11 +64,6 @@ public class Arrival {
 	public String getDirection() { return direction; }
 	
 	public Trip getFirstTrip() {
-		/*
-		firstTrip.setText(getRoute() + ": "+ getDirection() + " \n"
-					+ "Arriving in "+ LaMetroUtil.secondsToDisplay( getEstimatedArrivalSeconds()) );
-					*/
 		return firstTrip;
-	
 	}
 }

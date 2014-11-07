@@ -33,33 +33,43 @@ public class PredictionManager {
 	protected UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
-		if (!trackingList.contains(p)) {
-			trackingList.add(p);
-		}
-		if (updater == null) {
-			updater = new UpdateStager();
-			new Thread(updater).start();
+		synchronized (trackingList) {
+			if (!trackingList.contains(p)) {
+				trackingList.add(p);
+			}
+			synchronized (this) {
+				if (updater == null) {
+					updater = new UpdateStager();
+					new Thread(updater, "Prediction Update Checker").start();
+				}
+			}
 		}
 	}
 	
 	
 	public void pauseTracking() {
-		Log.d(TAG, "Pausing all prediction tracking");
-		if (updater != null) {
-			updater.run = false;
-			updater = null;
+		synchronized (this) {
+			Log.d(TAG, "Pausing all prediction tracking");
+			if (updater != null) {
+				updater.run = false;
+				updater = null;
+			}
 		}
 	}
 	public void resumeTracking() {
-		Log.d(TAG, "Resuming all prediction tracking");
-		if (updater == null) {
-			updater = new UpdateStager();
-			new Thread(updater).start();
+		synchronized (this) {
+			Log.d(TAG, "Resuming all prediction tracking");
+			if (updater == null) {
+				updater = new UpdateStager();
+				new Thread(updater, "Prediction Update Checker").start();
+			}
 		}
 	}
 	
 	public void stopTracking( Prediction p ) {
-		trackingList.remove(p);
+		synchronized (trackingList) {
+			trackingList.remove(p);
+		}
 	}
 	
 	protected class UpdateStager implements Runnable {
@@ -69,12 +79,14 @@ public class PredictionManager {
 			
 			while (run) {
 			
-				for (Prediction p : trackingList) {
-					int requestedInterval = p.getRequestedUpdateInterval();
-					if (p.getTimeSinceLastUpdate() >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
-						Log.d(TAG, "Getting update after "+requestedInterval);
-						p.setUpdated();
-						GetUpdate( p );
+				synchronized (trackingList) {
+					for (Prediction p : trackingList) {
+						int requestedInterval = p.getRequestedUpdateInterval();
+						if (p.getTimeSinceLastUpdate() >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+							Log.d(TAG, "Getting update after "+requestedInterval);
+							p.setGettingUpdate();
+							GetUpdate( p );
+						}
 					}
 				}
 				
@@ -84,7 +96,7 @@ public class PredictionManager {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+					
 			}
 		}
 		
@@ -92,7 +104,8 @@ public class PredictionManager {
 	
 	protected void GetUpdate( Prediction p ) {
 		RequestHandler r = new RequestHandler( p );
-		new Thread(r).start();
+		new Thread(r, "Prediction update "+p.getRequestString()).start();
+		
 	}
 	
 	protected class RequestHandler implements Runnable {
