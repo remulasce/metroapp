@@ -22,15 +22,16 @@ public class ArrivalTrip extends Trip {
 		int seconds = parentArrival.getEstimatedArrivalSeconds();
 		
 		return 	parentArrival.getRoute() + ": "+ parentArrival.getDirection() + " \n"
-				+ "Arriving in "+ LaMetroUtil.secondsToDisplay( seconds );
-						//+ " ("+seconds+"s)";		
+				+ "Arriving in "+ LaMetroUtil.secondsToDisplay( seconds )
+						+ " ("+seconds+"s)";		
 	}
 	
 
 	public void executeAction(Context context) {
 		int stopNum = Integer.valueOf(parentArrival.stopID);
 		String route = parentArrival.route;
-		MainActivity.SetNotifyService(stopNum, route, context);
+		String destination = parentArrival.direction;
+		MainActivity.SetNotifyService(stopNum, route, destination, context);
 	}
 	
 }

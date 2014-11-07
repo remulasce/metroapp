@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
         		int stopnum = Integer.valueOf(stopText);
         		String route = routeField.getText().toString();
         		
-        		SetNotifyService(stopnum, route, MainActivity.this);
+        		SetNotifyService(stopnum, route, null, MainActivity.this);
         	}
         });
        
@@ -79,11 +79,12 @@ public class MainActivity extends ActionBarActivity {
     }
     
     
-	public static void SetNotifyService(int stopnum, String route, Context context) {
+	public static void SetNotifyService(int stopnum, String route, String destination, Context context) {
 		Intent i = new Intent(context, ArrivalNotifyService.class);
 
 		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
 		i.putExtra("StopID", stopnum);
+		i.putExtra("Destination", destination);
 
 		if (route != null && !route.isEmpty()) {
 			i.putExtra("Route", route);
@@ -96,15 +97,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
     	super.onStop();
-//    	PredictionManager.getInstance().pauseTracking();
-//    	populator.StopPopulating();
+    	PredictionManager.getInstance().pauseTracking();
+    	populator.StopPopulating();
     }
     
     @Override
     protected void onResume() {
     	super.onResume();
-//    	populator.StartPopulating();
-//    	PredictionManager.getInstance().resumeTracking();
+    	populator.StartPopulating();
+    	PredictionManager.getInstance().resumeTracking();
     }
     
     protected TextWatcher RouteTextWatcher = new TextWatcher() {

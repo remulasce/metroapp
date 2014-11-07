@@ -40,6 +40,7 @@ public class ArrivalNotifyService extends Service {
 	int stopID;
 	String agency;
 	String routeName;
+	String destination;
 	
 	int runNum = 0;
 	//int lastMinutes = -1;
@@ -120,9 +121,10 @@ public class ArrivalNotifyService extends Service {
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		agency = intent.getExtras().getString("Agency");
-		stopID = intent.getExtras().getInt("StopID");
-		routeName = intent.getExtras().getString("Route");
+		agency		= intent.getExtras().getString("Agency");
+		stopID		= intent.getExtras().getInt("StopID");
+		routeName	= intent.getExtras().getString("Route");
+		destination	= intent.getExtras().getString("Destination");
 
 		
 		updateNotificationText();
@@ -267,8 +269,10 @@ public class ArrivalNotifyService extends Service {
 						int predTime = Integer.valueOf(timeString); 
 						if (predTime >= 0 && ( predTime < time || time < 0) )
 						{
-							time = predTime;
-							lastDestination = curDirection;
+							if (destination == null || destination.equals(curDirection)) {
+								time = predTime;
+								lastDestination = curDirection;
+							}
 						}
 					}
 				} else if(eventType == XmlPullParser.END_TAG) {

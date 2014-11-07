@@ -82,7 +82,8 @@ public class PredictionManager {
 				synchronized (trackingList) {
 					for (Prediction p : trackingList) {
 						int requestedInterval = p.getRequestedUpdateInterval();
-						if (p.getTimeSinceLastUpdate() >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+						long timeSinceUpdate = p.getTimeSinceLastUpdate();
+						if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
 							Log.d(TAG, "Getting update after "+requestedInterval);
 							p.setGettingUpdate();
 							GetUpdate( p );
@@ -128,6 +129,8 @@ public class PredictionManager {
 			
 			Log.v(TAG, "Response received: "+response);
 			prediction.handleResponse(response);
+			
+			prediction.setUpdated();
 			
 		}
 		

@@ -18,7 +18,7 @@
         android:layout_marginLeft="40dp"
         android:layout_toRightOf="@+id/textView1"
         android:ems="10"
-        android:inputType="numberDecimal"
+        android:inputType="none"
         android:text="80213" />
 
     <EditText
@@ -52,24 +52,6 @@
         android:text="Stop ID:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/setbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/idtext"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/stopbutton"
-        android:text="Set" />
-
-    <Button
-        android:id="@+id/stopbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/setbutton"
-        android:layout_alignBottom="@+id/setbutton"
-        android:layout_toRightOf="@+id/textView1"
-        android:text="Stop" />
-
     <ListView
         android:id="@+id/tripList"
         android:layout_width="match_parent"
@@ -80,5 +62,41 @@
         android:layout_marginBottom="14dp" >
 
     </ListView>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:text="Vehicle #:"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/idtext"
+        android:layout_alignTop="@+id/textView3"
+        android:ems="10"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/setbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/stopbutton"
+        android:layout_alignBottom="@+id/stopbutton"
+        android:layout_toRightOf="@+id/stopbutton"
+        android:text="Set" />
+
+    <Button
+        android:id="@+id/stopbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editText1"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="Stop" />
 
 </RelativeLayout>

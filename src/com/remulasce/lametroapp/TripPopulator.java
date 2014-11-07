@@ -154,6 +154,7 @@ public class TripPopulator {
 				}
 			}
 			for (String s : rem) {
+				activeTrips.removeAll(stopMap.get(s).getAllSentTrips());
 				inactiveTrips.addAll(stopMap.get(s).getAllSentTrips());
 				stopMap.remove(s);
 			}
