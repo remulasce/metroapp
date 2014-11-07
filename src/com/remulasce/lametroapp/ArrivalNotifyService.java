@@ -38,9 +38,11 @@ public class ArrivalNotifyService extends Service {
 	boolean run = true;
 
 	int stopID;
+	int vehicleNumber;
 	String agency;
 	String routeName;
 	String destination;
+	
 	
 	int runNum = 0;
 	//int lastMinutes = -1;
@@ -69,8 +71,6 @@ public class ArrivalNotifyService extends Service {
 
 			while (run) {
 
-
-				
 				final String response = getXMLArrivalString(stopID, agency);				
 				final int seconds = getFirstArrivalTime(response);
 
@@ -121,11 +121,11 @@ public class ArrivalNotifyService extends Service {
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		agency		= intent.getExtras().getString("Agency");
-		stopID		= intent.getExtras().getInt("StopID");
-		routeName	= intent.getExtras().getString("Route");
-		destination	= intent.getExtras().getString("Destination");
-
+		agency			= intent.getExtras().getString("Agency");
+		stopID			= intent.getExtras().getInt("StopID");
+		routeName		= intent.getExtras().getString("Route");
+		destination		= intent.getExtras().getString("Destination");
+		vehicleNumber	= intent.getExtras().getInt("VehicleNumber"); 
 		
 		updateNotificationText();
 		
@@ -191,7 +191,10 @@ public class ArrivalNotifyService extends Service {
 					
 				if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
 				msg2 += "\n" + lastDestination;
-				if (routeName != null && !routeName.isEmpty()) {
+				if (vehicleNumber > 0) {
+					msg1 = "Waiting for bus #" + vehicleNumber+"\n"+routeName;
+				}
+				else if (routeName != null && !routeName.isEmpty()) {
 					msg1 = "Waiting for line "+routeName;
 				}
 				else {
@@ -265,14 +268,20 @@ public class ArrivalNotifyService extends Service {
 					if(name.equals( "prediction" )) {
 
 						String timeString = xpp.getAttributeValue(null, "seconds");
+						int vehicleNum = Integer.valueOf(xpp.getAttributeValue(null, "vehicle"));
 
 						int predTime = Integer.valueOf(timeString); 
 						if (predTime >= 0 && ( predTime < time || time < 0) )
 						{
-							if (destination == null || destination.equals(curDirection)) {
-								time = predTime;
-								lastDestination = curDirection;
+							if ( ! (destination == null || destination.equals(curDirection))) {
+								continue;
 							}
+							if ( vehicleNumber > 0 && vehicleNumber != vehicleNum ) {
+								continue;
+							}
+							
+							time = predTime;
+							lastDestination = curDirection;
 						}
 					}
 				} else if(eventType == XmlPullParser.END_TAG) {

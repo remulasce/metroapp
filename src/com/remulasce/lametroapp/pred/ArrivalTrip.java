@@ -19,10 +19,11 @@ public class ArrivalTrip extends Trip {
 		if (parentArrival == null) {
 			return "Invalid parent";
 		}
+		
 		int seconds = parentArrival.getEstimatedArrivalSeconds();
 		
 		return 	parentArrival.getRoute() + ": "+ parentArrival.getDirection() + " \n"
-				+ "Arriving in "+ LaMetroUtil.secondsToDisplay( seconds )
+				+ "Vehicle " + parentArrival.vehicleNum + " in "+ LaMetroUtil.secondsToDisplay( seconds )
 						+ " ("+seconds+"s)";		
 	}
 	
@@ -31,7 +32,7 @@ public class ArrivalTrip extends Trip {
 		int stopNum = Integer.valueOf(parentArrival.stopID);
 		String route = parentArrival.route;
 		String destination = parentArrival.direction;
-		MainActivity.SetNotifyService(stopNum, route, destination, context);
+		MainActivity.SetNotifyService(stopNum, route, destination, -1, context);
 	}
 	
 }

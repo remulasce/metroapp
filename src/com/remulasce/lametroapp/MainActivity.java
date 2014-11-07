@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
 	Button stopButton;
 	EditText stopField;
 	EditText routeField;
+	EditText vehicleField;
 	
 	ListView tripList;
 	TripPopulator populator;
@@ -37,6 +38,7 @@ public class MainActivity extends ActionBarActivity {
 
         stopField = (EditText) findViewById(R.id.idtext);
         routeField = (EditText) findViewById(R.id.routetext);
+        vehicleField = (EditText) findViewById(R.id.vehicleNum);
         setButton = (Button) findViewById(R.id.setbutton);
         stopButton = (Button) findViewById(R.id.stopbutton);
         
@@ -47,9 +49,11 @@ public class MainActivity extends ActionBarActivity {
         		//Start service
         		String stopText = stopField.getText().toString();
         		int stopnum = Integer.valueOf(stopText);
+        		String vehicleText = vehicleField.getText().toString();
+        		int vehicleNumber = Integer.valueOf(vehicleText);
         		String route = routeField.getText().toString();
         		
-        		SetNotifyService(stopnum, route, null, MainActivity.this);
+        		SetNotifyService(stopnum, route, null, vehicleNumber, MainActivity.this);
         	}
         });
        
@@ -79,12 +83,16 @@ public class MainActivity extends ActionBarActivity {
     }
     
     
-	public static void SetNotifyService(int stopnum, String route, String destination, Context context) {
+	public static void SetNotifyService(int stopnum, String route, String destination, int vehicleNumber, Context context) {
 		Intent i = new Intent(context, ArrivalNotifyService.class);
 
 		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
 		i.putExtra("StopID", stopnum);
 		i.putExtra("Destination", destination);
+		
+		if (vehicleNumber > 0) {
+			i.putExtra("VehicleNumber", vehicleNumber);
+		}
 
 		if (route != null && !route.isEmpty()) {
 			i.putExtra("Route", route);

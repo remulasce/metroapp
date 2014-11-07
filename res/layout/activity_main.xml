@@ -73,10 +73,11 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/vehicleNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/idtext"
+        android:layout_alignRight="@+id/idtext"
         android:layout_alignTop="@+id/textView3"
         android:ems="10"
         android:inputType="number" />
@@ -94,7 +95,7 @@
         android:id="@+id/stopbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
+        android:layout_below="@+id/vehicleNum"
         android:layout_marginTop="16dp"
         android:layout_toRightOf="@+id/textView1"
         android:text="Stop" />
