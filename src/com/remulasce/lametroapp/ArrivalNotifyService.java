@@ -110,8 +110,11 @@ public class ArrivalNotifyService extends Service {
 		@Override
 		public void run() {
 
+			NotificationCompat.Builder mBuilder =
+			        new NotificationCompat.Builder(ArrivalNotifyService.this);
+			
 			while (run) {
-				updateNotificationText();
+				updateNotificationText(mBuilder);
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {}
@@ -127,8 +130,6 @@ public class ArrivalNotifyService extends Service {
 		routeName		= intent.getExtras().getString("Route");
 		destination		= intent.getExtras().getString("Destination");
 		vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
-		
-		updateNotificationText();
 		
 		
 		run = true;
@@ -167,7 +168,7 @@ public class ArrivalNotifyService extends Service {
 		});
 	}
 	
-	public void updateNotificationText() {
+	public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
 		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());		
 		
 		String msg1;
@@ -198,7 +199,7 @@ public class ArrivalNotifyService extends Service {
 		
 		
 		if (vehicleNumber != null) {
-			msg1 = "Waiting for bus #" + vehicleNumber+"\n"+routeName;
+			msg1 = "Waiting for bus #" + vehicleNumber;
 		}
 		else if (routeName != null && !routeName.isEmpty()) {
 			msg1 = "Waiting for line "+routeName;
@@ -213,23 +214,25 @@ public class ArrivalNotifyService extends Service {
 		h.post(new Runnable() {
 			@Override
 			public void run() {
-				NotificationCompat.Builder mBuilder =
-				        new NotificationCompat.Builder(ArrivalNotifyService.this)
-				        .setSmallIcon(R.drawable.ic_launcher)
-				        .setContentText("test");
-				
 				NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
 				bigTextStyle.setBigContentTitle(dispTitle);
 				bigTextStyle.bigText(dispText);
 
-				mBuilder.setStyle(bigTextStyle);
-
+				
+				mBuilder
+				        .setSmallIcon(R.drawable.ic_launcher)
+				        .setContentTitle(dispTitle)
+				        .setContentText(dispText)
+				        .setStyle(bigTextStyle);
+						
 				if (secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
 					mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 					toast("Next arrival: "+secondsTillArrival+" seconds");
 					
 					Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 					v.vibrate(2000);
+				} else {
+					mBuilder.setSound(null);
 				}
 				
 				Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
