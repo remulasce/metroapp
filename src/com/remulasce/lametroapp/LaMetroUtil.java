@@ -76,6 +76,8 @@ public class LaMetroUtil {
 						
 						String timeString = xpp.getAttributeValue( null, "seconds" );
 						int seconds = Integer.valueOf( timeString ); 
+						String vehicleString = xpp.getAttributeValue( null, "vehicle");
+						int vehicleNum = Integer.valueOf(vehicleString);
 						
 						boolean updated = false;
 						for (Arrival aa : ret) {
@@ -97,6 +99,7 @@ public class LaMetroUtil {
 							a.setRoute(curRoute);
 							a.setStopID(curStop);
 							a.setEstimatedArrivalSeconds(seconds);
+							a.setVehicleNum(vehicleNum);
 							
 							ret.add(a);
 						}

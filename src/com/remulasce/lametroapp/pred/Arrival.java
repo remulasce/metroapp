@@ -40,6 +40,9 @@ public class Arrival {
 	public void setRoute( String route ) {
 		this.route = route;
 	}
+	public void setVehicleNum(int num) {
+		this.vehicleNum = num;
+	}
 	//In ms
 	public long getTimeSinceLastEstimation() {
 		return System.currentTimeMillis() - lastUpdate;
@@ -62,6 +65,7 @@ public class Arrival {
 	public String getRoute() { return route; }
 	public String getStopID() { return stopID; }
 	public String getDirection() { return direction; }
+	public int getVehicleNum() { return vehicleNum; }
 	
 	public Trip getFirstTrip() {
 		return firstTrip;

@@ -274,14 +274,15 @@ public class ArrivalNotifyService extends Service {
 						if (predTime >= 0 && ( predTime < time || time < 0) )
 						{
 							if ( ! (destination == null || destination.equals(curDirection))) {
-								continue;
+								//skip
 							}
-							if ( vehicleNumber > 0 && vehicleNumber != vehicleNum ) {
-								continue;
+							else if ( vehicleNumber > 0 && vehicleNumber != vehicleNum ) {
+								
 							}
-							
-							time = predTime;
-							lastDestination = curDirection;
+							else {
+								time = predTime;
+								lastDestination = curDirection;
+							}
 						}
 					}
 				} else if(eventType == XmlPullParser.END_TAG) {
