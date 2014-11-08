@@ -38,7 +38,7 @@ public class ArrivalNotifyService extends Service {
 	boolean run = true;
 
 	int stopID;
-	int vehicleNumber;
+	String vehicleNumber;
 	String agency;
 	String routeName;
 	String destination;
@@ -51,6 +51,8 @@ public class ArrivalNotifyService extends Service {
 	long arrivalUpdatedAt = 0;
 	int lastDisplayedSeconds = 10000;
 	
+	String displayedTitle = "";
+	String displayedText = "";
 	
 	String lastDestination = "";
 
@@ -75,7 +77,6 @@ public class ArrivalNotifyService extends Service {
 				final int seconds = getFirstArrivalTime(response);
 
 				if (seconds != -1) {
-					long lastArrivalTime = arrivalTime;
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
@@ -125,17 +126,17 @@ public class ArrivalNotifyService extends Service {
 		stopID			= intent.getExtras().getInt("StopID");
 		routeName		= intent.getExtras().getString("Route");
 		destination		= intent.getExtras().getString("Destination");
-		vehicleNumber	= intent.getExtras().getInt("VehicleNumber"); 
+		vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
 		
 		updateNotificationText();
 		
 		
 		run = true;
 		
-		netThread = new Thread(waitTask);
+		netThread = new Thread(waitTask, "NotifyNetTask");
 		netThread.start();
 		
-		notificationThread = new Thread(notificationTask);
+		notificationThread = new Thread(notificationTask, "NotifyDisplayTask");
 		notificationThread.start();
 
 		return Service.START_NOT_STICKY;
@@ -169,45 +170,57 @@ public class ArrivalNotifyService extends Service {
 	public void updateNotificationText() {
 		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());		
 		
+		String msg1;
+		String msg2;
+		
+		final int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
+		final int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
+		
+		if (secondsTillArrival < 0) { return; }
+		//if (minutesSinceEstimate < 0 ) { return; }
+		
+		if (minutesSinceEstimate < 0) {
+			msg2 = "Getting prediction...";
+			if (destination != null) {
+				msg2 += "\n" + destination;
+			}
+		}
+		else if (secondsTillArrival <= 90) {
+			msg2 = "Next arrival: "+secondsTillArrival+" seconds";
+			msg2 += "\n" + lastDestination;
+		}
+		else {
+			msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
+			msg2 += "\n" + lastDestination;
+		}
+			
+		if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
+		
+		
+		if (vehicleNumber != null) {
+			msg1 = "Waiting for bus #" + vehicleNumber+"\n"+routeName;
+		}
+		else if (routeName != null && !routeName.isEmpty()) {
+			msg1 = "Waiting for line "+routeName;
+		}
+		else {
+			msg1 = "Waiting at stop "+stopID;
+		}
+		
+		final String dispTitle = msg1;
+		final String dispText = msg2;
+		
 		h.post(new Runnable() {
 			@Override
 			public void run() {
-				
-				String msg1;
-				String msg2;
-				
-				int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
-				int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
-				
-				if (secondsTillArrival < 0) { return; }
-				if (minutesSinceEstimate < 0 ) { return; }
-				
-				if (secondsTillArrival <= 90) {
-					msg2 = "Next arrival: "+secondsTillArrival+" seconds";
-				}
-				else {
-					msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
-				}
-					
-				if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
-				msg2 += "\n" + lastDestination;
-				if (vehicleNumber > 0) {
-					msg1 = "Waiting for bus #" + vehicleNumber+"\n"+routeName;
-				}
-				else if (routeName != null && !routeName.isEmpty()) {
-					msg1 = "Waiting for line "+routeName;
-				}
-				else {
-					msg1 = "Waiting at stop "+stopID;
-				}
-
 				NotificationCompat.Builder mBuilder =
 				        new NotificationCompat.Builder(ArrivalNotifyService.this)
-				        .setSmallIcon(R.drawable.ic_launcher);
+				        .setSmallIcon(R.drawable.ic_launcher)
+				        .setContentText("test");
 				
 				NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-				bigTextStyle.setBigContentTitle(msg1);
-				bigTextStyle.bigText(msg2);
+				bigTextStyle.setBigContentTitle(dispTitle);
+				bigTextStyle.bigText(dispText);
 
 				mBuilder.setStyle(bigTextStyle);
 
@@ -268,7 +281,7 @@ public class ArrivalNotifyService extends Service {
 					if(name.equals( "prediction" )) {
 
 						String timeString = xpp.getAttributeValue(null, "seconds");
-						int vehicleNum = Integer.valueOf(xpp.getAttributeValue(null, "vehicle"));
+						String vehicleNum = xpp.getAttributeValue(null, "vehicle");
 
 						int predTime = Integer.valueOf(timeString); 
 						if (predTime >= 0 && ( predTime < time || time < 0) )
@@ -276,7 +289,7 @@ public class ArrivalNotifyService extends Service {
 							if ( ! (destination == null || destination.equals(curDirection))) {
 								//skip
 							}
-							else if ( vehicleNumber > 0 && vehicleNumber != vehicleNum ) {
+							else if ( vehicleNumber != null && !vehicleNumber.equals(vehicleNum) ) {
 								
 							}
 							else {

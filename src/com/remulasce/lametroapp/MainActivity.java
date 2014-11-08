@@ -50,10 +50,9 @@ public class MainActivity extends ActionBarActivity {
         		String stopText = stopField.getText().toString();
         		int stopnum = Integer.valueOf(stopText);
         		String vehicleText = vehicleField.getText().toString();
-        		int vehicleNumber = Integer.valueOf(vehicleText);
         		String route = routeField.getText().toString();
         		
-        		SetNotifyService(stopnum, route, null, vehicleNumber, MainActivity.this);
+        		SetNotifyService(stopnum, route, null, vehicleText, MainActivity.this);
         	}
         });
        
@@ -83,14 +82,14 @@ public class MainActivity extends ActionBarActivity {
     }
     
     
-	public static void SetNotifyService(int stopnum, String route, String destination, int vehicleNumber, Context context) {
+	public static void SetNotifyService(int stopnum, String route, String destination, String vehicleNumber, Context context) {
 		Intent i = new Intent(context, ArrivalNotifyService.class);
 
 		i.putExtra("Agency", LaMetroUtil.getAgencyFromRoute(route, stopnum));
 		i.putExtra("StopID", stopnum);
 		i.putExtra("Destination", destination);
 		
-		if (vehicleNumber > 0) {
+		if (vehicleNumber != null && !vehicleNumber.isEmpty()) {
 			i.putExtra("VehicleNumber", vehicleNumber);
 		}
 

@@ -32,7 +32,7 @@ public class ArrivalTrip extends Trip {
 		int stopNum = Integer.valueOf(parentArrival.stopID);
 		String route = parentArrival.route;
 		String destination = parentArrival.direction;
-		MainActivity.SetNotifyService(stopNum, route, destination, -1, context);
+		MainActivity.SetNotifyService(stopNum, route, destination, null, context);
 	}
 	
 }

@@ -15,13 +15,12 @@ public class Arrival {
 	String route;
 	String direction;
 	String stopID;
+	String vehicleNum;
 	
 	// Nextrip's most recent prediction for when this thing arrives
 	// both in ms since epoch, for sub-second refresh frequency
 	long lastPrediction;
 	long lastUpdate;
-	
-	int vehicleNum;
 	
 	Trip firstTrip;
 	
@@ -40,7 +39,7 @@ public class Arrival {
 	public void setRoute( String route ) {
 		this.route = route;
 	}
-	public void setVehicleNum(int num) {
+	public void setVehicleNum(String num) {
 		this.vehicleNum = num;
 	}
 	//In ms
@@ -65,7 +64,7 @@ public class Arrival {
 	public String getRoute() { return route; }
 	public String getStopID() { return stopID; }
 	public String getDirection() { return direction; }
-	public int getVehicleNum() { return vehicleNum; }
+	public String getVehicleNum() { return vehicleNum; }
 	
 	public Trip getFirstTrip() {
 		return firstTrip;

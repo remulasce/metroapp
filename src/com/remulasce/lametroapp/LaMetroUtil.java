@@ -74,10 +74,13 @@ public class LaMetroUtil {
 
 						Arrival a = new Arrival();
 						
+						String vehicleNum = "";
+						int seconds = -1;
+						
 						String timeString = xpp.getAttributeValue( null, "seconds" );
-						int seconds = Integer.valueOf( timeString ); 
-						String vehicleString = xpp.getAttributeValue( null, "vehicle");
-						int vehicleNum = Integer.valueOf(vehicleString);
+						seconds = Integer.valueOf( timeString );
+						
+						vehicleNum= xpp.getAttributeValue( null, "vehicle");
 						
 						boolean updated = false;
 						for (Arrival aa : ret) {
