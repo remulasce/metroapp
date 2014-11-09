@@ -78,9 +78,29 @@ public class MainActivity extends ActionBarActivity {
 				Trip t = (Trip)parent.getItemAtPosition(position);
 				t.executeAction(MainActivity.this);
 			}
-        });        
+        });
+        
+        
+        unpackExtras(getIntent());
     }
     
+    protected void unpackExtras(Intent bundle) {
+    	
+    	String route = bundle.getStringExtra("Route");
+    	String stop  = bundle.getStringExtra("StopID");
+    	String veh   = bundle.getStringExtra("VehicleNumber");
+    	
+    	
+    	if (route != null) {
+    		routeField.setText(route);
+    	}
+    	if (stop != null) {
+    		stopField.setText(stop);
+    	}
+    	if (veh != null) {
+    		vehicleField.setText(veh);
+    	}
+    }
     
 	public static void SetNotifyService(int stopnum, String route, String destination, String vehicleNumber, Context context) {
 		Intent i = new Intent(context, ArrivalNotifyService.class);

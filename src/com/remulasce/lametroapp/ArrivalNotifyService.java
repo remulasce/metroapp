@@ -236,6 +236,9 @@ public class ArrivalNotifyService extends Service {
 				}
 				
 				Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
+				resultIntent.putExtra("Route", routeName);
+				resultIntent.putExtra("StopID", String.valueOf(stopID));
+				resultIntent.putExtra("VehicleNumber", vehicleNumber);
 
 				TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
 				stackBuilder.addParentStack(MainActivity.class);
