@@ -108,7 +108,6 @@ public class MainActivity extends ActionBarActivity {
     	String stop  = bundle.getStringExtra("StopID");
     	String veh   = bundle.getStringExtra("VehicleNumber");
     	
-    	
     	if (route != null) {
     		routeField.setText(route);
     	}
