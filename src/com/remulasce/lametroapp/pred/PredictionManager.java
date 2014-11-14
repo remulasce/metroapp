@@ -14,8 +14,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.remulasce.lametroapp.LaMetroUtil;
-
 import android.util.Log;
 
 public class PredictionManager {
