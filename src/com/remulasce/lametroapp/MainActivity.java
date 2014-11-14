@@ -63,6 +63,17 @@ public class MainActivity extends ActionBarActivity {
         	public void onClick(View v) {
         		Intent i = new Intent(MainActivity.this, ArrivalNotifyService.class);
         		
+        		Tracker t = Tracking.getTracker(MainActivity.this);
+        		
+        		t.setScreenName("StopNotify");
+        		t.send( new HitBuilders.AppViewBuilder().build());
+        		
+        		t.send(new HitBuilders.EventBuilder()
+                	.setCategory("category")
+                	.setAction("NotifyService Stop")
+                	.setLabel("Label")
+                	.build());
+        		
         		MainActivity.this.stopService(i);
         	}
         });
@@ -85,6 +96,10 @@ public class MainActivity extends ActionBarActivity {
         
         
         unpackExtras(getIntent());
+        
+        Tracking.getTracker(getApplicationContext()).enableAdvertisingIdCollection(true);
+        Tracking.getTracker(getApplicationContext()).enableAutoActivityTracking(true);
+        Tracking.getTracker(getApplicationContext()).enableExceptionReporting(true);
     }
     
     protected void unpackExtras(Intent bundle) {
