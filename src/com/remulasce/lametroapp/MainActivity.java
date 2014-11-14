@@ -1,7 +1,10 @@
 package com.remulasce.lametroapp;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
+import com.remulasce.lametroapp.analytics.Tracking;
 
 import android.content.Context;
 import android.content.Intent;
@@ -119,6 +122,18 @@ public class MainActivity extends ActionBarActivity {
 		
 		context.stopService(i);
 		context.startService(i);
+		
+		Tracker t = Tracking.getTracker(context);
+		
+		t.setScreenName("SetNotify");
+		t.send( new HitBuilders.AppViewBuilder().build());
+		
+		t.send(new HitBuilders.EventBuilder()
+        	.setCategory("category")
+        	.setAction("NotifyService Start")
+        	.setLabel("Label")
+        	.build());
+		
 	}
     
     @Override
