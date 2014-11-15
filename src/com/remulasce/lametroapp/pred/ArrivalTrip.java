@@ -30,4 +30,18 @@ public class ArrivalTrip extends Trip {
         MainActivity.SetNotifyService( parentArrival.stop, parentArrival.route,
                                        parentArrival.destination, parentArrival.vehicle, context );
     }
+    
+    public int hashCode() {
+        return parentArrival.hashCode();
+    }
+    public boolean equals( Object obj ) {
+        if (!(obj instanceof ArrivalTrip))
+            return false;
+        if (obj == this)
+            return true;
+        
+        int ourCode = this.hashCode();
+        int theirCode = obj.hashCode();
+        return ourCode == theirCode; 
+    }
 }

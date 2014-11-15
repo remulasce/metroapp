@@ -162,4 +162,7 @@ public class StopPrediction extends Prediction {
         return ret;
     }
 
+    public int hashCode() {
+        return (stop.getString()+route.getString()).hashCode();
+    }
 }
