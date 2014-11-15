@@ -1,19 +1,11 @@
 package com.remulasce.lametroapp;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.pred.PredictionManager;
-import com.remulasce.lametroapp.pred.Trip;
-import com.remulasce.lametroapp.analytics.Tracking;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -21,6 +13,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.pred.PredictionManager;
+import com.remulasce.lametroapp.pred.Trip;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -40,12 +38,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        startAnalytics();
+        
         linkViewReferences();
         setupActionListeners();
 
-        unpackExtras(getIntent());
-        startAnalytics();
+        setupDefaults(getIntent());
     }
     
     protected void linkViewReferences() {
@@ -59,8 +57,8 @@ public class MainActivity extends ActionBarActivity {
     }
     
     protected void setupActionListeners() {
+    	
         setButton.setOnClickListener( setButtonListener );
-       
         stopButton.setOnClickListener( stopButtonListener );
         
         stopField.addTextChangedListener(StopTextWatcher);
@@ -68,17 +66,18 @@ public class MainActivity extends ActionBarActivity {
 
         populator = new TripPopulator( tripList );
         
-        populator.StopSelectionChanged(stopField.getText().toString());
-        
-        tripList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				Trip t = (Trip)parent.getItemAtPosition(position);
-				t.executeAction(MainActivity.this);
-			}
-        });
+        tripList.setOnItemClickListener( tripClickListener );
     }
+    
+    protected OnItemClickListener tripClickListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Trip trip = (Trip)parent.getItemAtPosition(position);
+			trip.executeAction(MainActivity.this);
+		}
+    }; 
+    
     protected OnClickListener setButtonListener = new OnClickListener() {
     	public void onClick(View v) {
     		String stopText 	= stopField.getText().toString();
@@ -106,8 +105,7 @@ public class MainActivity extends ActionBarActivity {
     	t = Tracking.getTracker(getApplicationContext());
     }
     
-    protected void unpackExtras(Intent bundle) {
-    	
+    protected void setupDefaults(Intent bundle) {
     	String route = bundle.getStringExtra("Route");
     	String stop  = bundle.getStringExtra("StopID");
     	String veh   = bundle.getStringExtra("VehicleNumber");
@@ -121,6 +119,8 @@ public class MainActivity extends ActionBarActivity {
     	if (veh != null) {
     		vehicleField.setText(veh);
     	}
+    	
+    	populator.StopSelectionChanged(stopField.getText().toString());
     }
     
 	public static void SetNotifyService(int stopnum, String route, String destination, String vehicleNumber, Context context) {
@@ -194,7 +194,7 @@ public class MainActivity extends ActionBarActivity {
 				int arg3) {		}
 		@Override
 		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {		}
+                int arg3 ) {}
     };
 
 }
