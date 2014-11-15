@@ -88,7 +88,6 @@ public class MainActivity extends ActionBarActivity {
             t.send(new HitBuilders.EventBuilder()
                 .setCategory("NotifyService")
                 .setAction("NotifyService Set Button")
-                .set( "params", stopText+stopnum+vehicleText+route )
                 .build());
     		
     		SetNotifyService(stopnum, route, null, vehicleText, MainActivity.this);
@@ -126,13 +125,11 @@ public class MainActivity extends ActionBarActivity {
     		vehicleField.setText(veh);
     	}
     	
+    	String label = ( route == null && stop == null && veh == null ) ? "No Form Fill" : "Form Prefilled";
         t.send(new HitBuilders.EventBuilder()
             .setCategory("MainScreen")
             .setAction("Field Population")
-            .setLabel( "First Run" )
-            .set( "route", route )
-            .set( "stop", stop)
-            .set( "vehicle", veh )
+            .setLabel( label )
             .build());
     	
     	populator.StopSelectionChanged(stopField.getText().toString());
@@ -161,10 +158,6 @@ public class MainActivity extends ActionBarActivity {
 		t.send(new HitBuilders.EventBuilder()
         	.setCategory("NotifyService")
         	.setAction("SetNotifyService")
-        	.set( "route", route )
-            .set( "stop", String.valueOf( stopnum ) )
-            .set( "vehicle", vehicleNumber )
-            .set( "destination", destination )
         	.build());
 		
 	}
