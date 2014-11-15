@@ -117,12 +117,14 @@ public class StopPrediction extends Prediction {
 
     protected Arrival firstArrival() {
         Arrival first = null;
-        for ( Arrival a : directionMap.values() ) {
-            if ( first == null
-                    || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
-            {
-                if ( a.getEstimatedArrivalSeconds() != -1 ) {
-                    first = a;
+        synchronized (directionMap){ 
+            for ( Arrival a : directionMap.values() ) {
+                if ( first == null
+                        || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
+                {
+                    if ( a.getEstimatedArrivalSeconds() != -1 ) {
+                        first = a;
+                    }
                 }
             }
         }
