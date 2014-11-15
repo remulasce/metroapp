@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,22 +166,15 @@ public class TripPopulator {
                 inactiveTrips.addAll( stopMap.get( s ).getAllSentTrips() );
                 stopMap.remove( s );
             }
-            /*
-             * if (stopPrediction != null) { if
-             * (stopName.equals(stopPrediction.getStop())) { if
-             * (!LaMetroUtil.isValidRoute(routeName)) { return; } if
-             * (routeName.equals(stopPrediction.getRouteName())) { return; }
-             * 
-             * } Log.d(TAG, "Updating stop prediction"); activeTrips.clear();
-             * 
-             * stopPrediction.stopPredicting(); }
-             * 
-             * stopPrediction = new StopPrediction( stopName, routeName );
-             * stopPrediction.setTripCallback(callback);
-             * 
-             * stopPrediction.startPredicting();
-             */
+            
+            for (Trip t : activeTrips) {
+                if (!t.isValid()) {
+                    inactiveTrips.add( t );
+                }
+            }
 
+            activeTrips.removeAll( inactiveTrips );
+            
             Log.d( TAG, "Updating based on stop" );
 
         }
@@ -218,6 +212,12 @@ public class TripPopulator {
                     public void run() {
                         adapter.clear();
                         adapter.addAll( activeTrips );
+                        adapter.sort( new Comparator<Trip>() {
+                            @Override
+                            public int compare( Trip lhs, Trip rhs ) {
+                                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+                            }
+                        });
                         adapter.notifyDataSetChanged();
                     }
                 } );

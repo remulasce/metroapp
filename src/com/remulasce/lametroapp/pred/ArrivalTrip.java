@@ -44,4 +44,14 @@ public class ArrivalTrip extends Trip {
         int theirCode = obj.hashCode();
         return ourCode == theirCode; 
     }
+    
+    @Override
+    public float getPriority() {
+        return 75 - parentArrival.getEstimatedArrivalSeconds() * 2;
+    }
+    
+    @Override
+    public boolean isValid() {
+        return parentArrival.getEstimatedArrivalSeconds() > 0;
+    }
 }

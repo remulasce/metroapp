@@ -32,5 +32,13 @@ public class Trip {
 		// ...
 	}
 	
+	public float getPriority() {
+	    return 50;
+	}
+	
+	public boolean isValid() {
+	    return true;
+	}
+	
 	// public void takeTrip
 }
