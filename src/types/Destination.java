@@ -2,14 +2,13 @@ package types;
 
 import java.io.Serializable;
 
-public class Vehicle implements Serializable {
-    private static final long serialVersionUID = 8262057532533371341L;
-
+public class Destination implements Serializable {
+    private static final long serialVersionUID = 6069634261484767760L;
 
     String raw;
     
-    public Vehicle( String veh ) {
-        raw = veh;
+    public Destination( String dest) {
+        raw = dest;
     }
     
     public String getString() {
