@@ -16,7 +16,7 @@ public class Arrival {
 
     Route route;
     Destination destination;
-    Stop stopID;
+    Stop stop;
     Vehicle vehicle;
 
     // Nextrip's most recent prediction for when this thing arrives
@@ -65,7 +65,7 @@ public class Arrival {
         if ( !LaMetroUtil.isValidStop( stopID ) ) {
             return;
         }
-        this.stopID = stopID;
+        this.stop = stopID;
     }
 
     public Route getRoute() {
@@ -73,7 +73,7 @@ public class Arrival {
     }
 
     public Stop getStopID() {
-        return stopID;
+        return stop;
     }
 
     public Destination getDirection() {
@@ -86,5 +86,9 @@ public class Arrival {
 
     public Trip getFirstTrip() {
         return firstTrip;
+    }
+    
+    public int hashCode() {
+        return (route.getString()+destination.getString()+stop.getString()+vehicle.getString()).hashCode();
     }
 }

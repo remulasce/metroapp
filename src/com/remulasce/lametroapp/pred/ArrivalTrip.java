@@ -20,14 +20,14 @@ public class ArrivalTrip extends Trip {
 
         int seconds = parentArrival.getEstimatedArrivalSeconds();
 
-        return parentArrival.getRoute() + ": " + parentArrival.getDirection() + " \n"
-                + "Vehicle " + parentArrival.vehicle + " in "
+        return parentArrival.getRoute().getString() + ": " + parentArrival.getDirection().getString() + " \n"
+                + "Vehicle " + parentArrival.vehicle.getString() + " in "
                 + LaMetroUtil.secondsToDisplay( seconds )
                 + " (" + seconds + "s)";
     }
 
     public void executeAction( Context context ) {
-        MainActivity.SetNotifyService( parentArrival.stopID, parentArrival.route,
+        MainActivity.SetNotifyService( parentArrival.stop, parentArrival.route,
                                        parentArrival.destination, parentArrival.vehicle, context );
     }
 }

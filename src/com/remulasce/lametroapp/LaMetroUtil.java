@@ -38,10 +38,10 @@ public class LaMetroUtil {
     public static String makePredictionsRequest( Stop stop, Route route ) {
         String agency = getAgencyFromRoute( route, stop );
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId=" + stop;
+        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId=" + stop.getString();
 
         if ( isValidRoute( route ) ) {
-            URI += "&routeTag=" + route;
+            URI += "&routeTag=" + route.getString();
         }
 
         return URI;
