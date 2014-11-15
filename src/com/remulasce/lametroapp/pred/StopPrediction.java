@@ -90,15 +90,17 @@ public class StopPrediction extends Prediction {
 
         for ( Arrival newA : arrivals ) {
             if ( arrivalTracked( newA ) ) {
-                Arrival a = directionMap.get( newA.getDirection() );
-                if ( a == null ) {
-                    directionMap.put( newA.getDirection(), newA );
-                    a = newA;
+                synchronized ( directionMap ) {
+                    Arrival a = directionMap.get( newA.getDirection() );
+                    if ( a == null ) {
+                        directionMap.put( newA.getDirection(), newA );
+                        a = newA;
+                    }
+                    else {
+                        a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
+                    }
+                    callback.tripUpdated( a.getFirstTrip() );
                 }
-                else {
-                    a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
-                }
-                callback.tripUpdated( a.getFirstTrip() );
             }
         }
     }
@@ -117,7 +119,7 @@ public class StopPrediction extends Prediction {
 
     protected Arrival firstArrival() {
         Arrival first = null;
-        synchronized (directionMap){ 
+        synchronized ( directionMap ) {
             for ( Arrival a : directionMap.values() ) {
                 if ( first == null
                         || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
@@ -157,14 +159,16 @@ public class StopPrediction extends Prediction {
     public List< Trip > getAllSentTrips() {
         List< Trip > ret = new ArrayList< Trip >();
 
-        for ( Entry< Destination, Arrival > e : directionMap.entrySet() ) {
-            ret.add( e.getValue().getFirstTrip() );
+        synchronized ( directionMap ) {
+            for ( Entry< Destination, Arrival > e : directionMap.entrySet() ) {
+                ret.add( e.getValue().getFirstTrip() );
+            }
         }
 
         return ret;
     }
 
     public int hashCode() {
-        return (stop.getString()+route.getString()).hashCode();
+        return ( stop.getString() + route.getString() ).hashCode();
     }
 }
