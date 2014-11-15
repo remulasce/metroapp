@@ -14,6 +14,9 @@ public class Stop implements Serializable {
         raw = String.valueOf( stopNum );
     }
     
+    public boolean isValid() {
+        return raw != null && !raw.isEmpty();
+    }
     
     public int getNum() {
         return Integer.valueOf( raw );

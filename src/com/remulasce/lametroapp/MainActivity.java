@@ -74,8 +74,7 @@ public class MainActivity extends ActionBarActivity {
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
         @Override
-        public void onItemClick( AdapterView< ? > parent, View view,
-                int position, long id ) {
+        public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
             Trip trip = (Trip) parent.getItemAtPosition( position );
             trip.executeAction( MainActivity.this );
         }
@@ -88,22 +87,20 @@ public class MainActivity extends ActionBarActivity {
             String vehicleText = vehicleField.getText().toString();
             String route = routeField.getText().toString();
 
-            t.send( new HitBuilders.EventBuilder()
-                    .setCategory( "NotifyService" )
+            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                     .setAction( "NotifyService Set Button" ).build() );
 
-            SetNotifyService( stopnum, route, null, vehicleText,
-                    MainActivity.this );
+            SetNotifyService( stopnum, route, null, vehicleText, MainActivity.this );
         }
     };
     protected OnClickListener stopButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            Intent i = new Intent( MainActivity.this,
-                    ArrivalNotifyService.class );
+            Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
 
             t.send( new HitBuilders.EventBuilder()
-                    .setCategory( "NotifyService" )
-                    .setAction( "NotifyService Stop Button" ).build() );
+                .setCategory( "NotifyService" )
+                .setAction( "NotifyService Stop Button" )
+                .build() );
 
             MainActivity.this.stopService( i );
         }
@@ -130,14 +127,18 @@ public class MainActivity extends ActionBarActivity {
 
         String label = ( route == null && stop == null && veh == null ) ? "No Form Fill"
                 : "Form Prefilled";
-        t.send( new HitBuilders.EventBuilder().setCategory( "MainScreen" )
-                .setAction( "Field Population" ).setLabel( label ).build() );
+        t.send( new HitBuilders.EventBuilder()
+            .setCategory( "MainScreen" )
+            .setAction( "Field Population" )
+            .setLabel( label )
+            .build() );
 
         populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
-    public static void SetNotifyService( int stopnum, String route,
-        String destination, String vehicleNumber, Context context ) {
+    public static void SetNotifyService( int stopnum, String route, String destination,
+            String vehicleNumber, Context context ) {
+        
         Stop s = new Stop( stopnum );
         Route r = new Route( route );
         Destination d = new Destination( destination );
@@ -146,28 +147,35 @@ public class MainActivity extends ActionBarActivity {
         SetNotifyService( s, r, d, v, context );
     }
 
-    public static void SetNotifyService( Stop stop, Route route,
-            Destination destination, Vehicle vehicle, Context context ) {
+    public static void SetNotifyService( Stop stop, Route route, Destination destination,
+            Vehicle vehicle, Context context ) {
+
+        Tracker t = Tracking.getTracker( context );
         Intent i = new Intent( context, ArrivalNotifyService.class );
 
-        i.putExtra( "Agency",
-                LaMetroUtil.getAgencyFromRoute( route.getString(),
-                        stop.getNum() ) );
-        i.putExtra( "StopID", stop.getNum() );
-        i.putExtra( "Destination", destination.getString() );
+        if ( !stop.isValid() ) {
+            t.send( new HitBuilders.EventBuilder()
+                    .setCategory( "NotifyService" )
+                    .setAction( "SetNotifyService" )
+                    .setLabel( "Stop invalid" ).build() );
+            return;
+        }
 
+        i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route.getString(), stop.getNum() ) );
+        i.putExtra( "StopID", stop.getNum() );
+
+        if ( destination != null && destination.isValid() ) {
+            i.putExtra( "Destination", destination.getString() );
+        }
         if ( vehicle != null && vehicle.isValid() ) {
             i.putExtra( "VehicleNumber", vehicle.getString() );
         }
-
         if ( route != null && route.isValid() ) {
             i.putExtra( "Route", route.getString() );
         }
 
         context.stopService( i );
         context.startService( i );
-
-        Tracker t = Tracking.getTracker( context );
 
         t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                 .setAction( "SetNotifyService" ).build() );
@@ -197,12 +205,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2,
-                int arg3 ) {}
+        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
 
         @Override
-        public void onTextChanged( CharSequence arg0, int arg1, int arg2,
-                int arg3 ) {}
+        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
     };
 
     protected TextWatcher StopTextWatcher = new TextWatcher() {
@@ -214,12 +220,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2,
-                int arg3 ) {}
+        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
 
         @Override
-        public void onTextChanged( CharSequence arg0, int arg1, int arg2,
-                int arg3 ) {}
+        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
     };
 
 }
