@@ -41,38 +41,27 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        stopField = (EditText) findViewById(R.id.idtext);
-        routeField = (EditText) findViewById(R.id.routetext);
-        vehicleField = (EditText) findViewById(R.id.vehicleNum);
-        setButton = (Button) findViewById(R.id.setbutton);
-        stopButton = (Button) findViewById(R.id.stopbutton);
+        linkViewReferences();
+        setupActionListeners();
+
+        unpackExtras(getIntent());
+        startAnalytics();
+    }
+    
+    protected void linkViewReferences() {
+        stopField		= (EditText) findViewById(R.id.idtext);
+        routeField		= (EditText) findViewById(R.id.routetext);
+        vehicleField	= (EditText) findViewById(R.id.vehicleNum);
+        setButton		= (Button)   findViewById(R.id.setbutton);
+        stopButton		= (Button)	 findViewById(R.id.stopbutton);
         
         tripList = (ListView) findViewById(R.id.tripList);
-        
-        setButton.setOnClickListener( new OnClickListener() {
-        	public void onClick(View v) {
-        		//Start service
-        		String stopText = stopField.getText().toString();
-        		int stopnum = Integer.valueOf(stopText);
-        		String vehicleText = vehicleField.getText().toString();
-        		String route = routeField.getText().toString();
-        		
-        		SetNotifyService(stopnum, route, null, vehicleText, MainActivity.this);
-        	}
-        });
+    }
+    
+    protected void setupActionListeners() {
+        setButton.setOnClickListener( setButtonListener );
        
-        stopButton.setOnClickListener( new OnClickListener() {
-        	public void onClick(View v) {
-        		Intent i = new Intent(MainActivity.this, ArrivalNotifyService.class);
-        		
-        		t.send(new HitBuilders.EventBuilder()
-                	.setCategory("NotifyService")
-                	.setAction("NotifyService Stop")
-                	.build());
-        		
-        		MainActivity.this.stopService(i);
-        	}
-        });
+        stopButton.setOnClickListener( stopButtonListener );
         
         stopField.addTextChangedListener(StopTextWatcher);
         routeField.addTextChangedListener(RouteTextWatcher);
@@ -89,11 +78,29 @@ public class MainActivity extends ActionBarActivity {
 				t.executeAction(MainActivity.this);
 			}
         });
-        
-        
-        unpackExtras(getIntent());
-        startAnalytics();
     }
+    protected OnClickListener setButtonListener = new OnClickListener() {
+    	public void onClick(View v) {
+    		String stopText 	= stopField.getText().toString();
+    		int stopnum 		= Integer.valueOf(stopText);
+    		String vehicleText 	= vehicleField.getText().toString();
+    		String route 		= routeField.getText().toString();
+    		
+    		SetNotifyService(stopnum, route, null, vehicleText, MainActivity.this);
+    	}
+    };
+    protected OnClickListener stopButtonListener = new OnClickListener() {
+    	public void onClick(View v) {
+    		Intent i = new Intent(MainActivity.this, ArrivalNotifyService.class);
+    		
+    		t.send(new HitBuilders.EventBuilder()
+            	.setCategory("NotifyService")
+            	.setAction("NotifyService Stop")
+            	.build());
+    		
+    		MainActivity.this.stopService(i);
+    	}
+    };
     
     protected void startAnalytics() {
     	t = Tracking.getTracker(getApplicationContext());
@@ -159,7 +166,6 @@ public class MainActivity extends ActionBarActivity {
     }
     
     protected TextWatcher RouteTextWatcher = new TextWatcher() {
-
 		@Override
 		public void afterTextChanged(Editable arg0) {
 			String routeText  = routeField.getText().toString();
@@ -177,16 +183,12 @@ public class MainActivity extends ActionBarActivity {
 
     
     protected TextWatcher StopTextWatcher = new TextWatcher() {
-
 		@Override
 		public void afterTextChanged(Editable arg0) {
 			String stopText   = stopField.getText().toString();
 			
 			populator.StopSelectionChanged(stopText);
-			
-
 		}
-
 		@Override
 		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
 				int arg3) {		}
@@ -194,28 +196,5 @@ public class MainActivity extends ActionBarActivity {
 		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
 				int arg3) {		}
     };
-    
-    
-    
-    
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
