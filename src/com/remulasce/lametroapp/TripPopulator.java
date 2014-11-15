@@ -138,13 +138,19 @@ public class TripPopulator {
              * ((StopPrediction)t.getValue()).stopPredicting(); }
              * activeTrips.clear(); stopMap.clear();
              */
-            for ( Stop stop : stops ) {
-                if ( !stopMap.containsKey( stop ) ) {
-                    StopPrediction stopPrediction = new StopPrediction( stop, null );
-                    stopPrediction.setTripCallback( callback );
+            synchronized ( stops ) {
+                for ( Stop stop : stops ) {
+                    if ( !stopMap.containsKey( stop ) ) {
+                        StopPrediction stopPrediction = new StopPrediction( stop, null );
+                        stopPrediction.setTripCallback( callback );
 
-                    stopMap.put( stop, stopPrediction );
-                    stopPrediction.startPredicting();
+                        stopMap.put( stop, stopPrediction );
+                        stopPrediction.startPredicting();
+                    }
+
+                    synchronized ( inactiveTrips ) {
+                        inactiveTrips.removeAll( stopMap.get( stop ).getAllSentTrips() );
+                    }
                 }
             }
 
@@ -161,20 +167,29 @@ public class TripPopulator {
                     rem.add( t.getKey() );
                 }
             }
+
             for ( Stop s : rem ) {
-                activeTrips.removeAll( stopMap.get( s ).getAllSentTrips() );
-                inactiveTrips.addAll( stopMap.get( s ).getAllSentTrips() );
+                synchronized ( activeTrips ) {
+                    activeTrips.removeAll( stopMap.get( s ).getAllSentTrips() );
+                }
+                synchronized ( inactiveTrips ) {
+                    inactiveTrips.addAll( stopMap.get( s ).getAllSentTrips() );
+                }
                 stopMap.remove( s );
             }
-            
-            for (Trip t : activeTrips) {
-                if (!t.isValid()) {
-                    inactiveTrips.add( t );
+
+            synchronized ( activeTrips ) {
+                synchronized ( inactiveTrips ) {
+                    for ( Trip t : activeTrips ) {
+                        if ( !t.isValid() ) {
+                            inactiveTrips.add( t );
+                        }
+                    }
                 }
             }
 
             activeTrips.removeAll( inactiveTrips );
-            
+
             Log.d( TAG, "Updating based on stop" );
 
         }
@@ -182,13 +197,17 @@ public class TripPopulator {
         protected TripUpdateCallback callback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
-                if ( inactiveTrips.contains( trip ) ) {
-                    Log.d( TAG, "Skipped old trip callback" );
-                    return;
+                synchronized ( inactiveTrips ) {
+                    if ( inactiveTrips.contains( trip ) ) {
+                        Log.d( TAG, "Skipped old trip callback" );
+                        return;
+                    }
                 }
 
-                if ( !activeTrips.contains( trip ) ) {
-                    activeTrips.add( trip );
+                synchronized ( activeTrips ) {
+                    if ( !activeTrips.contains( trip ) ) {
+                        activeTrips.add( trip );
+                    }
                 }
 
                 updateAvailable.release();
@@ -212,12 +231,12 @@ public class TripPopulator {
                     public void run() {
                         adapter.clear();
                         adapter.addAll( activeTrips );
-                        adapter.sort( new Comparator<Trip>() {
+                        adapter.sort( new Comparator< Trip >() {
                             @Override
                             public int compare( Trip lhs, Trip rhs ) {
-                                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+                                return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
                             }
-                        });
+                        } );
                         adapter.notifyDataSetChanged();
                     }
                 } );
