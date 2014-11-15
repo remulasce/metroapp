@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,8 @@ public class TripPopulator {
         this.list = list;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
-        adapter = new ArrayAdapter< Trip >( list.getContext(), android.R.layout.simple_list_item_1 );
+//        adapter = new ArrayAdapter< Trip >( list.getContext(), android.R.layout.simple_list_item_1 );
+        adapter = new ArrayAdapter<Trip> (list.getContext(), android.R.layout.simple_list_item_1, activeTrips);
         list.setAdapter( adapter );
     }
 
@@ -83,7 +85,9 @@ public class TripPopulator {
         for ( String s : split ) {
             Route route = new Route( s );
             if ( LaMetroUtil.isValidRoute( route ) ) {
-                routes.add( route );
+                synchronized ( routes ) {
+                    routes.add( route );
+                }
             }
         }
     }
@@ -98,7 +102,9 @@ public class TripPopulator {
         for ( String s : split ) {
             Stop stop = new Stop( s );
             if ( LaMetroUtil.isValidStop( stop ) ) {
-                stops.add( stop );
+                synchronized ( stops ) {
+                    stops.add( stop );
+                }
             }
         }
     }
@@ -198,7 +204,7 @@ public class TripPopulator {
             public void tripUpdated( final Trip trip ) {
                 synchronized ( inactiveTrips ) {
                     if ( inactiveTrips.contains( trip ) ) {
-                        Log.v( TAG, "Skipped old trip callback "+trip.getInfo() );
+                        Log.v( TAG, "Skipped old trip callback " + trip.getInfo() );
                         return;
                     }
                 }
@@ -220,22 +226,17 @@ public class TripPopulator {
 
             while ( run ) {
                 updateList();
-                /*
-                 * if (LaMetroUtil.isValidRoute(routeName) ||
-                 * LaMetroUtil.isValidStop(stopName)) { updateList(); }
-                 */
 
+                Collections.sort( activeTrips, new Comparator< Trip >() {
+                    @Override
+                    public int compare( Trip lhs, Trip rhs ) {
+                        return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
+                    }
+                    });
+                
                 uiHandler.post( new Runnable() {
                     @Override
                     public void run() {
-                        adapter.clear();
-                        adapter.addAll( activeTrips );
-                        adapter.sort( new Comparator< Trip >() {
-                            @Override
-                            public int compare( Trip lhs, Trip rhs ) {
-                                return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
-                            }
-                        } );
                         adapter.notifyDataSetChanged();
                     }
                 } );

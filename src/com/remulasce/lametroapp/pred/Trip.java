@@ -39,6 +39,5 @@ public class Trip {
 	public boolean isValid() {
 	    return true;
 	}
-	
-	// public void takeTrip
+
 }
