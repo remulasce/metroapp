@@ -82,15 +82,14 @@ public class MainActivity extends ActionBarActivity {
 
     protected OnClickListener setButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            String stopText = stopField.getText().toString();
-            int stopnum = Integer.valueOf( stopText );
-            String vehicleText = vehicleField.getText().toString();
-            String route = routeField.getText().toString();
+            Stop stop = new Stop( stopField.getText().toString() );
+            Vehicle veh = new Vehicle( vehicleField.getText().toString() );
+            Route route = new Route( routeField.getText().toString() );
 
             t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                     .setAction( "NotifyService Set Button" ).build() );
 
-            SetNotifyService( stopnum, route, null, vehicleText, MainActivity.this );
+            SetNotifyService( stop, route, null, veh, MainActivity.this );
         }
     };
     protected OnClickListener stopButtonListener = new OnClickListener() {
@@ -98,9 +97,9 @@ public class MainActivity extends ActionBarActivity {
             Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
 
             t.send( new HitBuilders.EventBuilder()
-                .setCategory( "NotifyService" )
-                .setAction( "NotifyService Stop Button" )
-                .build() );
+                    .setCategory( "NotifyService" )
+                    .setAction( "NotifyService Stop Button" )
+                    .build() );
 
             MainActivity.this.stopService( i );
         }
@@ -111,34 +110,35 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected void setupDefaults( Intent bundle ) {
-        String route = bundle.getStringExtra( "Route" );
-        String stop = bundle.getStringExtra( "StopID" );
-        String veh = bundle.getStringExtra( "VehicleNumber" );
+        Route route = new Route( bundle.getStringExtra( "Route" ) );
+        Stop stop = new Stop( bundle.getStringExtra( "StopID" ) );
+        Vehicle veh = new Vehicle( bundle.getStringExtra( "VehicleNumber" ) );
 
-        if ( route != null ) {
-            routeField.setText( route );
+        if ( route.isValid() ) {
+            routeField.setText( route.getString() );
         }
-        if ( stop != null ) {
-            stopField.setText( stop );
+        if ( stop.isValid() ) {
+            stopField.setText( stop.getString() );
         }
-        if ( veh != null ) {
-            vehicleField.setText( veh );
+        if ( veh.isValid() ) {
+            vehicleField.setText( veh.getString() );
         }
 
-        String label = ( route == null && stop == null && veh == null ) ? "No Form Fill"
+        String label = ( !route.isValid() && !stop.isValid() && !veh.isValid() ) ? "No Form Fill"
                 : "Form Prefilled";
         t.send( new HitBuilders.EventBuilder()
-            .setCategory( "MainScreen" )
-            .setAction( "Field Population" )
-            .setLabel( label )
-            .build() );
+                .setCategory( "MainScreen" )
+                .setAction( "Field Population" )
+                .setLabel( label )
+                .build() );
 
         populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
+    
     public static void SetNotifyService( int stopnum, String route, String destination,
             String vehicleNumber, Context context ) {
-        
+
         Stop s = new Stop( stopnum );
         Route r = new Route( route );
         Destination d = new Destination( destination );
@@ -161,7 +161,7 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route.getString(), stop.getNum() ) );
+        i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route, stop ) );
         i.putExtra( "StopID", stop.getNum() );
 
         if ( destination != null && destination.isValid() ) {
