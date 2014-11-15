@@ -84,6 +84,12 @@ public class MainActivity extends ActionBarActivity {
     		int stopnum 		= Integer.valueOf(stopText);
     		String vehicleText 	= vehicleField.getText().toString();
     		String route 		= routeField.getText().toString();
+
+            t.send(new HitBuilders.EventBuilder()
+                .setCategory("NotifyService")
+                .setAction("NotifyService Set Button")
+                .set( "params", stopText+stopnum+vehicleText+route )
+                .build());
     		
     		SetNotifyService(stopnum, route, null, vehicleText, MainActivity.this);
     	}
@@ -94,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
     		
     		t.send(new HitBuilders.EventBuilder()
             	.setCategory("NotifyService")
-            	.setAction("NotifyService Stop")
+            	.setAction("NotifyService Stop Button")
             	.build());
     		
     		MainActivity.this.stopService(i);
@@ -119,6 +125,15 @@ public class MainActivity extends ActionBarActivity {
     	if (veh != null) {
     		vehicleField.setText(veh);
     	}
+    	
+        t.send(new HitBuilders.EventBuilder()
+            .setCategory("MainScreen")
+            .setAction("Field Population")
+            .setLabel( "First Run" )
+            .set( "route", route )
+            .set( "stop", stop)
+            .set( "vehicle", veh )
+            .build());
     	
     	populator.StopSelectionChanged(stopField.getText().toString());
     }
@@ -146,7 +161,10 @@ public class MainActivity extends ActionBarActivity {
 		t.send(new HitBuilders.EventBuilder()
         	.setCategory("NotifyService")
         	.setAction("SetNotifyService")
-        	.setLabel(stopnum+route+destination+vehicleNumber)
+        	.set( "route", route )
+            .set( "stop", String.valueOf( stopnum ) )
+            .set( "vehicle", vehicleNumber )
+            .set( "destination", destination )
         	.build());
 		
 	}
