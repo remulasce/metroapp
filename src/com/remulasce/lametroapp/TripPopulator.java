@@ -185,10 +185,9 @@ public class TripPopulator {
                             inactiveTrips.add( t );
                         }
                     }
+                    activeTrips.removeAll( inactiveTrips );
                 }
             }
-
-            activeTrips.removeAll( inactiveTrips );
 
             Log.d( TAG, "Updating based on stop" );
 
@@ -199,7 +198,7 @@ public class TripPopulator {
             public void tripUpdated( final Trip trip ) {
                 synchronized ( inactiveTrips ) {
                     if ( inactiveTrips.contains( trip ) ) {
-                        Log.d( TAG, "Skipped old trip callback" );
+                        Log.v( TAG, "Skipped old trip callback "+trip.getInfo() );
                         return;
                     }
                 }
