@@ -2,6 +2,8 @@ package types;
 
 import java.io.Serializable;
 
+import com.remulasce.lametroapp.LaMetroUtil;
+
 public class Stop implements Serializable {
     private static final long serialVersionUID = 4336735625715608793L;
     
@@ -15,7 +17,7 @@ public class Stop implements Serializable {
     }
     
     public boolean isValid() {
-        return raw != null && !raw.isEmpty();
+        return LaMetroUtil.isValidStop( raw );
     }
     
     public int getNum() {

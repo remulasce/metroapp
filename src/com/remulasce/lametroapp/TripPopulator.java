@@ -100,7 +100,7 @@ public class TripPopulator {
         stops.clear();
         for ( String s : split ) {
             Stop stop = new Stop( s );
-            if ( LaMetroUtil.isValidStop( stop ) ) {
+            if ( stop.isValid() ) {
                 synchronized ( stops ) {
                     stops.add( stop );
                 }

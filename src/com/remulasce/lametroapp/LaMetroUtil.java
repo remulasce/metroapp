@@ -19,9 +19,20 @@ import com.remulasce.lametroapp.pred.Arrival;
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
 
-    public static boolean isValidStop( Stop stop ) {
-        // I don't really know how to define this.
-        return stop != null && stop.isValid();
+    //TODO: Pull this from Metro data, not guesses.
+    public static boolean isValidStop( String stop ) {
+        if (stop == null) { return false; }
+        if (stop.isEmpty()) { return false; }
+        
+        try {
+            int stopNum = Integer.parseInt( stop );
+            
+            if( stopNum <= 0) { return false; }
+            if (stopNum > 100000) { return false; }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean isValidRoute( Route route ) {
@@ -38,7 +49,8 @@ public class LaMetroUtil {
     public static String makePredictionsRequest( Stop stop, Route route ) {
         String agency = getAgencyFromRoute( route, stop );
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId=" + stop.getString();
+        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId="
+                + stop.getString();
 
         if ( isValidRoute( route ) ) {
             URI += "&routeTag=" + route.getString();
@@ -187,10 +199,8 @@ public class LaMetroUtil {
             }
 
         } catch ( XmlPullParserException e1 ) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         } catch ( IOException e ) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

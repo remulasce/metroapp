@@ -61,11 +61,11 @@ public class Arrival {
         this.destination = d;
     }
 
-    public void setStopID( Stop stopID ) {
-        if ( !LaMetroUtil.isValidStop( stopID ) ) {
+    public void setStopID( Stop stop ) {
+        if ( stop.isValid() ) {
             return;
         }
-        this.stop = stopID;
+        this.stop = stop;
     }
 
     public Route getRoute() {
@@ -89,6 +89,11 @@ public class Arrival {
     }
     
     public int hashCode() {
-        return (route.getString()+destination.getString()+stop.getString()+vehicle.getString()).hashCode();
+        String h = "";
+        if (route != null) h += route.getString();
+        if (stop != null) h += stop.getString();
+        if (vehicle != null) h += vehicle.getString();
+        
+        return h.hashCode();
     }
 }
