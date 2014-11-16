@@ -44,7 +44,6 @@ public class PredictionManager {
 		}
 	}
 	
-	
 	public void pauseTracking() {
 		synchronized (this) {
 			Log.d(TAG, "Pausing all prediction tracking");
@@ -82,7 +81,7 @@ public class PredictionManager {
 						int requestedInterval = p.getRequestedUpdateInterval();
 						long timeSinceUpdate = p.getTimeSinceLastUpdate();
 						if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
-							Log.d(TAG, "Getting update after "+requestedInterval);
+							Log.v(TAG, "Getting update after "+requestedInterval);
 							p.setGettingUpdate();
 							GetUpdate( p );
 						}
@@ -92,7 +91,6 @@ public class PredictionManager {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 					
@@ -117,11 +115,8 @@ public class PredictionManager {
 
 		@Override
 		public void run() {
-
-			//String request = LaMetroUtil.makePredictionsRequest(prediction.getStopID(), prediction.getRoute());
 			String request = prediction.getRequestString();
 			Log.v(TAG, "Handling request "+request);
-			// Consolidate all predictions that rely on this request, etc.
 			
 			String response = sendRequest( request );
 			
@@ -152,7 +147,7 @@ public class PredictionManager {
 						builder.append(line);
 					}
 				} else {
-					Log.e("RequestManager", "Failed to download file");
+					Log.e(TAG, "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
