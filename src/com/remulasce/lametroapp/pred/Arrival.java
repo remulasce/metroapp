@@ -95,9 +95,9 @@ public class Arrival {
     
     public int hashCode() {
         String h = "";
-        if (route != null) h += route.getString();
-        if (stop != null) h += stop.getString();
-        if (vehicle != null) h += vehicle.getString();
+        if (route.isValid()) h += route.getString();
+        if (stop.isValid()) h += stop.getString();
+        if (vehicle.isValid()) h += vehicle.getString();
         
         return h.hashCode();
     }
