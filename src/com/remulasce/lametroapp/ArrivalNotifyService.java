@@ -199,7 +199,7 @@ public class ArrivalNotifyService extends Service {
 		
 		
 		if (vehicleNumber != null) {
-			msg1 = "Waiting for bus #" + vehicleNumber;
+			msg1 = "Waiting for veh #" + vehicleNumber;
 		}
 		else if (routeName != null && !routeName.isEmpty()) {
 			msg1 = "Waiting for line "+routeName;

@@ -19,17 +19,25 @@ import com.remulasce.lametroapp.pred.Arrival;
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
 
-    //TODO: Pull this from Metro data, not guesses.
+    // TODO: Pull this from Metro data, not guesses.
     public static boolean isValidStop( String stop ) {
-        if (stop == null) { return false; }
-        if (stop.isEmpty()) { return false; }
-        
+        if ( stop == null ) {
+            return false;
+        }
+        if ( stop.isEmpty() ) {
+            return false;
+        }
+
         try {
             int stopNum = Integer.parseInt( stop );
-            
-            if( stopNum <= 0) { return false; }
-            if (stopNum > 100000) { return false; }
-        } catch (Exception e) {
+
+            if ( stopNum <= 0 ) {
+                return false;
+            }
+            if ( stopNum > 100000 ) {
+                return false;
+            }
+        } catch ( Exception e ) {
             return false;
         }
         return true;
@@ -130,9 +138,7 @@ public class LaMetroUtil {
                             ret.add( a );
                         }
                     }
-                } else if ( eventType == XmlPullParser.END_TAG ) {
-                } else if ( eventType == XmlPullParser.TEXT ) {
-                }
+                } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
                 eventType = xpp.next();
             }
         } catch ( XmlPullParserException e1 ) {
@@ -160,9 +166,7 @@ public class LaMetroUtil {
             int time = -1;
 
             while ( eventType != XmlPullParser.END_DOCUMENT ) {
-                if ( eventType == XmlPullParser.START_DOCUMENT ) {
-                } else if ( eventType == XmlPullParser.END_DOCUMENT ) {
-                } else if ( eventType == XmlPullParser.START_TAG ) {
+                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.END_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
                     String name = xpp.getName();
 
                     if ( name.equals( "direction" ) ) {
@@ -178,9 +182,7 @@ public class LaMetroUtil {
                             shortDir = curDirection;
                         }
                     }
-                } else if ( eventType == XmlPullParser.END_TAG ) {
-                } else if ( eventType == XmlPullParser.TEXT ) {
-                }
+                } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
                 eventType = xpp.next();
             }
 
@@ -199,15 +201,15 @@ public class LaMetroUtil {
 
     public static String secondsToDisplay( int seconds ) {
         if ( seconds > 60 ) {
-            return String.valueOf( seconds / 60 ) + " min";
+            return "in " + String.valueOf( seconds / 60 ) + " min";
         }
         if ( seconds > 1 ) {
-            return String.valueOf( seconds ) + "s";
+            return "in " + String.valueOf( seconds ) + "s";
         }
         if ( seconds == 0 ) {
-            return "1s";
+            return "in " + "1s";
         }
-        return "error";
+        return "arrived";
     }
 
     public static String getAgencyFromRoute( Route route, Stop stop ) {
