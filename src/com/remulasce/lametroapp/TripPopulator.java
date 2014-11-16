@@ -53,8 +53,7 @@ public class TripPopulator {
         this.list = list;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
-//        adapter = new ArrayAdapter< Trip >( list.getContext(), android.R.layout.simple_list_item_1 );
-        adapter = new ArrayAdapter<Trip> (list.getContext(), android.R.layout.simple_list_item_1, activeTrips);
+        adapter = new ArrayAdapter< Trip >( list.getContext(), android.R.layout.simple_list_item_1 );
         list.setAdapter( adapter );
     }
 
@@ -227,16 +226,17 @@ public class TripPopulator {
             while ( run ) {
                 updateList();
 
-                Collections.sort( activeTrips, new Comparator< Trip >() {
-                    @Override
-                    public int compare( Trip lhs, Trip rhs ) {
-                        return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
-                    }
-                    });
-                
                 uiHandler.post( new Runnable() {
                     @Override
                     public void run() {
+                        adapter.clear();
+                        adapter.addAll( activeTrips );
+                        adapter.sort( new Comparator<Trip>() {
+                            @Override
+                            public int compare( Trip lhs, Trip rhs ) {
+                                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+                            }
+                        });
                         adapter.notifyDataSetChanged();
                     }
                 } );
