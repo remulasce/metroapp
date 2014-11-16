@@ -21,7 +21,7 @@ public class ArrivalTrip extends Trip {
         int seconds = parentArrival.getEstimatedArrivalSeconds();
 
         return parentArrival.getRoute().getString() + ": " + parentArrival.getDirection().getString() + " \n"
-                + "Vehicle " + parentArrival.vehicle.getString()
+                + "Vehicle " + parentArrival.vehicle.getString() + " "
                 + LaMetroUtil.secondsToDisplay( seconds )
                 + " (" + seconds + "s)";
     }
