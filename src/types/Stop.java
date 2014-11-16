@@ -7,7 +7,7 @@ import com.remulasce.lametroapp.LaMetroUtil;
 public class Stop implements Serializable {
     private static final long serialVersionUID = 4336735625715608793L;
     
-    private String raw;
+    private String raw = "";
     
     public Stop() {}
     public Stop(String stopText) {

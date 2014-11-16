@@ -6,7 +6,7 @@ public class Vehicle implements Serializable {
     private static final long serialVersionUID = 8262057532533371341L;
 
 
-    String raw;
+    String raw = "";
     
     public Vehicle() {}
     public Vehicle( String veh ) {

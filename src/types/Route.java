@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Route implements Serializable {
     private static final long serialVersionUID = -1330979643298664422L;
 
-    String raw;
+    String raw = "";
 
     public Route() {}
     public Route( String route ) {
