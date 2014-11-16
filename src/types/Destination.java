@@ -7,6 +7,7 @@ public class Destination implements Serializable {
 
     String raw;
     
+    public Destination() {}
     public Destination( String dest) {
         raw = dest;
     }

@@ -8,6 +8,7 @@ public class Vehicle implements Serializable {
 
     String raw;
     
+    public Vehicle() {}
     public Vehicle( String veh ) {
         raw = veh;
     }

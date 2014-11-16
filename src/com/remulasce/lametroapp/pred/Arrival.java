@@ -28,6 +28,11 @@ public class Arrival {
 
     public Arrival() {
         firstTrip = new ArrivalTrip( this );
+        
+        route = new Route();
+        destination = new Destination();
+        stop = new Stop();
+        vehicle = new Vehicle();
     }
 
     /** In seconds from now */

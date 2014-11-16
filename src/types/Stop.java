@@ -9,6 +9,7 @@ public class Stop implements Serializable {
     
     private String raw;
     
+    public Stop() {}
     public Stop(String stopText) {
         raw = stopText;
     }

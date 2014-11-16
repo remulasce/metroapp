@@ -7,6 +7,7 @@ public class Route implements Serializable {
 
     String raw;
 
+    public Route() {}
     public Route( String route ) {
         raw = route;
     }
