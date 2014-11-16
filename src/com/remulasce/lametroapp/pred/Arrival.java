@@ -66,8 +66,8 @@ public class Arrival {
         this.destination = d;
     }
 
-    public void setStopID( Stop stop ) {
-        if ( stop.isValid() ) {
+    public void setStop( Stop stop ) {
+        if ( !stop.isValid() ) {
             return;
         }
         this.stop = stop;

@@ -123,7 +123,7 @@ public class LaMetroUtil {
 
                             a.setDestination( d );
                             a.setRoute( r );
-                            a.setStopID( s );
+                            a.setStop( s );
                             a.setEstimatedArrivalSeconds( seconds );
                             a.setVehicle( v );
 
