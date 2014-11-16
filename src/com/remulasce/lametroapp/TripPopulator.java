@@ -59,7 +59,7 @@ public class TripPopulator {
 
     public void StartPopulating() {
         if ( running ) {
-            Log.w( TAG, "Started an already-populating populator" );
+            Log.e( TAG, "Started an already-populating populator" );
             return;
         }
         running = true;
@@ -136,7 +136,7 @@ public class TripPopulator {
         // protected RoutePrediction routePrediction
 
         protected void updateList() {
-            Log.d( TAG, "Updating predictions" );
+            Log.v( TAG, "Updating predictions" );
 
             /*
              * for (Entry t : stopMap.entrySet()) {
@@ -193,9 +193,6 @@ public class TripPopulator {
                     activeTrips.removeAll( inactiveTrips );
                 }
             }
-
-            Log.d( TAG, "Updating based on stop" );
-
         }
 
         protected TripUpdateCallback callback = new TripUpdateCallback() {
@@ -221,7 +218,7 @@ public class TripPopulator {
         @Override
         public void run() {
             run = true;
-            Log.d( TAG, "UpdateRunner starting" );
+            Log.i( TAG, "UpdateRunner starting" );
 
             while ( run ) {
                 updateList();
@@ -246,7 +243,7 @@ public class TripPopulator {
                 } catch ( InterruptedException e ) {}
 
             }
-            Log.d( TAG, "UpdateRunner ending" );
+            Log.i( TAG, "UpdateRunner ending" );
 
         }
 
