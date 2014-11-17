@@ -97,11 +97,11 @@ public class TripPopulator {
         }
         String[] split = rawStops.split( " " );
 
-        stops.clear();
-        for ( String s : split ) {
-            Stop stop = new Stop( s );
-            if ( stop.isValid() ) {
-                synchronized ( stops ) {
+        synchronized ( stops ) {
+            stops.clear();
+            for ( String s : split ) {
+                Stop stop = new Stop( s );
+                if ( stop.isValid() ) {
                     stops.add( stop );
                 }
             }
@@ -228,12 +228,12 @@ public class TripPopulator {
                     public void run() {
                         adapter.clear();
                         adapter.addAll( activeTrips );
-                        adapter.sort( new Comparator<Trip>() {
+                        adapter.sort( new Comparator< Trip >() {
                             @Override
                             public int compare( Trip lhs, Trip rhs ) {
-                                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+                                return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
                             }
-                        });
+                        } );
                         adapter.notifyDataSetChanged();
                     }
                 } );
