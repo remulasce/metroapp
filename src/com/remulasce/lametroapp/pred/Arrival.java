@@ -77,7 +77,7 @@ public class Arrival {
         return route;
     }
 
-    public Stop getStopID() {
+    public Stop getStop() {
         return stop;
     }
 

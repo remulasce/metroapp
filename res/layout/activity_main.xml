@@ -9,18 +9,6 @@
     tools:context="com.remulasce.lametroapp.MainActivity" >
 
     <EditText
-        android:id="@+id/idtext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView1"
-        android:layout_alignBottom="@+id/textView1"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/textView3"
-        android:ems="10"
-        android:inputType="none"
-        android:text="80213" />
-
-    <EditText
         android:id="@+id/routetext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -88,11 +76,21 @@
         android:text="Stop" />
 
     <EditText
+        android:id="@+id/idtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tripList"
+        android:layout_alignTop="@+id/textView1"
+        android:ems="10"
+        android:inputType="none"
+        android:text="80213" />
+
+    <EditText
         android:id="@+id/vehicleNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/idtext"
-        android:layout_below="@+id/idtext"
+        android:layout_alignLeft="@+id/routetext"
+        android:layout_alignTop="@+id/textView3"
         android:ems="10"
         android:inputType="number" />
 

@@ -1,5 +1,8 @@
 package com.remulasce.lametroapp.pred;
 
+import types.Destination;
+import types.Route;
+import types.Stop;
 import android.content.Context;
 
 import com.remulasce.lametroapp.LaMetroUtil;
@@ -18,12 +21,28 @@ public class ArrivalTrip extends Trip {
             return "Invalid parent";
         }
 
+        Route route = parentArrival.getRoute();
+        Stop stop = parentArrival.getStop();
+        Destination dest = parentArrival.getDirection();
+        
+        String routeString = route.getString();
+        String stopString = stop.getString();
+        String destString = dest.getString();
         int seconds = parentArrival.getEstimatedArrivalSeconds();
-
-        return parentArrival.getRoute().getString() + ": " + parentArrival.getDirection().getString() + " \n"
-                + "Vehicle " + parentArrival.vehicle.getString() + " "
-                + LaMetroUtil.secondsToDisplay( seconds )
-                + " (" + seconds + "s)";
+        
+        boolean destinationStartsWithNum = destString.startsWith( routeString );
+        
+        String destination = (destinationStartsWithNum ? "" : routeString + ": " ) + destString + " \n";
+        String stop_ = stopString + "\n";
+        String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " "; 
+        String time = LaMetroUtil.secondsToDisplay( seconds );
+        String raw = " (" + seconds + "s)";
+        
+        return destination
+                + stop_
+                + vehicle
+                + time
+                + raw;
     }
 
     public void executeAction( Context context ) {
