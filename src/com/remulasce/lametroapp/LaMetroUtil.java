@@ -79,18 +79,18 @@ public class LaMetroUtil {
             xpp.setInput( new StringReader( response ) );
             int eventType = xpp.getEventType();
 
+            String curStopName = "";
             String curDestination = "";
             String curRoute = "";
-            String curStop = "";
+            String curStopTag = "";
 
             while ( eventType != XmlPullParser.END_DOCUMENT ) {
                 if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.END_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
                     String name = xpp.getName();
 
                     if ( name.equals( "predictions" ) ) {
-                        curStop = xpp.getAttributeValue( null, "stopTag" );
-                    }
-                    if ( name.equals( "predictions" ) ) {
+                        curStopTag = xpp.getAttributeValue( null, "stopTag" );
+                        curStopName = xpp.getAttributeValue( null, "stopTitle" );
                         curRoute = xpp.getAttributeValue( null, "routeTag" );
                     }
                     if ( name.equals( "direction" ) ) {
@@ -119,14 +119,15 @@ public class LaMetroUtil {
                         }
 
                         if ( !updated ) {
-                            int indexOf_ = curStop.indexOf( '_' );
+                            int indexOf_ = curStopTag.indexOf( '_' );
                             if ( indexOf_ > 0 ) {
-                                curStop = curStop.substring( 0, curStop.indexOf( '_' ) );
+                                curStopTag = curStopTag.substring( 0, curStopTag.indexOf( '_' ) );
                             }
 
                             Destination d = new Destination( curDestination );
                             Route r = new Route( curRoute );
-                            Stop s = new Stop( curStop );
+                            Stop s = new Stop( curStopTag );
+                            s.setStopName( curStopName );
                             Vehicle v = new Vehicle( vehicleNum );
 
                             a.setDestination( d );
