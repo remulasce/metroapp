@@ -38,8 +38,8 @@ public class ArrivalTrip extends Trip {
         String time = LaMetroUtil.secondsToDisplay( seconds );
         String raw = " (" + seconds + "s)";
         
-        return destination
-                + stop_
+        return stop_ 
+                + destination
                 + vehicle
                 + time
                 + raw;
