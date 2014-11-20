@@ -90,17 +90,20 @@ public class StopPrediction extends Prediction {
 
         for ( Arrival newA : arrivals ) {
             if ( arrivalTracked( newA ) ) {
+                Arrival a;
                 synchronized ( directionMap ) {
-                    Arrival a = directionMap.get( newA.getDirection() );
-                    if ( a == null ) {
-                        directionMap.put( newA.getDirection(), newA );
-                        a = newA;
-                    }
-                    else {
-                        a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
-                    }
-                    callback.tripUpdated( a.getFirstTrip() );
+                    a = directionMap.get( newA.getDirection() );
                 }
+                if ( a == null ) {
+                    synchronized ( directionMap ) {
+                        directionMap.put( newA.getDirection(), newA );
+                    }
+                    a = newA;
+                }
+                else {
+                    a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
+                }
+                callback.tripUpdated( a.getFirstTrip() );
             }
         }
     }

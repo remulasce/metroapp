@@ -26,7 +26,7 @@ public class ArrivalTrip extends Trip {
         Destination dest = parentArrival.getDirection();
         
         String routeString = route.getString();
-        String stopString = stop.getString();
+        String stopString = stop.getStopName();
         String destString = dest.getString();
         int seconds = parentArrival.getEstimatedArrivalSeconds();
         
