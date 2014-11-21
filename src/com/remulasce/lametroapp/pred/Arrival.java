@@ -18,6 +18,8 @@ public class Arrival {
     Destination destination;
     Stop stop;
     Vehicle vehicle;
+    
+    protected boolean isInScope = false;
 
     // Nextrip's most recent prediction for when this thing arrives
     // both in ms since epoch, for sub-second refresh frequency
@@ -100,5 +102,12 @@ public class Arrival {
         if (vehicle.isValid()) h += vehicle.getString();
         
         return h.hashCode();
+    }
+
+    public void setScope(boolean inScope) {
+        this.isInScope = inScope;
+    }
+    public boolean isInScope() {
+        return isInScope;
     }
 }

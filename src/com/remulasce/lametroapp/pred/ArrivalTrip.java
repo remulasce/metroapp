@@ -71,6 +71,7 @@ public class ArrivalTrip extends Trip {
     
     @Override
     public boolean isValid() {
-        return parentArrival.getEstimatedArrivalSeconds() > 0;
+//        return parentArrival.getEstimatedArrivalSeconds() > 0;
+        return parentArrival.isInScope();
     }
 }

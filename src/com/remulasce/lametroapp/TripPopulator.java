@@ -34,7 +34,6 @@ public class TripPopulator {
     protected ListView list;
     protected ArrayAdapter< Trip > adapter;
     protected List< Trip > activeTrips = new ArrayList< Trip >();
-    protected List< Trip > inactiveTrips = new ArrayList< Trip >();
 
     protected Handler uiHandler;
     protected UpdateRunner updateRunner;
@@ -80,12 +79,38 @@ public class TripPopulator {
         }
         String[] split = rawRoutes.split( " " );
 
-        routes.clear();
-        for ( String s : split ) {
-            Route route = new Route( s );
-            if ( LaMetroUtil.isValidRoute( route ) ) {
-                synchronized ( routes ) {
-                    routes.add( route );
+        synchronized ( routes ) {
+            // Remove old routes
+            List< Route > rem = new ArrayList< Route >();
+            for ( Route r : routes ) {
+                boolean stillTracked = false;
+                for ( String s : split ) {
+                    if ( r.getString().equals( s ) ) {
+                        stillTracked = true;
+                        break;
+                    }
+                }
+                if ( !stillTracked ) {
+                    rem.add( r );
+                }
+            }
+            routes.removeAll( rem );
+
+            // Add new routes
+            for ( String s : split ) {
+                Route route = new Route( s );
+                if ( LaMetroUtil.isValidRoute( route ) ) {
+
+                    boolean alreadyIn = false;
+                    for ( Route r : routes ) {
+                        if ( route.getString().equals( r.getString() ) ) {
+                            alreadyIn = true;
+                            break;
+                        }
+                    }
+                    if ( !alreadyIn ) {
+                        routes.add( route );
+                    }
                 }
             }
         }
@@ -98,11 +123,37 @@ public class TripPopulator {
         String[] split = rawStops.split( " " );
 
         synchronized ( stops ) {
-            stops.clear();
+            // Remove old stops
+            List< Stop > rem = new ArrayList< Stop >();
+            for ( Stop r : stops ) {
+                boolean stillTracked = false;
+                for ( String s : split ) {
+                    if ( r.getString().equals( s ) ) {
+                        stillTracked = true;
+                        break;
+                    }
+                }
+                if ( !stillTracked ) {
+                    rem.add( r );
+                }
+            }
+            stops.removeAll( rem );
+
+            // Add new Stops
             for ( String s : split ) {
-                Stop stop = new Stop( s );
-                if ( stop.isValid() ) {
-                    stops.add( stop );
+                Stop Stop = new Stop( s );
+                if ( LaMetroUtil.isValidStop( s ) ) {
+
+                    boolean alreadyIn = false;
+                    for ( Stop r : stops ) {
+                        if ( Stop.getString().equals( r.getString() ) ) {
+                            alreadyIn = true;
+                            break;
+                        }
+                    }
+                    if ( !alreadyIn ) {
+                        stops.add( Stop );
+                    }
                 }
             }
         }
@@ -138,11 +189,7 @@ public class TripPopulator {
         protected void updateList() {
             Log.v( TAG, "Updating predictions" );
 
-            /*
-             * for (Entry t : stopMap.entrySet()) {
-             * ((StopPrediction)t.getValue()).stopPredicting(); }
-             * activeTrips.clear(); stopMap.clear();
-             */
+            // Add new stops
             synchronized ( stops ) {
                 for ( Stop stop : stops ) {
                     if ( !stopMap.containsKey( stop ) ) {
@@ -152,45 +199,31 @@ public class TripPopulator {
                         stopMap.put( stop, stopPrediction );
                         stopPrediction.startPredicting();
                     }
-
-                    synchronized ( inactiveTrips ) {
-                        inactiveTrips.removeAll( stopMap.get( stop ).getAllSentTrips() );
-                    }
                 }
             }
 
-            ArrayList< Stop > rem = new ArrayList< Stop >();
-            for ( Entry< Stop, StopPrediction > t : stopMap.entrySet() ) {
-                boolean stillTracked = false;
-                for ( Stop s : stops ) {
-                    if ( s == t.getKey() ) {
-                        stillTracked = true;
-                        break;
-                    }
-                }
-                if ( !stillTracked ) {
-                    rem.add( t.getKey() );
-                }
-            }
-
-            for ( Stop s : rem ) {
-                synchronized ( activeTrips ) {
-                    activeTrips.removeAll( stopMap.get( s ).getAllSentTrips() );
-                }
-                synchronized ( inactiveTrips ) {
-                    inactiveTrips.addAll( stopMap.get( s ).getAllSentTrips() );
-                }
-                stopMap.remove( s );
-            }
-
-            synchronized ( activeTrips ) {
-                synchronized ( inactiveTrips ) {
-                    for ( Trip t : activeTrips ) {
-                        if ( !t.isValid() ) {
-                            inactiveTrips.add( t );
+            synchronized ( stops ) {
+                // Remove stops that are no longer tracked
+                ArrayList< Stop > rem = new ArrayList< Stop >();
+                // check what stops we have mapped that are no longer in UI
+                for ( Entry< Stop, StopPrediction > t : stopMap.entrySet() ) {
+                    boolean stillTracked = false;
+                    for ( Stop s : stops ) {
+                        if ( s == t.getKey() ) {
+                            stillTracked = true;
+                            break;
                         }
                     }
-                    activeTrips.removeAll( inactiveTrips );
+                    if ( !stillTracked ) {
+                        rem.add( t.getKey() );
+                    }
+                }
+
+                // deactivate and remove out-scoped stops
+                for ( Stop s : rem ) {
+                    StopPrediction p = stopMap.get( s );
+                    p.stopPredicting();
+                    stopMap.remove( s );
                 }
             }
         }
@@ -198,13 +231,13 @@ public class TripPopulator {
         protected TripUpdateCallback callback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
-                synchronized ( inactiveTrips ) {
-                    if ( inactiveTrips.contains( trip ) ) {
-                        Log.v( TAG, "Skipped old trip callback " + trip.getInfo() );
-                        return;
+                if ( !trip.isValid() ) {
+                    Log.v( TAG, "Skipped invalid trip " + trip.getInfo() );
+                    synchronized ( activeTrips ) {
+                        activeTrips.remove( trip );
                     }
+                    return;
                 }
-
                 synchronized ( activeTrips ) {
                     if ( !activeTrips.contains( trip ) ) {
                         activeTrips.add( trip );
@@ -215,6 +248,19 @@ public class TripPopulator {
             }
         };
 
+        protected void cullTrips() {
+
+            synchronized ( activeTrips ) {
+                List< Trip > inactiveTrips = new ArrayList< Trip >();
+                for ( Trip t : activeTrips ) {
+                    if ( !t.isValid() ) {
+                        inactiveTrips.add( t );
+                    }
+                }
+                activeTrips.removeAll( inactiveTrips );
+            }
+        }
+
         @Override
         public void run() {
             run = true;
@@ -222,6 +268,7 @@ public class TripPopulator {
 
             while ( run ) {
                 updateList();
+                cullTrips();
 
                 uiHandler.post( new Runnable() {
                     @Override

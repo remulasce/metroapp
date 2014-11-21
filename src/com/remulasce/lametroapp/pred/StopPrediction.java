@@ -22,6 +22,8 @@ public class StopPrediction extends Prediction {
     protected Stop stop;
     protected Route route;
     protected TripUpdateCallback callback;
+    
+    protected boolean inScope = false; 
 
     Map< Destination, Arrival > directionMap = new HashMap< Destination, Arrival >();
 
@@ -40,12 +42,24 @@ public class StopPrediction extends Prediction {
 
     @Override
     public void startPredicting() {
-        PredictionManager.getInstance().startTracking( this );
+        synchronized ( directionMap ) {
+            inScope = true;
+            PredictionManager.getInstance().startTracking( this );
+            
+            for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
+                e.getValue().setScope( true );
+            }
+        }
     }
 
     @Override
     public void stopPredicting() {
+        inScope = false;
         PredictionManager.getInstance().stopTracking( this );
+        
+        for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
+            e.getValue().setScope( false );
+        }
     }
 
     @Override
@@ -89,6 +103,7 @@ public class StopPrediction extends Prediction {
         List< Arrival > arrivals = LaMetroUtil.parseAllArrivals( response );
 
         for ( Arrival newA : arrivals ) {
+            newA.setScope( inScope );
             if ( arrivalTracked( newA ) ) {
                 Arrival a;
                 synchronized ( directionMap ) {
