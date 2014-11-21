@@ -135,7 +135,6 @@ public class MainActivity extends ActionBarActivity {
         populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
-    
     public static void SetNotifyService( int stopnum, String route, String destination,
             String vehicleNumber, Context context ) {
 
@@ -216,7 +215,17 @@ public class MainActivity extends ActionBarActivity {
         public void afterTextChanged( Editable arg0 ) {
             String stopText = stopField.getText().toString();
 
+            long start = System.currentTimeMillis();
+
             populator.StopSelectionChanged( stopText );
+
+            long spent = System.currentTimeMillis() - start;
+            t.send( new HitBuilders.TimingBuilder()
+                    .setCategory( "UI Delay" )
+                    .setValue( spent )
+                    .setVariable( "Trip List" )
+                    .setLabel( "Stop Text Changed" )
+                    .build() );
         }
 
         @Override
