@@ -213,23 +213,29 @@ public class LaMetroUtil {
         return "arrived";
     }
 
-    public static String getAgencyFromRoute( Route route, Stop stop ) {
-        if ( route == null || !route.isValid() ) {
-            if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+    public static String getAgencyFromRoute( Route route, Stop stop )
+            throws IllegalArgumentException {
+        try {
+            if ( route == null || !route.isValid() ) {
+                if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+                    return "lametro-rail";
+                }
+
+                return "lametro";
+            }
+            int routeN = Integer.valueOf( route.getString() );
+            if ( routeN / 100 == 8 ) {
                 return "lametro-rail";
             }
+            else if ( routeN > 0 && routeN < 1000 ) {
+                return "lametro";
+            }
+            else {
+                return "lametro";
+            }
+        } catch ( Exception e ) {
+            throw new IllegalArgumentException( e.getLocalizedMessage() );
+        }
 
-            return "lametro";
-        }
-        int routeN = Integer.valueOf( route.getString() );
-        if ( routeN / 100 == 8 ) {
-            return "lametro-rail";
-        }
-        else if ( routeN > 0 && routeN < 1000 ) {
-            return "lametro";
-        }
-        else {
-            return "lametro";
-        }
     }
 }

@@ -160,25 +160,29 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
 
-        i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route, stop ) );
-        i.putExtra( "StopID", stop.getNum() );
+        try {
+            i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route, stop ) );
+            i.putExtra( "StopID", stop.getNum() );
 
-        if ( destination != null && destination.isValid() ) {
-            i.putExtra( "Destination", destination.getString() );
+            if ( destination != null && destination.isValid() ) {
+                i.putExtra( "Destination", destination.getString() );
+            }
+            if ( vehicle != null && vehicle.isValid() ) {
+                i.putExtra( "VehicleNumber", vehicle.getString() );
+            }
+            if ( route != null && route.isValid() ) {
+                i.putExtra( "Route", route.getString() );
+            }
+
+            context.stopService( i );
+            context.startService( i );
+
+            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                    .setAction( "SetNotifyService" ).build() );
+        } catch ( IllegalArgumentException e ) {
+            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                    .setAction( "Bad input to notify service" ).build() );
         }
-        if ( vehicle != null && vehicle.isValid() ) {
-            i.putExtra( "VehicleNumber", vehicle.getString() );
-        }
-        if ( route != null && route.isValid() ) {
-            i.putExtra( "Route", route.getString() );
-        }
-
-        context.stopService( i );
-        context.startService( i );
-
-        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                .setAction( "SetNotifyService" ).build() );
-
     }
 
     @Override

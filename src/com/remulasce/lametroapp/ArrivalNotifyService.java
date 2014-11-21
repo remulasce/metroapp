@@ -17,6 +17,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import types.Destination;
+import types.Route;
+import types.Stop;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -123,6 +127,24 @@ public class ArrivalNotifyService extends Service {
 		
 	};
 	
+	protected boolean parametersValid() {
+	    try {
+	        
+	        Stop s = new Stop(stopID);
+	        Route r = new Route(routeName);
+	        Destination d = new Destination(destination);
+	        
+	        if (!s.isValid()) return false;
+	        if (!r.isValid()) return false;
+	        if (!d.isValid()) return false;
+	    } catch (Exception e) {
+	        return false;
+	    }
+	    
+	    
+	    return true;
+	}
+	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		agency			= intent.getExtras().getString("Agency");
@@ -131,6 +153,10 @@ public class ArrivalNotifyService extends Service {
 		destination		= intent.getExtras().getString("Destination");
 		vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
 		
+		if (!parametersValid()) {
+		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
+		    return Service.START_NOT_STICKY;
+		}
 		
 		run = true;
 		
