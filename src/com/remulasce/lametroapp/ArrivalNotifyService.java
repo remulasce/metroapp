@@ -97,7 +97,7 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(15000 + seconds * 100);
+					Thread.sleep(5000 + seconds * 200);
 				} catch (InterruptedException e) {}
 			}
 
@@ -193,7 +193,6 @@ public class ArrivalNotifyService extends Service {
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -226,7 +225,6 @@ public class ArrivalNotifyService extends Service {
 		final int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
 		
 		if (secondsTillArrival < 0) { return; }
-		//if (minutesSinceEstimate < 0 ) { return; }
 		
 		if (minutesSinceEstimate < 0) {
 			msg2 = "Getting prediction...";
@@ -324,12 +322,9 @@ public class ArrivalNotifyService extends Service {
 			String curDirection = "";
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				if(eventType == XmlPullParser.START_DOCUMENT) {
-					System.out.println("Start document");
 				} else if(eventType == XmlPullParser.END_DOCUMENT) {
-					System.out.println("End document");
 				} else if(eventType == XmlPullParser.START_TAG) {
 					String name = xpp.getName();
-					System.out.println("Start tag "+name);
 					
 					if(name.equals("direction")) { curDirection = xpp.getAttributeValue(null, "title"); }
 					if(name.equals( "prediction" )) {
@@ -353,17 +348,13 @@ public class ArrivalNotifyService extends Service {
 						}
 					}
 				} else if(eventType == XmlPullParser.END_TAG) {
-					System.out.println("End tag "+xpp.getName());
 				} else if(eventType == XmlPullParser.TEXT) {
-					System.out.println("Text "+xpp.getText());
 				}
 				eventType = xpp.next();
 			}
 		} catch (XmlPullParserException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -377,7 +368,6 @@ public class ArrivalNotifyService extends Service {
 		if (routeName != null && !routeName.isEmpty()) {
 			URI += "&routeTag="+routeName;
 		}
-		//HttpGet httpGet = new HttpGet("https://bugzilla.mozilla.org/rest/bug?assigned_to=lhenry@mozilla.com");
 		HttpGet httpGet = new HttpGet(URI);
 		try {
 			HttpResponse response = client.execute(httpGet);
