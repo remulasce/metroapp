@@ -131,24 +131,32 @@ public class ArrivalNotifyService extends Service {
 		
 	};
 	
+	//Helper fxn, since we only make Types long enough to check validity,
+	// we should clear the underlying invalid Strings
+	protected void cleanParameters() {
+        Stop s = new Stop(stopID);
+        Route r = new Route(routeName);
+        Destination d = new Destination(destination);
+        Vehicle v = new Vehicle(vehicleNumber);
+        
+        if (!s.isValid()) stopID = 0;
+        if (!r.isValid()) routeName = null;
+        if (!d.isValid()) destination = null;
+        if (!v.isValid()) vehicleNumber = null;
+	}
+	
 	protected boolean parametersValid() {
 	    try {
+	        // We only check Stop, because that's the minimum
+	        // we need.
 	        
 	        Stop s = new Stop(stopID);
-	        Route r = new Route(routeName);
-	        Destination d = new Destination(destination);
-	        Vehicle v = new Vehicle(vehicleNumber);
-	        
 	        if (!s.isValid()) return false;
-	        if (!r.isValid()) return false;
-	        if (!d.isValid()) return false;
-	        if (!v.isValid()) return false;
 	        
 	        if (agency == null || agency.isEmpty()) return false;
 	    } catch (Exception e) {
 	        return false;
 	    }
-	    
 	    
 	    return true;
 	}
@@ -161,6 +169,7 @@ public class ArrivalNotifyService extends Service {
 		destination		= intent.getExtras().getString("Destination");
 		vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
 		
+		cleanParameters();
 		if (!parametersValid()) {
 		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
 		    

@@ -76,7 +76,7 @@
         android:layout_toRightOf="@+id/textView3"
         android:ems="10"
         android:hint="Stop Tag #"
-        android:inputType="none" />
+        android:inputType="none|text|number" />
 
     <EditText
         android:id="@+id/vehicleNum"
