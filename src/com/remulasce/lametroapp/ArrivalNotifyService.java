@@ -20,7 +20,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import types.Destination;
 import types.Route;
 import types.Stop;
-
+import types.Vehicle;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -36,6 +36,10 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.analytics.Tracking;
 
 public class ArrivalNotifyService extends Service {
 
@@ -133,10 +137,14 @@ public class ArrivalNotifyService extends Service {
 	        Stop s = new Stop(stopID);
 	        Route r = new Route(routeName);
 	        Destination d = new Destination(destination);
+	        Vehicle v = new Vehicle(vehicleNumber);
 	        
 	        if (!s.isValid()) return false;
 	        if (!r.isValid()) return false;
 	        if (!d.isValid()) return false;
+	        if (!v.isValid()) return false;
+	        
+	        if (agency == null || agency.isEmpty()) return false;
 	    } catch (Exception e) {
 	        return false;
 	    }
@@ -155,6 +163,11 @@ public class ArrivalNotifyService extends Service {
 		
 		if (!parametersValid()) {
 		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
+		    
+		    Tracker t = Tracking.getTracker( getApplicationContext() );
+            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                    .setAction( "Bad input in notify service start" ).build() );
+            
 		    return Service.START_NOT_STICKY;
 		}
 		
