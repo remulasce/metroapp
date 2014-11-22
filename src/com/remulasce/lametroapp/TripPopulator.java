@@ -1,15 +1,14 @@
 package com.remulasce.lametroapp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
-import types.Destination;
 import types.Route;
 import types.Stop;
 import android.os.Handler;
@@ -33,7 +32,7 @@ public class TripPopulator {
 
     protected ListView list;
     protected ArrayAdapter< Trip > adapter;
-    protected List< Trip > activeTrips = new ArrayList< Trip >();
+    protected List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
 
     protected Handler uiHandler;
     protected UpdateRunner updateRunner;
@@ -45,8 +44,8 @@ public class TripPopulator {
     // protected String stopName;
 
     // These should be set to only valid routes.
-    protected List< Route > routes = new ArrayList< Route >();
-    protected List< Stop > stops = new ArrayList< Stop >();
+    protected List< Route > routes = new CopyOnWriteArrayList< Route >();
+    protected List< Stop > stops = new CopyOnWriteArrayList< Stop >();
 
     public TripPopulator( ListView list ) {
         this.list = list;
