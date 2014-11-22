@@ -16,6 +16,7 @@
         android:layout_alignTop="@+id/textView2"
         android:layout_toRightOf="@+id/textView3"
         android:ems="10"
+        android:hint="Line #. 90x for Rail"
         android:inputType="text|numberDecimal" >
 
         <requestFocus />
@@ -74,8 +75,8 @@
         android:layout_alignTop="@+id/textView1"
         android:layout_toRightOf="@+id/textView3"
         android:ems="10"
-        android:inputType="none"
-        android:text="80213" />
+        android:hint="Stop Tag #"
+        android:inputType="none" />
 
     <EditText
         android:id="@+id/vehicleNum"
@@ -85,6 +86,7 @@
         android:layout_alignRight="@+id/idtext"
         android:layout_alignTop="@+id/textView3"
         android:ems="10"
+        android:hint="Bus #. Not Train car #"
         android:inputType="number" />
 
     <TextView

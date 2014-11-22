@@ -135,17 +135,6 @@ public class MainActivity extends ActionBarActivity {
         populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
-    public static void SetNotifyService( int stopnum, String route, String destination,
-            String vehicleNumber, Context context ) {
-
-        Stop s = new Stop( stopnum );
-        Route r = new Route( route );
-        Destination d = new Destination( destination );
-        Vehicle v = new Vehicle( vehicleNumber );
-
-        SetNotifyService( s, r, d, v, context );
-    }
-
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
             Vehicle vehicle, Context context ) {
 
