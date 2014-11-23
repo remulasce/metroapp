@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.StopPrediction;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.pred.TripUpdateCallback;
@@ -121,6 +122,8 @@ public class TripPopulator {
         }
         String[] split = rawStops.split( " " );
 
+        long start = Tracking.startTime();
+
         synchronized ( stops ) {
             // Remove old stops
             List< Stop > rem = new ArrayList< Stop >();
@@ -156,6 +159,8 @@ public class TripPopulator {
                 }
             }
         }
+
+        Tracking.sendTime( "TripPopulator Synchronization", "setStops", null, start );
     }
 
     public void RouteSelectionChanged( String routeName ) {
@@ -272,6 +277,8 @@ public class TripPopulator {
                 uiHandler.post( new Runnable() {
                     @Override
                     public void run() {
+                        long start = Tracking.startTime();
+
                         adapter.clear();
                         adapter.addAll( activeTrips );
                         adapter.sort( new Comparator< Trip >() {
@@ -281,6 +288,8 @@ public class TripPopulator {
                             }
                         } );
                         adapter.notifyDataSetChanged();
+
+                        Tracking.sendUITime( "TripPopulator", "Refresh TripList", start );
                     }
                 } );
 

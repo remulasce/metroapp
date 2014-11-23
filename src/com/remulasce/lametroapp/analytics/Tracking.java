@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.analytics;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -25,6 +26,30 @@ public class Tracking {
 		}
 		
 		return t;
+	}
+	
+	public static long startTime() {
+	    return System.currentTimeMillis();
+	}
+	public static void sendUITime( String name, String label, long startTime ) {
+	    sendTime( "UITiming", name, label, startTime );
+	}
+	public static void sendTime( String category, String name, String label, long startTime ) {
+	    long timeSpent = System.currentTimeMillis() - startTime;
+	    
+	    Log.d(category, name+" "+label+": "+timeSpent);
+	    
+	    if (t == null) {
+	        Log.w(category, "No tracker set, unable to send analytics");
+	        return;
+	    }
+	    
+        t.send( new HitBuilders.TimingBuilder()
+        .setCategory( category )
+        .setValue( timeSpent )
+        .setVariable( name )
+        .setLabel( label )
+        .build() );
 	}
 	
 }
