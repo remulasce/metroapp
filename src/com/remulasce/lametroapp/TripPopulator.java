@@ -123,8 +123,11 @@ public class TripPopulator {
         String[] split = rawStops.split( " " );
 
         long start = Tracking.startTime();
-
         synchronized ( stops ) {
+            Tracking.sendTime( "Synchronization", "Acquire Delay" , "Stops", start );
+            Tracking.sendUITime( "Sync Delay" , "SetStops", start );
+            start = Tracking.startTime();
+            
             // Remove old stops
             List< Stop > rem = new ArrayList< Stop >();
             for ( Stop r : stops ) {
@@ -159,8 +162,7 @@ public class TripPopulator {
                 }
             }
         }
-
-        Tracking.sendTime( "TripPopulator Synchronization", "setStops", null, start );
+        Tracking.sendTime( "Synchronization", "Release Delay", "Stops", start );
     }
 
     public void RouteSelectionChanged( String routeName ) {
