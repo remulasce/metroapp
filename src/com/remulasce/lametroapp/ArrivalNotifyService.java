@@ -81,8 +81,8 @@ public class ArrivalNotifyService extends Service {
 
 			while (run) {
 
-				final String response = getXMLArrivalString(stopID, agency);				
-				final int seconds = getFirstArrivalTime(response);
+				String response = getXMLArrivalString(stopID, agency);				
+				int seconds = getFirstArrivalTime(response);
 
 				if (seconds != -1) {
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
@@ -92,8 +92,9 @@ public class ArrivalNotifyService extends Service {
 						toast ("Next arrival: "+seconds+" seconds");
 					}
 				}
+				
 				runNum++;
-				if (runNum == 100) run = false;
+				if (runNum >= 100) run = false;
 				
 				
 				try {
@@ -224,13 +225,21 @@ public class ArrivalNotifyService extends Service {
 		final int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
 		final int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
 		
-		if (secondsTillArrival < 0) { return; }
+		if (secondsTillArrival < -30 || minutesSinceEstimate > 5) {
+		    stopForeground(true);
+		    run = false;
+		    return;
+		}
 		
 		if (minutesSinceEstimate < 0) {
 			msg2 = "Getting prediction...";
 			if (destination != null) {
 				msg2 += "\n" + destination;
 			}
+		}
+		else if (secondsTillArrival <= 0) {
+		    msg2 = "Vehicle arrived";
+		    msg2 += "\n" + lastDestination;
 		}
 		else if (secondsTillArrival <= 90) {
 			msg2 = "Next arrival: "+secondsTillArrival+" seconds";
