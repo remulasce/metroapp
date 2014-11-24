@@ -6,6 +6,7 @@ import types.Stop;
 import types.Vehicle;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -69,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
 
         stopField.addTextChangedListener( StopTextWatcher );
         routeField.addTextChangedListener( RouteTextWatcher );
+        vehicleField.addTextChangedListener( VehicleTextWatcher );
 
         populator = new TripPopulator( tripList );
 
@@ -138,8 +140,19 @@ public class MainActivity extends ActionBarActivity {
             vehicleField.setText( veh.getString() );
         }
 
-        String label = ( !route.isValid() && !stop.isValid() && !veh.isValid() ) ? "No Form Fill"
-                : "Form Prefilled";
+        boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
+
+        if ( !intentFilled ) {
+            routeField.setText( getPreferences(
+                                                MODE_PRIVATE ).getString( "routeField", "" ) );
+            stopField.setText( getPreferences(
+                                               MODE_PRIVATE ).getString( "stopField", "" ) );
+            vehicleField.setText( getPreferences(
+                                                  MODE_PRIVATE ).getString( "vehicleField", "" ) );
+        }
+
+        String label = ( intentFilled ) ? "Form Filled From Intent"
+                : "Form Filled From Preferences";
         t.send( new HitBuilders.EventBuilder()
                 .setCategory( "MainScreen" )
                 .setAction( "Field Population" )
@@ -207,6 +220,11 @@ public class MainActivity extends ActionBarActivity {
         public void afterTextChanged( Editable arg0 ) {
             String routeText = routeField.getText().toString();
 
+            SharedPreferences.Editor e = getPreferences(
+                                                         MODE_PRIVATE ).edit();
+            e.putString( "routeField", routeText );
+            e.commit();
+
             populator.RouteSelectionChanged( routeText );
         }
 
@@ -222,6 +240,11 @@ public class MainActivity extends ActionBarActivity {
         public void afterTextChanged( Editable arg0 ) {
             String stopText = stopField.getText().toString();
 
+            SharedPreferences.Editor e = getPreferences(
+                                                         MODE_PRIVATE ).edit();
+            e.putString( "stopField", stopText );
+            e.commit();
+
             long start = System.currentTimeMillis();
 
             populator.StopSelectionChanged( stopText );
@@ -234,6 +257,24 @@ public class MainActivity extends ActionBarActivity {
                     .setVariable( "Trip List" )
                     .setLabel( "Stop Text Changed" )
                     .build() );
+        }
+
+        @Override
+        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+
+        @Override
+        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+    };
+
+    protected TextWatcher VehicleTextWatcher = new TextWatcher() {
+        @Override
+        public void afterTextChanged( Editable arg0 ) {
+            String vehicleText = vehicleField.getText().toString();
+            SharedPreferences.Editor e = getPreferences(
+                                                         MODE_PRIVATE ).edit();
+            e.putString( "vehicleField", vehicleText );
+            e.commit();
+
         }
 
         @Override
