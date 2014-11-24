@@ -16,7 +16,7 @@
         android:layout_alignTop="@+id/textView2"
         android:layout_toRightOf="@+id/textView3"
         android:ems="10"
-        android:hint="Line #. 90x for Rail"
+        android:hint="Line #, 90x for Rail"
         android:inputType="text|numberDecimal" >
 
         <requestFocus />
@@ -36,19 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/setbutton"
+        android:layout_below="@+id/vehicleNum"
         android:layout_centerHorizontal="true" >
-
     </ListView>
-
-    <Button
-        android:id="@+id/setbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/stopbutton"
-        android:layout_alignBottom="@+id/stopbutton"
-        android:layout_toRightOf="@+id/stopbutton"
-        android:text="Set" />
 
     <TextView
         android:id="@+id/textView3"
@@ -58,14 +48,6 @@
         android:layout_below="@+id/idtext"
         android:text="Vehicle:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/stopbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/vehicleNum"
-        android:layout_toRightOf="@+id/textView1"
-        android:text="Stop" />
 
     <EditText
         android:id="@+id/idtext"
@@ -83,10 +65,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/routetext"
-        android:layout_alignRight="@+id/idtext"
         android:layout_alignTop="@+id/textView3"
-        android:ems="10"
-        android:hint="Bus #. Not Train car #"
+        android:layout_toLeftOf="@+id/actionLayout"
+        android:hint="Bus #"
         android:inputType="number" />
 
     <TextView
@@ -97,5 +78,25 @@
         android:layout_alignParentTop="true"
         android:text="Route:"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:id="@+id/actionLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tripList"
+        android:layout_below="@+id/textView1" >
+
+        <Button
+            android:id="@+id/stopbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop" />
+
+        <Button
+            android:id="@+id/setbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -11,6 +11,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -81,29 +83,40 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
+    private void startNotifyServiceFromViews() {
+        Stop stop = new Stop( stopField.getText().toString() );
+        Vehicle veh = new Vehicle( vehicleField.getText().toString() );
+        Route route = new Route( routeField.getText().toString() );
+
+        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                .setAction( "NotifyService Set Button" ).build() );
+
+        SetNotifyService( stop, route, null, veh, MainActivity.this );
+    }
+
     protected OnClickListener setButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            Stop stop = new Stop( stopField.getText().toString() );
-            Vehicle veh = new Vehicle( vehicleField.getText().toString() );
-            Route route = new Route( routeField.getText().toString() );
-
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "NotifyService Set Button" ).build() );
-
-            SetNotifyService( stop, route, null, veh, MainActivity.this );
+            startNotifyServiceFromViews();
         }
+
     };
+
+    private void stopNotifyService() {
+        Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
+
+        t.send( new HitBuilders.EventBuilder()
+                .setCategory( "NotifyService" )
+                .setAction( "NotifyService Stop Button" )
+                .build() );
+
+        MainActivity.this.stopService( i );
+    }
+
     protected OnClickListener stopButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
-
-            t.send( new HitBuilders.EventBuilder()
-                    .setCategory( "NotifyService" )
-                    .setAction( "NotifyService Stop Button" )
-                    .build() );
-
-            MainActivity.this.stopService( i );
+            stopNotifyService();
         }
+
     };
 
     protected void startAnalytics() {
@@ -214,7 +227,7 @@ public class MainActivity extends ActionBarActivity {
             populator.StopSelectionChanged( stopText );
 
             long spent = System.currentTimeMillis() - start;
-            Log.d("UITiming", "AfterTextChanged return: "+spent);
+            Log.d( "UITiming", "AfterTextChanged return: " + spent );
             t.send( new HitBuilders.TimingBuilder()
                     .setCategory( "UI Delay" )
                     .setValue( spent )
@@ -229,5 +242,28 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
     };
+
+    @Override
+    public boolean onCreateOptionsMenu( Menu menu ) {
+        menu.add( "Clear Fields" );
+        menu.add( "Stop Arrival Notification" );
+        menu.add( "Start Arrival Notification" );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected( MenuItem item ) {
+        if ( item.getTitle().equals( "Start Arrival Notification" ) ) {
+            startNotifyServiceFromViews();
+        } else if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
+            stopNotifyService();
+        } else if ( item.getTitle().equals( "Clear Fields" ) ) {
+            stopField.setText( "" );
+            routeField.setText( "" );
+            vehicleField.setText( "" );
+        }
+
+        return true;
+    }
 
 }
