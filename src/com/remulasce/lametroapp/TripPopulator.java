@@ -61,6 +61,7 @@ public class TripPopulator {
             Log.e( TAG, "Started an already-populating populator" );
             return;
         }
+        Log.d( TAG, "Starting TripPopulator" );
         running = true;
 
         updateRunner = new UpdateRunner();
@@ -70,7 +71,9 @@ public class TripPopulator {
     }
 
     public void StopPopulating() {
+        Log.d( TAG, "Stopping TripPopulator" );
         updateRunner.run = false;
+        running = false;
     }
 
     protected void setRoutes( String rawRoutes ) {
