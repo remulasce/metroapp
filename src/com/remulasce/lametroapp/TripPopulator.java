@@ -34,6 +34,8 @@ public class TripPopulator {
     protected ListView list;
     protected ArrayAdapter< Trip > adapter;
     protected List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
+    
+    Map< Stop, StopPrediction > stopMap = new HashMap< Stop, StopPrediction >();
 
     protected Handler uiHandler;
     protected UpdateRunner updateRunner;
@@ -191,7 +193,7 @@ public class TripPopulator {
         // protected List<StopPrediction> stopPredictions = new
         // ArrayList<StopPrediction>();
 
-        Map< Stop, StopPrediction > stopMap = new HashMap< Stop, StopPrediction >();
+        
 
         // protected RoutePrediction routePrediction
 
@@ -304,7 +306,6 @@ public class TripPopulator {
 
             }
             Log.i( TAG, "UpdateRunner ending" );
-
         }
 
     }
