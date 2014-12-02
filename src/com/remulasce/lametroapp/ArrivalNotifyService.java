@@ -225,10 +225,29 @@ public class ArrivalNotifyService extends Service {
 		final int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
 		final int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
 		
-		if (secondsTillArrival < -30 || minutesSinceEstimate > 5) {
-		    stopForeground(true);
-		    run = false;
-		    return;
+		if ( runNum > 5 ) {
+		    if ( secondsTillArrival < -30 ) {
+    		    stopForeground(true);
+    		    run = false;
+    		    
+    	        Log.e("NotifyService", "NotifyService ending because the vehicle has arrived");
+                Tracker t = Tracking.getTracker( getApplicationContext() );
+                t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                        .setAction( "Service Ending" )
+                        .setLabel( "Vehicle arrived" ).build() );
+    		    return;
+		    }
+		    if ( minutesSinceEstimate > 5 ) {
+		        stopForeground(true);
+                run = false;
+                
+                Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
+                Tracker t = Tracking.getTracker( getApplicationContext() );
+                t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+                        .setAction( "Service Ending" )
+                        .setLabel( "Estimate timed out" ).build() );
+                return;
+		    }
 		}
 		
 		if (minutesSinceEstimate < 0) {
