@@ -64,11 +64,12 @@ public class ArrivalNotifyService extends Service {
 	
 	String lastDestination = "";
 
-	private Thread netThread;
+//	private Thread netThread;
+	private Runnable netTask;
 	private Thread notificationThread;
 	
 	
-	private Runnable waitTask = new Runnable () {
+	private class NetTask implements Runnable {
 
 		@Override
 		public void run() {
@@ -110,7 +111,6 @@ public class ArrivalNotifyService extends Service {
 					stopForeground(true);
 				}
 			});
-			
 		}
 	};
 
@@ -183,7 +183,11 @@ public class ArrivalNotifyService extends Service {
 		
 		run = true;
 		
-		netThread = new Thread(waitTask, "NotifyNetTask");
+		if (netTask != null) {
+		    // netTask.stop();
+		}
+		netTask = new NetTask();
+		Thread netThread = new Thread(netTask, "NotifyNetTask");
 		netThread.start();
 		
 		notificationThread = new Thread(notificationTask, "NotifyDisplayTask");
