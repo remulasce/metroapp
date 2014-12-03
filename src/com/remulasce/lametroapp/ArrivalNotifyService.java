@@ -43,34 +43,40 @@ import com.remulasce.lametroapp.analytics.Tracking;
 
 public class ArrivalNotifyService extends Service {
 
-	boolean run = true;
+    
+    /*
 
-	int stopID;
-	String vehicleNumber;
-	String agency;
-	String routeName;
-	String destination;
+	*/
 	
-	
-	int runNum = 0;
-	//int lastMinutes = -1;
-	
-	long arrivalTime = 0;
-	long arrivalUpdatedAt = 0;
-	int lastDisplayedSeconds = 10000;
 	
 	String displayedTitle = "";
 	String displayedText = "";
 	
-	String lastDestination = "";
 
 //	private Thread netThread;
-	private Runnable netTask;
-	private Thread notificationThread;
+	private NetTask netTask;
+	private NotificationTask notificationTask;
 	
 	
 	private class NetTask implements Runnable {
 
+	    boolean run = true;
+
+	    public int stopID;
+	    public String vehicleNumber;
+	    public String agency;
+	    public String routeName;
+	    public String destination;
+	    
+	    
+	    int runNum = 0;
+	    //int lastMinutes = -1;
+	    
+	    public long arrivalTime = 0;
+	    public long arrivalUpdatedAt = 0;
+	    
+	    public String lastDestination = "";
+	    
 		@Override
 		public void run() {
 			Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
@@ -82,8 +88,10 @@ public class ArrivalNotifyService extends Service {
 
 			while (run) {
 
-				String response = getXMLArrivalString(stopID, agency);				
-				int seconds = getFirstArrivalTime(response);
+				String response = getXMLArrivalString(stopID, agency, routeName);				
+				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
+				int seconds = arrival.arrivalTime;
+				lastDestination = arrival.destination;
 
 				if (seconds != -1) {
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
@@ -112,10 +120,49 @@ public class ArrivalNotifyService extends Service {
 				}
 			});
 		}
+		
+		  //Helper fxn, since we only make Types long enough to check validity,
+	    // we should clear the underlying invalid Strings
+	    protected void cleanParameters() {
+	        Stop s = new Stop(stopID);
+	        Route r = new Route(routeName);
+	        Destination d = new Destination(destination);
+	        Vehicle v = new Vehicle(vehicleNumber);
+	        
+	        if (!s.isValid()) stopID = 0;
+	        if (!r.isValid()) routeName = null;
+	        if (!d.isValid()) destination = null;
+	        if (!v.isValid()) vehicleNumber = null;
+	    }
+		
+	    protected boolean parametersValid() {
+	        try {
+	            // We only check Stop, because that's the minimum
+	            // we need.
+	            
+	            Stop s = new Stop(stopID);
+	            if (!s.isValid()) return false;
+	            
+	            if (agency == null || agency.isEmpty()) return false;
+	        } catch (Exception e) {
+	            return false;
+	        }
+	        
+	        return true;
+	    }
 	};
 
-	private Runnable notificationTask = new Runnable() {
+	private class NotificationTask implements Runnable {
 		
+	    protected boolean run;
+	    protected NetTask source;
+	    
+	    public int lastDisplayedSeconds = 10000;
+	    
+	    public NotificationTask(NetTask source) {
+	        this.source = source;
+	    }
+	    
 		@Override
 		public void run() {
 
@@ -130,48 +177,136 @@ public class ArrivalNotifyService extends Service {
 			}
 		}
 		
+		
+
+	    public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
+	        Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());     
+	        
+	        String msg1;
+	        String msg2;
+	        
+	        final int secondsTillArrival = (int)(netTask.arrivalTime - System.currentTimeMillis()) / 1000;
+	        final int minutesSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000 / 60; 
+	        
+	        final String destination = netTask.destination;
+	        final String lastDestination = netTask.lastDestination;
+	        final String vehicleNumber = netTask.vehicleNumber;
+	        final String routeName = netTask.routeName;
+	        final int stopID = netTask.stopID;
+	        
+	        if (secondsTillArrival < -30 || minutesSinceEstimate > 5) {
+	            stopForeground(true);
+	            run = false;
+	            return;
+	        }
+	        
+	        if (minutesSinceEstimate < 0) {
+	            msg2 = "Getting prediction...";
+	            if (destination != null) {
+	                msg2 += "\n" + destination;
+	            }
+	        }
+	        else if (secondsTillArrival <= 0) {
+	            msg2 = "Vehicle arrived";
+	            msg2 += "\n" + lastDestination;
+	        }
+	        else if (secondsTillArrival <= 90) {
+	            msg2 = "Next arrival: "+secondsTillArrival+" seconds";
+	            msg2 += "\n" + lastDestination;
+	        }
+	        else {
+	            msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
+	            msg2 += "\n" + lastDestination;
+	        }
+	            
+	        if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
+	        
+	        
+	        if (vehicleNumber != null) {
+	            msg1 = "Waiting for veh #" + vehicleNumber;
+	        }
+	        else if (routeName != null && !routeName.isEmpty()) {
+	            msg1 = "Waiting for line "+routeName;
+	        }
+	        else {
+	            msg1 = "Waiting at stop "+stopID;
+	        }
+	        
+	        final String dispTitle = msg1;
+	        final String dispText = msg2;
+	        
+	        h.post(new Runnable() {
+	            @Override
+	            public void run() {
+	                NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+	                bigTextStyle.setBigContentTitle(dispTitle);
+	                bigTextStyle.bigText(dispText);
+
+	                
+	                mBuilder
+	                        .setSmallIcon(R.drawable.ic_launcher)
+	                        .setContentTitle(dispTitle)
+	                        .setContentText(dispText)
+	                        .setStyle(bigTextStyle);
+	                        
+	                if (secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
+	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+	                    toast("Next arrival: "+secondsTillArrival+" seconds");
+	                    
+	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+	                    v.vibrate(2000);
+	                } else {
+	                    mBuilder.setSound(null);
+	                }
+	                
+	                Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
+	                resultIntent.putExtra("Route", routeName);
+	                resultIntent.putExtra("StopID", String.valueOf(stopID));
+	                resultIntent.putExtra("VehicleNumber", vehicleNumber);
+
+	                TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
+	                stackBuilder.addParentStack(MainActivity.class);
+	                stackBuilder.addNextIntent(resultIntent);
+	                PendingIntent resultPendingIntent =
+	                        stackBuilder.getPendingIntent(
+	                            0,
+	                            PendingIntent.FLAG_UPDATE_CURRENT
+	                        );
+	                mBuilder.setContentIntent(resultPendingIntent);
+	                NotificationManager mNotificationManager =
+	                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+	                Notification n = mBuilder.build();
+	                startForeground(294, n);
+	                mNotificationManager.notify(294, n);    
+	                
+	                lastDisplayedSeconds = secondsTillArrival;
+	                
+	            }
+	        });
+	    }
 	};
 	
-	//Helper fxn, since we only make Types long enough to check validity,
-	// we should clear the underlying invalid Strings
-	protected void cleanParameters() {
-        Stop s = new Stop(stopID);
-        Route r = new Route(routeName);
-        Destination d = new Destination(destination);
-        Vehicle v = new Vehicle(vehicleNumber);
-        
-        if (!s.isValid()) stopID = 0;
-        if (!r.isValid()) routeName = null;
-        if (!d.isValid()) destination = null;
-        if (!v.isValid()) vehicleNumber = null;
-	}
+
 	
-	protected boolean parametersValid() {
-	    try {
-	        // We only check Stop, because that's the minimum
-	        // we need.
-	        
-	        Stop s = new Stop(stopID);
-	        if (!s.isValid()) return false;
-	        
-	        if (agency == null || agency.isEmpty()) return false;
-	    } catch (Exception e) {
-	        return false;
-	    }
-	    
-	    return true;
-	}
+
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
-		agency			= intent.getExtras().getString("Agency");
-		stopID			= intent.getExtras().getInt("StopID");
-		routeName		= intent.getExtras().getString("Route");
-		destination		= intent.getExtras().getString("Destination");
-		vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
+	    
+       if (netTask != null) {
+            // netTask.stop();
+        }
+        netTask = new NetTask();
+        
+		netTask.agency			= intent.getExtras().getString("Agency");
+		netTask.stopID			= intent.getExtras().getInt("StopID");
+		netTask.routeName		= intent.getExtras().getString("Route");
+		netTask.destination		= intent.getExtras().getString("Destination");
+		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
 		
-		cleanParameters();
-		if (!parametersValid()) {
+		netTask.cleanParameters();
+		
+		if (!netTask.parametersValid()) {
 		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
 		    
 		    Tracker t = Tracking.getTracker( getApplicationContext() );
@@ -181,16 +316,13 @@ public class ArrivalNotifyService extends Service {
 		    return Service.START_NOT_STICKY;
 		}
 		
-		run = true;
-		
-		if (netTask != null) {
-		    // netTask.stop();
-		}
-		netTask = new NetTask();
+		netTask.run = true;
+
 		Thread netThread = new Thread(netTask, "NotifyNetTask");
 		netThread.start();
 		
-		notificationThread = new Thread(notificationTask, "NotifyDisplayTask");
+		notificationTask = new NotificationTask(netTask);
+		Thread notificationThread = new Thread(notificationTask, "NotifyDisplayTask");
 		notificationThread.start();
 
 		return Service.START_NOT_STICKY;
@@ -201,12 +333,18 @@ public class ArrivalNotifyService extends Service {
 		return null;
 	}
 
+	protected void ShutdownService() {
+	    netTask.run = false;
+	    notificationTask.run = false;
+	    
+	    stopForeground(true);
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 
-		run = false;
-		stopForeground(true);
+		ShutdownService();
 	}
 
 	public void toast(final String msg) {
@@ -220,109 +358,14 @@ public class ArrivalNotifyService extends Service {
 		});
 	}
 	
-	public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
-		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());		
-		
-		String msg1;
-		String msg2;
-		
-		final int secondsTillArrival = (int)(arrivalTime - System.currentTimeMillis()) / 1000;
-		final int minutesSinceEstimate = (int)(System.currentTimeMillis() - arrivalUpdatedAt) / 1000 / 60; 
-		
-		if (secondsTillArrival < -30 || minutesSinceEstimate > 5) {
-		    stopForeground(true);
-		    run = false;
-		    return;
-		}
-		
-		if (minutesSinceEstimate < 0) {
-			msg2 = "Getting prediction...";
-			if (destination != null) {
-				msg2 += "\n" + destination;
-			}
-		}
-		else if (secondsTillArrival <= 0) {
-		    msg2 = "Vehicle arrived";
-		    msg2 += "\n" + lastDestination;
-		}
-		else if (secondsTillArrival <= 90) {
-			msg2 = "Next arrival: "+secondsTillArrival+" seconds";
-			msg2 += "\n" + lastDestination;
-		}
-		else {
-			msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
-			msg2 += "\n" + lastDestination;
-		}
-			
-		if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
-		
-		
-		if (vehicleNumber != null) {
-			msg1 = "Waiting for veh #" + vehicleNumber;
-		}
-		else if (routeName != null && !routeName.isEmpty()) {
-			msg1 = "Waiting for line "+routeName;
-		}
-		else {
-			msg1 = "Waiting at stop "+stopID;
-		}
-		
-		final String dispTitle = msg1;
-		final String dispText = msg2;
-		
-		h.post(new Runnable() {
-			@Override
-			public void run() {
-				NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-				bigTextStyle.setBigContentTitle(dispTitle);
-				bigTextStyle.bigText(dispText);
 
-				
-				mBuilder
-				        .setSmallIcon(R.drawable.ic_launcher)
-				        .setContentTitle(dispTitle)
-				        .setContentText(dispText)
-				        .setStyle(bigTextStyle);
-						
-				if (secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
-					mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-					toast("Next arrival: "+secondsTillArrival+" seconds");
-					
-					Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-					v.vibrate(2000);
-				} else {
-					mBuilder.setSound(null);
-				}
-				
-				Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
-				resultIntent.putExtra("Route", routeName);
-				resultIntent.putExtra("StopID", String.valueOf(stopID));
-				resultIntent.putExtra("VehicleNumber", vehicleNumber);
-
-				TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
-				stackBuilder.addParentStack(MainActivity.class);
-				stackBuilder.addNextIntent(resultIntent);
-				PendingIntent resultPendingIntent =
-				        stackBuilder.getPendingIntent(
-				            0,
-				            PendingIntent.FLAG_UPDATE_CURRENT
-				        );
-				mBuilder.setContentIntent(resultPendingIntent);
-				NotificationManager mNotificationManager =
-				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-				Notification n = mBuilder.build();
-				startForeground(294, n);
-				mNotificationManager.notify(294, n);	
-				
-				lastDisplayedSeconds = secondsTillArrival;
-				
-			}
-		});
+	private class StupidArrival {
+	    public String destination;
+	    public int arrivalTime;
 	}
-
-	public int getFirstArrivalTime(String xml) {
+	public StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
 		int time = -1;
+		String lastDestination = "";
 		
 		XmlPullParserFactory factory;
 		try {
@@ -371,10 +414,13 @@ public class ArrivalNotifyService extends Service {
 			e.printStackTrace();
 		}
 		
-		return time;
+		StupidArrival ret = new StupidArrival();
+		ret.arrivalTime = time;
+		ret.destination = lastDestination;
+		return ret;
 	}
 	
-	public String getXMLArrivalString( int stopID, String agency) {
+	public String getXMLArrivalString( int stopID, String agency, String routeName) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		String URI = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a="+agency+"&stopId="+stopID;
