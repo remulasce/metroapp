@@ -334,8 +334,10 @@ public class ArrivalNotifyService extends Service {
 	}
 
 	protected void ShutdownService() {
-	    netTask.run = false;
-	    notificationTask.run = false;
+	    Log.i("NotifyService", "Shutting down service");
+	    
+	    if ( netTask != null ) netTask.run = false;
+	    if ( notificationTask != null )notificationTask.run = false;
 	    
 	    stopForeground(true);
 	}
