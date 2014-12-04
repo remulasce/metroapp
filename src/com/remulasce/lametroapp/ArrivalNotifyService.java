@@ -147,13 +147,13 @@ public class ArrivalNotifyService extends Service {
 
 	private class NotificationTask implements Runnable {
 		
-	    protected boolean run;
-	    protected NetTask source;
+	    public boolean run = true;;
+//	    protected NetTask source;
 	    
 	    public int lastDisplayedSeconds = 10000;
 	    
 	    public NotificationTask(NetTask source) {
-	        this.source = source;
+//	        this.source = source;
 	    }
 	    
 		@Override
@@ -300,11 +300,13 @@ public class ArrivalNotifyService extends Service {
 
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
+	    // Meh good measure
+	    if (netTask != null || notificationTask != null) {
+	       ShutdownService();
+	    }
 	    
-       if (netTask != null) {
-            // netTask.stop();
-        }
         netTask = new NetTask();
+        notificationTask = new NotificationTask(netTask);
         
 		netTask.agency			= intent.getExtras().getString("Agency");
 		netTask.stopID			= intent.getExtras().getInt("StopID");
@@ -325,11 +327,11 @@ public class ArrivalNotifyService extends Service {
 		}
 		
 		netTask.run = true;
+		notificationTask.run = true;
 
 		Thread netThread = new Thread(netTask, "NotifyNetTask");
 		netThread.start();
 		
-		notificationTask = new NotificationTask(netTask);
 		Thread notificationThread = new Thread(notificationTask, "NotifyDisplayTask");
 		notificationThread.start();
 
@@ -344,8 +346,14 @@ public class ArrivalNotifyService extends Service {
 	protected void ShutdownService() {
 	    Log.i("NotifyService", "Shutting down service");
 	    
-	    if ( netTask != null ) netTask.run = false;
-	    if ( notificationTask != null )notificationTask.run = false;
+	    if ( netTask != null ) { 
+	        netTask.run = false;
+	        netTask = null;
+	    }
+	    if ( notificationTask != null ) {
+	        notificationTask.run = false;
+	        notificationTask = null;
+	    }
 	    
 	    new Handler(ArrivalNotifyService.this.getMainLooper()).post(new Runnable() {
             @Override
