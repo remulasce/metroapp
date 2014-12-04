@@ -191,7 +191,8 @@ public class ArrivalNotifyService extends Service {
 	        final String routeName = netTask.routeName;
 	        final int stopID = netTask.stopID;
 	        
-	        final boolean isValid = netTask.isValid;;
+	        final boolean isValid = netTask.isValid;
+	        boolean vibrate = false;
 	        
     		if ( netTask.runNum > 5 ) {
     		    if ( secondsTillArrival < -30 ) {
@@ -228,6 +229,10 @@ public class ArrivalNotifyService extends Service {
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = "Next arrival: "+secondsTillArrival+" seconds";
 	            msg2 += "\n" + lastDestination;
+	            
+	            if( isValid && lastDisplayedSeconds > 90) {
+	                vibrate = true;
+	            }
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else {
@@ -251,6 +256,7 @@ public class ArrivalNotifyService extends Service {
 	        
 	        final String dispTitle = msg1;
 	        final String dispText = msg2;
+	        final boolean doVibrate = vibrate;
 	        
 	        h.post(new Runnable() {
 	            @Override
@@ -266,7 +272,7 @@ public class ArrivalNotifyService extends Service {
 	                        .setContentText(dispText)
 	                        .setStyle(bigTextStyle);
 	                        
-	                if ( isValid && secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
+	                if ( doVibrate ) {
 	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 	                    toast("Next arrival: "+secondsTillArrival+" seconds");
 	                    
