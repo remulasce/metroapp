@@ -94,10 +94,10 @@ public class ArrivalNotifyService extends Service {
 				String response = getXMLArrivalString(stopID, agency, routeName);				
 				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
 				int seconds = arrival.arrivalTime;
-				lastDestination = arrival.destination;
 
 				if (seconds != -1) {
 				    isValid = true;
+				    lastDestination = arrival.destination;
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
