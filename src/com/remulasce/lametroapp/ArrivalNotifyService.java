@@ -68,6 +68,7 @@ public class ArrivalNotifyService extends Service {
 	    public String routeName;
 	    public String destination;
 	    
+	    public boolean isValid = false;
 	    
 	    int runNum = 0;
 	    //int lastMinutes = -1;
@@ -94,6 +95,7 @@ public class ArrivalNotifyService extends Service {
 				lastDestination = arrival.destination;
 
 				if (seconds != -1) {
+				    isValid = true;
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
@@ -187,6 +189,8 @@ public class ArrivalNotifyService extends Service {
 	        final String routeName = netTask.routeName;
 	        final int stopID = netTask.stopID;
 	        
+	        final boolean isValid = netTask.isValid;;
+	        
     		if ( netTask.runNum > 5 ) {
     		    if ( secondsTillArrival < -30 ) {
     		    
@@ -208,7 +212,7 @@ public class ArrivalNotifyService extends Service {
     		    return;
 	        }
 	        
-	        if (minutesSinceEstimate < 0) {
+	        if ( !netTask.isValid || minutesSinceEstimate < 0 || minutesSinceEstimate > 5) {
 	            msg2 = "Getting prediction...";
 	            if (destination != null) {
 	                msg2 += "\n" + destination;
@@ -257,7 +261,7 @@ public class ArrivalNotifyService extends Service {
 	                        .setContentText(dispText)
 	                        .setStyle(bigTextStyle);
 	                        
-	                if (secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
+	                if ( isValid && secondsTillArrival <= 90 && lastDisplayedSeconds > 90) {
 	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 	                    toast("Next arrival: "+secondsTillArrival+" seconds");
 	                    
