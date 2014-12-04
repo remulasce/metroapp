@@ -112,13 +112,6 @@ public class ArrivalNotifyService extends Service {
 			}
 
 			toast ("Notification Service Ending");		
-
-			h.post(new Runnable() {
-				@Override
-				public void run() {
-					stopForeground(true);
-				}
-			});
 		}
 		
 		  //Helper fxn, since we only make Types long enough to check validity,
@@ -196,29 +189,23 @@ public class ArrivalNotifyService extends Service {
 	        
     		if ( netTask.runNum > 5 ) {
     		    if ( secondsTillArrival < -30 ) {
-    		    	stopForeground(true);
-    		    	run = false;
     		    
     	        	Log.e("NotifyService", "NotifyService ending because the vehicle has arrived");
                     Tracker t = Tracking.getTracker( getApplicationContext() );
         	        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                 	        .setAction( "Service Ending" )
                         	.setLabel( "Vehicle arrived" ).build() );
-    	    		return;
     		    }
     		    if ( minutesSinceEstimate > 5 ) {
-    		        stopForeground(true);
-                    	
-    		        run = false;
-                    
                 	Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
              		Tracker t = Tracking.getTracker( getApplicationContext() );
                 	t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                         	.setAction( "Service Ending" )
                         	.setLabel( "Estimate timed out" ).build() );
-                	return;
-    
     		    }
+    		    
+    		    ShutdownService();
+    		    return;
 	        }
 	        
 	        if (minutesSinceEstimate < 0) {
@@ -360,7 +347,12 @@ public class ArrivalNotifyService extends Service {
 	    if ( netTask != null ) netTask.run = false;
 	    if ( notificationTask != null )notificationTask.run = false;
 	    
-	    stopForeground(true);
+	    new Handler(ArrivalNotifyService.this.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                stopForeground(true);
+            }
+        });
 	}
 	
 	@Override
