@@ -228,10 +228,12 @@ public class ArrivalNotifyService extends Service {
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = "Next arrival: "+secondsTillArrival+" seconds";
 	            msg2 += "\n" + lastDestination;
+	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else {
 	            msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
 	            msg2 += "\n" + lastDestination;
+	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
 	        if (minutesSinceEstimate >= 1) { msg2 += " : "+minutesSinceEstimate; }
@@ -294,9 +296,6 @@ public class ArrivalNotifyService extends Service {
 	                Notification n = mBuilder.build();
 	                startForeground(294, n);
 	                mNotificationManager.notify(294, n);    
-	                
-	                lastDisplayedSeconds = secondsTillArrival;
-	                
 	            }
 	        });
 	    }
