@@ -199,6 +199,8 @@ public class ArrivalNotifyService extends Service {
         	        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                 	        .setAction( "Service Ending" )
                         	.setLabel( "Vehicle arrived" ).build() );
+        	        ShutdownService();
+                    return;
     		    }
     		    if ( minutesSinceEstimate > 5 ) {
                 	Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
@@ -206,10 +208,9 @@ public class ArrivalNotifyService extends Service {
                 	t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
                         	.setAction( "Service Ending" )
                         	.setLabel( "Estimate timed out" ).build() );
+                	ShutdownService();
+                    return;
     		    }
-    		    
-    		    ShutdownService();
-    		    return;
 	        }
 	        
 	        if ( !netTask.isValid || minutesSinceEstimate < 0 || minutesSinceEstimate > 5) {
