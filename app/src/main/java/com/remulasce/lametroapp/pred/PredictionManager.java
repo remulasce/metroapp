@@ -1,0 +1,164 @@
+package com.remulasce.lametroapp.pred;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.util.Log;
+
+import com.remulasce.lametroapp.pred.PredictionManager.UpdateStager;
+
+public class PredictionManager {
+	static final String TAG = "PredictionManager";
+	static final int UPDATE_INTERVAL = 5000;
+	
+	static PredictionManager manager;
+	public static PredictionManager getInstance() {
+		if( manager == null ) { manager = new PredictionManager(); }
+		return manager;
+	}
+	
+	
+	protected List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
+	protected UpdateStager updater;
+	
+	public void startTracking( Prediction p ) {
+		synchronized (trackingList) {
+			if (!trackingList.contains(p)) {
+				trackingList.add(p);
+			}
+			synchronized (this) {
+				if (updater == null) {
+					updater = new UpdateStager();
+					new Thread(updater, "Prediction Update Checker").start();
+				}
+			}
+		}
+	}
+	
+	public void pauseTracking() {
+		synchronized (this) {
+			Log.d(TAG, "Pausing all prediction tracking");
+			if (updater != null) {
+				updater.run = false;
+				updater = null;
+			}
+		}
+	}
+	public void resumeTracking() {
+		synchronized (this) {
+			Log.d(TAG, "Resuming all prediction tracking");
+			if (updater == null) {
+				updater = new UpdateStager();
+				new Thread(updater, "Prediction Update Checker").start();
+			}
+		}
+	}
+	
+	public void stopTracking( Prediction p ) {
+		synchronized (trackingList) {
+			trackingList.remove(p);
+		}
+	}
+	
+	protected class UpdateStager implements Runnable {
+		public boolean run = true;
+		@Override
+		public void run() {
+			
+			while (run) {
+			
+				synchronized (trackingList) {
+					for (Prediction p : trackingList) {
+						int requestedInterval = p.getRequestedUpdateInterval();
+						long timeSinceUpdate = p.getTimeSinceLastUpdate();
+						if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+							Log.v(TAG, "Getting update after "+requestedInterval);
+							p.setGettingUpdate();
+							GetUpdate( p );
+						}
+					}
+				}
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+					
+			}
+		}
+		
+	}
+	
+	protected void GetUpdate( Prediction p ) {
+		RequestHandler r = new RequestHandler( p );
+		new Thread(r, "Prediction update "+p.getRequestString()).start();
+		
+	}
+	
+	protected class RequestHandler implements Runnable {
+		Prediction prediction;
+
+		
+		public RequestHandler( Prediction p ) {
+			this.prediction = p;
+		}
+
+		@Override
+		public void run() {
+			String request = prediction.getRequestString();
+			Log.v(TAG, "Handling request "+request);
+			
+			String response = sendRequest( request );
+			
+			Log.v(TAG, "Response received: "+response);
+			prediction.handleResponse(response);
+			
+			prediction.setUpdated();
+			
+		}
+		
+		
+		public String sendRequest( String request ) {
+			StringBuilder builder = new StringBuilder();
+			HttpClient client = new DefaultHttpClient();
+			String URI = request;
+
+			HttpGet httpGet = new HttpGet(URI);
+			try {
+				HttpResponse response = client.execute(httpGet);
+				StatusLine statusLine = response.getStatusLine();
+				int statusCode = statusLine.getStatusCode();
+				if (statusCode == 200) {
+					HttpEntity entity = response.getEntity();
+					InputStream content = entity.getContent();
+					BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+					String line;
+					while ((line = reader.readLine()) != null) {
+						builder.append(line);
+					}
+				} else {
+					Log.e(TAG, "Failed to download file");
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return builder.toString();
+		}
+		
+	}
+}
