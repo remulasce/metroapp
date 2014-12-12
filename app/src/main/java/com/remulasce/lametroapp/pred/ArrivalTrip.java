@@ -1,12 +1,12 @@
 package com.remulasce.lametroapp.pred;
 
-import types.Destination;
-import types.Route;
-import types.Stop;
 import android.content.Context;
 
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.MainActivity;
+import com.remulasce.lametroapp.types.Destination;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
 
 public class ArrivalTrip extends Trip {
 

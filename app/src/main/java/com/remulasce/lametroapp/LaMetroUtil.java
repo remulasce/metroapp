@@ -9,12 +9,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import types.Destination;
-import types.Route;
-import types.Stop;
-import types.Vehicle;
 
 import com.remulasce.lametroapp.pred.Arrival;
+import com.remulasce.lametroapp.types.Destination;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.types.Vehicle;
 
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";

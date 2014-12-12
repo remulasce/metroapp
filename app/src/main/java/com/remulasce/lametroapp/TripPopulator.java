@@ -9,8 +9,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
-import types.Route;
-import types.Stop;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -21,6 +19,8 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.StopPrediction;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.pred.TripUpdateCallback;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";

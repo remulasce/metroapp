@@ -17,10 +17,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import types.Destination;
-import types.Route;
-import types.Stop;
-import types.Vehicle;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -40,6 +36,10 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.types.Destination;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.types.Vehicle;
 
 public class ArrivalNotifyService extends Service {
 

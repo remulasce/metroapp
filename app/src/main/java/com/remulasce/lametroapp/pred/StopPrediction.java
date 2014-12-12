@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import types.Destination;
-import types.Route;
-import types.Stop;
 
 import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.types.Destination;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
 
 /* You make a stop prediction. It gets all the arrivals at a stop, based
  * on input. Etc.

@@ -1,9 +1,5 @@
 package com.remulasce.lametroapp;
 
-import types.Destination;
-import types.Route;
-import types.Stop;
-import types.Vehicle;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +23,10 @@ import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
+import com.remulasce.lametroapp.types.Destination;
+import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.types.Vehicle;
 
 public class MainActivity extends ActionBarActivity {
 
