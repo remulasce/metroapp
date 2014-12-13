@@ -34,9 +34,11 @@ public class LaMetroUtil {
             if ( stopNum <= 0 ) {
                 return false;
             }
+            /* Actually, there are some ridiculous stopids
             if ( stopNum > 100000 ) {
                 return false;
             }
+            */
         } catch ( Exception e ) {
             return false;
         }
