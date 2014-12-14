@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
@@ -202,10 +203,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Logging.StartSavingLogcat(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
         populator.StopPopulating();
+        Logging.StopSavingLogcat();
     }
 
     @Override
