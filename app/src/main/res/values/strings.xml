@@ -4,6 +4,7 @@
     <string name="app_name">Metro App</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="omnibox_button_display">+</string>
     <string-array name="AgencyChoices">
         <item >lametro-rail</item>
         <item >lametro</item>
