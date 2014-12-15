@@ -40,6 +40,8 @@ public class MainActivity extends ActionBarActivity {
     EditText stopField;
     EditText routeField;
     EditText vehicleField;
+    EditText omniField;
+    Button omniButton;
 
     ListView tripList;
     TripPopulator populator;
@@ -67,27 +69,13 @@ public class MainActivity extends ActionBarActivity {
 
         View mCustomView = mInflater.inflate(R.layout.omni_search_box, null);
 
-        /*
-        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
-        mTitleTextView.setText("My Own Title");
-
-        ImageButton imageButton = (ImageButton) mCustomView
-                .findViewById(R.id.imageButton);
-        imageButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Refresh Clicked!",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-        */
-
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     protected void linkViewReferences() {
+        omniField = (EditText) findViewById( R.id.omni_text );
+        omniButton = (Button) findViewById( R.id.omni_button );
         stopField = (EditText) findViewById( R.id.idtext );
         routeField = (EditText) findViewById( R.id.routetext );
         vehicleField = (EditText) findViewById( R.id.vehicleNum );
@@ -101,6 +89,7 @@ public class MainActivity extends ActionBarActivity {
 
         setButton.setOnClickListener( setButtonListener );
         stopButton.setOnClickListener( stopButtonListener );
+        omniButton.setOnClickListener( omniButtonListener );
 
         stopField.addTextChangedListener( StopTextWatcher );
         routeField.addTextChangedListener( RouteTextWatcher );
@@ -133,6 +122,14 @@ public class MainActivity extends ActionBarActivity {
     protected OnClickListener setButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             startNotifyServiceFromViews();
+        }
+
+    };
+
+    protected OnClickListener omniButtonListener = new OnClickListener() {
+        public void onClick( View v ) {
+            stopField.append( " "+omniField.getText());
+            omniField.getEditableText().clear();
         }
 
     };
