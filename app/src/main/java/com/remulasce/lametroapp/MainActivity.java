@@ -130,6 +130,7 @@ public class MainActivity extends ActionBarActivity {
         public void onClick( View v ) {
             stopField.append( " "+omniField.getText());
             omniField.getEditableText().clear();
+            omniField.clearFocus();
         }
 
     };
