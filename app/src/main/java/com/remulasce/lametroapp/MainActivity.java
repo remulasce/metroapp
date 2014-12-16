@@ -19,23 +19,22 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.fragments.ServiceRequestList;
+import com.remulasce.lametroapp.fragments.ServiceRequestFragment;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.types.Destination;
 import com.remulasce.lametroapp.types.Route;
+import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
 
-public class MainActivity extends ActionBarActivity implements ServiceRequestList.OnServiceRequestListChanged {
+public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
 
     Button setButton;
     Button stopButton;
@@ -44,6 +43,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     EditText vehicleField;
     EditText omniField;
     Button omniButton;
+
+    ServiceRequestFragment requestFragment;
 
     ListView tripList;
     TripPopulator populator;
@@ -85,6 +86,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         stopButton = (Button) findViewById( R.id.stopbutton );
 
         tripList = (ListView) findViewById( R.id.tripList );
+
+        requestFragment = (ServiceRequestFragment) getFragmentManager()
+                .findFragmentById(R.id.service_request_fragment);
     }
 
     protected void setupActionListeners() {
@@ -131,6 +135,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             stopField.append( " "+omniField.getText());
+
+            requestFragment.AddServiceRequest(new ServiceRequest(omniField.getText().toString()));
+
             omniField.getEditableText().clear();
             omniField.clearFocus();
         }

@@ -100,8 +100,8 @@
         <fragment
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:name="com.remulasce.lametroapp.fragments.ServiceRequestList"
-            android:id="@+id/fragment"
+            android:name="com.remulasce.lametroapp.fragments.ServiceRequestFragment"
+            android:id="@+id/service_request_fragment"
             tools:layout="@layout/fragment_service_request_list"
             android:layout_below="@+id/oldLayout"
             android:layout_alignParentLeft="true"
@@ -110,7 +110,7 @@
         android:id="@+id/tripList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fragment"
+        android:layout_below="@+id/service_request_fragment"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true">
     </ListView>

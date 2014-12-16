@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,65 +12,61 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.types.ServiceRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.remulasce.lametroapp.fragments.ServiceRequestList.OnServiceRequestListChanged} interface
+ * {@link ServiceRequestFragment.OnServiceRequestListChanged} interface
  * to handle interaction events.
- * Use the {@link ServiceRequestList#newInstance} factory method to
+ * Use the {@link ServiceRequestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ServiceRequestList extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class ServiceRequestFragment extends Fragment {
+    private static final String TAG = "ServiceRequestFragment";
 
     private OnServiceRequestListChanged mListener;
+    private ListView requestList;
+
+    private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ServiceRequestList.
+     * @return A new instance of fragment ServiceRequestFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ServiceRequestList newInstance(String param1, String param2) {
-        ServiceRequestList fragment = new ServiceRequestList();
+    public static ServiceRequestFragment newInstance() {
+        ServiceRequestFragment fragment = new ServiceRequestFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    //public void AddServiceRequest
+    private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
+        return new ArrayAdapter<ServiceRequest>(getActivity(), android.R.layout.simple_list_item_1, items);
+    }
 
+    public void AddServiceRequest(ServiceRequest serviceRequest) {
+        Log.d(TAG, "Adding service request " + serviceRequest);
+        if (!requests.contains(serviceRequest)) {
+            requests.add(serviceRequest);
 
+            requestList.setAdapter(makeAdapter(requests));
+        }
+    }
 
-
-
-
-
-    public ServiceRequestList() {
+    public ServiceRequestFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -78,11 +75,11 @@ public class ServiceRequestList extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_service_request_list, container, false);
 
-        ListView l = (ListView) view.findViewById(R.id.service_request_list);
+        requestList = (ListView) view.findViewById(R.id.service_request_list);
 
 
         String[] items = { "Test 1", "Test 2", "Test 3" };
-        l.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items));
+        requestList.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items));
 
         return view;
     }
