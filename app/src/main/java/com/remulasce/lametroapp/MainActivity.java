@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.fragments.ServiceRequestList;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.types.Destination;
@@ -33,7 +35,7 @@ import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ServiceRequestList.OnServiceRequestListChanged {
 
     Button setButton;
     Button stopButton;
@@ -346,4 +348,10 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // TODO handle fragment interaction
+        Log.w("MainActivity", "Fragment interaction not implemented!");
+
+    }
 }
