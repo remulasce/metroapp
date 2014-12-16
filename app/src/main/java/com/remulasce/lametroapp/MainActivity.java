@@ -350,8 +350,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        // TODO handle fragment interaction
-        Log.w("MainActivity", "Fragment interaction not implemented!");
-
+        //TODO implement
     }
 }

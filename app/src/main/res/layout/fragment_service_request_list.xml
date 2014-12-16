@@ -7,8 +7,9 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="131dp"
         android:id="@+id/service_request_list"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="center_horizontal|top"
+        android:drawSelectorOnTop="false" />
 
 </FrameLayout>

@@ -6,11 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="omnibox_button_display">+</string>
 
-    <string-array name="AgencyChoices">
-        <item>lametro-rail</item>
-        <item>lametro</item>
-    </string-array>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="test_list_entries">test aoeu aoe</string>
 
 </resources>
