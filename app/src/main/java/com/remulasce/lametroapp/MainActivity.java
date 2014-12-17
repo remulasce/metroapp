@@ -36,11 +36,11 @@ import com.remulasce.lametroapp.types.Vehicle;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
 
-    Button setButton;
-    Button stopButton;
-    EditText stopField;
-    EditText routeField;
-    EditText vehicleField;
+//    Button setButton;
+//    Button stopButton;
+//    EditText stopField;
+//    EditText routeField;
+//    EditText vehicleField;
     EditText omniField;
     Button omniButton;
 
@@ -79,11 +79,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     protected void linkViewReferences() {
         omniField = (EditText) findViewById( R.id.omni_text );
         omniButton = (Button) findViewById( R.id.omni_button );
-        stopField = (EditText) findViewById( R.id.idtext );
-        routeField = (EditText) findViewById( R.id.routetext );
-        vehicleField = (EditText) findViewById( R.id.vehicleNum );
-        setButton = (Button) findViewById( R.id.setbutton );
-        stopButton = (Button) findViewById( R.id.stopbutton );
+//        stopField = (EditText) findViewById( R.id.idtext );
+//        routeField = (EditText) findViewById( R.id.routetext );
+//        vehicleField = (EditText) findViewById( R.id.vehicleNum );
+//        setButton = (Button) findViewById( R.id.setbutton );
+//        stopButton = (Button) findViewById( R.id.stopbutton );
 
         tripList = (ListView) findViewById( R.id.tripList );
 
@@ -93,13 +93,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     protected void setupActionListeners() {
 
-        setButton.setOnClickListener( setButtonListener );
-        stopButton.setOnClickListener( stopButtonListener );
+//        setButton.setOnClickListener( setButtonListener );
+//        stopButton.setOnClickListener( stopButtonListener );
         omniButton.setOnClickListener( omniButtonListener );
 
-        stopField.addTextChangedListener( StopTextWatcher );
-        routeField.addTextChangedListener( RouteTextWatcher );
-        vehicleField.addTextChangedListener( VehicleTextWatcher );
+//        stopField.addTextChangedListener( StopTextWatcher );
+//        routeField.addTextChangedListener( RouteTextWatcher );
+//        vehicleField.addTextChangedListener( VehicleTextWatcher );
 
         populator = new TripPopulator( tripList );
 
@@ -115,6 +115,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     };
 
     private void startNotifyServiceFromViews() {
+        /*
         Stop stop = new Stop( stopField.getText().toString() );
         Vehicle veh = new Vehicle( vehicleField.getText().toString() );
         Route route = new Route( routeField.getText().toString() );
@@ -123,6 +124,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 .setAction( "NotifyService Set Button" ).build() );
 
         SetNotifyService( stop, route, null, veh, MainActivity.this );
+        */
     }
 
     protected OnClickListener setButtonListener = new OnClickListener() {
@@ -134,7 +136,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            stopField.append( " "+omniField.getText());
+            //stopField.append( " "+omniField.getText());
 
             requestFragment.AddServiceRequest(new ServiceRequest(omniField.getText().toString()));
 
@@ -172,24 +174,24 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         Vehicle veh = new Vehicle( bundle.getStringExtra( "VehicleNumber" ) );
 
         if ( route.isValid() ) {
-            routeField.setText( route.getString() );
+//            routeField.setText( route.getString() );
         }
         if ( stop.isValid() ) {
-            stopField.setText( stop.getString() );
+//            stopField.setText( stop.getString() );
         }
         if ( veh.isValid() ) {
-            vehicleField.setText( veh.getString() );
+//            vehicleField.setText( veh.getString() );
         }
 
         boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
 
         if ( !intentFilled ) {
-            routeField.setText( getPreferences(
-                                                MODE_PRIVATE ).getString( "routeField", "" ) );
-            stopField.setText( getPreferences(
-                                               MODE_PRIVATE ).getString( "stopField", "" ) );
-            vehicleField.setText( getPreferences(
-                                                  MODE_PRIVATE ).getString( "vehicleField", "" ) );
+//            routeField.setText( getPreferences(
+//                                                MODE_PRIVATE ).getString( "routeField", "" ) );
+//            stopField.setText( getPreferences(
+//                                               MODE_PRIVATE ).getString( "stopField", "" ) );
+//            vehicleField.setText( getPreferences(
+//                                                  MODE_PRIVATE ).getString( "vehicleField", "" ) );
         }
 
         String label = ( intentFilled ) ? "Form Filled From Intent"
@@ -200,7 +202,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 .setLabel( label )
                 .build() );
 
-        populator.StopSelectionChanged( stopField.getText().toString() );
+//        populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
@@ -263,74 +265,74 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         PredictionManager.getInstance().resumeTracking();
     }
 
-    protected TextWatcher RouteTextWatcher = new TextWatcher() {
-        @Override
-        public void afterTextChanged( Editable arg0 ) {
-            String routeText = routeField.getText().toString();
-
-            SharedPreferences.Editor e = getPreferences(
-                                                         MODE_PRIVATE ).edit();
-            e.putString( "routeField", routeText );
-            e.commit();
-
-            populator.RouteSelectionChanged( routeText );
-        }
-
-        @Override
-        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-
-        @Override
-        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-    };
-
-    protected TextWatcher StopTextWatcher = new TextWatcher() {
-        @Override
-        public void afterTextChanged( Editable arg0 ) {
-            String stopText = stopField.getText().toString();
-
-            SharedPreferences.Editor e = getPreferences(
-                                                         MODE_PRIVATE ).edit();
-            e.putString( "stopField", stopText );
-            e.commit();
-
-            long start = System.currentTimeMillis();
-
-            populator.StopSelectionChanged( stopText );
-
-            long spent = System.currentTimeMillis() - start;
-            Log.d( "UITiming", "AfterTextChanged return: " + spent );
-            t.send( new HitBuilders.TimingBuilder()
-                    .setCategory( "UI Delay" )
-                    .setValue( spent )
-                    .setVariable( "Trip List" )
-                    .setLabel( "Stop Text Changed" )
-                    .build() );
-        }
-
-        @Override
-        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-
-        @Override
-        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-    };
-
-    protected TextWatcher VehicleTextWatcher = new TextWatcher() {
-        @Override
-        public void afterTextChanged( Editable arg0 ) {
-            String vehicleText = vehicleField.getText().toString();
-            SharedPreferences.Editor e = getPreferences(
-                                                         MODE_PRIVATE ).edit();
-            e.putString( "vehicleField", vehicleText );
-            e.commit();
-
-        }
-
-        @Override
-        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-
-        @Override
-        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-    };
+//    protected TextWatcher RouteTextWatcher = new TextWatcher() {
+//        @Override
+//        public void afterTextChanged( Editable arg0 ) {
+//            String routeText = routeField.getText().toString();
+//
+//            SharedPreferences.Editor e = getPreferences(
+//                                                         MODE_PRIVATE ).edit();
+//            e.putString( "routeField", routeText );
+//            e.commit();
+//
+//            populator.RouteSelectionChanged( routeText );
+//        }
+//
+//        @Override
+//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//
+//        @Override
+//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//    };
+//
+//    protected TextWatcher StopTextWatcher = new TextWatcher() {
+//        @Override
+//        public void afterTextChanged( Editable arg0 ) {
+//            String stopText = stopField.getText().toString();
+//
+//            SharedPreferences.Editor e = getPreferences(
+//                                                         MODE_PRIVATE ).edit();
+//            e.putString( "stopField", stopText );
+//            e.commit();
+//
+//            long start = System.currentTimeMillis();
+//
+//            populator.StopSelectionChanged( stopText );
+//
+//            long spent = System.currentTimeMillis() - start;
+//            Log.d( "UITiming", "AfterTextChanged return: " + spent );
+//            t.send( new HitBuilders.TimingBuilder()
+//                    .setCategory( "UI Delay" )
+//                    .setValue( spent )
+//                    .setVariable( "Trip List" )
+//                    .setLabel( "Stop Text Changed" )
+//                    .build() );
+//        }
+//
+//        @Override
+//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//
+//        @Override
+//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//    };
+//
+//    protected TextWatcher VehicleTextWatcher = new TextWatcher() {
+//        @Override
+//        public void afterTextChanged( Editable arg0 ) {
+//            String vehicleText = vehicleField.getText().toString();
+//            SharedPreferences.Editor e = getPreferences(
+//                                                         MODE_PRIVATE ).edit();
+//            e.putString( "vehicleField", vehicleText );
+//            e.commit();
+//
+//        }
+//
+//        @Override
+//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//
+//        @Override
+//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
+//    };
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
@@ -347,9 +349,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         } else if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
             stopNotifyService();
         } else if ( item.getTitle().equals( "Clear Fields" ) ) {
-            stopField.setText( "" );
-            routeField.setText( "" );
-            vehicleField.setText( "" );
+//            stopField.setText( "" );
+//            routeField.setText( "" );
+//            vehicleField.setText( "" );
         }
 
         return true;
@@ -358,5 +360,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     @Override
     public void onFragmentInteraction(Uri uri) {
         //TODO implement
+    }
+
+    @Override
+    public TripPopulator getTripPopulator() {
+        return populator;
     }
 }
