@@ -50,8 +50,10 @@ public class ServiceRequestFragment extends Fragment {
     }
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
-        return new ArrayAdapter<ServiceRequest>(getActivity(), android.R.layout.simple_list_item_1, items);
+//        return new ArrayAdapter<ServiceRequest>(getActivity(), android.R.layout.simple_list_item_1, items);
+        return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
     }
+
 
     public void AddServiceRequest(ServiceRequest serviceRequest) {
         Log.d(TAG, "Adding service request " + serviceRequest);
@@ -137,6 +139,7 @@ public class ServiceRequestFragment extends Fragment {
 
         return s.toString();
     }
+
 
 
     /**
