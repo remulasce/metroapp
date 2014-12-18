@@ -28,6 +28,7 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.fragments.ServiceRequestFragment;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
+import com.remulasce.lametroapp.static_data.StopNameSQLHelper;
 import com.remulasce.lametroapp.types.Destination;
 import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.ServiceRequest;
@@ -48,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     ListView tripList;
     TripPopulator populator;
+    StopNameSQLHelper stopNames;
 
     Tracker t;
 
@@ -62,6 +64,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         setupActionListeners();
 
         setupDefaults( getIntent() );
+        initializeStaticData();
     }
 
     private void setupActionBar() {
@@ -104,6 +107,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         populator = new TripPopulator( tripList );
 
         tripList.setOnItemClickListener( tripClickListener );
+    }
+
+    private void initializeStaticData() {
+        stopNames = new StopNameSQLHelper(this);
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
