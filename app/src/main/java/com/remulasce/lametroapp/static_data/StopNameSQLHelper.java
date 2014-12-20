@@ -69,7 +69,19 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     @Override
     public String getStopName(String stopID) {
         //The database operations will cause table initialization, so there's no real checking to do.
-        return null;
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
+
+        cursor.moveToFirst();
+        int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+        int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+        String stopname = cursor.getString(nameColumnIndex);
+        String stopid = cursor.getString(idColumnIndex);
+        Log.d("TEST", stopname + " " + stopid);
+
+        return stopname;
     }
 
     @Override
@@ -93,7 +105,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
                 String[] split = line.split(",");
 
                 String stopID = split[0];
-                String stopName = split[1];
+                String stopName = split[2];
 
                 putNewStopDef(sqLiteDatabase, stopID, stopName);
                 entries++;
@@ -107,6 +119,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             Log.e(TAG, "Failed to create stops database; file IO exception");
             e.printStackTrace();
         }
+    }
+
+    private String makeStopNameRequest(String stopID) {
+        return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
+                " WHERE " + StopNameEntry.COLUMN_NAME_STOPID +
+                " LIKE \'" + stopID + "\'";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {

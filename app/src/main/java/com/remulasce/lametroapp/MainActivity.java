@@ -36,6 +36,7 @@ import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
+    private static final String TAG = "TripListActivity";
 
 //    Button setButton;
 //    Button stopButton;
@@ -112,6 +113,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     private void initializeStaticData() {
         stopNames = new StopNameSQLHelper(this);
         stopNames.initialize();
+
+        Log.d(TAG, stopNames.getStopName("10848"));
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
