@@ -103,7 +103,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        long start = System.currentTimeMillis();
+        long start = Tracking.startTime();
         Log.d(TAG, "Creating stopname database table");
         sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
 
@@ -123,7 +123,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
                 entries++;
             }
 
-            long time = System.currentTimeMillis() - start;
+            long time = Tracking.timeSpent(start);
+            Tracking.sendTime("SQL", "StopNames", "Initial Setup", start);
             Log.i(TAG, "Finished parsing stopnames list, "+entries+" entries took "+time+" ms");
             file.close();
 
@@ -175,24 +176,3 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         onCreate(sqLiteDatabase);
     }
 }
-
-
-
-//SQLiteDatabase db = getWritableDatabase();
-//
-//        ContentValues values = new ContentValues();
-//        values.put(StopNameEntry.COLUMN_NAME_STOPID, "10848");
-//        values.put(StopNameEntry.COLUMN_NAME_STOPNAME, "Harbor Transitway");
-//
-//        long newRowId;
-//        newRowId = db.insert(
-//                StopNameEntry.TABLE_NAME,
-//                null,
-//                values);
-//        Log.d("TEST", "newRowId "+newRowId);
-//
-//        Cursor cursor = db.rawQuery("select * from "+StopNameEntry.TABLE_NAME, null);
-//
-//        cursor.moveToFirst();
-//        int columnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-//        Log.d("TEST", cursor.getString(columnIndex));
