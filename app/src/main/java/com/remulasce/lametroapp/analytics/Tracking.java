@@ -34,8 +34,11 @@ public class Tracking {
 	public static void sendUITime( String name, String label, long startTime ) {
 	    sendTime( "UITiming", name, label, startTime );
 	}
+    public static long timeSpent(long startTime) {
+        return System.currentTimeMillis() - startTime;
+    }
 	public static void sendTime( String category, String name, String label, long startTime ) {
-	    long timeSpent = System.currentTimeMillis() - startTime;
+	    long timeSpent = timeSpent(startTime);
 	    
 	    Log.d(category, name+" "+label+": "+timeSpent);
 	    

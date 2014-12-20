@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.analytics.Tracking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,25 +69,36 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
     @Override
     public String getStopName(String stopID) {
-        //The database operations will cause table initialization, so there's no real checking to do.
-
+        Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
-
         cursor.moveToFirst();
+
         int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-        int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
         String stopname = cursor.getString(nameColumnIndex);
-        String stopid = cursor.getString(idColumnIndex);
-        Log.d("TEST", stopname + " " + stopid);
+
+        Tracking.sendTime("SQL", "StopNames", "getStopName", t);
+        Log.d(TAG,"Got stopname for "+stopID+", "+ stopname);
 
         return stopname;
     }
 
     @Override
     public String getStopID(String stopName) {
-        return null;
+        Long t = Tracking.startTime();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(makeStopIDRequest(stopName), null);
+        cursor.moveToFirst();
+
+        int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+        String stopID = cursor.getString(idColumnIndex);
+
+        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+        Log.d(TAG,"Got stopID for "+stopName+", "+ stopID);
+
+        return stopID;
     }
 
     @Override
@@ -121,10 +133,17 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         }
     }
 
+    // Request for a stopname, given stopid
     private String makeStopNameRequest(String stopID) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPID +
                 " LIKE \'" + stopID + "\'";
+    }
+    // Request for a stopid, given stopname
+    private String makeStopIDRequest(String stopName) {
+        return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
+                " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
+                " LIKE \'" + stopName + "\'";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {

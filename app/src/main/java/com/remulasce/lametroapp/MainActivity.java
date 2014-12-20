@@ -114,7 +114,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         stopNames = new StopNameSQLHelper(this);
         stopNames.initialize();
 
-        Log.d(TAG, stopNames.getStopName("10848"));
+        Log.d(TAG, "Test stopname for 30000: "+stopNames.getStopName("30000"));
+        Log.d(TAG, "Test stopid for Patsaouras Transit Plaza: "+stopNames.getStopID("Patsaouras Transit Plaza"));
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
