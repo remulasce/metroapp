@@ -111,6 +111,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     private void initializeStaticData() {
         stopNames = new StopNameSQLHelper(this);
+        stopNames.initialize();
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
