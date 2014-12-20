@@ -30,7 +30,7 @@ public class ServiceRequestListAdapter extends ArrayAdapter{
         TextView t = (TextView) rowView.findViewById(R.id.service_request_text);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
-        t.setText(getItem(position).toString());
+        t.setText(((ServiceRequest)getItem(position)).getDisplayName());
 
         return rowView;
     }

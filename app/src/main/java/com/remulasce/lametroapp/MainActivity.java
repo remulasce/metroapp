@@ -151,9 +151,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
             //stopField.append( " "+omniField.getText());
 
             // TODO need something in here to check whether a stopid or stopname was entered
-            String requestName = omniField.getText().toString();
-            requestName = stopNames.getStopName(requestName);
-            ServiceRequest serviceRequest = new ServiceRequest(requestName);
+            String requestText = omniField.getText().toString();
+            String requestName = stopNames.getStopName(requestText);
+            ServiceRequest serviceRequest = new ServiceRequest(requestText);
+            serviceRequest.setDisplayName(requestName);
             requestFragment.AddServiceRequest(serviceRequest);
 
             omniField.getEditableText().clear();

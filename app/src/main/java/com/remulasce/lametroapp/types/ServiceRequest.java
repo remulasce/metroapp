@@ -5,11 +5,17 @@ package com.remulasce.lametroapp.types;
  */
 public class ServiceRequest {
     String raw = "ServiceRequest";
+    String displayName = "ServiceRequest";
     boolean inScope = true;
 
     public ServiceRequest() {}
     public ServiceRequest(String s) {
         this.raw = s;
+        this.displayName = s;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void descope() {
@@ -23,5 +29,5 @@ public class ServiceRequest {
     public String toString() {
         return raw;
     }
-    public String getDisplayName() { return raw; }
+    public String getDisplayName() { return displayName; }
 }
