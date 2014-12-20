@@ -2,11 +2,19 @@ package com.remulasce.lametroapp.static_data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import com.remulasce.lametroapp.R;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
@@ -41,95 +49,88 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             StopNameEntry.COLUMN_NAME_STOPNAME
     };
 
-
-    private boolean initialized = false;
-    private boolean initializing = false;
-
+    private Context context;
 
     public StopNameSQLHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
     public void initialize() {
-        if (!isInitializing() && !isInitialized()) {
-            Log.d(TAG, "Initializing stopname table from file");
-            // Start initializing
-        }
-        else {
-            Log.d(TAG, "Stopname table already initialized");
-            return;
-        }
-        // If we haven't initialized the database, do so.
-        // Doing so starts a new thread that reads from file and inserts entries.
-        // When that thread finishes, it marks initialized as true.
+        Log.d(TAG, "StopName table forcing initialization");
+
+        // Getting the database should force its creation via onCreate if it has not yet been
+        // created.
+        this.getReadableDatabase();
+        Log.d(TAG, "StopName table initialized");
     }
 
     @Override
     public String getStopName(String stopID) {
-        // If we're initialized, return the mapping.
-        // Else, return null.
+        //The database operations will cause table initialization, so there's no real checking to do.
         return null;
     }
 
     @Override
     public String getStopID(String stopName) {
-        // If we're initialized, return the mapping.
-        // Else, return null.
         return null;
     }
 
-    private boolean isInitializing() {
-        return initializing;
-    }
-    private boolean isInitialized() {
-        return isTableExists(StopNameEntry.TABLE_NAME);
-    }
-
-    private class SQLInitializationRunner implements Runnable {
-
-        @Override
-        public void run() {
-            // Do some file-read stuff.
-        }
-    }
-
-    public boolean isTableExists(String tableName) {
-        Log.d(TAG, "Checking if stopname-id table is already started");
-
-        SQLiteDatabase db;
-        db = getReadableDatabase();
-
-        if(!db.isReadOnly()) {
-            db.close();
-            db = getReadableDatabase();
-        }
-
-        Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
-        if(cursor!=null) {
-            int entryCount = cursor.getCount();
-            Log.d(TAG, "Stopname-id table has "+ entryCount +" entries");
-
-            if(entryCount > 0) {
-                cursor.close();
-                return true;
-            }
-            cursor.close();
-        }
-        return false;
-    }
-
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        long start = System.currentTimeMillis();
         Log.d(TAG, "Creating stopname database table");
         sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
 
-        //Do all file-reading here, I guess. It probably expects to be fully initialized
-        // when the function returns.
+        try {
+            BufferedReader file = getStopsFileReader();
 
-        //Database reads elsewhere will just wait on this guy, then.
+            String line;
+            int entries = 0;
+            while ( (line = file.readLine()) != null ) {
+                // stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,stop_url,location_type,paren
+                String[] split = line.split(",");
+
+                String stopID = split[0];
+                String stopName = split[1];
+
+                putNewStopDef(sqLiteDatabase, stopID, stopName);
+                entries++;
+            }
+
+            long time = System.currentTimeMillis() - start;
+            Log.i(TAG, "Finished parsing stopnames list, "+entries+" entries took "+time+" ms");
+            file.close();
+
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to create stops database; file IO exception");
+            e.printStackTrace();
+        }
     }
+
+    private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {
+        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
+
+        ContentValues values = new ContentValues();
+        values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
+        values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
+
+        long newRowId = sqLiteDatabase.insert(
+                StopNameEntry.TABLE_NAME,
+                null,
+                values);
+
+        Log.v(TAG, "New stop rowid is "+newRowId);
+    }
+
+    private BufferedReader getStopsFileReader() throws IOException {
+        InputStream inputStream = context.getAssets().open("stops.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        return reader;
+    }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
