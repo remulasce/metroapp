@@ -23,4 +23,5 @@ public class ServiceRequest {
     public String toString() {
         return raw;
     }
+    public String getDisplayName() { return raw; }
 }
