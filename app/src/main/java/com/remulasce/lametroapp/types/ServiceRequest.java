@@ -30,4 +30,11 @@ public class ServiceRequest {
         return raw;
     }
     public String getDisplayName() { return displayName; }
+
+    //Returns if the service request makes any sense to fulfill
+    public boolean isValid() {
+        if (raw.isEmpty() || displayName.isEmpty()) { return false; }
+
+        return true;
+    }
 }

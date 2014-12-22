@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -69,36 +71,60 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
     @Override
     public String getStopName(String stopID) {
+        if (stopID == null || stopID.isEmpty()) {
+            return "Bad stopname request";
+        }
+
+        String ret = null;
+
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
-        cursor.moveToFirst();
+        try {
 
-        int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-        String stopname = cursor.getString(nameColumnIndex);
+            Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
+            cursor.moveToFirst();
+
+            int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+            ret = cursor.getString(nameColumnIndex);
+
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = "Couldn't find stopname";
+            e.printStackTrace();
+        }
 
         Tracking.sendTime("SQL", "StopNames", "getStopName", t);
-        Log.d(TAG,"Got stopname for "+stopID+", "+ stopname);
+        Log.d(TAG,"Got stopname for "+stopID+", "+ ret);
 
-        return stopname;
+        return ret;
     }
 
     @Override
     public String getStopID(String stopName) {
+        if (stopName == null || stopName.isEmpty()) {
+            return "Bad stopid request";
+        }
+
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(makeStopIDRequest(stopName), null);
-        cursor.moveToFirst();
+        String ret = null;
 
-        int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
-        String stopID = cursor.getString(idColumnIndex);
+        try {
+            Cursor cursor = db.rawQuery(makeStopIDRequest(stopName), null);
+            cursor.moveToFirst();
+
+            int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+            String stopID = cursor.getString(idColumnIndex);
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = "Couldn't find stopid";
+            e.printStackTrace();
+        }
 
         Tracking.sendTime("SQL", "StopNames", "getStopID", t);
-        Log.d(TAG,"Got stopID for "+stopName+", "+ stopID);
+        Log.d(TAG,"Got stopID for "+stopName+", "+ ret);
 
-        return stopID;
+        return ret;
     }
 
     @Override

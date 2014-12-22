@@ -146,16 +146,31 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     };
 
+    // This is an extremely low level check. The ServiceRequest itself will have a better
+    // idea whether it can actually track anything.
+    private boolean isOmniInputValid(String input) {
+        if (input == null) { return false; }
+        if (input.isEmpty()) { return false; }
+
+        return true;
+    }
+
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            //stopField.append( " "+omniField.getText());
-
             // TODO need something in here to check whether a stopid or stopname was entered
+            // TODO Yeah this needs to make a ServiceRequest instead.
             String requestText = omniField.getText().toString();
-            String requestName = stopNames.getStopName(requestText);
-            ServiceRequest serviceRequest = new ServiceRequest(requestText);
-            serviceRequest.setDisplayName(requestName);
-            requestFragment.AddServiceRequest(serviceRequest);
+
+            if (isOmniInputValid(requestText)) {
+                String requestName = stopNames.getStopName(requestText);
+
+                ServiceRequest serviceRequest = new ServiceRequest(requestText);
+                serviceRequest.setDisplayName(requestName);
+
+                if (serviceRequest.isValid()) {
+                    requestFragment.AddServiceRequest(serviceRequest);
+                }
+            }
 
             omniField.getEditableText().clear();
             omniField.clearFocus();
