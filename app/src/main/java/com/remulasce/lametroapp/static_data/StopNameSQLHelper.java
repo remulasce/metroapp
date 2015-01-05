@@ -18,6 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
@@ -100,22 +103,32 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     }
 
     @Override
-    public String getStopID(String stopName) {
+    public Collection<String> getStopID(String stopName) {
         if (stopName == null || stopName.isEmpty()) {
-            return "Bad stopid request";
+            return null;
         }
 
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        String ret = null;
+        Collection<String> ret = new ArrayList<String>();
 
         try {
             Cursor cursor = db.rawQuery(makeStopIDRequest(stopName), null);
             cursor.moveToFirst();
 
-            int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
-            ret = cursor.getString(idColumnIndex);
+            while(!cursor.isAfterLast()) {
+                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+                String stopID = cursor.getString(idColumnIndex);
+
+                // Each station entrance in Metro has its own stopID.
+                // Duplicates have letters at the end; originals are straight digits.
+                // Only add the originals
+                if (stopID.matches("\\d+$")) {
+                    ret.add(stopID);
+                }
+                cursor.moveToNext();
+            }
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -169,7 +182,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     private String makeStopIDRequest(String stopName) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
-                " LIKE \'" + stopName + "\'";
+                " = \'" + stopName + "\'";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {

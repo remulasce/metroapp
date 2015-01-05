@@ -35,6 +35,9 @@ import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
 
+import java.util.Collection;
+import java.util.Set;
+
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
     private static final String TAG = "TripListActivity";
 
@@ -177,15 +180,16 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
             if (isOmniInputValid(requestText)) {
                 // Need to check which way to convert- stopname to stopid, or vice-versa
                 String convertedName = stopNames.getStopName(requestText);
-                String convertedID = stopNames.getStopID(requestText);
+                Collection<String> convertedID = stopNames.getStopID(requestText);
 
                 // It was a valid StopID
                 if (convertedName != null) {
                     makeServiceRequest(requestText, convertedName);
                 }
                 // It was a valid stop name
-                else if (convertedID != null) {
-                    makeServiceRequest(convertedID, requestText);
+                else if (convertedID != null && !convertedID.isEmpty()) {
+                    for (String id : convertedID)
+                    makeServiceRequest(id, requestText);
                 }
                 // Not valid.
                 else {
