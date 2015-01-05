@@ -155,6 +155,19 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         return true;
     }
 
+    private void makeServiceRequest( String stopID, String displayName ) {
+        Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
+        ServiceRequest serviceRequest = new ServiceRequest(stopID);
+        serviceRequest.setDisplayName(displayName+ ", "+stopID);
+
+        if (serviceRequest.isValid()) {
+            requestFragment.AddServiceRequest(serviceRequest);
+        } else {
+            Log.w(TAG, "Created invalid servicerequest, not adding to list");
+        }
+
+    }
+
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             // TODO need something in here to check whether a stopid or stopname was entered
@@ -162,14 +175,23 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
             String requestText = omniField.getText().toString();
 
             if (isOmniInputValid(requestText)) {
-                String requestName = stopNames.getStopName(requestText);
+                // Need to check which way to convert- stopname to stopid, or vice-versa
+                String convertedName = stopNames.getStopName(requestText);
+                String convertedID = stopNames.getStopID(requestText);
 
-                ServiceRequest serviceRequest = new ServiceRequest(requestText);
-                serviceRequest.setDisplayName(requestName);
-
-                if (serviceRequest.isValid()) {
-                    requestFragment.AddServiceRequest(serviceRequest);
+                // It was a valid StopID
+                if (convertedName != null) {
+                    makeServiceRequest(requestText, convertedName);
                 }
+                // It was a valid stop name
+                else if (convertedID != null) {
+                    makeServiceRequest(convertedID, requestText);
+                }
+                // Not valid.
+                else {
+                    Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
+                }
+
             }
 
             omniField.getEditableText().clear();

@@ -89,8 +89,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             ret = cursor.getString(nameColumnIndex);
 
         } catch (CursorIndexOutOfBoundsException e) {
-            ret = "Couldn't find stopname";
-            e.printStackTrace();
+            // This is an expected case, basically a check for existence.
+            ret = null;
         }
 
         Tracking.sendTime("SQL", "StopNames", "getStopName", t);
@@ -115,10 +115,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             cursor.moveToFirst();
 
             int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
-            String stopID = cursor.getString(idColumnIndex);
+            ret = cursor.getString(idColumnIndex);
         } catch (CursorIndexOutOfBoundsException e) {
-            ret = "Couldn't find stopid";
-            e.printStackTrace();
+            ret = null;
         }
 
         Tracking.sendTime("SQL", "StopNames", "getStopID", t);
