@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -47,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 //    EditText stopField;
 //    EditText routeField;
 //    EditText vehicleField;
-    EditText omniField;
+    AutoCompleteTextView omniField;
     Button omniButton;
 
     ServiceRequestFragment requestFragment;
@@ -85,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     }
 
     protected void linkViewReferences() {
-        omniField = (EditText) findViewById( R.id.omni_text );
+        omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
         omniButton = (Button) findViewById( R.id.omni_button );
 //        stopField = (EditText) findViewById( R.id.idtext );
 //        routeField = (EditText) findViewById( R.id.routetext );
