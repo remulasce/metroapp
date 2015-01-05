@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.fragments;
+package com.remulasce.lametroapp.components;
 
 import android.app.Activity;
 import android.net.Uri;
