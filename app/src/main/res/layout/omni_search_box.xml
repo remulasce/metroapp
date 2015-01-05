@@ -22,6 +22,7 @@
         android:layout_alignBottom="@+id/omni_button"
         android:layout_toLeftOf="@+id/omni_button"
         android:layout_toStartOf="@+id/omni_button"
-        android:hint="Stop, Route, Vehicle" />
+        android:hint="Stop, Route, Vehicle"
+        android:dropDownWidth="fill_parent" />
 
 </RelativeLayout>
