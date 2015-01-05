@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import static android.database.sqlite.SQLiteDatabase.openDatabase;
 /**
  * Created by Remulasce on 12/17/2014.
  */
-public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTranslator {
+public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTranslator, OmniAutoCompleteProvider {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final String DATABASE_NAME = "StopNames.db";
@@ -44,6 +45,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + StopNameEntry.TABLE_NAME;
+
+
+    @Override
+    public Collection<String> autocomplete(String input) {
+        return null;
+    }
 
     public static abstract class StopNameEntry implements BaseColumns {
         public static final String TABLE_NAME = "stopnames";

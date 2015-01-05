@@ -23,6 +23,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.ServiceRequestFragment;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
@@ -49,8 +50,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     ServiceRequestFragment requestFragment;
 
     ListView tripList;
+
     TripPopulator populator;
     StopNameSQLHelper stopNames;
+    OmniAutoCompleteAdapter autoCompleteAdapter;
 
     Tracker t;
 
@@ -63,9 +66,16 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
         linkViewReferences();
         setupActionListeners();
+        setupOmniBar();
 
         setupDefaults( getIntent() );
         initializeStaticData();
+    }
+
+    private void setupOmniBar() {
+        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
+        omniField.setAdapter(autoCompleteAdapter);
+        omniField.setThreshold(0);
     }
 
     private void setupActionBar() {
@@ -106,7 +116,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 //        vehicleField.addTextChangedListener( VehicleTextWatcher );
 
         populator = new TripPopulator( tripList );
-
         tripList.setOnItemClickListener( tripClickListener );
     }
 
