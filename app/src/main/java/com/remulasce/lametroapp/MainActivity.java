@@ -64,18 +64,19 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         setupActionBar();
         startAnalytics();
 
+        initializeStaticData();
+
         linkViewReferences();
         setupActionListeners();
         setupOmniBar();
 
         setupDefaults( getIntent() );
-        initializeStaticData();
     }
 
     private void setupOmniBar() {
-        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1);
+        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, stopNames);
         omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(0);
+        omniField.setThreshold(4);
     }
 
     private void setupActionBar() {

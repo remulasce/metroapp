@@ -5,7 +5,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.remulasce.lametroapp.static_data.OmniAutoCompleteProvider;
+import com.remulasce.lametroapp.static_data.StopNameTranslator;
+
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by Remulasce on 1/5/2015.
@@ -13,10 +17,12 @@ import java.util.ArrayList;
 public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 {
     private ArrayList<String> resultList = new ArrayList<String>();
+    private OmniAutoCompleteProvider autocomplete;
 
-    public OmniAutoCompleteAdapter(Context context, int resource) {
+    public OmniAutoCompleteAdapter(Context context, int resource, OmniAutoCompleteProvider t) {
         super(context, resource);
         resultList.add("Test Autocomplete");
+        autocomplete = t;
     }
 
 
@@ -38,9 +44,11 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
                     // Retrieve the autocomplete results.
-                    //resultList = autocomplete(constraint.toString());
-
-                    //resultList.clear();
+                    Collection<String> results = autocomplete.autocomplete(constraint.toString());
+                    if (results != null) {
+//                        resultList.addAll(results);
+                        resultList = new ArrayList<String>(results);
+                    }
 
                     // Assign the data to the FilterResults
                     filterResults.values = resultList;

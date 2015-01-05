@@ -46,12 +46,6 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + StopNameEntry.TABLE_NAME;
 
-
-    @Override
-    public Collection<String> autocomplete(String input) {
-        return null;
-    }
-
     public static abstract class StopNameEntry implements BaseColumns {
         public static final String TABLE_NAME = "stopnames";
         public static final String COLUMN_NAME_STOPID = "stopid";
@@ -77,6 +71,46 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         // created.
         this.getReadableDatabase();
         Log.d(TAG, "StopName table initialized");
+    }
+
+    @Override
+    public Collection<String> autocomplete(String input) {
+        if (input == null || input.isEmpty()) {
+            return null;
+        }
+
+        Long t = Tracking.startTime();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Collection<String> ret = new ArrayList<String>();
+
+        try {
+            Cursor cursor = db.rawQuery(makeAutoCompleteNameRequest(input), null);
+            cursor.moveToFirst();
+
+            while(!cursor.isAfterLast()) {
+                int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+
+                String stopName = cursor.getString(nameColumnIndex);
+                String stopID = cursor.getString(idColumnIndex);
+
+                // Each station entrance in Metro has its own stopID.
+                // Duplicates have letters at the end; originals are straight digits.
+                // Only add the originals
+                if (stopID.matches("\\d+$")) {
+                    ret.add(stopName);
+                }
+                cursor.moveToNext();
+            }
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = null;
+        }
+
+        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+        Log.d(TAG,"Got stopID for "+input+", "+ ret);
+
+        return ret;
     }
 
     @Override
@@ -190,6 +224,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
                 " LIKE \'" + stopName + "\'";
+    }
+    // Request for matching stopnames
+    private String makeAutoCompleteNameRequest(String stopName) {
+        return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
+                " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
+                " LIKE \'%" + stopName + "%\'";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {
