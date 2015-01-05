@@ -182,7 +182,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     private String makeStopIDRequest(String stopName) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
-                " = \'" + stopName + "\'";
+                " LIKE \'" + stopName + "\'";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {

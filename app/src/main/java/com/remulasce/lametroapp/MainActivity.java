@@ -20,6 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -185,21 +186,23 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 // It was a valid StopID
                 if (convertedName != null) {
                     makeServiceRequest(requestText, convertedName);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
                     for (String id : convertedID)
                     makeServiceRequest(id, requestText);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
                 }
                 // Not valid.
                 else {
                     Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
+                    Toast.makeText(MainActivity.this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
                 }
 
             }
-
-            omniField.getEditableText().clear();
-            omniField.clearFocus();
         }
 
     };
