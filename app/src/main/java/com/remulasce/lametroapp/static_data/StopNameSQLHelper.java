@@ -55,6 +55,11 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             StopNameEntry.COLUMN_NAME_STOPNAME
     };
 
+    private class SQLEntry {
+        public String stopID;
+        public String stopName;
+    }
+
     private Context context;
 
     public StopNameSQLHelper(Context context) {
@@ -89,49 +94,38 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             HashMap<String, OmniAutoCompleteEntry> tmp = new HashMap<String, OmniAutoCompleteEntry>();
 
             if (s.length() < MINIMUM_AUTOCOMPLETE_PROMPT) {
-                Log.d(TAG, "Autocomplete component "+s+" shorter than min chars "+MINIMUM_AUTOCOMPLETE_PROMPT);
+                Log.d(TAG, "Autocomplete component " + s + " shorter than min chars " + MINIMUM_AUTOCOMPLETE_PROMPT);
                 continue;
             }
-            try {
-                Log.d(TAG, "Autocomplete searching for "+s);
-                String request = makeAutoCompleteNameRequest(s);
-                Cursor cursor = db.rawQuery(request, null);
-                cursor.moveToFirst();
-                Log.d(TAG, "Autocomplete returned "+cursor.getCount()+" entries for "+s);
 
-                while (!cursor.isAfterLast()) {
-                    int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-                    int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+            Log.d(TAG, "Autocomplete searching for " + s);
+            Collection<SQLEntry> matchingEntries = getMatchingEntries(makeAutoCompleteNameRequest(s), db);
+            Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
-                    String stopName = cursor.getString(nameColumnIndex);
-                    String stopID = cursor.getString(idColumnIndex);
-
-                    // Each station entrance in Metro has its own stopID.
-                    // Duplicates have letters at the end; originals are straight digits.
-                    // Only add the originals
-                    if (stopID.matches("\\d+$")) {
-                        // Try to only put stuff in once
-                        if (!tmp.containsKey(stopName)) {
-                            tmp.put(stopName, new OmniAutoCompleteEntry(stopName, 1));
-                        }
+            for (SQLEntry entry : matchingEntries) {
+                // Each station entrance in Metro has its own stopID.
+                // Duplicates have letters at the end; originals are straight digits.
+                // Only add the originals
+                if (entry.stopID.matches("\\d+$")) {
+                    // Try to only put stuff in once
+                    if (!tmp.containsKey(entry.stopName)) {
+                        tmp.put(entry.stopName, new OmniAutoCompleteEntry(entry.stopName, 1));
                     }
-                    cursor.moveToNext();
                 }
-            } catch (CursorIndexOutOfBoundsException e) {
-                ret = null;
             }
 
             for (Map.Entry<String, OmniAutoCompleteEntry> entry : tmp.entrySet()) {
                 if (ret.containsKey(entry.getKey())) {
                     ret.get(entry.getKey()).addPriority(1.0f);
-                    Log.v(TAG, "Added priority: "+entry.getKey()+" to "+ret.get(entry.getKey()).getPriority() + " from " + s);
+                    Log.v(TAG, "Added priority: " + entry.getKey() + " to " + ret.get(entry.getKey()).getPriority() + " from " + s);
                 } else {
                     ret.put(entry.getKey(), entry.getValue());
                 }
 
             }
-
         }
+
+
 
         Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
@@ -195,6 +189,38 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         ret.removeAll(rem);
     }
 
+    // General "Give us all we've got" entry retrieval.
+    private Collection<SQLEntry> getMatchingEntries(String query, SQLiteDatabase db) {
+        Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
+
+        try {
+            Cursor cursor = db.rawQuery(query, null);
+            cursor.moveToFirst();
+
+            while(!cursor.isAfterLast()) {
+
+                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+                int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+
+                String stopName = cursor.getString(nameColumnIndex);
+                String stopID = cursor.getString(idColumnIndex);
+
+                SQLEntry add = new SQLEntry();
+
+                add.stopID = stopID;
+                add.stopName = stopName;
+
+                ret.add(add);
+
+                cursor.moveToNext();
+            }
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = null;
+        }
+        return ret;
+    }
+
+    // Only returns strings from this one column.
     private Collection<String> getStringsFromSQL(String query, SQLiteDatabase db, String columnName) {
         Collection<String> ret = new ArrayList<String>();
 
