@@ -150,8 +150,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        //Collection<String> matching = getStrings
-
+        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
+/*
         try {
 
             Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
@@ -164,7 +164,10 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             // This is an expected case, basically a check for existence.
             ret = null;
         }
-
+*/
+        if (matching.size() > 0) {
+            ret = matching.iterator().next();
+        }
         Tracking.sendTime("SQL", "StopNames", "getStopName", t);
         Log.d(TAG,"Got stopname for "+stopID+", "+ ret);
 
@@ -182,7 +185,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
         Collection<String> ret = new ArrayList<String>();
 
-        ret = getStringsFromSQL(stopName, db, StopNameEntry.COLUMN_NAME_STOPID);
+        ret = getStringsFromSQL(makeStopIDRequest(stopName), db, StopNameEntry.COLUMN_NAME_STOPID);
 
         cleanStopIDs(ret);
 
@@ -205,11 +208,11 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         ret.removeAll(rem);
     }
 
-    private Collection<String> getStringsFromSQL(String matchName, SQLiteDatabase db, String columnName) {
+    private Collection<String> getStringsFromSQL(String query, SQLiteDatabase db, String columnName) {
         Collection<String> ret = new ArrayList<String>();
 
         try {
-            Cursor cursor = db.rawQuery(makeStopIDRequest(matchName), null);
+            Cursor cursor = db.rawQuery(query, null);
             cursor.moveToFirst();
 
             while(!cursor.isAfterLast()) {
