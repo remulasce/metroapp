@@ -40,8 +40,8 @@ public class Tracking {
 	public static void sendTime( String category, String name, String label, long startTime ) {
 	    long timeSpent = timeSpent(startTime);
 	    
-	    Log.d(category, name+" "+label+": "+timeSpent);
-	    
+	    Log.v(category, name+" "+label+": "+timeSpent);
+
 	    if (t == null) {
 	        Log.w(category, "No tracker set, unable to send analytics");
 	        return;
