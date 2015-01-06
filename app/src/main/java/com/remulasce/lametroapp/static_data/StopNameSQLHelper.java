@@ -2,18 +2,14 @@ package com.remulasce.lametroapp.static_data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
@@ -116,11 +111,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
                     // Only add the originals
                     if (stopID.matches("\\d+$")) {
                         // Try to only put stuff in once
-                        // TODO: Extra matching should give priority
-
-                        if (tmp.containsKey(stopName)) {
-                            tmp.get(stopName).addPriority( 1 );
-                        } else {
+                        if (!tmp.containsKey(stopName)) {
                             tmp.put(stopName, new OmniAutoCompleteEntry(stopName, 1));
                         }
                     }
@@ -132,7 +123,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
             for (Map.Entry<String, OmniAutoCompleteEntry> entry : tmp.entrySet()) {
                 if (ret.containsKey(entry.getKey())) {
-                    ret.get(entry.getKey()).addPriority(10.0f);
+                    ret.get(entry.getKey()).addPriority(1.0f);
                     Log.v(TAG, "Added priority: "+entry.getKey()+" to "+ret.get(entry.getKey()).getPriority() + " from " + s);
                 } else {
                     ret.put(entry.getKey(), entry.getValue());
@@ -158,6 +149,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
+
+        //Collection<String> matching = getStrings
 
         try {
 
@@ -189,29 +182,47 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
         Collection<String> ret = new ArrayList<String>();
 
+        ret = getStringsFromSQL(stopName, db, StopNameEntry.COLUMN_NAME_STOPID);
+
+        cleanStopIDs(ret);
+
+        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+        Log.d(TAG,"Got stopID for "+stopName+", "+ ret);
+
+        return ret;
+    }
+
+    // Metro labels individual station entrances with their own stopids
+    // These stopids end with a letter, eg 80213A, B etc.
+    // We don't want these duplicates, so remove anything that isn't just a straight number.
+    private void cleanStopIDs(Collection<String> ret) {
+        ArrayList<String> rem = new ArrayList<String>();
+        for (String s : ret) {
+            if (!s.matches("\\d+$")) {
+                rem.add(s);
+            }
+        }
+        ret.removeAll(rem);
+    }
+
+    private Collection<String> getStringsFromSQL(String matchName, SQLiteDatabase db, String columnName) {
+        Collection<String> ret = new ArrayList<String>();
+
         try {
-            Cursor cursor = db.rawQuery(makeStopIDRequest(stopName), null);
+            Cursor cursor = db.rawQuery(makeStopIDRequest(matchName), null);
             cursor.moveToFirst();
 
             while(!cursor.isAfterLast()) {
-                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
-                String stopID = cursor.getString(idColumnIndex);
+                int idColumnIndex = cursor.getColumnIndexOrThrow(columnName);
+                String lookedUp = cursor.getString(idColumnIndex);
 
-                // Each station entrance in Metro has its own stopID.
-                // Duplicates have letters at the end; originals are straight digits.
-                // Only add the originals
-                if (stopID.matches("\\d+$")) {
-                    ret.add(stopID);
-                }
+                ret.add(lookedUp);
+
                 cursor.moveToNext();
             }
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
-
-        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
-        Log.d(TAG,"Got stopID for "+stopName+", "+ ret);
-
         return ret;
     }
 
