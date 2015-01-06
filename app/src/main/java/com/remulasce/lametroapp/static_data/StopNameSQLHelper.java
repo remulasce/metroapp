@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
@@ -30,6 +32,8 @@ import static android.database.sqlite.SQLiteDatabase.openDatabase;
  */
 public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTranslator, OmniAutoCompleteProvider {
     private static final String TAG = "StopNameSQLHelper";
+
+    private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private static final String DATABASE_NAME = "StopNames.db";
     private static final int DATABASE_VERSION = 1;
@@ -74,7 +78,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     }
 
     @Override
-    public Collection<String> autocomplete(String input) {
+    public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
         if (input == null || input.isEmpty()) {
             return null;
         }
@@ -82,35 +86,66 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        Collection<String> ret = new ArrayList<String>();
+        HashMap<String, OmniAutoCompleteEntry> ret = new HashMap<String, OmniAutoCompleteEntry>();
 
-        try {
-            Cursor cursor = db.rawQuery(makeAutoCompleteNameRequest(input), null);
-            cursor.moveToFirst();
+        String[] split = input.split(" ");
 
-            while(!cursor.isAfterLast()) {
-                int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+        for (String s : split) {
+            HashMap<String, OmniAutoCompleteEntry> tmp = new HashMap<String, OmniAutoCompleteEntry>();
 
-                String stopName = cursor.getString(nameColumnIndex);
-                String stopID = cursor.getString(idColumnIndex);
-
-                // Each station entrance in Metro has its own stopID.
-                // Duplicates have letters at the end; originals are straight digits.
-                // Only add the originals
-                if (stopID.matches("\\d+$")) {
-                    ret.add(stopName);
-                }
-                cursor.moveToNext();
+            if (s.length() < MINIMUM_AUTOCOMPLETE_PROMPT) {
+                Log.d(TAG, "Autocomplete component "+s+" shorter than min chars "+MINIMUM_AUTOCOMPLETE_PROMPT);
+                continue;
             }
-        } catch (CursorIndexOutOfBoundsException e) {
-            ret = null;
+            try {
+                Log.d(TAG, "Autocomplete searching for "+s);
+                String request = makeAutoCompleteNameRequest(s);
+                Cursor cursor = db.rawQuery(request, null);
+                cursor.moveToFirst();
+                Log.d(TAG, "Autocomplete returned "+cursor.getCount()+" entries for "+s);
+
+                while (!cursor.isAfterLast()) {
+                    int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+                    int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+
+                    String stopName = cursor.getString(nameColumnIndex);
+                    String stopID = cursor.getString(idColumnIndex);
+
+                    // Each station entrance in Metro has its own stopID.
+                    // Duplicates have letters at the end; originals are straight digits.
+                    // Only add the originals
+                    if (stopID.matches("\\d+$")) {
+                        // Try to only put stuff in once
+                        // TODO: Extra matching should give priority
+
+                        if (tmp.containsKey(stopName)) {
+                            tmp.get(stopName).addPriority( 1 );
+                        } else {
+                            tmp.put(stopName, new OmniAutoCompleteEntry(stopName, 1));
+                        }
+                    }
+                    cursor.moveToNext();
+                }
+            } catch (CursorIndexOutOfBoundsException e) {
+                ret = null;
+            }
+
+            for (Map.Entry<String, OmniAutoCompleteEntry> entry : tmp.entrySet()) {
+                if (ret.containsKey(entry.getKey())) {
+                    ret.get(entry.getKey()).addPriority(10.0f);
+                    Log.v(TAG, "Added priority: "+entry.getKey()+" to "+ret.get(entry.getKey()).getPriority() + " from " + s);
+                } else {
+                    ret.put(entry.getKey(), entry.getValue());
+                }
+
+            }
+
         }
 
-        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
-        Log.d(TAG,"Got stopID for "+input+", "+ ret);
+        Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+        Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 
-        return ret;
+        return ret.values();
     }
 
     @Override
