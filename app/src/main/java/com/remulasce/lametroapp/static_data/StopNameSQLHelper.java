@@ -69,12 +69,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
     @Override
     public void initialize() {
-        Log.d(TAG, "StopName table forcing initialization");
+        Log.d(TAG, "StopName table forcing initialization check");
 
         // Getting the database should force its creation via onCreate if it has not yet been
         // created.
         this.getReadableDatabase();
-        Log.d(TAG, "StopName table initialized");
+        Log.d(TAG, "StopName table initialization checked");
     }
 
     @Override
