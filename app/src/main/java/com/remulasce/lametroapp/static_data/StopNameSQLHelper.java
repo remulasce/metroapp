@@ -151,20 +151,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         SQLiteDatabase db = getReadableDatabase();
 
         Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
-/*
-        try {
 
-            Cursor cursor = db.rawQuery(makeStopNameRequest(stopID), null);
-            cursor.moveToFirst();
-
-            int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
-            ret = cursor.getString(nameColumnIndex);
-
-        } catch (CursorIndexOutOfBoundsException e) {
-            // This is an expected case, basically a check for existence.
-            ret = null;
-        }
-*/
         if (matching.size() > 0) {
             ret = matching.iterator().next();
         }
