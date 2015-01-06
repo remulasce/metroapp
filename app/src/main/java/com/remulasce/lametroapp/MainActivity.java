@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -74,9 +75,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     }
 
     private void setupOmniBar() {
-        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, stopNames);
+//        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, stopNames);
+        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames);
         omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(4);
+        omniField.setThreshold(3);
     }
 
     private void setupActionBar() {

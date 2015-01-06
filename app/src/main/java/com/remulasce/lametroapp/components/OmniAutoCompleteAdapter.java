@@ -23,8 +23,8 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
     private OmniAutoCompleteProvider autocomplete;
 
-    public OmniAutoCompleteAdapter(Context context, int resource, OmniAutoCompleteProvider t) {
-        super(context, resource);
+    public OmniAutoCompleteAdapter(Context context, int resource, int textView, OmniAutoCompleteProvider t) {
+        super(context, resource, textView);
         resultList.add(new OmniAutoCompleteEntry("Test Autocomplete", .1f));
         autocomplete = t;
     }
@@ -49,10 +49,6 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 if (constraint != null) {
                     // Retrieve the autocomplete results.
                     Collection<OmniAutoCompleteEntry> results = autocomplete.autocomplete(constraint.toString());
-                    /*
-                    if (results != null) {
-                        resultList = new ArrayList<String>(results);
-                    } */
 
                     // Assign the data to the FilterResults
                     filterResults.values = results;
