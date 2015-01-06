@@ -125,8 +125,6 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             }
         }
 
-
-
         Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 
@@ -179,10 +177,15 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
     // Metro labels individual station entrances with their own stopids
     // These stopids end with a letter, eg 80213A, B etc.
     // We don't want these duplicates, so remove anything that isn't just a straight number.
+    private boolean isCleanStopID(String stopID) {
+         return (stopID.matches("\\d+$"));
+    }
+
     private void cleanStopIDs(Collection<String> ret) {
         ArrayList<String> rem = new ArrayList<String>();
         for (String s : ret) {
-            if (!s.matches("\\d+$")) {
+            //if (!s.matches("\\d+$")) {
+            if (!isCleanStopID(s)) {
                 rem.add(s);
             }
         }
