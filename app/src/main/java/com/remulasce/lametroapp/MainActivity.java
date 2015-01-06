@@ -416,12 +416,17 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         } else if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
             stopNotifyService();
         } else if ( item.getTitle().equals( "Clear Fields" ) ) {
-//            stopField.setText( "" );
-//            routeField.setText( "" );
-//            vehicleField.setText( "" );
+            clearFields();
         }
 
         return true;
+    }
+
+    private void clearFields() {
+        omniField.setText("");
+//            stopField.setText( "" );
+//            routeField.setText( "" );
+//            vehicleField.setText( "" );
     }
 
     @Override

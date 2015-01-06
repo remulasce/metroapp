@@ -45,14 +45,14 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 if (constraint != null) {
                     // Retrieve the autocomplete results.
                     Collection<String> results = autocomplete.autocomplete(constraint.toString());
+                    /*
                     if (results != null) {
-//                        resultList.addAll(results);
                         resultList = new ArrayList<String>(results);
-                    }
+                    } */
 
                     // Assign the data to the FilterResults
-                    filterResults.values = resultList;
-                    filterResults.count = resultList.size();
+                    filterResults.values = results;
+                    filterResults.count = results.size();
                 }
                 return filterResults;
             }
@@ -60,6 +60,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results != null && results.count > 0) {
+                    resultList = new ArrayList<String>((Collection<String>)results.values);
                     notifyDataSetChanged();
                 }
                 else {
