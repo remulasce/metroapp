@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.types.Stop;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,13 +27,14 @@ import static android.database.sqlite.SQLiteDatabase.openDatabase;
 /**
  * Created by Remulasce on 12/17/2014.
  */
-public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTranslator, OmniAutoCompleteProvider {
+public class StopNameSQLHelper extends SQLiteOpenHelper
+        implements StopNameTranslator, OmniAutoCompleteProvider, StopLocationTranslator {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private static final String DATABASE_NAME = "StopNames.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
 
@@ -39,7 +42,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
             "CREATE TABLE " + StopNameEntry.TABLE_NAME + " (" +
                     StopNameEntry._ID + " INTEGER PRIMARY KEY," +
                     StopNameEntry.COLUMN_NAME_STOPID + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_STOPNAME + TEXT_TYPE +
+                    StopNameEntry.COLUMN_NAME_STOPNAME + TEXT_TYPE + COMMA_SEP +
+                    StopNameEntry.COLUMN_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
+                    StopNameEntry.COLUMN_NAME_LONGITUDE + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -49,15 +54,21 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         public static final String TABLE_NAME = "stopnames";
         public static final String COLUMN_NAME_STOPID = "stopid";
         public static final String COLUMN_NAME_STOPNAME = "stopname";
+        public static final String COLUMN_NAME_LATITUDE = "latitude";
+        public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
     private static String[] projection = {
             StopNameEntry.COLUMN_NAME_STOPID,
-            StopNameEntry.COLUMN_NAME_STOPNAME
+            StopNameEntry.COLUMN_NAME_STOPNAME,
+            StopNameEntry.COLUMN_NAME_LATITUDE,
+            StopNameEntry.COLUMN_NAME_LONGITUDE
     };
 
     private class SQLEntry {
         public String stopID;
         public String stopName;
+        public String latitude;
+        public String longitude;
     }
 
     private Context context;
@@ -75,6 +86,33 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         // created.
         this.getReadableDatabase();
         Log.d(TAG, "StopName table initialization checked");
+    }
+
+    @Override
+    public BasicLocation getStopLocation(Stop stop) {
+        if (stop == null) {
+            return null;
+        }
+
+        BasicLocation ret = null;
+        Long t = Tracking.startTime();
+
+        Log.d(TAG, "StopLocation searching for "+stop);
+        Collection<SQLEntry> entries = getMatchingEntries(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
+        Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
+
+        if (entries.size() > 0 && entries.iterator().hasNext()) {
+            SQLEntry firstLoc = entries.iterator().next();
+            String latitude = firstLoc.latitude;
+            String longitude = firstLoc.longitude;
+
+            ret = new BasicLocation(latitude, longitude);
+        }
+
+        Tracking.sendTime("SQL", "StopNames", "getLocation", t);
+        Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
+
+        return ret;
     }
 
     @Override
@@ -109,7 +147,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
                 if (entry.stopID.matches("\\d+$")) {
                     // Try to only put stuff in once
                     if (!tmp.containsKey(entry.stopName)) {
-                        tmp.put(entry.stopName, new OmniAutoCompleteEntry(entry.stopName, 1));
+                        OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
+                        newEntry.setStop(new Stop(entry.stopID));
+                        tmp.put(entry.stopName, newEntry);
                     }
                 }
             }
@@ -204,14 +244,20 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
                 int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
                 int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+                int latitudeColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_LATITUDE);
+                int longitudeColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_LONGITUDE);
 
                 String stopName = cursor.getString(nameColumnIndex);
                 String stopID = cursor.getString(idColumnIndex);
+                String latitude = cursor.getString(latitudeColumnIndex);
+                String longitude = cursor.getString(longitudeColumnIndex);
 
                 SQLEntry add = new SQLEntry();
 
                 add.stopID = stopID;
                 add.stopName = stopName;
+                add.latitude = latitude;
+                add.longitude = longitude;
 
                 ret.add(add);
 
@@ -262,9 +308,15 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
 
                 String stopID = split[0];
                 String stopName = split[2];
+                String latitude = split[4];
+                String longitude = split[5];
 
-                putNewStopDef(sqLiteDatabase, stopID, stopName);
+                putNewStopDef(sqLiteDatabase, stopID, stopName, latitude, longitude);
                 entries++;
+
+                if (entries % 1000 == 0) {
+                    Log.d(TAG, "Still updating database; "+ entries+ " entries so far");
+                }
             }
 
             long time = Tracking.timeSpent(start);
@@ -278,6 +330,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
         }
     }
 
+    // Request for a stopname, given stopid
+    private String makeStopLocationRequest(String stopID) {
+        return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
+                " WHERE " + StopNameEntry.COLUMN_NAME_STOPID +
+                " LIKE \'" + stopID + "\'";
+    }
     // Request for a stopname, given stopid
     private String makeStopNameRequest(String stopID) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
@@ -297,12 +355,14 @@ public class StopNameSQLHelper extends SQLiteOpenHelper implements StopNameTrans
                 " LIKE \'%" + stopName + "%\'";
     }
 
-    private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName) {
+    private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, String latitude, String longitude) {
         Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
 
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
         values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
+        values.put(StopNameEntry.COLUMN_NAME_LATITUDE, latitude);
+        values.put(StopNameEntry.COLUMN_NAME_LONGITUDE, longitude);
 
         long newRowId = sqLiteDatabase.insert(
                 StopNameEntry.TABLE_NAME,

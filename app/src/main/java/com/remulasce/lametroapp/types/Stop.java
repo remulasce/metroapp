@@ -29,6 +29,9 @@ public class Stop implements Serializable {
     public int getNum() {
         return Integer.valueOf( raw );
     }
+    public String getStopID() {
+        return new String(raw);
+    }
 
     public String getString() {
         return new String( raw );

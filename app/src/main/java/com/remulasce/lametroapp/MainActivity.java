@@ -24,6 +24,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.LocationRetriever;
+import com.remulasce.lametroapp.components.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.ServiceRequestFragment;
 import com.remulasce.lametroapp.pred.PredictionManager;
@@ -55,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     TripPopulator populator;
     StopNameSQLHelper stopNames;
     OmniAutoCompleteAdapter autoCompleteAdapter;
+    LocationRetriever locationService;
 
     Tracker t;
 
@@ -69,14 +72,19 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
         linkViewReferences();
         setupActionListeners();
+        setupLocation();
         setupOmniBar();
 
         setupDefaults( getIntent() );
     }
 
+    private void setupLocation() {
+        locationService = new MetroLocationRetriever(this, stopNames);
+    }
+
     private void setupOmniBar() {
 //        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, stopNames);
-        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames);
+        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames, locationService);
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
     }
