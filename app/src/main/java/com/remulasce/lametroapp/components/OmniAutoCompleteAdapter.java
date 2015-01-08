@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.static_data.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.static_data.OmniAutoCompleteProvider;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
@@ -54,6 +55,8 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
+                    long t = Tracking.startTime();
+
                     // Retrieve the autocomplete results.
                     Collection<OmniAutoCompleteEntry> results = autocomplete.autocomplete(constraint.toString());
 
@@ -65,6 +68,8 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                     // Assign the data to the FilterResults
                     filterResults.values = results;
                     filterResults.count = results.size();
+
+                    Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
                 }
                 return filterResults;
             }
@@ -97,6 +102,8 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
     private void prioritizeNearbyStops(Collection<OmniAutoCompleteEntry> results) {
         Log.d(TAG, "Prioritizing nearby stops");
+        long t = Tracking.startTime();
+
         for (OmniAutoCompleteEntry entry : results) {
             if (entry.hasLocation()) {
                 if (entry.hasStop() && entry.getStop() != null) {
@@ -126,6 +133,9 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 }
             }
         }
+
+        Log.d(TAG, "Finished prioritizing nearby stops in "+Tracking.timeSpent(t));
+        Tracking.sendTime("AutoComplete", "Perform Filtering", "PrioritizeNearbyStops", t);
     }
 
 

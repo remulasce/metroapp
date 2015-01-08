@@ -115,6 +115,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         return ret;
     }
 
+    // Gets all of the name-based autocomplete results.
+    // Should read all available data off the SQL table so we don't have to come back later.
     @Override
     public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
         if (input == null || input.isEmpty()) {
@@ -148,7 +150,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
                     // Try to only put stuff in once
                     if (!tmp.containsKey(entry.stopName)) {
                         OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
-                        newEntry.setStop(new Stop(entry.stopID));
+                        Stop newStop = new Stop(entry.stopID);
+                        newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                        newEntry.setStop(newStop);
                         tmp.put(entry.stopName, newEntry);
                     }
                 }

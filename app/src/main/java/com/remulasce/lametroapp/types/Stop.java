@@ -5,12 +5,15 @@ import java.io.Serializable;
 import android.util.Log;
 
 import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.static_data.BasicLocation;
 
 public class Stop implements Serializable {
     private static final long serialVersionUID = 4336735625715608793L;
 
     private String raw = "";
     private String stopName = "";
+
+    private BasicLocation location;
 
     public Stop() {}
 
@@ -53,5 +56,13 @@ public class Stop implements Serializable {
         else {
             return stopName;
         }
+    }
+
+    public void setLocation(BasicLocation location) {
+        this.location = location;
+    }
+
+    public BasicLocation getLocation() {
+        return location;
     }
 }
