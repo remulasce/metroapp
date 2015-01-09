@@ -450,6 +450,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     private void clearFields() {
         omniField.setText("");
+        t.send( new HitBuilders.EventBuilder()
+                .setCategory( "" )
+                .setAction( "AutoComplete Add Button" )
+                .build() );
 //            stopField.setText( "" );
 //            routeField.setText( "" );
 //            vehicleField.setText( "" );
