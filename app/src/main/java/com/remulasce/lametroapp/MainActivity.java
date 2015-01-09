@@ -190,8 +190,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
-            // TODO need something in here to check whether a stopid or stopname was entered
-            // TODO Yeah this needs to make a ServiceRequest instead.
             String requestText = omniField.getText().toString();
 
             if (isOmniInputValid(requestText)) {
@@ -204,6 +202,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                     makeServiceRequest(requestText, convertedName);
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
+
+                    t.send( new HitBuilders.EventBuilder()
+                            .setCategory( "AutoComplete" )
+                            .setAction( "AutoComplete Add Button" )
+                            .setLabel( "StopID" )
+                            .build() );
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
@@ -211,11 +215,23 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                     makeServiceRequest(id, requestText);
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
+
+                    t.send( new HitBuilders.EventBuilder()
+                            .setCategory( "AutoComplete" )
+                            .setAction( "AutoComplete Add Button" )
+                            .setLabel( "StopName" )
+                            .build() );
                 }
                 // Not valid.
                 else {
                     Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
                     Toast.makeText(MainActivity.this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
+
+                    t.send( new HitBuilders.EventBuilder()
+                            .setCategory( "AutoComplete" )
+                            .setAction( "AutoComplete Add Button" )
+                            .setLabel( "Invalid" )
+                            .build() );
                 }
 
             }
