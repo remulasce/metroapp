@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -17,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,7 +98,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         Long t = Tracking.startTime();
 
         Log.d(TAG, "StopLocation searching for "+stop);
-        Collection<SQLEntry> entries = getMatchingEntries(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
+        Collection<SQLEntry> entries = getMatchingEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
         Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
 
         if (entries.size() > 0 && entries.iterator().hasNext()) {
@@ -115,11 +115,26 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         return ret;
     }
 
+    private boolean badAutoCompleteInput(String input) {
+        if (input == null || input.isEmpty()) {
+            return true;
+        }
+        if (input.contains("\'")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private Collection<SQLEntry> getAutoCompleteEntries(SQLiteDatabase db, String stopName) {
+        return getMatchingEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameSelection(stopName), null, db);
+    }
+
     // Gets all of the name-based autocomplete results.
     // Should read all available data off the SQL table so we don't have to come back later.
     @Override
     public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
-        if (input == null || input.isEmpty()) {
+        if (badAutoCompleteInput(input)) {
             return null;
         }
 
@@ -139,7 +154,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
             }
 
             Log.d(TAG, "Autocomplete searching for " + s);
-            Collection<SQLEntry> matchingEntries = getMatchingEntries(makeAutoCompleteNameRequest(s), db);
+//            Collection<SQLEntry> matchingEntries = getMatchingEntriesRaw(makeAutoCompleteNameRequest(s), db);
+            Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, input);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
             for (SQLEntry entry : matchingEntries) {
@@ -236,8 +252,47 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         ret.removeAll(rem);
     }
 
-    // General "Give us all we've got" entry retrieval.
-    private Collection<SQLEntry> getMatchingEntries(String query, SQLiteDatabase db) {
+    // Get all matching SQL entries, using injection-safe queries.
+    private Collection<SQLEntry> getMatchingEntries(String table, String selection, String[] args, SQLiteDatabase db) {
+        Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
+
+        try {
+//            Cursor cursor = db.rawQuery(query, null);
+            Cursor cursor = db.query(table, null, selection, args, null, null, null);
+
+            cursor.moveToFirst();
+
+            while(!cursor.isAfterLast()) {
+
+                int idColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPID);
+                int nameColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_STOPNAME);
+                int latitudeColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_LATITUDE);
+                int longitudeColumnIndex = cursor.getColumnIndexOrThrow(StopNameEntry.COLUMN_NAME_LONGITUDE);
+
+                String stopName = cursor.getString(nameColumnIndex);
+                String stopID = cursor.getString(idColumnIndex);
+                String latitude = cursor.getString(latitudeColumnIndex);
+                String longitude = cursor.getString(longitudeColumnIndex);
+
+                SQLEntry add = new SQLEntry();
+
+                add.stopID = stopID;
+                add.stopName = stopName;
+                add.latitude = latitude;
+                add.longitude = longitude;
+
+                ret.add(add);
+
+                cursor.moveToNext();
+            }
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = null;
+        }
+        return ret;
+    }
+
+    // General "Give us all we've got" entry retrieval, using unsafe raw queries
+    private Collection<SQLEntry> getMatchingEntriesRaw(String query, SQLiteDatabase db) {
         Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
 
         try {
@@ -355,7 +410,10 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     // Request for matching stopnames
     private String makeAutoCompleteNameRequest(String stopName) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
-                " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
+                " WHERE " + makeAutoCompleteNameSelection(stopName);
+    }
+    private String makeAutoCompleteNameSelection(String stopName) {
+        return StopNameEntry.COLUMN_NAME_STOPNAME +
                 " LIKE \'%" + stopName + "%\'";
     }
 
