@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.static_data.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.types.Stop;
@@ -19,6 +20,7 @@ public class MetroLocationRetriever implements LocationRetriever {
     StopLocationTranslator locationTranslator;
     LocationManager locationManager;
 
+    Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
@@ -40,24 +42,42 @@ public class MetroLocationRetriever implements LocationRetriever {
     }
 
     private Location getLocation(LocationManager manager) {
-        Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, false);
+        if (lastRetrievedLocation != null && lastRetrievedLocation.getTime() + 200000 > System.currentTimeMillis()) {
+            return lastRetrievedLocation;
+        }
 
-        return manager.getLastKnownLocation(provider);
+        if (lastRetrievedLocation != null) {
+            Log.i(TAG, lastRetrievedLocation.getTime() + ", " + System.currentTimeMillis());
+        }
+
+        Log.i(TAG, "LocationRetriever getting new location");
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        lastRetrievedLocation = manager.getLastKnownLocation(provider);
+        return lastRetrievedLocation;
     }
 
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         Log.d(TAG, "Getting distance to stop "+stop);
+        long t = Tracking.startTime();
+
+        Location currentLoc = getLocation(locationManager);
+        if (currentLoc == null) {
+            Log.d(TAG, "Current location unavailable");
+            return -1;
+        }
+
+        Log.d(TAG, "timing getCurrentLocation "+Tracking.timeSpent(t));
 
         BasicLocation stopRawLoc = stop.getLocation();
         double stopLatitude = Double.valueOf(stopRawLoc.latitude);
         double stopLongitude = Double.valueOf(stopRawLoc.longitude);
 
-        Location currentLoc = getLocation(locationManager);
-        if (currentLoc == null) {
-            return -1;
-        }
+        Log.d(TAG, "timing getStopLocation "+Tracking.timeSpent(t));
+
+
         Log.d(TAG, "Current loc: "+currentLoc.toString() + "\n" +
                 "Stop loc: "+stopLatitude+ ", " + stopLongitude);
 
@@ -65,6 +85,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
+        Log.d(TAG, "timing getDistanceBetween "+Tracking.timeSpent(t));
         Log.d(TAG, "Returned distance: "+results[0]);
 
         return results[0];
