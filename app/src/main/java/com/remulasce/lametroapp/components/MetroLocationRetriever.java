@@ -11,6 +11,8 @@ import com.remulasce.lametroapp.static_data.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.types.Stop;
 
+import java.util.concurrent.locks.Lock;
+
 /**
  * Created by Remulasce on 1/7/2015.
  */
@@ -21,6 +23,7 @@ public class MetroLocationRetriever implements LocationRetriever {
     LocationManager locationManager;
 
     Location lastRetrievedLocation;
+    Lock curLocationLock;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
@@ -41,7 +44,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     }
 
-    private Location getLocation(LocationManager manager) {
+    private synchronized Location getLocation(LocationManager manager) {
         if (lastRetrievedLocation != null && lastRetrievedLocation.getTime() + 200000 > System.currentTimeMillis()) {
             return lastRetrievedLocation;
         }

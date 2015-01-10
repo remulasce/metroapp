@@ -104,33 +104,51 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
         Log.d(TAG, "Prioritizing nearby stops");
         long t = Tracking.startTime();
 
-        for (OmniAutoCompleteEntry entry : results) {
-            if (entry.hasLocation()) {
-                if (entry.hasStop() && entry.getStop() != null) {
-                    Log.v(TAG, "Getting distance to "+entry.getStop().getStopID());
-                    double distance = locations.getCurrentDistanceToStop(entry.getStop());
-                    Log.v(TAG, "Distance to "+entry.getStop().getStopID()+", " +distance);
+        ArrayList<Thread> tasks = new ArrayList<Thread>();
+        for (OmniAutoCompleteEntry each : results) {
+            final OmniAutoCompleteEntry entry = each;
+            Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    if (entry.hasLocation()) {
+                        if (entry.hasStop() && entry.getStop() != null) {
+                            Log.v(TAG, "Getting distance to "+entry.getStop().getStopID());
+                            double distance = locations.getCurrentDistanceToStop(entry.getStop());
+                            Log.v(TAG, "Distance to "+entry.getStop().getStopID()+", " +distance);
 
-                    if (distance > 0) {
-                        // Two stage priority:
-                        // One applies up to .2 for distances up to 20 miles away
-                        // The other prioritizes things in walking distance, 1 mi away
-                        float priority = 0;
-                        // ~20 miles
-                        priority += Math.max( 0,
-                                .2f * (float)(1 - (distance / 32000)));
-                        // ~1 mile
-                        priority += Math.max( 0,
-                                .8f * (float)(1 - (distance / 1600)));
+                            if (distance > 0) {
+                                // Two stage priority:
+                                // One applies up to .2 for distances up to 20 miles away
+                                // The other prioritizes things in walking distance, 1 mi away
+                                float priority = 0;
+                                // ~20 miles
+                                priority += Math.max( 0,
+                                        .2f * (float)(1 - (distance / 32000)));
+                                // ~1 mile
+                                priority += Math.max( 0,
+                                        .8f * (float)(1 - (distance / 1600)));
 
-                        priority = Math.max(priority, 0);
+                                priority = Math.max(priority, 0);
 
-                        if (priority > 0) {
-                            Log.v(TAG, "Adding priority " + priority);
-                            entry.addPriority(priority);
+                                if (priority > 0) {
+                                    Log.v(TAG, "Adding priority " + priority);
+                                    entry.addPriority(priority);
+                                }
+                            }
                         }
                     }
                 }
+            };
+            Thread thread = new Thread(task, "LocationPriority task");
+            tasks.add(thread);
+            thread.start();
+        }
+
+        for (Thread thread: tasks) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
