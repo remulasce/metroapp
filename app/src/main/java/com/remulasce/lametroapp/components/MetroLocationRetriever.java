@@ -50,13 +50,14 @@ public class MetroLocationRetriever implements LocationRetriever {
     public double getCurrentDistanceToStop(Stop stop) {
         Log.d(TAG, "Getting distance to stop "+stop);
 
-//        BasicLocation stopRawLoc = locationTranslator.getStopLocation(stop);
         BasicLocation stopRawLoc = stop.getLocation();
         double stopLatitude = Double.valueOf(stopRawLoc.latitude);
         double stopLongitude = Double.valueOf(stopRawLoc.longitude);
 
         Location currentLoc = getLocation(locationManager);
-
+        if (currentLoc == null) {
+            return -1;
+        }
         Log.d(TAG, "Current loc: "+currentLoc.toString() + "\n" +
                 "Stop loc: "+stopLatitude+ ", " + stopLongitude);
 

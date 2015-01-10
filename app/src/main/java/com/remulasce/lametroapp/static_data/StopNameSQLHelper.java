@@ -119,7 +119,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         if (input == null || input.isEmpty()) {
             return true;
         }
-        if (input.contains("\'")) {
+        // We rely upon the rest of the thing for real checking.
+        // Check for % just prevents ridiculously large return sets
+        if (input.contains("\'") || input.contains("%")) {
             return true;
         }
 
@@ -127,7 +129,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     }
 
     private Collection<SQLEntry> getAutoCompleteEntries(SQLiteDatabase db, String stopName) {
-        return getMatchingEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameSelection(stopName), null, db);
+        return getMatchingEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameParameterizedSelection(),
+                new String[] { "%"+stopName+"%" }, db);
     }
 
     // Gets all of the name-based autocomplete results.
@@ -135,7 +138,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     @Override
     public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
         if (badAutoCompleteInput(input)) {
-            return null;
+            return new ArrayList<OmniAutoCompleteEntry>();
         }
 
         Long t = Tracking.startTime();
@@ -415,6 +418,9 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     private String makeAutoCompleteNameSelection(String stopName) {
         return StopNameEntry.COLUMN_NAME_STOPNAME +
                 " LIKE \'%" + stopName + "%\'";
+    }
+    private String makeAutoCompleteNameParameterizedSelection() {
+        return StopNameEntry.COLUMN_NAME_STOPNAME + " LIKE ?";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, String latitude, String longitude) {
