@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,7 +114,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         return ret;
     }
 
-    private boolean badAutoCompleteInput(String input) {
+    private boolean badQueryInput(String input) {
         if (input == null || input.isEmpty()) {
             return true;
         }
@@ -137,7 +136,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     // Should read all available data off the SQL table so we don't have to come back later.
     @Override
     public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
-        if (badAutoCompleteInput(input)) {
+        if (badQueryInput(input)) {
             return new ArrayList<OmniAutoCompleteEntry>();
         }
 
@@ -196,8 +195,8 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
 
     @Override
     public String getStopName(String stopID) {
-        if (stopID == null || stopID.isEmpty()) {
-            return "Bad stopname request";
+        if (badQueryInput(stopID)) {
+            return null;
         }
 
         String ret = null;
@@ -205,10 +204,12 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
+//        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
+        Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
+                new String[] {stopID}, db);
 
         if (matching.size() > 0) {
-            ret = matching.iterator().next();
+            ret = matching.iterator().next().stopName;
         }
         Tracking.sendTime("SQL", "StopNames", "getStopName", t);
         Log.d(TAG,"Got stopname for "+stopID+", "+ ret);
@@ -218,7 +219,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
 
     @Override
     public Collection<String> getStopID(String stopName) {
-        if (stopName == null || stopName.isEmpty()) {
+        if (badQueryInput(stopName)) {
             return null;
         }
 
@@ -226,8 +227,14 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getReadableDatabase();
 
         Collection<String> ret = new ArrayList<String>();
+        Collection<SQLEntry> matching;
 
-        ret = getStringsFromSQL(makeStopIDRequest(stopName), db, StopNameEntry.COLUMN_NAME_STOPID);
+        matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopIDParameterizedSelection(),
+                new String[] {stopName}, db);
+
+        for (SQLEntry each : matching) {
+            ret.add(each.stopID);
+        }
 
         cleanStopIDs(ret);
 
@@ -247,7 +254,6 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
     private void cleanStopIDs(Collection<String> ret) {
         ArrayList<String> rem = new ArrayList<String>();
         for (String s : ret) {
-            //if (!s.matches("\\d+$")) {
             if (!isCleanStopID(s)) {
                 rem.add(s);
             }
@@ -260,7 +266,6 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
         Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
 
         try {
-//            Cursor cursor = db.rawQuery(query, null);
             Cursor cursor = db.query(table, null, selection, args, null, null, null);
 
             cursor.moveToFirst();
@@ -404,11 +409,18 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPID +
                 " LIKE \'" + stopID + "\'";
     }
+    private String makeStopNameParameterizedSelection() {
+        return StopNameEntry.COLUMN_NAME_STOPID + " LIKE ?";
+    }
+
     // Request for a stopid, given stopname
     private String makeStopIDRequest(String stopName) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
                 " WHERE " + StopNameEntry.COLUMN_NAME_STOPNAME +
                 " LIKE \'" + stopName + "\'";
+    }
+    private String makeStopIDParameterizedSelection() {
+        return StopNameEntry.COLUMN_NAME_STOPNAME + " LIKE ?";
     }
     // Request for matching stopnames
     private String makeAutoCompleteNameRequest(String stopName) {
