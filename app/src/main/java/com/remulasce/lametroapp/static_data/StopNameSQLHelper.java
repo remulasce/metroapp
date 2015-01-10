@@ -157,7 +157,7 @@ public class StopNameSQLHelper extends SQLiteOpenHelper
 
             Log.d(TAG, "Autocomplete searching for " + s);
 //            Collection<SQLEntry> matchingEntries = getMatchingEntriesRaw(makeAutoCompleteNameRequest(s), db);
-            Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, input);
+            Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
             for (SQLEntry entry : matchingEntries) {
