@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -114,6 +116,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     protected void setupActionListeners() {
         omniButton.setOnClickListener( omniButtonListener );
+        omniField.setOnEditorActionListener( omniDoneListener );
 
         populator = new TripPopulator( tripList );
         tripList.setOnItemClickListener( tripClickListener );
@@ -154,6 +157,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     }
 
+    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            omniButtonListener.onClick(null);
+            return true;
+        }
+    };
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             String requestText = omniField.getText().toString();
@@ -253,12 +263,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
         if ( !intentFilled ) {
             requestFragment.loadSavedRequests();
-//            routeField.setText( getPreferences(
-//                                                MODE_PRIVATE ).getString( "routeField", "" ) );
-//            stopField.setText( getPreferences(
-//                                               MODE_PRIVATE ).getString( "stopField", "" ) );
-//            vehicleField.setText( getPreferences(
-//                                                  MODE_PRIVATE ).getString( "vehicleField", "" ) );
         }
 
         String label = ( intentFilled ) ? "Form Filled From Intent"
