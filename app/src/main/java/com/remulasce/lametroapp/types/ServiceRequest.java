@@ -33,8 +33,12 @@ public class ServiceRequest {
 
     //Returns if the service request makes any sense to fulfill
     public boolean isValid() {
-        if (raw.isEmpty() || displayName.isEmpty()) { return false; }
+        if (raw == null ||raw.isEmpty() || displayName == null || displayName.isEmpty()) { return false; }
 
         return true;
+    }
+
+    public String getRaw() {
+        return raw;
     }
 }

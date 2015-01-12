@@ -24,10 +24,12 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.FieldSaver;
 import com.remulasce.lametroapp.components.LocationRetriever;
 import com.remulasce.lametroapp.components.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.ServiceRequestFragment;
+import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.static_data.StopNameSQLHelper;
@@ -53,6 +55,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     StopNameSQLHelper stopNames;
     OmniAutoCompleteAdapter autoCompleteAdapter;
     LocationRetriever locationService;
+    SettingFieldSaver fieldSaver;
 
     Tracker t;
 
@@ -71,6 +74,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         setupOmniBar();
 
         setupDefaults( getIntent() );
+    }
+
+    private void setupFieldSaver() {
+        fieldSaver = new SettingFieldSaver(this);
     }
 
     private void setupLocation() {
@@ -245,6 +252,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
 
         if ( !intentFilled ) {
+            requestFragment.loadSavedRequests();
 //            routeField.setText( getPreferences(
 //                                                MODE_PRIVATE ).getString( "routeField", "" ) );
 //            stopField.setText( getPreferences(
@@ -352,5 +360,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     @Override
     public TripPopulator getTripPopulator() {
         return populator;
+    }
+
+    @Override
+    public FieldSaver getFieldSaver() {
+        if (fieldSaver == null) {
+            setupFieldSaver();
+        }
+        return fieldSaver;
     }
 }
