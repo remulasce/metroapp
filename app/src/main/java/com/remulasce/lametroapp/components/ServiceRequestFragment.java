@@ -50,7 +50,6 @@ public class ServiceRequestFragment extends Fragment {
     }
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
-//        return new ArrayAdapter<ServiceRequest>(getActivity(), android.R.layout.simple_list_item_1, items);
         return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
     }
 
@@ -83,13 +82,6 @@ public class ServiceRequestFragment extends Fragment {
         requestList = (ListView) view.findViewById(R.id.service_request_list);
         requestList.setOnItemClickListener(onItemClickListener);
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -153,8 +145,6 @@ public class ServiceRequestFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnServiceRequestListChanged {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
         public TripPopulator getTripPopulator();
     }
 
