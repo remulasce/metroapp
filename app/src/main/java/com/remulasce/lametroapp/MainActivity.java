@@ -3,8 +3,6 @@ package com.remulasce.lametroapp;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -160,67 +158,74 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-            omniButtonListener.onClick(null);
+
+            String requestText = omniField.getText().toString();
+            makeServiceRequestFromOmniInput(requestText);
+
             return true;
         }
     };
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             String requestText = omniField.getText().toString();
-
-            if (isOmniInputValid(requestText)) {
-                try { // No really, this should never crash the app.
-                    // Need to check which way to convert- stopname to stopid, or vice-versa
-                    String convertedName = stopNames.getStopName(requestText);
-                    Collection<String> convertedID = stopNames.getStopID(requestText);
-
-                    // It was a valid StopID
-                    if (convertedName != null) {
-                        makeServiceRequest(requestText, convertedName);
-                        omniField.getEditableText().clear();
-                        omniField.clearFocus();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("StopID")
-                                .build());
-                    }
-                    // It was a valid stop name
-                    else if (convertedID != null && !convertedID.isEmpty()) {
-                        for (String id : convertedID)
-                            makeServiceRequest(id, requestText);
-                        omniField.getEditableText().clear();
-                        omniField.clearFocus();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("StopName")
-                                .build());
-                    }
-                    // Not valid.
-                    else {
-                        Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
-                        Toast.makeText(MainActivity.this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("Invalid")
-                                .build());
-                    }
-                } catch (Exception e) {
-                    t.send(new HitBuilders.EventBuilder()
-                            .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add Button")
-                            .setLabel("Exception")
-                            .build());
-                }
-            }
+            makeServiceRequestFromOmniInput(requestText);
         }
 
     };
+
+    // Parses the input to figure out if it's a stopid, stopname, etc.
+    private void makeServiceRequestFromOmniInput(String requestText) {
+        if (isOmniInputValid(requestText)) {
+            try { // No really, this should never crash the app.
+                // Need to check which way to convert- stopname to stopid, or vice-versa
+                String convertedName = stopNames.getStopName(requestText);
+                Collection<String> convertedID = stopNames.getStopID(requestText);
+
+                // It was a valid StopID
+                if (convertedName != null) {
+                    makeServiceRequest(requestText, convertedName);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("StopID")
+                            .build());
+                }
+                // It was a valid stop name
+                else if (convertedID != null && !convertedID.isEmpty()) {
+                    for (String id : convertedID)
+                        makeServiceRequest(id, requestText);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("StopName")
+                            .build());
+                }
+                // Not valid.
+                else {
+                    Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
+                    Toast.makeText(this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("Invalid")
+                            .build());
+                }
+            } catch (Exception e) {
+                t.send(new HitBuilders.EventBuilder()
+                        .setCategory("AutoComplete")
+                        .setAction("AutoComplete Add Button")
+                        .setLabel("Exception")
+                        .build());
+            }
+        }
+    }
 
     private void stopNotifyService() {
         Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
@@ -254,6 +259,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         }
         if ( stop.isValid() ) {
 //            stopField.setText( stop.getString() );
+             makeServiceRequestFromOmniInput(stop.getStopID());
         }
         if ( veh.isValid() ) {
 //            vehicleField.setText( veh.getString() );
