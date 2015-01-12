@@ -48,10 +48,11 @@ public class SettingFieldSaver implements FieldSaver {
         for (ServiceRequest request : requests) {
             Set<String> put = new HashSet<String>();
             put.add("0 "+request.getRaw());
-            put.add("1 " + request.getDisplayName() + "\n");
+            put.add("1 " + request.getDisplayName());
             put.add("2 "+request.isInScope());
 
             editor.putStringSet(SERVICEREQUEST_ITEM_NAME + i, put);
+            i++;
         }
 
         editor.commit();
