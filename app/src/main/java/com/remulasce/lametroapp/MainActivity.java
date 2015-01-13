@@ -204,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     public boolean onOptionsItemSelected( MenuItem item ) {
         if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
             NotifyServiceManager.stopNotifyService(this);
-        } else if ( item.getTitle().equals( "Clear Fields" ) ) {
+        } else if ( item.getTitle().equals( "Clear Entry Bar" ) ) {
             clearOmniBar();
         }
 
