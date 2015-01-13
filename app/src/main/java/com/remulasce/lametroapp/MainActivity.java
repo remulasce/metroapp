@@ -13,7 +13,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -34,8 +33,6 @@ import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
-
-import java.util.Collection;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
     private static final String TAG = "MainActivity";
@@ -126,13 +123,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
             trip.executeAction( MainActivity.this );
         }
     };
-
-    // This is an extremely low level check. The ServiceRequest itself will have a better
-    // idea whether it can actually track anything.
-    private boolean isOmniInputValid(String input) {
-        return input != null && !input.isEmpty();
-
-    }
 
     // Try to find the stopname from the table
     private void makeServiceRequest( String stopID ) {
