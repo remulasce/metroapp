@@ -26,6 +26,7 @@ import com.remulasce.lametroapp.components.FieldSaver;
 import com.remulasce.lametroapp.components.LocationRetriever;
 import com.remulasce.lametroapp.components.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
+import com.remulasce.lametroapp.components.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.ServiceRequestFragment;
 import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
@@ -40,11 +41,12 @@ import com.remulasce.lametroapp.types.Vehicle;
 import java.util.Collection;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
-    private static final String TAG = "TripListActivity";
+    private static final String TAG = "MainActivity";
 
     AutoCompleteTextView omniField;
     Button omniButton;
 
+    OmniBarInputHandler omniHandler;
     ServiceRequestFragment requestFragment;
 
     ListView tripList;
@@ -87,6 +89,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames, locationService);
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
+
+        omniHandler = new OmniBarInputHandler(omniField, omniButton, requestFragment, stopNames, t, this);
     }
 
     private void setupActionBar() {
@@ -109,8 +113,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     }
 
     protected void setupActionListeners() {
-        omniButton.setOnClickListener( omniButtonListener );
-        omniField.setOnEditorActionListener( omniDoneListener );
+//        omniButton.setOnClickListener( omniButtonListener );
+//        omniField.setOnEditorActionListener( omniDoneListener );
 
         populator = new TripPopulator( tripList );
         tripList.setOnItemClickListener( tripClickListener );
@@ -149,23 +153,22 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     }
 
-    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-
-            String requestText = omniField.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
-
-            return true;
-        }
-    };
-    protected OnClickListener omniButtonListener = new OnClickListener() {
-        public void onClick( View v ) {
-            String requestText = omniField.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
-        }
-
-    };
+//    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+//        @Override
+//        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+//
+//            String requestText = omniField.getText().toString();
+//            makeServiceRequestFromOmniInput(requestText);
+//
+//            return true;
+//        }
+//    };
+//    protected OnClickListener omniButtonListener = new OnClickListener() {
+//        public void onClick( View v ) {
+//            String requestText = omniField.getText().toString();
+//            makeServiceRequestFromOmniInput(requestText);
+//        }
+//    };
 
     // Parses the input to figure out if it's a stopid, stopname, etc.
     private void makeServiceRequestFromOmniInput(String requestText) {
