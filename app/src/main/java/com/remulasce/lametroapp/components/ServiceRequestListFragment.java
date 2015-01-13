@@ -1,7 +1,6 @@
 package com.remulasce.lametroapp.components;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -16,20 +15,15 @@ import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.TripPopulator;
 import com.remulasce.lametroapp.types.ServiceRequest;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ServiceRequestFragment.OnServiceRequestListChanged} interface
- * to handle interaction events.
- * Use the {@link ServiceRequestFragment#newInstance} factory method to
- * create an instance of this fragment.
+  List of active ServiceRequests
+  Handles adding and removing them from the TripPopulator
  */
-public class ServiceRequestFragment extends Fragment {
+public class ServiceRequestListFragment extends Fragment {
     private static final String TAG = "ServiceRequestFragment";
 
     private OnServiceRequestListChanged mListener;
@@ -37,20 +31,8 @@ public class ServiceRequestFragment extends Fragment {
 
     private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ServiceRequestFragment.
-     */
-    public static ServiceRequestFragment newInstance(TripPopulator populator) {
-        ServiceRequestFragment fragment = new ServiceRequestFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
+        //noinspection unchecked
         return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
     }
 
@@ -66,7 +48,7 @@ public class ServiceRequestFragment extends Fragment {
         }
     }
 
-    public ServiceRequestFragment() {
+    public ServiceRequestListFragment() {
         // Required empty public constructor
     }
 
@@ -78,7 +60,7 @@ public class ServiceRequestFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_service_request_list, container, false);
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
@@ -140,19 +122,17 @@ public class ServiceRequestFragment extends Fragment {
 
     // Temp method converts all the ServiceRequests into stringly typed STopIDs,
     // as would be expected from the old StopList.
-
     // This is a stop-gap until we convert the whole thing to ServiceRequests.
     private String convertToStringLine(List<ServiceRequest> requests) {
         StringBuilder s = new StringBuilder();
 
         for (ServiceRequest request : requests) {
-            s.append(request.toString() + " ");
+            s.append(request.toString());
+            s.append(" ");
         }
 
         return s.toString();
     }
-
-
 
     /**
      * This interface must be implemented by activities that contain this
