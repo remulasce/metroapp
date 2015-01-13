@@ -92,13 +92,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     private void setupActionBar() {
         android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
+
         mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayShowTitleEnabled(false);
-        LayoutInflater mInflater = LayoutInflater.from(this);
-
-//        View mCustomView = mInflater.inflate(R.layout.omni_search_box, this.findViewById(R.id.));
-
-//        mActionBar.setCustomView(mCustomView);
         mActionBar.setCustomView(R.layout.omni_search_box);
         mActionBar.setDisplayShowCustomEnabled(true);
     }
