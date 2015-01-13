@@ -26,7 +26,7 @@ import java.util.List;
 public class ServiceRequestListFragment extends Fragment {
     private static final String TAG = "ServiceRequestFragment";
 
-    private OnServiceRequestListChanged mListener;
+    private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
 
     private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
@@ -36,16 +36,19 @@ public class ServiceRequestListFragment extends Fragment {
         return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
     }
 
-
     public void AddServiceRequest(ServiceRequest serviceRequest) {
         Log.d(TAG, "Adding service request " + serviceRequest);
         if (!requests.contains(serviceRequest)) {
             requests.add(serviceRequest);
 
-            requestList.setAdapter(makeAdapter(requests));
-            updateTripPopulator(requests);
-            saveServiceRequests(requests);
+            requestsChanged();
         }
+    }
+
+    private void requestsChanged() {
+        requestList.setAdapter(makeAdapter(requests));
+        updateTripPopulator(requests);
+        saveServiceRequests(requests);
     }
 
     public ServiceRequestListFragment() {
@@ -72,12 +75,11 @@ public class ServiceRequestListFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnServiceRequestListChanged) activity;
+            mListener = (ServiceRequestListFragmentSupport) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnServiceRequestListChanged");
         }
-
     }
 
     @Override
@@ -102,8 +104,7 @@ public class ServiceRequestListFragment extends Fragment {
         this.requests.clear();
         this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
 
-        requestList.setAdapter(makeAdapter(requests));
-        this.updateTripPopulator(requests);
+        requestsChanged();
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -111,12 +112,10 @@ public class ServiceRequestListFragment extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
             ServiceRequest s = (ServiceRequest) adapterView.getItemAtPosition(pos);
-            requests.remove(s);
-            requestList.setAdapter(makeAdapter(requests));
             s.descope();
+            requests.remove(s);
 
-            updateTripPopulator(requests);
-            saveServiceRequests(requests);
+            requestsChanged();
         }
     };
 
@@ -134,17 +133,7 @@ public class ServiceRequestListFragment extends Fragment {
         return s.toString();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnServiceRequestListChanged {
+    public interface ServiceRequestListFragmentSupport {
         public TripPopulator getTripPopulator();
         public FieldSaver getFieldSaver();
     }

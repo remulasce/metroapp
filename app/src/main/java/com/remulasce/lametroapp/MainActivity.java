@@ -22,7 +22,7 @@ import com.remulasce.lametroapp.components.LocationRetriever;
 import com.remulasce.lametroapp.components.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.OmniBarInputHandler;
-import com.remulasce.lametroapp.components.ServiceRequestFragment;
+import com.remulasce.lametroapp.components.ServiceRequestListFragment;
 import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
@@ -32,14 +32,14 @@ import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
 import com.remulasce.lametroapp.types.Vehicle;
 
-public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
+public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
     AutoCompleteTextView omniField;
     Button omniButton;
 
     OmniBarInputHandler omniHandler;
-    ServiceRequestFragment requestFragment;
+    ServiceRequestListFragment requestFragment;
 
     ListView tripList;
 
@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
         tripList = (ListView) findViewById( R.id.tripList );
 
-        requestFragment = (ServiceRequestFragment) getFragmentManager()
+        requestFragment = (ServiceRequestListFragment) getFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
     }
 

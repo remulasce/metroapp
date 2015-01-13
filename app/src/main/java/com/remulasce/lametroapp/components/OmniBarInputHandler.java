@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.TripPopulator;
-import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
 import com.remulasce.lametroapp.types.ServiceRequest;
 
@@ -26,7 +24,7 @@ public class OmniBarInputHandler {
 
     private AutoCompleteTextView omniField;
     private Button addButton;
-    private ServiceRequestFragment requestList;
+    private ServiceRequestListFragment requestList;
     private StopNameTranslator stopNames;
     private Tracker t;
 
@@ -34,7 +32,7 @@ public class OmniBarInputHandler {
     private Context c;
 
     public OmniBarInputHandler(AutoCompleteTextView textView, Button button,
-                               ServiceRequestFragment requestList, StopNameTranslator stopNames,
+                               ServiceRequestListFragment requestList, StopNameTranslator stopNames,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = button;
