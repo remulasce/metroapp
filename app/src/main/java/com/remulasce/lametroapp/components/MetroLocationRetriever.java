@@ -44,21 +44,25 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     }
 
-    private synchronized Location getLocation(LocationManager manager) {
-        if (lastRetrievedLocation != null && lastRetrievedLocation.getTime() + 200000 > System.currentTimeMillis()) {
-            return lastRetrievedLocation;
-        }
-
-        if (lastRetrievedLocation != null) {
-            Log.i(TAG, lastRetrievedLocation.getTime() + ", " + System.currentTimeMillis());
-        }
-
+    private Location getLocation(LocationManager manager) {
         Log.i(TAG, "LocationRetriever getting new location");
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, true);
 
-        lastRetrievedLocation = manager.getLastKnownLocation(provider);
+        return manager.getLastKnownLocation(provider);
+        /*
+        synchronized ( this ) {
+            if (lastRetrievedLocation == null || lastRetrievedLocation.getTime() + 200000 < System.currentTimeMillis()) {
+                Log.i(TAG, "LocationRetriever getting new location");
+                Criteria criteria = new Criteria();
+                String provider = locationManager.getBestProvider(criteria, true);
+
+                lastRetrievedLocation = manager.getLastKnownLocation(provider);
+            }
+        }
+
         return lastRetrievedLocation;
+        */
     }
 
     @Override
