@@ -1,6 +1,5 @@
 package com.remulasce.lametroapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -196,7 +195,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
-        menu.add( "Clear Fields" );
+        menu.add( "Clear Entry Bar" );
         menu.add( "Stop Arrival Notification" );
         return true;
     }
@@ -204,20 +203,16 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
         if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
-            NotifyServiceManager.stopNotifyService( this );
+            NotifyServiceManager.stopNotifyService(this);
         } else if ( item.getTitle().equals( "Clear Fields" ) ) {
-            clearFields();
+            clearOmniBar();
         }
 
         return true;
     }
 
-    private void clearFields() {
-        omniField.setText("");
-        t.send( new HitBuilders.EventBuilder()
-                .setCategory( "MainScreen" )
-                .setAction( "Clear Fields" )
-                .build() );
+    private void clearOmniBar() {
+        omniHandler.clearFields();
     }
 
     @Override

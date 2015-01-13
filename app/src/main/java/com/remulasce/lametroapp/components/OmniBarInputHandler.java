@@ -141,4 +141,11 @@ public class OmniBarInputHandler {
         }
     }
 
+    public void clearFields() {
+        omniField.setText("");
+        t.send( new HitBuilders.EventBuilder()
+                .setCategory( "MainScreen" )
+                .setAction( "Clear Fields" )
+                .build() );
+    }
 }
