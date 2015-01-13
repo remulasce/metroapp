@@ -16,6 +16,7 @@ import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.TripPopulator;
 import com.remulasce.lametroapp.types.ServiceRequest;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public class ServiceRequestFragment extends Fragment {
     }
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
-//        return new ArrayAdapter<ServiceRequest>(getActivity(), android.R.layout.simple_list_item_1, items);
         return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
     }
 
@@ -62,6 +62,7 @@ public class ServiceRequestFragment extends Fragment {
 
             requestList.setAdapter(makeAdapter(requests));
             updateTripPopulator(requests);
+            saveServiceRequests(requests);
         }
     }
 
@@ -85,13 +86,6 @@ public class ServiceRequestFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -101,6 +95,7 @@ public class ServiceRequestFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnServiceRequestListChanged");
         }
+
     }
 
     @Override
@@ -113,6 +108,22 @@ public class ServiceRequestFragment extends Fragment {
         mListener.getTripPopulator().StopSelectionChanged(convertToStringLine(requests));
     }
 
+    // Saves the current servicerequests so they can be recreated after the app has closed.
+    private void saveServiceRequests(List<ServiceRequest> requests) {
+        Log.d(TAG, "Saving service requests");
+        mListener.getFieldSaver().saveServiceRequests(requests);
+    }
+
+    public void loadSavedRequests() {
+        Log.d(TAG, "Loading saved requests");
+
+        this.requests.clear();
+        this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
+
+        requestList.setAdapter(makeAdapter(requests));
+        this.updateTripPopulator(requests);
+    }
+
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
@@ -123,6 +134,7 @@ public class ServiceRequestFragment extends Fragment {
             s.descope();
 
             updateTripPopulator(requests);
+            saveServiceRequests(requests);
         }
     };
 
@@ -153,9 +165,8 @@ public class ServiceRequestFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnServiceRequestListChanged {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
         public TripPopulator getTripPopulator();
+        public FieldSaver getFieldSaver();
     }
 
 }

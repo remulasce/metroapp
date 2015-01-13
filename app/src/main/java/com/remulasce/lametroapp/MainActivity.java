@@ -3,11 +3,10 @@ package com.remulasce.lametroapp;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,16 +17,19 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.FieldSaver;
 import com.remulasce.lametroapp.components.LocationRetriever;
 import com.remulasce.lametroapp.components.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.ServiceRequestFragment;
+import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.static_data.StopNameSQLHelper;
@@ -42,11 +44,6 @@ import java.util.Collection;
 public class MainActivity extends ActionBarActivity implements ServiceRequestFragment.OnServiceRequestListChanged {
     private static final String TAG = "TripListActivity";
 
-//    Button setButton;
-//    Button stopButton;
-//    EditText stopField;
-//    EditText routeField;
-//    EditText vehicleField;
     AutoCompleteTextView omniField;
     Button omniButton;
 
@@ -58,6 +55,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     StopNameSQLHelper stopNames;
     OmniAutoCompleteAdapter autoCompleteAdapter;
     LocationRetriever locationService;
+    SettingFieldSaver fieldSaver;
 
     Tracker t;
 
@@ -78,12 +76,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         setupDefaults( getIntent() );
     }
 
+    private void setupFieldSaver() {
+        fieldSaver = new SettingFieldSaver(this);
+    }
+
     private void setupLocation() {
         locationService = new MetroLocationRetriever(this, stopNames);
     }
 
     private void setupOmniBar() {
-//        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, android.R.layout.simple_list_item_1, stopNames);
         autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames, locationService);
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
@@ -105,11 +106,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     protected void linkViewReferences() {
         omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
         omniButton = (Button) findViewById( R.id.omni_button );
-//        stopField = (EditText) findViewById( R.id.idtext );
-//        routeField = (EditText) findViewById( R.id.routetext );
-//        vehicleField = (EditText) findViewById( R.id.vehicleNum );
-//        setButton = (Button) findViewById( R.id.setbutton );
-//        stopButton = (Button) findViewById( R.id.stopbutton );
 
         tripList = (ListView) findViewById( R.id.tripList );
 
@@ -118,14 +114,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     }
 
     protected void setupActionListeners() {
-
-//        setButton.setOnClickListener( setButtonListener );
-//        stopButton.setOnClickListener( stopButtonListener );
         omniButton.setOnClickListener( omniButtonListener );
-
-//        stopField.addTextChangedListener( StopTextWatcher );
-//        routeField.addTextChangedListener( RouteTextWatcher );
-//        vehicleField.addTextChangedListener( VehicleTextWatcher );
+        omniField.setOnEditorActionListener( omniDoneListener );
 
         populator = new TripPopulator( tripList );
         tripList.setOnItemClickListener( tripClickListener );
@@ -134,9 +124,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     private void initializeStaticData() {
         stopNames = new StopNameSQLHelper(this);
         stopNames.initialize();
-
-        Log.d(TAG, "Test stopname for 30000: "+stopNames.getStopName("30000"));
-        Log.d(TAG, "Test stopid for Patsaouras Transit Plaza: "+stopNames.getStopID("Patsaouras Transit Plaza"));
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
@@ -145,26 +132,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
             Trip trip = (Trip) parent.getItemAtPosition( position );
             trip.executeAction( MainActivity.this );
         }
-    };
-
-    private void startNotifyServiceFromViews() {
-        /*
-        Stop stop = new Stop( stopField.getText().toString() );
-        Vehicle veh = new Vehicle( vehicleField.getText().toString() );
-        Route route = new Route( routeField.getText().toString() );
-
-        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                .setAction( "NotifyService Set Button" ).build() );
-
-        SetNotifyService( stop, route, null, veh, MainActivity.this );
-        */
-    }
-
-    protected OnClickListener setButtonListener = new OnClickListener() {
-        public void onClick( View v ) {
-            startNotifyServiceFromViews();
-        }
-
     };
 
     // This is an extremely low level check. The ServiceRequest itself will have a better
@@ -189,63 +156,77 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     }
 
+    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+            String requestText = omniField.getText().toString();
+            makeServiceRequestFromOmniInput(requestText);
+
+            return true;
+        }
+    };
     protected OnClickListener omniButtonListener = new OnClickListener() {
         public void onClick( View v ) {
             String requestText = omniField.getText().toString();
-
-            if (isOmniInputValid(requestText)) {
-                try { // No really, this should never crash the app.
-                    // Need to check which way to convert- stopname to stopid, or vice-versa
-                    String convertedName = stopNames.getStopName(requestText);
-                    Collection<String> convertedID = stopNames.getStopID(requestText);
-
-                    // It was a valid StopID
-                    if (convertedName != null) {
-                        makeServiceRequest(requestText, convertedName);
-                        omniField.getEditableText().clear();
-                        omniField.clearFocus();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("StopID")
-                                .build());
-                    }
-                    // It was a valid stop name
-                    else if (convertedID != null && !convertedID.isEmpty()) {
-                        for (String id : convertedID)
-                            makeServiceRequest(id, requestText);
-                        omniField.getEditableText().clear();
-                        omniField.clearFocus();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("StopName")
-                                .build());
-                    }
-                    // Not valid.
-                    else {
-                        Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
-                        Toast.makeText(MainActivity.this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
-
-                        t.send(new HitBuilders.EventBuilder()
-                                .setCategory("AutoComplete")
-                                .setAction("AutoComplete Add Button")
-                                .setLabel("Invalid")
-                                .build());
-                    }
-                } catch (Exception e) {
-                    t.send(new HitBuilders.EventBuilder()
-                            .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add Button")
-                            .setLabel("Exception")
-                            .build());
-                }
-            }
+            makeServiceRequestFromOmniInput(requestText);
         }
 
     };
+
+    // Parses the input to figure out if it's a stopid, stopname, etc.
+    private void makeServiceRequestFromOmniInput(String requestText) {
+        if (isOmniInputValid(requestText)) {
+            try { // No really, this should never crash the app.
+                // Need to check which way to convert- stopname to stopid, or vice-versa
+                String convertedName = stopNames.getStopName(requestText);
+                Collection<String> convertedID = stopNames.getStopID(requestText);
+
+                // It was a valid StopID
+                if (convertedName != null) {
+                    makeServiceRequest(requestText, convertedName);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("StopID")
+                            .build());
+                }
+                // It was a valid stop name
+                else if (convertedID != null && !convertedID.isEmpty()) {
+                    for (String id : convertedID)
+                        makeServiceRequest(id, requestText);
+                    omniField.getEditableText().clear();
+                    omniField.clearFocus();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("StopName")
+                            .build());
+                }
+                // Not valid.
+                else {
+                    Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
+                    Toast.makeText(this, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
+
+                    t.send(new HitBuilders.EventBuilder()
+                            .setCategory("AutoComplete")
+                            .setAction("AutoComplete Add Button")
+                            .setLabel("Invalid")
+                            .build());
+                }
+            } catch (Exception e) {
+                t.send(new HitBuilders.EventBuilder()
+                        .setCategory("AutoComplete")
+                        .setAction("AutoComplete Add Button")
+                        .setLabel("Exception")
+                        .build());
+            }
+        }
+    }
 
     private void stopNotifyService() {
         Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
@@ -279,6 +260,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         }
         if ( stop.isValid() ) {
 //            stopField.setText( stop.getString() );
+             makeServiceRequestFromOmniInput(stop.getStopID());
         }
         if ( veh.isValid() ) {
 //            vehicleField.setText( veh.getString() );
@@ -287,12 +269,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
 
         if ( !intentFilled ) {
-//            routeField.setText( getPreferences(
-//                                                MODE_PRIVATE ).getString( "routeField", "" ) );
-//            stopField.setText( getPreferences(
-//                                               MODE_PRIVATE ).getString( "stopField", "" ) );
-//            vehicleField.setText( getPreferences(
-//                                                  MODE_PRIVATE ).getString( "vehicleField", "" ) );
+            requestFragment.loadSavedRequests();
         }
 
         String label = ( intentFilled ) ? "Form Filled From Intent"
@@ -302,8 +279,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 .setAction( "Field Population" )
                 .setLabel( label )
                 .build() );
-
-//        populator.StopSelectionChanged( stopField.getText().toString() );
     }
 
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
@@ -366,75 +341,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         PredictionManager.getInstance().resumeTracking();
     }
 
-//    protected TextWatcher RouteTextWatcher = new TextWatcher() {
-//        @Override
-//        public void afterTextChanged( Editable arg0 ) {
-//            String routeText = routeField.getText().toString();
-//
-//            SharedPreferences.Editor e = getPreferences(
-//                                                         MODE_PRIVATE ).edit();
-//            e.putString( "routeField", routeText );
-//            e.commit();
-//
-//            populator.RouteSelectionChanged( routeText );
-//        }
-//
-//        @Override
-//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//
-//        @Override
-//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//    };
-//
-//    protected TextWatcher StopTextWatcher = new TextWatcher() {
-//        @Override
-//        public void afterTextChanged( Editable arg0 ) {
-//            String stopText = stopField.getText().toString();
-//
-//            SharedPreferences.Editor e = getPreferences(
-//                                                         MODE_PRIVATE ).edit();
-//            e.putString( "stopField", stopText );
-//            e.commit();
-//
-//            long start = System.currentTimeMillis();
-//
-//            populator.StopSelectionChanged( stopText );
-//
-//            long spent = System.currentTimeMillis() - start;
-//            Log.d( "UITiming", "AfterTextChanged return: " + spent );
-//            t.send( new HitBuilders.TimingBuilder()
-//                    .setCategory( "UI Delay" )
-//                    .setValue( spent )
-//                    .setVariable( "Trip List" )
-//                    .setLabel( "Stop Text Changed" )
-//                    .build() );
-//        }
-//
-//        @Override
-//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//
-//        @Override
-//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//    };
-//
-//    protected TextWatcher VehicleTextWatcher = new TextWatcher() {
-//        @Override
-//        public void afterTextChanged( Editable arg0 ) {
-//            String vehicleText = vehicleField.getText().toString();
-//            SharedPreferences.Editor e = getPreferences(
-//                                                         MODE_PRIVATE ).edit();
-//            e.putString( "vehicleField", vehicleText );
-//            e.commit();
-//
-//        }
-//
-//        @Override
-//        public void beforeTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//
-//        @Override
-//        public void onTextChanged( CharSequence arg0, int arg1, int arg2, int arg3 ) {}
-//    };
-
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
         menu.add( "Clear Fields" );
@@ -444,9 +350,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
 
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
-        if ( item.getTitle().equals( "Start Arrival Notification" ) ) {
-            startNotifyServiceFromViews();
-        } else if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
+        if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
             stopNotifyService();
         } else if ( item.getTitle().equals( "Clear Fields" ) ) {
             clearFields();
@@ -461,18 +365,18 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 .setCategory( "" )
                 .setAction( "AutoComplete Add Button" )
                 .build() );
-//            stopField.setText( "" );
-//            routeField.setText( "" );
-//            vehicleField.setText( "" );
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        //TODO implement
     }
 
     @Override
     public TripPopulator getTripPopulator() {
         return populator;
+    }
+
+    @Override
+    public FieldSaver getFieldSaver() {
+        if (fieldSaver == null) {
+            setupFieldSaver();
+        }
+        return fieldSaver;
     }
 }
