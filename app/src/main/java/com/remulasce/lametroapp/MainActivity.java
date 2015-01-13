@@ -131,10 +131,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     // This is an extremely low level check. The ServiceRequest itself will have a better
     // idea whether it can actually track anything.
     private boolean isOmniInputValid(String input) {
-        if (input == null) { return false; }
-        if (input.isEmpty()) { return false; }
+        return input != null && !input.isEmpty();
 
-        return true;
     }
 
     private void makeServiceRequest( String stopID, String displayName ) {
@@ -233,13 +231,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         MainActivity.this.stopService( i );
     }
 
-    protected OnClickListener stopButtonListener = new OnClickListener() {
-        public void onClick( View v ) {
-            stopNotifyService();
-        }
-
-    };
-
     protected void startAnalytics() {
         t = Tracking.getTracker( getApplicationContext() );
     }
@@ -249,15 +240,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         Stop stop = new Stop( bundle.getStringExtra( "StopID" ) );
         Vehicle veh = new Vehicle( bundle.getStringExtra( "VehicleNumber" ) );
 
-        if ( route.isValid() ) {
-//            routeField.setText( route.getString() );
-        }
         if ( stop.isValid() ) {
-//            stopField.setText( stop.getString() );
              makeServiceRequestFromOmniInput(stop.getStopID());
-        }
-        if ( veh.isValid() ) {
-//            vehicleField.setText( veh.getString() );
         }
 
         boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
