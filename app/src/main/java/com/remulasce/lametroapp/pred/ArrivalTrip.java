@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.MainActivity;
+import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.types.Destination;
 import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.Stop;
@@ -46,8 +47,8 @@ public class ArrivalTrip extends Trip {
     }
 
     public void executeAction( Context context ) {
-        MainActivity.SetNotifyService( parentArrival.stop, parentArrival.route,
-                                       parentArrival.destination, parentArrival.vehicle, context );
+        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
+                parentArrival.destination, parentArrival.vehicle, context);
     }
     
     public int hashCode() {

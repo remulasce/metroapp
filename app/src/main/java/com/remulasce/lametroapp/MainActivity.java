@@ -28,7 +28,6 @@ import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.static_data.StopNameSQLHelper;
-import com.remulasce.lametroapp.types.Destination;
 import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
@@ -147,17 +146,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
         }
     }
 
-    private void stopNotifyService() {
-        Intent i = new Intent( MainActivity.this, ArrivalNotifyService.class );
-
-        t.send( new HitBuilders.EventBuilder()
-                .setCategory( "NotifyService" )
-                .setAction( "NotifyService Stop Button" )
-                .build() );
-
-        MainActivity.this.stopService( i );
-    }
-
     protected void startAnalytics() {
         t = Tracking.getTracker( getApplicationContext() );
     }
@@ -185,46 +173,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
                 .setLabel( label )
                 .build() );
     }
-
-    public static void SetNotifyService( Stop stop, Route route, Destination destination,
-            Vehicle vehicle, Context context ) {
-
-        Tracker t = Tracking.getTracker( context );
-        Intent i = new Intent( context, ArrivalNotifyService.class );
-
-        if ( !stop.isValid() ) {
-            t.send( new HitBuilders.EventBuilder()
-                    .setCategory( "NotifyService" )
-                    .setAction( "SetNotifyService" )
-                    .setLabel( "Stop invalid" ).build() );
-            return;
-        }
-
-        try {
-            i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route, stop ) );
-            i.putExtra( "StopID", stop.getNum() );
-
-            if ( destination != null && destination.isValid() ) {
-                i.putExtra( "Destination", destination.getString() );
-            }
-            if ( vehicle != null && vehicle.isValid() ) {
-                i.putExtra( "VehicleNumber", vehicle.getString() );
-            }
-            if ( route != null && route.isValid() ) {
-                i.putExtra( "Route", route.getString() );
-            }
-
-            context.stopService( i );
-            context.startService( i );
-
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "SetNotifyService" ).build() );
-        } catch ( IllegalArgumentException e ) {
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "Bad input to notify service" ).build() );
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -256,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestFra
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
         if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
-            stopNotifyService();
+            NotifyServiceManager.stopNotifyService( this );
         } else if ( item.getTitle().equals( "Clear Fields" ) ) {
             clearFields();
         }
