@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Semaphore;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -122,7 +121,7 @@ public class TripPopulator {
 
     /* UpdateRunner checks our (stops) list every couple seconds to remove old stops and update the display.
     * It removes stops that are no longer active, according to the stop.
-    * Then it pushes the Trips it has received asynchronously in the callback to the ListView.
+    * Then it pushes the Trips it has received asynchronously in the tripUpdateCallback to the ListView.
     *
     * Relevant structures:
     * stops -List of what should be tracked set by the TripPopulater / user
@@ -132,13 +131,11 @@ public class TripPopulator {
     * list.
     *
     * The real deal is when a new stop from stops is not found ind trackedMap. When it gets added, it gets
-    * activated and given the callback.
+    * activated and given the tripUpdateCallback.
     *
     * */
     protected class UpdateRunner implements Runnable {
         protected boolean run = false;
-
-        protected Semaphore updateAvailable = new Semaphore( 1 );
 
         Map< Stop, StopPrediction > trackedMap = new HashMap< Stop, StopPrediction >();
 
@@ -158,7 +155,6 @@ public class TripPopulator {
                 } catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
-
             }
             Log.i( TAG, "UpdateRunner ending" );
         }
@@ -178,7 +174,7 @@ public class TripPopulator {
                 for ( Stop stop : stops ) {
                     if ( !trackedMap.containsKey( stop ) ) {
                         StopPrediction stopPrediction = new StopPrediction( stop, null );
-                        stopPrediction.setTripCallback( callback );
+                        stopPrediction.setTripCallback(tripUpdateCallback);
 
                         trackedMap.put(stop, stopPrediction);
                         stopPrediction.startPredicting();
@@ -236,12 +232,7 @@ public class TripPopulator {
 
                     adapter.clear();
                     adapter.addAll( activeTrips );
-                    adapter.sort( new Comparator< Trip >() {
-                        @Override
-                        public int compare( Trip lhs, Trip rhs ) {
-                            return ( lhs.getPriority() < rhs.getPriority() ) ? 1 : -1;
-                        }
-                    } );
+                    adapter.sort( tripPriorityComparator );
                     adapter.notifyDataSetChanged();
 
                     Tracking.sendUITime( "TripPopulator", "Refresh TripList", start );
@@ -249,9 +240,17 @@ public class TripPopulator {
             } );
         }
 
+        Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
+            @Override
+            public int compare(Trip lhs, Trip rhs) {
+                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+            }
+        };
+
+
         // Tracked requests send us this when they get or update data.
         // In here, new Trips are added to our list of active Trips
-        protected TripUpdateCallback callback = new TripUpdateCallback() {
+        protected TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {
@@ -266,10 +265,7 @@ public class TripPopulator {
                         activeTrips.add( trip );
                     }
                 }
-
-                updateAvailable.release();
             }
         };
-
     }
 }
