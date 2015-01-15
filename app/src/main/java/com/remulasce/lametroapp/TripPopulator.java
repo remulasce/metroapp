@@ -17,11 +17,9 @@ import android.widget.ListView;
 
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.Prediction;
-import com.remulasce.lametroapp.pred.StopPrediction;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.pred.TripUpdateCallback;
 import com.remulasce.lametroapp.types.ServiceRequest;
-import com.remulasce.lametroapp.types.Stop;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
@@ -37,7 +35,7 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
-    protected final List< ServiceRequest > stops = new CopyOnWriteArrayList< ServiceRequest >();
+    protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
     public TripPopulator( ListView list ) {
         this.list = list;
@@ -67,67 +65,12 @@ public class TripPopulator {
         running = false;
     }
 
-//    protected void setStops( String rawStops ) {
-//        if ( rawStops == null ) {
-//            return;
-//        }
-//        String[] split = rawStops.split( " " );
-//
-//        long start = Tracking.startTime();
-//        synchronized ( stops ) {
-//            Tracking.sendTime( "Synchronization", "Acquire Delay" , "Stops", start );
-//            Tracking.sendUITime( "Sync Delay" , "SetStops", start );
-//            start = Tracking.startTime();
-//
-//            // Remove old stops
-//            List< Stop > rem = new ArrayList< Stop >();
-//            for ( Stop r : stops ) {
-//                boolean stillTracked = false;
-//                for ( String s : split ) {
-//                    if ( r.getString().equals( s ) ) {
-//                        stillTracked = true;
-//                        break;
-//                    }
-//                }
-//                if ( !stillTracked ) {
-//                    rem.add( r );
-//                }
-//            }
-//            stops.removeAll( rem );
-//
-//            // Add new Stops
-//            for ( String s : split ) {
-//                Stop Stop = new Stop( s );
-//                if ( LaMetroUtil.isValidStop( s ) ) {
-//
-//                    boolean alreadyIn = false;
-//                    for ( Stop r : stops ) {
-//                        if ( Stop.getString().equals( r.getString() ) ) {
-//                            alreadyIn = true;
-//                            break;
-//                        }
-//                    }
-//                    if ( !alreadyIn ) {
-//                        stops.add( Stop );
-//                    }
-//                }
-//            }
-//        }
-//        Tracking.sendTime( "Synchronization", "Release Delay", "Stops", start );
-//    }
-
-//    public void StopSelectionChanged( String stopName ) {
-//        Log.d( TAG, "Stop changed: " + stopName );
-//
-//        setStops(stopName);
-//    }
-
     protected void rawSetServiceRequests( Collection<ServiceRequest> requests) {
         Log.d(TAG, "Setting service requests");
 
-        synchronized (stops) {
-            stops.clear();
-            stops.addAll(requests);
+        synchronized (serviceRequests) {
+            serviceRequests.clear();
+            serviceRequests.addAll(requests);
         }
     }
 
@@ -153,7 +96,6 @@ public class TripPopulator {
     protected class UpdateRunner implements Runnable {
         protected boolean run = false;
 
-//        Map< Stop, StopPrediction > trackedMap = new HashMap< Stop, StopPrediction >();
         Map<ServiceRequest, Prediction > trackedMap = new HashMap< ServiceRequest, Prediction >();
 
         @Override
@@ -187,33 +129,28 @@ public class TripPopulator {
 
         private void addNewStops() {
             // Add new stops
-            synchronized ( stops ) {
-                for ( ServiceRequest stop : stops ) {
-                    if ( !trackedMap.containsKey( stop ) ) {
+            synchronized (serviceRequests) {
+                for ( ServiceRequest request : serviceRequests) {
+                    if ( !trackedMap.containsKey( request ) ) {
 
-                        Prediction prediction = stop.makePrediction();
+                        Prediction prediction = request.makePrediction();
                         prediction.setTripCallback(tripUpdateCallback);
 
-                        trackedMap.put(stop, prediction);
+                        trackedMap.put(request, prediction);
                         prediction.startPredicting();
-//                        StopPrediction stopPrediction = new StopPrediction( stop, null );
-//                        stopPrediction.setTripCallback(tripUpdateCallback);
-//
-//                        trackedMap.put(stop, stopPrediction);
-//                        stopPrediction.startPredicting();
                     }
                 }
             }
         }
 
         private void removeOldStops() {
-            synchronized ( stops ) {
+            synchronized (serviceRequests) {
                 // Remove stops that are no longer tracked
                 ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
                 // check what stops we have mapped that are no longer in UI
                 for ( Entry< ServiceRequest, Prediction > t : trackedMap.entrySet() ) {
                     boolean stillTracked = false;
-                    for ( ServiceRequest s : stops ) {
+                    for ( ServiceRequest s : serviceRequests) {
                         if ( s == t.getKey() ) {
                             stillTracked = true;
                             break;
