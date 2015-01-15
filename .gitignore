@@ -29,6 +29,9 @@ proguard/
 # Eclipse Metadata
 .metadata/
 
+# Helper script
+start_git.bash
+
 # Mac OS X clutter
 *.DS_Store
 
