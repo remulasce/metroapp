@@ -19,7 +19,6 @@ import com.remulasce.lametroapp.types.Vehicle;
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
 
-    // TODO: Pull this from Metro data, not guesses.
     public static boolean isValidStop( String stop ) {
         if ( stop == null ) {
             return false;

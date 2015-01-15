@@ -3,8 +3,6 @@
     android:layout_height="match_parent"
     tools:context="com.remulasce.lametroapp.components.ServiceRequestListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="131dp"

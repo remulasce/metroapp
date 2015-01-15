@@ -89,7 +89,8 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
-        mListener.getTripPopulator().StopSelectionChanged(convertToStringLine(requests));
+//        mListener.getTripPopulator().StopSelectionChanged(convertToStringLine(requests));
+        mListener.getTripPopulator().SetServiceRequests(requests);
     }
 
     // Saves the current servicerequests so they can be recreated after the app has closed.

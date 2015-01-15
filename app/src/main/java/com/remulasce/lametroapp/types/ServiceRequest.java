@@ -1,5 +1,8 @@
 package com.remulasce.lametroapp.types;
 
+import com.remulasce.lametroapp.pred.Prediction;
+import com.remulasce.lametroapp.pred.StopPrediction;
+
 /**
  * Created by Remulasce on 12/16/2014.
  */
@@ -36,6 +39,14 @@ public class ServiceRequest {
         if (raw == null ||raw.isEmpty() || displayName == null || displayName.isEmpty()) { return false; }
 
         return true;
+    }
+
+    public Prediction makePrediction() {
+        // Assume Stop
+        Stop s = new Stop(raw);
+        StopPrediction prediction = new StopPrediction(s, null);
+
+        return prediction;
     }
 
     public String getRaw() {
