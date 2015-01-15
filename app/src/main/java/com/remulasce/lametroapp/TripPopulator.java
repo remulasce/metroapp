@@ -19,7 +19,6 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.pred.StopPrediction;
 import com.remulasce.lametroapp.pred.Trip;
 import com.remulasce.lametroapp.pred.TripUpdateCallback;
-import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.Stop;
 
 public class TripPopulator {
@@ -38,9 +37,6 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
-
-    // These should be set to only valid routes.
-    protected final List< Route > routes = new CopyOnWriteArrayList< Route >();
     protected final List< Stop > stops = new CopyOnWriteArrayList< Stop >();
 
     public TripPopulator( ListView list ) {
@@ -69,49 +65,6 @@ public class TripPopulator {
         Log.d( TAG, "Stopping TripPopulator" );
         updateRunner.run = false;
         running = false;
-    }
-
-    protected void setRoutes( String rawRoutes ) {
-        if ( rawRoutes == null ) {
-            return;
-        }
-        String[] split = rawRoutes.split( " " );
-
-        synchronized ( routes ) {
-            // Remove old routes
-            List< Route > rem = new ArrayList< Route >();
-            for ( Route r : routes ) {
-                boolean stillTracked = false;
-                for ( String s : split ) {
-                    if ( r.getString().equals( s ) ) {
-                        stillTracked = true;
-                        break;
-                    }
-                }
-                if ( !stillTracked ) {
-                    rem.add( r );
-                }
-            }
-            routes.removeAll( rem );
-
-            // Add new routes
-            for ( String s : split ) {
-                Route route = new Route( s );
-                if ( LaMetroUtil.isValidRoute( route ) ) {
-
-                    boolean alreadyIn = false;
-                    for ( Route r : routes ) {
-                        if ( route.getString().equals( r.getString() ) ) {
-                            alreadyIn = true;
-                            break;
-                        }
-                    }
-                    if ( !alreadyIn ) {
-                        routes.add( route );
-                    }
-                }
-            }
-        }
     }
 
     protected void setStops( String rawStops ) {
@@ -161,12 +114,6 @@ public class TripPopulator {
             }
         }
         Tracking.sendTime( "Synchronization", "Release Delay", "Stops", start );
-    }
-
-    public void RouteSelectionChanged( String routeName ) {
-        Log.d( TAG, "Route changed: " + routeName );
-
-        setRoutes(routeName);
     }
 
     public void StopSelectionChanged( String stopName ) {
