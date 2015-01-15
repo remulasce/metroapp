@@ -25,15 +25,11 @@ import com.remulasce.lametroapp.types.Stop;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    enum TripDriver {
-        NONE, ROUTE, STOP
-    };
-
     protected final static int UPDATE_INTERVAL = 2000;
 
     protected ListView list;
     protected ArrayAdapter< Trip > adapter;
-    protected List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
+    protected final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
     Map< Stop, StopPrediction > stopMap = new HashMap< Stop, StopPrediction >();
 
@@ -42,13 +38,10 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
-    // These should be replaced by Lists of valid-only routes.
-    // protected String routeName;
-    // protected String stopName;
 
     // These should be set to only valid routes.
-    protected List< Route > routes = new CopyOnWriteArrayList< Route >();
-    protected List< Stop > stops = new CopyOnWriteArrayList< Stop >();
+    protected final List< Route > routes = new CopyOnWriteArrayList< Route >();
+    protected final List< Stop > stops = new CopyOnWriteArrayList< Stop >();
 
     public TripPopulator( ListView list ) {
         this.list = list;
@@ -173,29 +166,19 @@ public class TripPopulator {
     public void RouteSelectionChanged( String routeName ) {
         Log.d( TAG, "Route changed: " + routeName );
 
-        // this.routeName = routeName;
-        setRoutes( routeName );
+        setRoutes(routeName);
     }
 
     public void StopSelectionChanged( String stopName ) {
         Log.d( TAG, "Stop changed: " + stopName );
 
-        // this.stopName = stopName;
-        setStops( stopName );
+        setStops(stopName);
     }
 
     protected class UpdateRunner implements Runnable {
         protected boolean run = false;
 
         protected Semaphore updateAvailable = new Semaphore( 1 );
-
-        // protected StopPrediction stopPrediction;
-        // protected List<StopPrediction> stopPredictions = new
-        // ArrayList<StopPrediction>();
-
-        
-
-        // protected RoutePrediction routePrediction
 
         protected void updateList() {
             Log.v( TAG, "Updating predictions" );
@@ -302,7 +285,9 @@ public class TripPopulator {
 
                 try {
                     Thread.sleep( UPDATE_INTERVAL );
-                } catch ( InterruptedException e ) {}
+                } catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
 
             }
             Log.i( TAG, "UpdateRunner ending" );
