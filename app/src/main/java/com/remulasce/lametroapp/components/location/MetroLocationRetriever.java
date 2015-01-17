@@ -4,14 +4,18 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.basic_types.Stop;
-
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by Remulasce on 1/7/2015.
@@ -22,27 +26,79 @@ public class MetroLocationRetriever implements LocationRetriever {
     StopLocationTranslator locationTranslator;
     LocationManager locationManager;
 
+    GoogleApiClient mGoogleApiClient;
+
     Location lastRetrievedLocation;
-    Lock curLocationLock;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
 
-        initLocationProvider(c);
+        startLocationRequests(c);
     }
 
-    private void initLocationProvider(Context c) {
-        Log.d(TAG, "Initializing location provider");
-        locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
+    // Because of power concerns, we only can do location when allowed to do so.
+    public void startLocating(Context c) {
+        Log.i(TAG, "Starting Location service");
+        startLocationRequests(c);
+    }
 
-        //Test location
-        Location location = getLocation(locationManager);
-        if (location != null) {
-            Log.d(TAG, "Location initialized, current location " + location.toString());
-        } else {
-            Log.w(TAG, "Location unavailable");
+    public void stopLocating(Context c) {
+        Log.i(TAG, "Stopping location service");
+        try {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, locationListener);
+        } catch (IllegalStateException e) {
+            Log.w(TAG, "Stopping unstarted location service");
         }
     }
+
+    protected synchronized void startLocationRequests(Context c) {
+        mGoogleApiClient = new GoogleApiClient.Builder(c)
+                .addConnectionCallbacks(connectionCallbacks)
+                .addOnConnectionFailedListener(connectionFailedListener)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+        Log.d(TAG, "startLocationRequests");
+    }
+
+    protected GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+        @Override
+        public void onConnected(Bundle bundle) {
+            Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (lastLocation != null) {
+                lastRetrievedLocation = lastLocation;
+            }
+
+            LocationRequest request = new LocationRequest();
+            request.setInterval(15 * 1000);
+            request.setFastestInterval(1000);
+            request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, locationListener);
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+            Log.w(TAG, "OnConnectionSuspended");
+
+        }
+    };
+
+    protected LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d(TAG, "Received new location "+location);
+            lastRetrievedLocation = location;
+        }
+    };
+
+    protected GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
+        @Override
+        public void onConnectionFailed(ConnectionResult connectionResult) {
+            Log.w(TAG, "Location reading failed");
+        }
+    };
 
     private Location getLocation(LocationManager manager) {
         Log.i(TAG, "LocationRetriever getting new location");
@@ -52,12 +108,16 @@ public class MetroLocationRetriever implements LocationRetriever {
         return manager.getLastKnownLocation(provider);
     }
 
+    private Location getBestLocation() {
+        return lastRetrievedLocation;
+    }
+
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         Log.d(TAG, "Getting distance to stop "+stop);
         long t = Tracking.startTime();
 
-        Location currentLoc = getLocation(locationManager);
+        Location currentLoc = getBestLocation();
         if (currentLoc == null) {
             Log.d(TAG, "Current location unavailable");
             return -1;

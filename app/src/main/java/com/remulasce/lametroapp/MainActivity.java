@@ -18,7 +18,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
-import com.remulasce.lametroapp.components.location.LocationRetriever;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
@@ -46,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     TripPopulator populator;
     MetroStaticsProvider staticsProvider;
     OmniAutoCompleteAdapter autoCompleteAdapter;
-    LocationRetriever locationService;
+    MetroLocationRetriever locationService;
     SettingFieldSaver fieldSaver;
 
     Tracker t;
@@ -179,6 +178,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        locationService.stopLocating(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
@@ -190,6 +195,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void onResume() {
         super.onResume();
         populator.StartPopulating();
+        locationService.startLocating(this);
         PredictionManager.getInstance().resumeTracking();
     }
 
