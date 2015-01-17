@@ -76,7 +76,8 @@ public class OmniBarInputHandler {
     private void makeServiceRequest( String stopID, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
         ServiceRequest serviceRequest = new ServiceRequest(stopID);
-        serviceRequest.setDisplayName(displayName+ ", "+stopID);
+//        serviceRequest.setDisplayName(displayName+ ", "+stopID);
+        serviceRequest.setDisplayName(displayName);
 
         if (serviceRequest.isValid()) {
             requestList.AddServiceRequest(serviceRequest);
