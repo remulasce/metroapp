@@ -26,7 +26,7 @@ import static android.database.sqlite.SQLiteDatabase.openDatabase;
 /**
  * Created by Remulasce on 12/17/2014.
  */
-public class OldMetroStaticsProvider extends SQLiteOpenHelper
+public class GTFSStopsReader extends SQLiteOpenHelper
         implements StopNameTranslator, OmniAutoCompleteProvider, StopLocationTranslator {
     private static final String TAG = "StopNameSQLHelper";
 
@@ -72,7 +72,7 @@ public class OldMetroStaticsProvider extends SQLiteOpenHelper
 
     private Context context;
 
-    public OldMetroStaticsProvider(Context context) {
+    public GTFSStopsReader(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }

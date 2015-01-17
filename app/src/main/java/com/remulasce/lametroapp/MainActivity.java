@@ -26,7 +26,7 @@ import com.remulasce.lametroapp.components.ServiceRequestListFragment;
 import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
-import com.remulasce.lametroapp.static_data.OldMetroStaticsProvider;
+import com.remulasce.lametroapp.static_data.GTFSStopsReader;
 import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     ListView tripList;
 
     TripPopulator populator;
-    OldMetroStaticsProvider stopNames;
+    GTFSStopsReader stopNames;
     OmniAutoCompleteAdapter autoCompleteAdapter;
     LocationRetriever locationService;
     SettingFieldSaver fieldSaver;
@@ -110,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void initializeStaticData() {
-        stopNames = new OldMetroStaticsProvider(this);
+        stopNames = new GTFSStopsReader(this);
         stopNames.initialize();
     }
 
