@@ -36,6 +36,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     AutoCompleteTextView omniField;
     Button omniButton;
+    Button clearButton;
 
     OmniBarInputHandler omniHandler;
     ServiceRequestListFragment requestFragment;
@@ -81,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
 
-        omniHandler = new OmniBarInputHandler(omniField, omniButton, requestFragment, staticsProvider, t, this);
+        omniHandler = new OmniBarInputHandler(omniField, omniButton, clearButton, requestFragment, staticsProvider, t, this);
     }
 
     private void setupActionBar() {
@@ -96,6 +97,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void linkViewReferences() {
         omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
         omniButton = (Button) findViewById( R.id.omni_button );
+        clearButton = (Button) findViewById( R.id.omni_clear_button );
 
         tripList = (ListView) findViewById( R.id.tripList );
 
