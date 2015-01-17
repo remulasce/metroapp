@@ -50,19 +50,6 @@ public class MetroLocationRetriever implements LocationRetriever {
         String provider = locationManager.getBestProvider(criteria, true);
 
         return manager.getLastKnownLocation(provider);
-        /*
-        synchronized ( this ) {
-            if (lastRetrievedLocation == null || lastRetrievedLocation.getTime() + 200000 < System.currentTimeMillis()) {
-                Log.i(TAG, "LocationRetriever getting new location");
-                Criteria criteria = new Criteria();
-                String provider = locationManager.getBestProvider(criteria, true);
-
-                lastRetrievedLocation = manager.getLastKnownLocation(provider);
-            }
-        }
-
-        return lastRetrievedLocation;
-        */
     }
 
     @Override
