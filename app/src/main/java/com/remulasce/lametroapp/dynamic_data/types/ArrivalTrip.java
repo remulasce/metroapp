@@ -36,13 +36,13 @@ public class ArrivalTrip extends Trip {
         String stop_ = stopString + "\n";
         String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " "; 
         String time = LaMetroUtil.secondsToDisplay( seconds );
-        String raw = " (" + seconds + "s)";
+//        String raw = " (" + seconds + "s)";
         
         return stop_ 
                 + destination
                 + vehicle
                 + time
-                + raw;
+                ;//+ raw;
     }
 
     public void executeAction( Context context ) {
