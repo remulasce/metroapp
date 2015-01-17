@@ -8,5 +8,5 @@ import java.util.Collection;
  * Created by Remulasce on 1/5/2015.
  */
 public interface AutoCompleteStopFiller {
-    Collection<OmniAutoCompleteEntry> autocomplete(String input);
+    Collection<OmniAutoCompleteEntry> autocompleteStopName(String input);
 }

@@ -29,7 +29,7 @@ import static android.database.sqlite.SQLiteDatabase.openDatabase;
  * Created by Remulasce on 12/17/2014.
  */
 public class GTFSStopsReader extends SQLiteOpenHelper
-        implements StopNameTranslator, OmniAutoCompleteProvider, StopLocationTranslator {
+        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
@@ -137,7 +137,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     // Gets all of the name-based autocomplete results.
     // Should read all available data off the SQL table so we don't have to come back later.
     @Override
-    public Collection<OmniAutoCompleteEntry> autocomplete(String input) {
+    public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
         if (badQueryInput(input)) {
             return new ArrayList<OmniAutoCompleteEntry>();
         }

@@ -7,8 +7,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
 import com.remulasce.lametroapp.types.OmniAutoCompleteEntry;
-import com.remulasce.lametroapp.static_data.OmniAutoCompleteProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,10 +23,10 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     private String TAG = "OmniAutoCompleteAdapter";
 
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
-    private OmniAutoCompleteProvider autocomplete;
+    private AutoCompleteStopFiller autocomplete;
     private LocationRetriever locations;
 
-    public OmniAutoCompleteAdapter(Context context, int resource, int textView, OmniAutoCompleteProvider t,
+    public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteStopFiller t,
                                    LocationRetriever locations) {
         super(context, resource, textView);
         resultList.add(new OmniAutoCompleteEntry("Test Autocomplete", .1f));
@@ -55,7 +55,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                     long t = Tracking.startTime();
 
                     // Retrieve the autocomplete results.
-                    Collection<OmniAutoCompleteEntry> results = autocomplete.autocomplete(constraint.toString());
+                    Collection<OmniAutoCompleteEntry> results = autocomplete.autocompleteStopName(constraint.toString());
 
                     // Prioritize them based on stuff
                     try {

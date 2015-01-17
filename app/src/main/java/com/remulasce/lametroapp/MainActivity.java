@@ -26,7 +26,7 @@ import com.remulasce.lametroapp.components.ServiceRequestListFragment;
 import com.remulasce.lametroapp.components.SettingFieldSaver;
 import com.remulasce.lametroapp.pred.PredictionManager;
 import com.remulasce.lametroapp.pred.Trip;
-import com.remulasce.lametroapp.static_data.GTFSStopsReader;
+import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.types.Route;
 import com.remulasce.lametroapp.types.ServiceRequest;
 import com.remulasce.lametroapp.types.Stop;
@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     ListView tripList;
 
     TripPopulator populator;
-    GTFSStopsReader stopNames;
+    MetroStaticsProvider staticsProvider;
     OmniAutoCompleteAdapter autoCompleteAdapter;
     LocationRetriever locationService;
     SettingFieldSaver fieldSaver;
@@ -74,15 +74,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupLocation() {
-        locationService = new MetroLocationRetriever(this, stopNames);
+        locationService = new MetroLocationRetriever(this, staticsProvider);
     }
 
     private void setupOmniBar() {
-        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, stopNames, locationService);
+        autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, staticsProvider, locationService);
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
 
-        omniHandler = new OmniBarInputHandler(omniField, omniButton, requestFragment, stopNames, t, this);
+        omniHandler = new OmniBarInputHandler(omniField, omniButton, requestFragment, staticsProvider, t, this);
     }
 
     private void setupActionBar() {
@@ -110,8 +110,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void initializeStaticData() {
-        stopNames = new GTFSStopsReader(this);
-        stopNames.initialize();
+        staticsProvider = new MetroStaticsProvider(this);
+        staticsProvider.initialize();
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
@@ -126,7 +126,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void makeServiceRequest( String stopID ) {
         String displayName;
 
-        displayName = stopNames.getStopName(stopID);
+        displayName = staticsProvider.getStopName(stopID);
         if (displayName == null) {
             displayName = stopID;
         }
