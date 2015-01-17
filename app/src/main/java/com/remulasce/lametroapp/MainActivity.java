@@ -203,7 +203,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
-        menu.add( "Clear Entry Bar" );
         menu.add( "Stop Arrival Notification" );
         return true;
     }
@@ -212,8 +211,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     public boolean onOptionsItemSelected( MenuItem item ) {
         if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
             NotifyServiceManager.stopNotifyService(this);
-        } else if ( item.getTitle().equals( "Clear Entry Bar" ) ) {
-            clearOmniBar();
         }
 
         return true;
