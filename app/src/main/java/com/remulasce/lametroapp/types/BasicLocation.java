@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.static_data;
+package com.remulasce.lametroapp.types;
 
 /**
  * Created by Remulasce on 1/7/2015.

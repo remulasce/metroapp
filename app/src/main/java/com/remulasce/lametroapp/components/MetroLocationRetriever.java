@@ -7,7 +7,7 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.static_data.BasicLocation;
+import com.remulasce.lametroapp.types.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.types.Stop;
 

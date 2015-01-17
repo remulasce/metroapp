@@ -5,7 +5,6 @@ import java.io.Serializable;
 import android.util.Log;
 
 import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.static_data.BasicLocation;
 
 public class Stop implements Serializable {
     private static final long serialVersionUID = 4336735625715608793L;

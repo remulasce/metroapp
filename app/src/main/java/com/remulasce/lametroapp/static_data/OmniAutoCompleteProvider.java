@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.static_data;
 
+import com.remulasce.lametroapp.types.OmniAutoCompleteEntry;
+
 import java.util.Collection;
 
 /**

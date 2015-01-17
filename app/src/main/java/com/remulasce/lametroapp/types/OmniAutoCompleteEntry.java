@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.static_data;
+package com.remulasce.lametroapp.types;
 
 import com.remulasce.lametroapp.types.Stop;
 

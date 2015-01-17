@@ -7,16 +7,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.static_data.OmniAutoCompleteEntry;
+import com.remulasce.lametroapp.types.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.static_data.OmniAutoCompleteProvider;
-import com.remulasce.lametroapp.static_data.StopLocationTranslator;
-import com.remulasce.lametroapp.static_data.StopNameTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by Remulasce on 1/5/2015.

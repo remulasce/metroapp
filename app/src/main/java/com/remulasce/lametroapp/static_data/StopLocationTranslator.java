@@ -1,7 +1,6 @@
 package com.remulasce.lametroapp.static_data;
 
-import android.location.Location;
-
+import com.remulasce.lametroapp.types.BasicLocation;
 import com.remulasce.lametroapp.types.Stop;
 
 /**
