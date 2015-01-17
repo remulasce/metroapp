@@ -1,15 +1,14 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.persistence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.remulasce.lametroapp.types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**

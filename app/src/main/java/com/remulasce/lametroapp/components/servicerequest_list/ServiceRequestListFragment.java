@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.servicerequest_list;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.widget.ListView;
 
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.TripPopulator;
-import com.remulasce.lametroapp.types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.components.persistence.FieldSaver;
 
 import java.util.ArrayList;
 import java.util.List;

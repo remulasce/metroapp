@@ -11,7 +11,7 @@
     <fragment
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:name="com.remulasce.lametroapp.components.ServiceRequestListFragment"
+            android:name="com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment"
             android:id="@+id/service_request_fragment"
             tools:layout="@layout/fragment_service_request_list"
             android:layout_alignParentLeft="true"

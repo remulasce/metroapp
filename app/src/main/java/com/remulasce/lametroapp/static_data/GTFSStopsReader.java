@@ -10,9 +10,9 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.types.BasicLocation;
-import com.remulasce.lametroapp.types.OmniAutoCompleteEntry;
-import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.basic_types.BasicLocation;
+import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.BufferedReader;
 import java.io.IOException;

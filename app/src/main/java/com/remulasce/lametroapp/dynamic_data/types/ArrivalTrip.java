@@ -1,13 +1,12 @@
-package com.remulasce.lametroapp.pred;
+package com.remulasce.lametroapp.dynamic_data.types;
 
 import android.content.Context;
 
 import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.MainActivity;
 import com.remulasce.lametroapp.NotifyServiceManager;
-import com.remulasce.lametroapp.types.Destination;
-import com.remulasce.lametroapp.types.Route;
-import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.basic_types.Destination;
+import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 public class ArrivalTrip extends Trip {
 

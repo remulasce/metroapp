@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.types;
+package com.remulasce.lametroapp.basic_types;
 
 import java.io.Serializable;
 

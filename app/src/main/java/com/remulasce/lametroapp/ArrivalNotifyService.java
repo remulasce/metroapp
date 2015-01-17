@@ -36,10 +36,10 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.types.Destination;
-import com.remulasce.lametroapp.types.Route;
-import com.remulasce.lametroapp.types.Stop;
-import com.remulasce.lametroapp.types.Vehicle;
+import com.remulasce.lametroapp.basic_types.Destination;
+import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.basic_types.Vehicle;
 
 public class ArrivalNotifyService extends Service {
 

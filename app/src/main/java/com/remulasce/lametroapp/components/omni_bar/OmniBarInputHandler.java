@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,8 +11,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
-import com.remulasce.lametroapp.types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.types;
+package com.remulasce.lametroapp.basic_types;
 
 /**
  * Created by Remulasce on 1/7/2015.

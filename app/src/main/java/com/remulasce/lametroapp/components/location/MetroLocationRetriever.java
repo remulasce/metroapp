@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.location;
 
 import android.content.Context;
 import android.location.Criteria;
@@ -7,9 +7,9 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.types.BasicLocation;
+import com.remulasce.lametroapp.basic_types.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
-import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.util.concurrent.locks.Lock;
 

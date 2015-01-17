@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.servicerequest_list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
-import com.remulasce.lametroapp.types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.pred;
+package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.remulasce.lametroapp.types;
+package com.remulasce.lametroapp.components.omni_bar;
 
-import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 /**
  * Created by Remulasce on 1/5/2015.

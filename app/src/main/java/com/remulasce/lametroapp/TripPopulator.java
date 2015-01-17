@@ -16,10 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.pred.Prediction;
-import com.remulasce.lametroapp.pred.Trip;
-import com.remulasce.lametroapp.pred.TripUpdateCallback;
-import com.remulasce.lametroapp.types.ServiceRequest;
+import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";

@@ -1,6 +1,6 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.location;
 
-import com.remulasce.lametroapp.types.Stop;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 /**
  * Created by Remulasce on 1/7/2015.

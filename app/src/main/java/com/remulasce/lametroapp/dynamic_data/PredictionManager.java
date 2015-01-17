@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.pred;
+package com.remulasce.lametroapp.dynamic_data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
-import com.remulasce.lametroapp.pred.PredictionManager.UpdateStager;
+import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 public class PredictionManager {
 	static final String TAG = "PredictionManager";

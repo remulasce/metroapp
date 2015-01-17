@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components;
+package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,8 +7,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.location.LocationRetriever;
 import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
-import com.remulasce.lametroapp.types.OmniAutoCompleteEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;

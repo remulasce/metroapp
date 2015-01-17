@@ -1,7 +1,7 @@
-package com.remulasce.lametroapp.types;
+package com.remulasce.lametroapp.basic_types;
 
-import com.remulasce.lametroapp.pred.Prediction;
-import com.remulasce.lametroapp.pred.StopPrediction;
+import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
 
 /**
  * Created by Remulasce on 12/16/2014.
