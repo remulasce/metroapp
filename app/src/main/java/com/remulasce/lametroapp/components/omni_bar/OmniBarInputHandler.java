@@ -19,12 +19,18 @@ import java.util.Collection;
 
 /**
  * Created by Remulasce on 1/13/2015.
+ *
+ * This handles the omni textbar, add-request button, and clear button.
+ * It just pushes new servicerequests to the service request list fragmentt.
+ *
+ * That means this handles the autocomplete stuff too.
  */
 public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
     private AutoCompleteTextView omniField;
     private Button addButton;
+    private Button clearButton;
     private ServiceRequestListFragment requestList;
     private StopNameTranslator stopNames;
     private Tracker t;
@@ -32,28 +38,30 @@ public class OmniBarInputHandler {
     //Poor form to require Context, we just need to show Toasts occasionally.
     private Context c;
 
-    public OmniBarInputHandler(AutoCompleteTextView textView, Button button,
+    public OmniBarInputHandler(AutoCompleteTextView textView, Button addButton, Button clearButton,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
                                Tracker t, Context c) {
         this.omniField = textView;
-        this.addButton = button;
+        this.addButton = addButton;
+        this.clearButton = clearButton;
         this.requestList = requestList;
         this.stopNames = stopNames;
 
         this.t = t;
+        this.c = c;
 
         linkViewHandlers();
     }
 
     private void linkViewHandlers() {
         addButton.setOnClickListener(omniButtonListener);
+        clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
     }
 
     protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-
             String requestText = textView.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
 
@@ -64,6 +72,12 @@ public class OmniBarInputHandler {
         public void onClick( View v ) {
             String requestText = omniField.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
+        }
+    };
+    protected  View.OnClickListener clearButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            clearFields();
         }
     };
 
