@@ -5,10 +5,10 @@ package com.remulasce.lametroapp.basic_types;
  * Seriously, it's latitude and longitude.
  */
 public class BasicLocation {
-    public String latitude;
-    public String longitude;
+    public double latitude;
+    public double longitude;
 
-    public BasicLocation(String latitude, String longitude) {
+    public BasicLocation(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

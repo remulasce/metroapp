@@ -75,7 +75,11 @@ public class MetroLocationRetriever implements LocationRetriever {
             request.setFastestInterval(1000);
             request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, locationListener);
+            try {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, locationListener);
+            } catch (Exception e) {
+                Log.w(TAG, "Location failed in onConnected");
+            }
         }
 
         @Override
@@ -114,7 +118,6 @@ public class MetroLocationRetriever implements LocationRetriever {
 
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
-        Log.d(TAG, "Getting distance to stop "+stop);
         long t = Tracking.startTime();
 
         Location currentLoc = getBestLocation();
@@ -123,19 +126,19 @@ public class MetroLocationRetriever implements LocationRetriever {
             return -1;
         }
 
+//        Log.v(TAG, "__time1 "+Tracking.timeSpent(t));
+
         BasicLocation stopRawLoc = stop.getLocation();
         double stopLatitude = Double.valueOf(stopRawLoc.latitude);
         double stopLongitude = Double.valueOf(stopRawLoc.longitude);
 
-        Log.d(TAG, "Current loc: "+currentLoc.toString() + "\n" +
-                "Stop loc: "+stopLatitude+ ", " + stopLongitude);
+//        Log.v(TAG, "__time2 "+Tracking.timeSpent(t));
 
         float[] results = new float[4];
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
-        Log.d(TAG, "getCurrentDistanceToStop took  "+Tracking.timeSpent(t));
-        Log.d(TAG, "Returned distance: "+results[0]);
+        Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+results[0]);
 
         return results[0];
     }

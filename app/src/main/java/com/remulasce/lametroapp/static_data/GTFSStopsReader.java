@@ -35,8 +35,9 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private static final String DATABASE_NAME = "StopNames.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String TEXT_TYPE = " TEXT";
+    private static final String DOUBLE_TYPE = " REAL";
     private static final String COMMA_SEP = ",";
 
     private static final String SQL_CREATE_ENTRIES =
@@ -44,8 +45,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
                     StopNameEntry._ID + " INTEGER PRIMARY KEY," +
                     StopNameEntry.COLUMN_NAME_STOPID + TEXT_TYPE + COMMA_SEP +
                     StopNameEntry.COLUMN_NAME_STOPNAME + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LONGITUDE + TEXT_TYPE +
+                    StopNameEntry.COLUMN_NAME_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    StopNameEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -68,8 +69,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     private class SQLEntry {
         public String stopID;
         public String stopName;
-        public String latitude;
-        public String longitude;
+        public double latitude;
+        public double longitude;
     }
 
     private Context context;
@@ -104,8 +105,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
         if (entries.size() > 0 && entries.iterator().hasNext()) {
             SQLEntry firstLoc = entries.iterator().next();
-            String latitude = firstLoc.latitude;
-            String longitude = firstLoc.longitude;
+            double latitude = firstLoc.latitude;
+            double longitude = firstLoc.longitude;
 
             ret = new BasicLocation(latitude, longitude);
         }
@@ -281,8 +282,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 String stopName = cursor.getString(nameColumnIndex);
                 String stopID = cursor.getString(idColumnIndex);
-                String latitude = cursor.getString(latitudeColumnIndex);
-                String longitude = cursor.getString(longitudeColumnIndex);
+                double latitude = cursor.getDouble(latitudeColumnIndex);
+                double longitude = cursor.getDouble(longitudeColumnIndex);
 
                 SQLEntry add = new SQLEntry();
 
@@ -318,8 +319,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 String stopName = cursor.getString(nameColumnIndex);
                 String stopID = cursor.getString(idColumnIndex);
-                String latitude = cursor.getString(latitudeColumnIndex);
-                String longitude = cursor.getString(longitudeColumnIndex);
+                Double latitude = cursor.getDouble(latitudeColumnIndex);
+                Double longitude = cursor.getDouble(longitudeColumnIndex);
 
                 SQLEntry add = new SQLEntry();
 
@@ -371,14 +372,15 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
             String line;
             int entries = 0;
+            file.readLine();
             while ( (line = file.readLine()) != null ) {
                 // stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,stop_url,location_type,paren
                 String[] split = line.split(",");
 
                 String stopID = split[0];
                 String stopName = split[2];
-                String latitude = split[4];
-                String longitude = split[5];
+                Double latitude = Double.valueOf(split[4]);
+                Double longitude = Double.valueOf(split[5]);
 
                 putNewStopDef(sqLiteDatabase, stopID, stopName, latitude, longitude);
                 entries++;
@@ -395,6 +397,9 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
         } catch (IOException e) {
             Log.e(TAG, "Failed to create stops database; file IO exception");
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to create stops database, unknown error");
             e.printStackTrace();
         }
     }
@@ -437,7 +442,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         return StopNameEntry.COLUMN_NAME_STOPNAME + " LIKE ?";
     }
 
-    private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, String latitude, String longitude) {
+    private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
         Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
 
         ContentValues values = new ContentValues();
