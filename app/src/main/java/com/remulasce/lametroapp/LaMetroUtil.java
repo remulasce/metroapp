@@ -203,13 +203,26 @@ public class LaMetroUtil {
 
     public static String secondsToDisplay( int seconds ) {
         if ( seconds > 60 ) {
-            return "in " + String.valueOf( seconds / 60 ) + " min";
+            return "in " + standaloneSecondsToDisplay(seconds);
         }
         if ( seconds > 1 ) {
-            return "in " + String.valueOf( seconds ) + "s";
+            return "in " + standaloneSecondsToDisplay(seconds);
         }
         if ( seconds == 0 ) {
-            return "in " + "1s";
+            return "in " + standaloneSecondsToDisplay(seconds);
+        }
+        return standaloneSecondsToDisplay(seconds);
+    }
+
+    public static String standaloneSecondsToDisplay( int seconds ) {
+        if ( seconds > 60 ) {
+            return String.valueOf( seconds / 60 ) + " min";
+        }
+        if ( seconds > 1 ) {
+            return String.valueOf( seconds ) + "s";
+        }
+        if ( seconds == 0 ) {
+            return "1s";
         }
         return "arrived";
     }

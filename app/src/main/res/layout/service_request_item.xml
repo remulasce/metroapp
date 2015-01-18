@@ -9,6 +9,7 @@
     android:layout_weight="1.0"
     android:gravity="fill_horizontal"
     android:paddingBottom="6dp"
+    android:paddingLeft="10dp"
     android:paddingTop="6dp">
     <ImageButton
         android:layout_width="wrap_content"

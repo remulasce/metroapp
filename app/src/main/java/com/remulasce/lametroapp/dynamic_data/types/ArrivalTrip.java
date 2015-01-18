@@ -1,9 +1,15 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
+import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -43,6 +49,37 @@ public class ArrivalTrip extends Trip {
                 + vehicle
                 + time
                 ;//+ raw;
+    }
+
+    @Override
+    public View getView(ViewGroup parent, Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.trip_item, parent, false);
+
+        TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
+        TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
+        TextView prediction_text = (TextView) rowView.findViewById(R.id.prediction_time_estimate);
+        ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
+
+        Route route = parentArrival.getRoute();
+        Stop stop = parentArrival.getStop();
+        Destination dest = parentArrival.getDirection();
+
+        String routeString = route.getString();
+        String stopString = stop.getStopName();
+        String destString = dest.getString();
+        String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " ";
+
+        boolean destinationStartsWithNum = destString.startsWith( routeString );
+        String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
+        int seconds = parentArrival.getEstimatedArrivalSeconds();
+
+        stop_text.setText(stopString);
+        route_text.setText(routeDestString);
+        prediction_text.setText(LaMetroUtil.standaloneSecondsToDisplay(seconds)+ " for "+vehicle);
+
+        return rowView;
     }
 
     public void executeAction( Context context ) {

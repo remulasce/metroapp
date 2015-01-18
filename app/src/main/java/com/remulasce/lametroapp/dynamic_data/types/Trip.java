@@ -1,6 +1,13 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.remulasce.lametroapp.R;
 
 
 /** Individual trips are displayed to the user as the result of his
@@ -31,6 +38,10 @@ public class Trip {
 	public void executeAction(Context context) {
 		// ...
 	}
+
+    public View getView(ViewGroup parent, Context context) {
+        return null;
+    }
 	
 	public float getPriority() {
 	    return 50;

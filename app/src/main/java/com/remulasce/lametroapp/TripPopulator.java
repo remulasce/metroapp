@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
@@ -41,7 +42,8 @@ public class TripPopulator {
         this.list = list;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
-        adapter = new ArrayAdapter< Trip >( list.getContext(), android.R.layout.simple_list_item_1 );
+//        adapter = new ArrayAdapter< Trip >( list.getContext(), R.layout.trip_item );
+        adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
     }
 
