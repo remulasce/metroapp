@@ -112,7 +112,7 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(5000 + seconds * 200);
+					Thread.sleep(Math.max(5000 + seconds * 200, 240 * 1000));
 				} catch (InterruptedException e) {}
 			}
 
