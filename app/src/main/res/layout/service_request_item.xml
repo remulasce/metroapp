@@ -12,8 +12,8 @@
     android:paddingLeft="10dp"
     android:paddingTop="6dp">
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/service_request_cancel"
         android:background="@drawable/abc_ic_clear_holo_light"
         android:focusableInTouchMode="false"

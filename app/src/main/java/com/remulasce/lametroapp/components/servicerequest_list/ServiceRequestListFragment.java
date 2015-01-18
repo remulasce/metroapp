@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.components.servicerequest_list;
 
 import android.app.Activity;
+import android.app.Service;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -34,7 +35,7 @@ public class ServiceRequestListFragment extends Fragment {
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
         //noinspection unchecked
-        return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
+        return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items, onCancelListener);
     }
 
     public void AddServiceRequest(ServiceRequest serviceRequest) {
@@ -68,7 +69,7 @@ public class ServiceRequestListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_request_list, container, false);
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
-        requestList.setOnItemClickListener(onItemClickListener);
+//        requestList.setOnItemClickListener(onItemClickListener);
         return view;
     }
 
@@ -114,10 +115,21 @@ public class ServiceRequestListFragment extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
             ServiceRequest s = (ServiceRequest) adapterView.getItemAtPosition(pos);
-            s.descope();
-            requests.remove(s);
+            cancelRequest(s);
+        }
+    };
 
-            requestsChanged();
+    private void cancelRequest(ServiceRequest s) {
+        s.descope();
+        requests.remove(s);
+        requestsChanged();
+    }
+
+    private View.OnClickListener onCancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            ServiceRequest request = (ServiceRequest) view.getTag();
+            cancelRequest(request);
         }
     };
 

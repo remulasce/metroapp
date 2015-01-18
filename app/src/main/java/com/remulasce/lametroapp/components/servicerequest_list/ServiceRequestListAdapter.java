@@ -17,8 +17,11 @@ import java.util.List;
  * Created by Remulasce on 12/16/2014.
  */
 public class ServiceRequestListAdapter extends ArrayAdapter{
-    public ServiceRequestListAdapter(Context context, int resource, List<ServiceRequest> values) {
+    View.OnClickListener cancelButtonListener;
+
+    public ServiceRequestListAdapter(Context context, int resource, List<ServiceRequest> values, View.OnClickListener cancelButtonListener) {
         super(context, resource, values);
+        this.cancelButtonListener = cancelButtonListener;
     }
 
     @Override
@@ -29,6 +32,9 @@ public class ServiceRequestListAdapter extends ArrayAdapter{
 
         TextView t = (TextView) rowView.findViewById(R.id.service_request_text);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
+
+        b.setTag(getItem(position));
+        b.setOnClickListener(cancelButtonListener);
 
         t.setText(((ServiceRequest)getItem(position)).getDisplayName());
 
