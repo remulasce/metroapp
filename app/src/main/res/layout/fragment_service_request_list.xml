@@ -11,6 +11,7 @@
         android:id="@+id/service_request_list"
         android:layout_gravity="center_horizontal|top"
         android:drawSelectorOnTop="false"
+        tools:listitem="@layout/service_request_item"
         />
 
 </FrameLayout>
