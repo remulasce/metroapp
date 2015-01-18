@@ -21,6 +21,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -165,18 +166,23 @@ public class ArrivalNotifyService extends Service {
 
 			NotificationCompat.Builder mBuilder =
 			        new NotificationCompat.Builder(ArrivalNotifyService.this);
-			
-			while (run) {
+            Intent cancelIntent = new Intent();
+            cancelIntent.setAction("com.remulasce.lametroapp.cancel_notification");
+
+            PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.addAction(R.drawable.abc_ic_clear, "Cancel", cancelPendingIntent);
+
+
+            while (run) {
 				updateNotificationText(mBuilder);
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {}
 			}
 		}
-		
-		
 
-	    public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
+
+        public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
 	        Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());     
 	        
 	        String msg1;
@@ -281,13 +287,14 @@ public class ArrivalNotifyService extends Service {
 	                } else {
 	                    mBuilder.setSound(null);
 	                }
-	                
-	                Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
+
+
+                    Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
 	                resultIntent.putExtra("Route", routeName);
 	                resultIntent.putExtra("StopID", String.valueOf(stopID));
 	                resultIntent.putExtra("VehicleNumber", vehicleNumber);
 
-	                TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(ArrivalNotifyService.this);
 	                stackBuilder.addParentStack(MainActivity.class);
 	                stackBuilder.addNextIntent(resultIntent);
 	                PendingIntent resultPendingIntent =
@@ -295,7 +302,8 @@ public class ArrivalNotifyService extends Service {
 	                            0,
 	                            PendingIntent.FLAG_UPDATE_CURRENT
 	                        );
-	                mBuilder.setContentIntent(resultPendingIntent);
+
+                    mBuilder.setContentIntent(resultPendingIntent);
 	                NotificationManager mNotificationManager =
 	                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
