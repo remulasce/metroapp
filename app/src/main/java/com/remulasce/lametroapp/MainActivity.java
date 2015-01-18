@@ -204,21 +204,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
-        menu.add( "Stop Arrival Notification" );
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
-        if ( item.getTitle().equals( "Stop Arrival Notification" ) ) {
-            NotifyServiceManager.stopNotifyService(this);
-        }
-
         return true;
-    }
-
-    private void clearOmniBar() {
-        omniHandler.clearFields();
     }
 
     @Override
