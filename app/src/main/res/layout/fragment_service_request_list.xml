@@ -5,7 +5,7 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="131dp"
+        android:layout_height="110dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:id="@+id/service_request_list"
