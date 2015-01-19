@@ -104,9 +104,17 @@ public class ServiceRequestListFragment extends Fragment {
     public void loadSavedRequests() {
         Log.d(TAG, "Loading saved requests");
 
-        this.requests.clear();
+        clearAllRequests();
         this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
 
+        requestsChanged();
+    }
+
+    private void clearAllRequests() {
+        for (ServiceRequest each : requests) {
+            each.descope();
+        }
+        requests.clear();
         requestsChanged();
     }
 
@@ -120,6 +128,7 @@ public class ServiceRequestListFragment extends Fragment {
     };
 
     private void cancelRequest(ServiceRequest s) {
+        Log.d(TAG, "Cancelling request: "+s);
         s.descope();
         requests.remove(s);
         requestsChanged();

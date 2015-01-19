@@ -25,7 +25,7 @@ import com.remulasce.lametroapp.basic_types.ServiceRequest;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 2000;
+    protected final static int UPDATE_INTERVAL = 1000;
 
     protected ListView list;
     protected ArrayAdapter< Trip > adapter;

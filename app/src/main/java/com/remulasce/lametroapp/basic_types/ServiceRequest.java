@@ -29,9 +29,6 @@ public class ServiceRequest {
         return inScope;
     }
 
-    public String toString() {
-        return raw;
-    }
     public String getDisplayName() { return displayName; }
 
     //Returns if the service request makes any sense to fulfill
@@ -51,5 +48,9 @@ public class ServiceRequest {
 
     public String getRaw() {
         return raw;
+    }
+    @Override
+    public String toString() {
+        return raw + ", "+ displayName;
     }
 }
