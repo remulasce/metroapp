@@ -55,6 +55,7 @@ public class SettingFieldSaver implements FieldSaver {
         }
 
         editor.commit();
+        Log.d("SettingFieldSaver", "Saved "+i+" service requests");
     }
 
     @Override
@@ -93,7 +94,7 @@ public class SettingFieldSaver implements FieldSaver {
                 ret.add(add);
             }
         }
-
+        Log.d("SettingFieldSaver", "Loaded up to "+requestCount+" requests");
         return ret;
     }
 }

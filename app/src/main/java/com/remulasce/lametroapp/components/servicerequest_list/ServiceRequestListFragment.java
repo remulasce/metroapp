@@ -43,14 +43,16 @@ public class ServiceRequestListFragment extends Fragment {
         if (!requests.contains(serviceRequest)) {
             requests.add(serviceRequest);
 
-            requestsChanged();
+            requestsChanged(true);
         }
     }
 
-    private void requestsChanged() {
+    private void requestsChanged(boolean saveRequests) {
         requestList.setAdapter(makeAdapter(requests));
         updateTripPopulator(requests);
-        saveServiceRequests(requests);
+        if (saveRequests) {
+            saveServiceRequests(requests);
+        }
     }
 
     public ServiceRequestListFragment() {
@@ -104,18 +106,18 @@ public class ServiceRequestListFragment extends Fragment {
     public void loadSavedRequests() {
         Log.d(TAG, "Loading saved requests");
 
-        clearAllRequests();
+        clearAllRequests(false);
         this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
 
-        requestsChanged();
+        requestsChanged(false);
     }
 
-    private void clearAllRequests() {
+    private void clearAllRequests(boolean saveRequests) {
         for (ServiceRequest each : requests) {
             each.descope();
         }
         requests.clear();
-        requestsChanged();
+        requestsChanged(saveRequests);
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -131,7 +133,7 @@ public class ServiceRequestListFragment extends Fragment {
         Log.d(TAG, "Cancelling request: "+s);
         s.descope();
         requests.remove(s);
-        requestsChanged();
+        requestsChanged(true);
     }
 
     private View.OnClickListener onCancelListener = new View.OnClickListener() {

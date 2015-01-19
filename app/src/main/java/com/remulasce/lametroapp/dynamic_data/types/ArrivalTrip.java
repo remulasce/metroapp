@@ -60,6 +60,7 @@ public class ArrivalTrip extends Trip {
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
         TextView prediction_text = (TextView) rowView.findViewById(R.id.prediction_time_estimate);
+        TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
@@ -77,7 +78,8 @@ public class ArrivalTrip extends Trip {
 
         stop_text.setText(stopString);
         route_text.setText(routeDestString);
-        prediction_text.setText(LaMetroUtil.standaloneSecondsToDisplay(seconds)+ " for "+vehicle);
+        prediction_text.setText(LaMetroUtil.standaloneSecondsToDisplay(seconds));
+        vehicle_text.setText(vehicle);
 
         return rowView;
     }

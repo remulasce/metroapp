@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:paddingBottom="2dp"
+    android:paddingLeft="4dp"
     android:paddingTop="2dp">
 
 
@@ -11,6 +12,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Example Station"
         android:id="@+id/prediction_stop_name"
+        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -19,21 +21,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="5 min veh test"
+        android:text="King's cross etc Station"
         android:id="@+id/prediction_destination_name"
-        android:layout_marginLeft="23dp"
-        android:layout_marginStart="23dp"
         android:layout_below="@+id/prediction_time_estimate"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignLeft="@+id/prediction_time_estimate"
+        android:layout_alignStart="@+id/prediction_time_estimate" />
+
+    <TextView
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="5 min"
+        android:id="@+id/prediction_time_estimate"
+        android:layout_below="@+id/prediction_stop_name"
+        android:layout_marginLeft="40dp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="999: King's Cross Station"
-        android:id="@+id/prediction_time_estimate"
-        android:layout_below="@+id/prediction_stop_name"
-        android:layout_alignLeft="@+id/prediction_destination_name"
-        android:layout_alignStart="@+id/prediction_destination_name" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Veh 434"
+        android:id="@+id/prediction_vehicle"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="37dp"
+        android:layout_alignBaseline="@+id/prediction_time_estimate"
+        android:layout_toRightOf="@+id/prediction_time_estimate"
+        android:layout_toEndOf="@+id/prediction_time_estimate"
+        android:textColor="#64646464" />
 </RelativeLayout>
