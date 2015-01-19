@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -35,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private static final String TAG = "MainActivity";
 
     AutoCompleteTextView omniField;
-    Button omniButton;
+    ImageButton omniButton;
     Button clearButton;
 
     OmniBarInputHandler omniHandler;
@@ -96,7 +97,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     protected void linkViewReferences() {
         omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
-        omniButton = (Button) findViewById( R.id.omni_button );
+        omniButton = (ImageButton) findViewById( R.id.omni_button );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
 
         tripList = (ListView) findViewById( R.id.tripList );

@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
     private AutoCompleteTextView omniField;
-    private Button addButton;
+    private ImageButton addButton;
     private Button clearButton;
     private ServiceRequestListFragment requestList;
     private StopNameTranslator stopNames;
@@ -38,7 +39,7 @@ public class OmniBarInputHandler {
     //Poor form to require Context, we just need to show Toasts occasionally.
     private Context c;
 
-    public OmniBarInputHandler(AutoCompleteTextView textView, Button addButton, Button clearButton,
+    public OmniBarInputHandler(AutoCompleteTextView textView, ImageButton addButton, Button clearButton,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
                                Tracker t, Context c) {
         this.omniField = textView;
