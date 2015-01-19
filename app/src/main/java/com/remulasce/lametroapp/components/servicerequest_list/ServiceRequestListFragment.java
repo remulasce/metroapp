@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.TripPopulator;
@@ -30,6 +31,7 @@ public class ServiceRequestListFragment extends Fragment {
 
     private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
+    private TextView hintText;
 
     private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
@@ -53,6 +55,12 @@ public class ServiceRequestListFragment extends Fragment {
         if (saveRequests) {
             saveServiceRequests(requests);
         }
+
+        if (requests.size() > 0) {
+            hintText.setVisibility(View.INVISIBLE);
+        } else {
+            hintText.setVisibility(View.VISIBLE);
+        }
     }
 
     public ServiceRequestListFragment() {
@@ -71,7 +79,7 @@ public class ServiceRequestListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_request_list, container, false);
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
-//        requestList.setOnItemClickListener(onItemClickListener);
+        hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
         return view;
     }
 
@@ -93,7 +101,6 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
-//        mListener.getTripPopulator().StopSelectionChanged(convertToStringLine(requests));
         mListener.getTripPopulator().SetServiceRequests(requests);
     }
 

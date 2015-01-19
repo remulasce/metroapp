@@ -11,7 +11,15 @@
         android:id="@+id/service_request_list"
         android:layout_gravity="center_horizontal|top"
         android:drawSelectorOnTop="false"
-        tools:listitem="@layout/service_request_item"
-        />
+        tools:listitem="@layout/service_request_item" />
+
+    <TextView
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Add stops in the field above"
+        android:id="@+id/service_request_hint_text"
+        android:layout_gravity="center" />
 
 </FrameLayout>

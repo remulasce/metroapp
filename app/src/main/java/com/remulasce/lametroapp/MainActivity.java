@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -43,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     ServiceRequestListFragment requestFragment;
 
     ListView tripList;
+    TextView tripListHint;
 
     TripPopulator populator;
     MetroStaticsProvider staticsProvider;
@@ -101,13 +103,14 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         clearButton = (Button) findViewById( R.id.omni_clear_button );
 
         tripList = (ListView) findViewById( R.id.tripList );
+        tripListHint = (TextView) findViewById( R.id.trip_list_hint );
 
         requestFragment = (ServiceRequestListFragment) getFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
     }
 
     protected void setupActionListeners() {
-        populator = new TripPopulator( tripList );
+        populator = new TripPopulator( tripList, tripListHint );
         tripList.setOnItemClickListener( tripClickListener );
     }
 

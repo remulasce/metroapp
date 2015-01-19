@@ -12,8 +12,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
@@ -22,12 +24,15 @@ import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
+import org.w3c.dom.Text;
+
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
     protected final static int UPDATE_INTERVAL = 1000;
 
     protected ListView list;
+    protected TextView hint;
     protected ArrayAdapter< Trip > adapter;
     protected final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
@@ -38,8 +43,9 @@ public class TripPopulator {
 
     protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
-    public TripPopulator( ListView list ) {
+    public TripPopulator( ListView list, TextView hint ) {
         this.list = list;
+        this.hint = hint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
 //        adapter = new ArrayAdapter< Trip >( list.getContext(), R.layout.trip_item );
@@ -196,6 +202,12 @@ public class TripPopulator {
                     adapter.addAll( activeTrips );
                     adapter.sort( tripPriorityComparator );
                     adapter.notifyDataSetChanged();
+
+                    if (activeTrips.size() == 0) {
+                        hint.setVisibility(View.VISIBLE);
+                    } else {
+                        hint.setVisibility(View.INVISIBLE);
+                    }
 
                     Tracking.sendUITime( "TripPopulator", "Refresh TripList", start );
                 }
