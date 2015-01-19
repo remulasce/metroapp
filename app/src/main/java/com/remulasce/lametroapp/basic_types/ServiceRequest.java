@@ -11,6 +11,8 @@ public class ServiceRequest {
     String displayName = "ServiceRequest";
     boolean inScope = true;
 
+    Prediction prediction = null;
+
     public ServiceRequest() {}
     public ServiceRequest(String s) {
         this.raw = s;
@@ -40,9 +42,10 @@ public class ServiceRequest {
 
     public Prediction makePrediction() {
         // Assume Stop
-        Stop s = new Stop(raw);
-        StopPrediction prediction = new StopPrediction(s, null);
-
+        if (prediction == null) {
+            Stop s = new Stop(raw);
+            prediction = new StopPrediction(s, null);
+        }
         return prediction;
     }
 
