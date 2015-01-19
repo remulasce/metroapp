@@ -247,7 +247,7 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
-	        if (minutesSinceEstimate >= 3) { msg2 += " : "+minutesSinceEstimate; }
+	        if (minutesSinceEstimate >= 5) { msg2 += " : "+minutesSinceEstimate; }
 	        
 	        
 	        if (vehicleNumber != null) {

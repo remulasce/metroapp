@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Arrival predictions for those stops show up here\n\nTap an arrival to set a notification for it\n\nPhone will vibrate and a sound will play when the vehicle is 90 seconds away"
+        android:text="Arrival predictions for those stops show up here\n\nTap an arrival to set a notification for it\n\nWhen vehicle is 90 seconds away, the phone will then vibrate and a sound will play"
         android:id="@+id/trip_list_hint"
         android:padding="20dp"
         android:textAlignment="center"
