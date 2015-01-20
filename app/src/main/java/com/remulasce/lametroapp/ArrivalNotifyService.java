@@ -43,18 +43,9 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
 
 public class ArrivalNotifyService extends Service {
-
-    
-    /*
-
-	*/
-	
-	
 	String displayedTitle = "";
 	String displayedText = "";
-	
 
-//	private Thread netThread;
 	private NetTask netTask;
 	private NotificationTask notificationTask;
 	
@@ -72,8 +63,7 @@ public class ArrivalNotifyService extends Service {
 	    public boolean isValid = false;
 	    
 	    int runNum = 0;
-	    //int lastMinutes = -1;
-	    
+
 	    public long arrivalTime = 0;
 	    public long arrivalUpdatedAt = 0;
 	    
@@ -88,8 +78,6 @@ public class ArrivalNotifyService extends Service {
 			// Prevents confusion in the notification handler
 			arrivalUpdatedAt = System.currentTimeMillis();
 			
-			toast("Arrival Notification Service Started");
-
 			while (run) {
 
 				String response = getXMLArrivalString(stopID, agency, routeName);				
@@ -115,8 +103,6 @@ public class ArrivalNotifyService extends Service {
 					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
 				} catch (InterruptedException e) {}
 			}
-
-			toast ("Notification Service Ending");		
 		}
 		
 		  //Helper fxn, since we only make Types long enough to check validity,
