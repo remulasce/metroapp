@@ -136,18 +136,23 @@ public class TripPopulator {
         }
 
         private void addNewStops() {
+            Collection<ServiceRequest> newRequests = new ArrayList<ServiceRequest>();
             // Add new stops
             synchronized (serviceRequests) {
                 for ( ServiceRequest request : serviceRequests) {
                     if ( !trackedMap.containsKey( request ) ) {
 
-                        Prediction prediction = request.makePrediction();
-                        prediction.setTripCallback(tripUpdateCallback);
-
-                        trackedMap.put(request, prediction);
-                        prediction.startPredicting();
+                        newRequests.add(request);
                     }
                 }
+            }
+
+            for (ServiceRequest request: newRequests) {
+                Prediction prediction = request.makePrediction();
+                prediction.setTripCallback(tripUpdateCallback);
+
+                prediction.startPredicting();
+                trackedMap.put(request, prediction);
             }
         }
 

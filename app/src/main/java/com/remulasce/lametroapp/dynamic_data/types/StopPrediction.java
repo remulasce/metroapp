@@ -26,7 +26,7 @@ public class StopPrediction extends Prediction {
     
     protected boolean inScope = false; 
 
-    Map< Destination, Arrival > directionMap = new HashMap< Destination, Arrival >();
+    final Map< Destination, Arrival > directionMap = new HashMap< Destination, Arrival >();
 
     Arrival firstArrival;
     Trip firstTrip;

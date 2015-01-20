@@ -30,7 +30,7 @@ public class PredictionManager {
 	}
 	
 	
-	protected List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
+	protected final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
 	protected UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
