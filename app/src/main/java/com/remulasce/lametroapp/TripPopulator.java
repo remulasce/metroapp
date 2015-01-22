@@ -29,7 +29,7 @@ import org.w3c.dom.Text;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 1000;
+    protected final static int UPDATE_INTERVAL = 2000;
 
     protected ListView list;
     protected TextView hint;
@@ -62,7 +62,7 @@ public class TripPopulator {
         running = true;
 
         updateRunner = new UpdateRunner();
-        updateThread = new Thread( updateRunner );
+        updateThread = new Thread( updateRunner, "UpdateRunner" );
 
         updateThread.start();
     }
