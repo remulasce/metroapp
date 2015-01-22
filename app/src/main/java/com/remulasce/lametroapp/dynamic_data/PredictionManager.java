@@ -82,15 +82,20 @@ public class PredictionManager {
 		public void run() {
 			
 			while (run) {
-
                 for (int i = trackingList.size() - 1; i >= 0; i--) {
-                    Prediction p = trackingList.get(i);
-                    int requestedInterval = p.getRequestedUpdateInterval();
-                    long timeSinceUpdate = p.getTimeSinceLastUpdate();
-                    if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
-                        Log.v(TAG, "Getting update after " + requestedInterval);
-                        p.setGettingUpdate();
-                        GetUpdate(p);
+                    try {
+                        Prediction p = trackingList.get(i);
+
+                        int requestedInterval = p.getRequestedUpdateInterval();
+                        long timeSinceUpdate = p.getTimeSinceLastUpdate();
+                        if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+                            Log.v(TAG, "Getting update after " + requestedInterval);
+                            p.setGettingUpdate();
+                            GetUpdate(p);
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        Log.w(TAG, "Prediction removed out from under PredictionManager");
+                        continue;
                     }
                 }
 
