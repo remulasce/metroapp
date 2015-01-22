@@ -53,7 +53,9 @@ public class PredictionManager {
 			if (updater != null) {
 				updater.run = false;
 				updater = null;
-			}
+			} else {
+                Log.w(TAG, "Pausing a missing prediction updater");
+            }
 		}
 	}
 	public void resumeTracking() {
@@ -62,7 +64,9 @@ public class PredictionManager {
 			if (updater == null) {
 				updater = new UpdateStager();
 				new Thread(updater, "Prediction Update Checker").start();
-			}
+			} else {
+                Log.w(TAG, "Resuming an existing prediction updater");
+            }
 		}
 	}
 	
@@ -78,19 +82,18 @@ public class PredictionManager {
 		public void run() {
 			
 			while (run) {
-			
-				synchronized (trackingList) {
-					for (Prediction p : trackingList) {
-						int requestedInterval = p.getRequestedUpdateInterval();
-						long timeSinceUpdate = p.getTimeSinceLastUpdate();
-						if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
-							Log.v(TAG, "Getting update after "+requestedInterval);
-							p.setGettingUpdate();
-							GetUpdate( p );
-						}
-					}
-				}
-				
+
+                for (int i = trackingList.size() - 1; i >= 0; i--) {
+                    Prediction p = trackingList.get(i);
+                    int requestedInterval = p.getRequestedUpdateInterval();
+                    long timeSinceUpdate = p.getTimeSinceLastUpdate();
+                    if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+                        Log.v(TAG, "Getting update after " + requestedInterval);
+                        p.setGettingUpdate();
+                        GetUpdate(p);
+                    }
+                }
+
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {

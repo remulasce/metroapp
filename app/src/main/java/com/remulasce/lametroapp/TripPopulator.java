@@ -69,6 +69,12 @@ public class TripPopulator {
 
     public void StopPopulating() {
         Log.d( TAG, "Stopping TripPopulator" );
+
+        if (!running) {
+            Log.e( TAG, "Stopping an already-stopped populator");
+            return;
+
+        }
         updateRunner.run = false;
         running = false;
     }
@@ -102,13 +108,12 @@ public class TripPopulator {
     *
     * */
     protected class UpdateRunner implements Runnable {
-        protected boolean run = false;
+        protected boolean run = true;
 
         Map<ServiceRequest, Prediction > trackedMap = new HashMap< ServiceRequest, Prediction >();
 
         @Override
         public void run() {
-            run = true;
             Log.i( TAG, "UpdateRunner starting" );
 
             while ( run ) {

@@ -181,6 +181,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onStart() {
         super.onStart();
+        populator.StartPopulating();
+        PredictionManager.getInstance().resumeTracking();
 //        Logging.StartSavingLogcat(this);
     }
 
@@ -201,9 +203,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onResume() {
         super.onResume();
-        populator.StartPopulating();
         locationService.startLocating(this);
-        PredictionManager.getInstance().resumeTracking();
+
     }
 
     @Override
