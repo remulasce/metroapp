@@ -70,7 +70,7 @@ public class ArrivalTrip extends Trip {
         String routeString = route.getString();
         String stopString = stop.getStopName();
         String destString = dest.getString();
-        String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " ";
+        String vehicle = "Veh " + parentArrival.vehicle.getString() + " ";
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
