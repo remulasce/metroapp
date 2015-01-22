@@ -33,7 +33,15 @@ public class MetroLocationRetriever implements LocationRetriever {
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
 
-        startLocationRequests(c);
+        setupLocation(c);
+    }
+
+    private void setupLocation(Context c) {
+        mGoogleApiClient = new GoogleApiClient.Builder(c)
+                .addConnectionCallbacks(connectionCallbacks)
+                .addOnConnectionFailedListener(connectionFailedListener)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     // Because of power concerns, we only can do location when allowed to do so.
@@ -44,20 +52,10 @@ public class MetroLocationRetriever implements LocationRetriever {
 
     public void stopLocating(Context c) {
         Log.i(TAG, "Stopping location service");
-        try {
-            LocationServices.FusedLocationApi.removeLocationUpdates(
-                    mGoogleApiClient, locationListener);
-        } catch (IllegalStateException e) {
-            Log.w(TAG, "Stopping unstarted location service");
-        }
+        mGoogleApiClient.disconnect();
     }
 
     protected synchronized void startLocationRequests(Context c) {
-        mGoogleApiClient = new GoogleApiClient.Builder(c)
-                .addConnectionCallbacks(connectionCallbacks)
-                .addOnConnectionFailedListener(connectionFailedListener)
-                .addApi(LocationServices.API)
-                .build();
         mGoogleApiClient.connect();
         Log.d(TAG, "startLocationRequests");
     }
@@ -67,12 +65,15 @@ public class MetroLocationRetriever implements LocationRetriever {
         public void onConnected(Bundle bundle) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (lastLocation != null) {
+                Log.i(TAG, "Location service connected");
                 lastRetrievedLocation = lastLocation;
+            } else {
+                Log.i(TAG, "location service connected, but no location available");
             }
 
             LocationRequest request = new LocationRequest();
-            request.setInterval(15 * 1000);
-            request.setFastestInterval(1000);
+            request.setInterval(5 * 1000);
+            request.setFastestInterval(500);
             request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
             try {
