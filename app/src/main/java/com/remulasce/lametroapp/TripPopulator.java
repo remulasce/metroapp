@@ -24,8 +24,6 @@ import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
-import org.w3c.dom.Text;
-
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
@@ -48,7 +46,6 @@ public class TripPopulator {
         this.hint = hint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
-//        adapter = new ArrayAdapter< Trip >( list.getContext(), R.layout.trip_item );
         adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
     }
