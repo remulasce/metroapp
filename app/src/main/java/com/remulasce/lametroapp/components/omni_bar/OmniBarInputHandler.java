@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -128,6 +129,10 @@ public class OmniBarInputHandler {
                         makeServiceRequest(id, requestText);
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
+
+                    InputMethodManager imm = (InputMethodManager)c.getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
 
                     t.send(new HitBuilders.EventBuilder()
                             .setCategory("AutoComplete")

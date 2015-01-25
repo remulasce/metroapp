@@ -9,4 +9,3 @@ import com.remulasce.lametroapp.basic_types.Stop;
 public interface StopLocationTranslator {
     public BasicLocation getStopLocation(Stop stop);
 }
-l
