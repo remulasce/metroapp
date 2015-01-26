@@ -48,7 +48,6 @@ public class TripPopulator {
         this.hint = hint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
-//        adapter = new ArrayAdapter< Trip >( list.getContext(), R.layout.trip_item );
         adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
     }
@@ -82,10 +81,8 @@ public class TripPopulator {
     protected void rawSetServiceRequests( Collection<ServiceRequest> requests) {
         Log.d(TAG, "Setting service requests");
 
-//        synchronized (serviceRequests) {
-            serviceRequests.clear();
-            serviceRequests.addAll(requests);
-//        }
+        serviceRequests.clear();
+        serviceRequests.addAll(requests);
     }
 
     public void SetServiceRequests( Collection<ServiceRequest> requests) {
@@ -143,14 +140,12 @@ public class TripPopulator {
         private void addNewStops() {
             Collection<ServiceRequest> newRequests = new ArrayList<ServiceRequest>();
             // Add new stops
-//            synchronized (serviceRequests) {
-                for ( ServiceRequest request : serviceRequests) {
-                    if ( !trackedMap.containsKey( request ) ) {
+            for ( ServiceRequest request : serviceRequests) {
+                if ( !trackedMap.containsKey( request ) ) {
 
-                        newRequests.add(request);
-                    }
+                    newRequests.add(request);
                 }
-//            }
+            }
 
             for (ServiceRequest request: newRequests) {
                 Prediction prediction = request.makePrediction();
@@ -162,43 +157,39 @@ public class TripPopulator {
         }
 
         private void removeOldStops() {
-//            synchronized (serviceRequests) {
-                // Remove stops that are no longer tracked
-                ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
-                // check what stops we have mapped that are no longer in UI
-                for ( Entry< ServiceRequest, Prediction > t : trackedMap.entrySet() ) {
-                    boolean stillTracked = false;
-                    for ( ServiceRequest s : serviceRequests) {
-                        if ( s == t.getKey() ) {
-                            stillTracked = true;
-                            break;
-                        }
-                    }
-                    if ( !stillTracked ) {
-                        rem.add( t.getKey() );
+            // Remove stops that are no longer tracked
+            ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
+            // check what stops we have mapped that are no longer in UI
+            for ( Entry< ServiceRequest, Prediction > t : trackedMap.entrySet() ) {
+                boolean stillTracked = false;
+                for ( ServiceRequest s : serviceRequests) {
+                    if ( s == t.getKey() ) {
+                        stillTracked = true;
+                        break;
                     }
                 }
+                if ( !stillTracked ) {
+                    rem.add( t.getKey() );
+                }
+            }
 
-                // deactivate and remove out-scoped stops
-                for ( ServiceRequest s : rem ) {
-                    Prediction p = trackedMap.get( s );
-                    p.stopPredicting();
-                    trackedMap.remove(s);
-                }
-//            }
+            // deactivate and remove out-scoped stops
+            for ( ServiceRequest s : rem ) {
+                Prediction p = trackedMap.get( s );
+                p.stopPredicting();
+                trackedMap.remove(s);
+            }
         }
 
         // The Trip will know when its parent request has been removed.
         protected void cullInvalidTrips() {
-//            synchronized ( activeTrips ) {
-                List< Trip > inactiveTrips = new ArrayList< Trip >();
-                for ( Trip t : activeTrips ) {
-                    if ( !t.isValid() ) {
-                        inactiveTrips.add( t );
-                    }
+            List< Trip > inactiveTrips = new ArrayList< Trip >();
+            for ( Trip t : activeTrips ) {
+                if ( !t.isValid() ) {
+                    inactiveTrips.add( t );
                 }
-                activeTrips.removeAll( inactiveTrips );
-//            }
+            }
+            activeTrips.removeAll( inactiveTrips );
         }
 
         // Actually push what happened to the user
@@ -239,15 +230,11 @@ public class TripPopulator {
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {
                     Log.v( TAG, "Skipped invalid trip " + trip.getInfo() );
-//                    synchronized ( activeTrips ) {
-                        activeTrips.remove( trip );
-//                    }
+                    activeTrips.remove( trip );
                     return;
                 }
-//                synchronized ( activeTrips ) {
-                    if ( !activeTrips.contains( trip ) ) {
-                        activeTrips.add( trip );
-//                    }
+                if ( !activeTrips.contains( trip ) ) {
+                    activeTrips.add( trip );
                 }
             }
         };
