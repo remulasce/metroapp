@@ -266,7 +266,7 @@ public class ArrivalNotifyService extends Service {
 	                        
 	                if ( doVibrate ) {
 	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-                        toast ("Next arrival in "+LaMetroUtil.secondsToDisplay(secondsTillArrival));
+                        toast ("Vehicle arrives in "+LaMetroUtil.secondsToDisplay(secondsTillArrival));
 	                    
 	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 	                    v.vibrate(2000);
