@@ -259,7 +259,7 @@ public class ArrivalNotifyService extends Service {
 
 	                
 	                mBuilder
-	                        .setSmallIcon(R.drawable.ic_launcher)
+                            .setSmallIcon(R.mipmap.ic_launcher)
 	                        .setContentTitle(dispTitle)
 	                        .setContentText(dispText)
 	                        .setStyle(bigTextStyle);
