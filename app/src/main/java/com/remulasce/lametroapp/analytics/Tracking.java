@@ -32,7 +32,7 @@ public class Tracking {
 	    return System.currentTimeMillis();
 	}
 	public static void sendUITime( String name, String label, long startTime ) {
-	    sendTime( "UITiming", name, label, startTime );
+//	    sendTime( "UITiming", name, label, startTime );
 	}
     public static long timeSpent(long startTime) {
         return System.currentTimeMillis() - startTime;

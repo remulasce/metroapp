@@ -1,6 +1,8 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,9 +86,21 @@ public class ArrivalTrip extends Trip {
         return rowView;
     }
 
-    public void executeAction( Context context ) {
-        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                parentArrival.destination, parentArrival.vehicle, context);
+    public void executeAction( final Context context ) {
+        new AlertDialog.Builder(context)
+                .setTitle("Arrival Notification")
+                .setMessage("Notify when this vehicle arrives?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
+                                parentArrival.destination, parentArrival.vehicle, context);
+                    }
+
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
     
     public int hashCode() {

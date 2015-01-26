@@ -7,6 +7,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -27,11 +29,13 @@ public class MetroLocationRetriever implements LocationRetriever {
     LocationManager locationManager;
 
     GoogleApiClient mGoogleApiClient;
+    Tracker t;
 
     Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
+        this.t = Tracking.getTracker(c);
 
         setupLocation(c);
     }
@@ -66,8 +70,19 @@ public class MetroLocationRetriever implements LocationRetriever {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (lastLocation != null) {
                 Log.i(TAG, "Location service connected");
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Location Service" )
+                        .setAction( "OnConnected" )
+                        .setLabel( "Location Available" )
+                        .build() );
+
                 lastRetrievedLocation = lastLocation;
             } else {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Location Service" )
+                        .setAction( "OnConnected" )
+                        .setLabel( "No Last Location" )
+                        .build() );
                 Log.i(TAG, "location service connected, but no location available");
             }
 
@@ -86,7 +101,6 @@ public class MetroLocationRetriever implements LocationRetriever {
         @Override
         public void onConnectionSuspended(int i) {
             Log.w(TAG, "OnConnectionSuspended");
-
         }
     };
 
@@ -102,6 +116,10 @@ public class MetroLocationRetriever implements LocationRetriever {
         @Override
         public void onConnectionFailed(ConnectionResult connectionResult) {
             Log.w(TAG, "Location reading failed");
+            t.send( new HitBuilders.EventBuilder()
+                    .setCategory( "Location Service" )
+                    .setAction( "OnConnectionFailed" )
+                    .build() );
         }
     };
 
