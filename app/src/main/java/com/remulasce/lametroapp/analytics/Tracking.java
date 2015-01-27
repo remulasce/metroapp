@@ -34,12 +34,16 @@ public class Tracking {
 	public static void sendUITime( String name, String label, long startTime ) {
 	    sendTime( "UITiming", name, label, startTime );
 	}
+    public static void sendRawUITime( String name, String label, long timeSpent ) {
+        sendRawTime( "UITiming", name, label, timeSpent );
+    }
     public static long timeSpent(long startTime) {
         return System.currentTimeMillis() - startTime;
     }
-	public static void sendTime( String category, String name, String label, long startTime ) {
-	    long timeSpent = timeSpent(startTime);
-	    
+    public static void sendTime( String category, String name, String label, long startTime) {
+        sendRawTime( category, name, label, timeSpent( startTime ) );
+    }
+	public static void sendRawTime( String category, String name, String label, long timeSpent ) {
 	    Log.v(category, name+" "+label+": "+timeSpent);
 
 	    if (t == null) {

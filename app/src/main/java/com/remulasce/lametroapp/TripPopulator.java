@@ -44,6 +44,10 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
+    // Track timing
+    protected long timeSpentUpdating = 0;
+    protected long numberOfUpdates = 0;
+
     // ugh.
     protected Context c;
 
@@ -126,6 +130,8 @@ public class TripPopulator {
             Log.i( TAG, "UpdateRunner starting" );
 
             while ( run ) {
+                long t = Tracking.startTime();
+
                 updateTrackedMap();
                 cullInvalidTrips();
 
@@ -135,10 +141,18 @@ public class TripPopulator {
                     synchronized (waitLock) {
                         waitLock.wait(UPDATE_INTERVAL);
                     }
-//                    Thread.sleep( UPDATE_INTERVAL );
                 } catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
+                timeSpentUpdating += Tracking.timeSpent(t);
+                numberOfUpdates++;
+
+                if (numberOfUpdates > 100) {
+                    Tracking.sendRawUITime("TripPopulater", "Averaged update time", t);
+                    numberOfUpdates = 0;
+                    timeSpentUpdating = 0;
+                }
+
             }
             Log.i( TAG, "UpdateRunner ending" );
         }
