@@ -41,12 +41,24 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     public void AddServiceRequest(ServiceRequest serviceRequest) {
-        Log.d(TAG, "Adding service request " + serviceRequest);
-        if (!requests.contains(serviceRequest)) {
-            requests.add(serviceRequest);
-
-            requestsChanged(true);
+        if (duplicateRequest(serviceRequest)) {
+            Log.w(TAG, "Ignored duplicate service request");
+            return;
         }
+
+        Log.d(TAG, "Adding service request " + serviceRequest);
+        requests.add(serviceRequest);
+
+        requestsChanged(true);
+    }
+
+    private boolean duplicateRequest(ServiceRequest serviceRequest) {
+        for (ServiceRequest r : requests ) {
+            if (r.getDisplayName().equals(serviceRequest.getDisplayName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void requestsChanged(boolean saveRequests) {
