@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -61,7 +62,18 @@ public class OmniBarInputHandler {
         addButton.setOnClickListener(omniButtonListener);
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
+        omniField.setOnItemClickListener(autocompleteSelectedListener);
     }
+
+    protected AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            t.send(new HitBuilders.EventBuilder()
+                    .setCategory("AutoComplete")
+                    .setAction("AutoComplete Selected")
+                    .build());
+        }
+    };
 
     protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
@@ -135,7 +147,7 @@ public class OmniBarInputHandler {
 
                     t.send(new HitBuilders.EventBuilder()
                             .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add Button")
+                            .setAction("AutoComplete Add")
                             .setLabel("StopID")
                             .build());
                 }
@@ -152,7 +164,7 @@ public class OmniBarInputHandler {
 
                     t.send(new HitBuilders.EventBuilder()
                             .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add Button")
+                            .setAction("AutoComplete Add")
                             .setLabel("StopName")
                             .build());
                 }
@@ -163,14 +175,14 @@ public class OmniBarInputHandler {
 
                     t.send(new HitBuilders.EventBuilder()
                             .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add Button")
+                            .setAction("AutoComplete Add")
                             .setLabel("Invalid")
                             .build());
                 }
             } catch (Exception e) {
                 t.send(new HitBuilders.EventBuilder()
                         .setCategory("AutoComplete")
-                        .setAction("AutoComplete Add Button")
+                        .setAction("AutoComplete Add")
                         .setLabel("Exception")
                         .build());
             }
