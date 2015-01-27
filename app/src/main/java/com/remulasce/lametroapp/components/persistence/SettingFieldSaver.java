@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.StopServiceRequest;
+import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +32,12 @@ public class SettingFieldSaver implements FieldSaver {
     /* Format:
         We internally number how many requests we have in servicerequest_count int
         then in servicerequest_xx, we put a string set (unordered)
-        0 request.raw,
+        0 request.raw1
+        0 request.raw2
         1 request.displayname,
         2 request.inscope
 
-        The numbers are a natural ordering hack.
+        We add as many raw#s as we have tracked.
      */
     @Override
     public void saveServiceRequests(Collection<ServiceRequest> requests) {
@@ -46,9 +49,11 @@ public class SettingFieldSaver implements FieldSaver {
         int i = 0;
         for (ServiceRequest request : requests) {
             Set<String> put = new HashSet<String>();
-            put.add("0 "+request.getRaw());
+            for (String s : request.getRaw()) {
+                put.add("0 " + s);
+            }
             put.add("1 " + request.getDisplayName());
-            put.add("2 "+request.isInScope());
+            put.add("2 " + request.isInScope());
 
             editor.putStringSet(SERVICEREQUEST_ITEM_NAME + i, put);
             i++;
@@ -68,13 +73,13 @@ public class SettingFieldSaver implements FieldSaver {
             Set<String> set = new HashSet<String>();
             set = preferences.getStringSet(SERVICEREQUEST_ITEM_NAME + i, set);
 
-            String raw = "bad request load";
+            Collection<String> raw = new ArrayList<String>();
             String displayname = "bad request load";
             String scope = "bad request load";
 
             for (String s : set) {
                 if (s.startsWith("0")) {
-                    raw = s.substring(2);
+                    raw.add(s.substring(2));
                 }
                 if (s.startsWith("1")) {
                     displayname = s.substring(2);
@@ -84,8 +89,7 @@ public class SettingFieldSaver implements FieldSaver {
                 }
             }
 
-            ServiceRequest add = new ServiceRequest(raw);
-            add.setDisplayName(displayname);
+            ServiceRequest add = new StopServiceRequest(raw, displayname);
             if (scope.equals("false")) { add.descope(); }
 
             if (!add.isValid()) {

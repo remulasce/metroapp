@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
@@ -152,9 +153,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
     private void makeServiceRequest( String stopID, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-        ServiceRequest serviceRequest = new ServiceRequest(stopID);
-//        serviceRequest.setDisplayName(displayName+ ", "+stopID);
-        serviceRequest.setDisplayName(displayName);
+        ServiceRequest serviceRequest = new StopServiceRequest(stopID, displayName);
 
         if (serviceRequest.isValid()) {
             requestFragment.AddServiceRequest(serviceRequest);

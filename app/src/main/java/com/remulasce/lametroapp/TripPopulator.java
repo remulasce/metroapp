@@ -108,7 +108,7 @@ public class TripPopulator {
     protected class UpdateRunner implements Runnable {
         protected boolean run = true;
 
-        Map<ServiceRequest, Prediction > trackedMap = new HashMap< ServiceRequest, Prediction >();
+        Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
         @Override
         public void run() {
@@ -149,11 +149,14 @@ public class TripPopulator {
             }
 
             for (ServiceRequest request: newRequests) {
-                Prediction prediction = request.makePrediction();
-                prediction.setTripCallback(tripUpdateCallback);
+                Collection<Prediction> predictions = request.makePredictions();
 
-                prediction.startPredicting();
-                trackedMap.put(request, prediction);
+                trackedMap.put(request, predictions);
+
+                for (Prediction prediction : predictions) {
+                    prediction.setTripCallback(tripUpdateCallback);
+                    prediction.startPredicting();
+                }
             }
         }
 
@@ -161,7 +164,7 @@ public class TripPopulator {
             // Remove stops that are no longer tracked
             ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
             // check what stops we have mapped that are no longer in UI
-            for ( Entry< ServiceRequest, Prediction > t : trackedMap.entrySet() ) {
+            for ( Entry< ServiceRequest, Collection<Prediction> > t : trackedMap.entrySet() ) {
                 boolean stillTracked = false;
                 for ( ServiceRequest s : serviceRequests) {
                     if ( s == t.getKey() ) {
@@ -176,8 +179,10 @@ public class TripPopulator {
 
             // deactivate and remove out-scoped stops
             for ( ServiceRequest s : rem ) {
-                Prediction p = trackedMap.get( s );
-                p.stopPredicting();
+                Collection<Prediction> predictions = trackedMap.get(s);
+                for (Prediction p : predictions ) {
+                    p.stopPredicting();
+                }
                 trackedMap.remove(s);
             }
         }

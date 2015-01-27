@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
@@ -91,16 +92,23 @@ public class OmniBarInputHandler {
 
     private void makeServiceRequest( String stopID, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-        ServiceRequest serviceRequest = new ServiceRequest(stopID);
-//        serviceRequest.setDisplayName(displayName+ ", "+stopID);
-        serviceRequest.setDisplayName(displayName);
+        ServiceRequest serviceRequest = new StopServiceRequest(stopID, displayName);
 
         if (serviceRequest.isValid()) {
             requestList.AddServiceRequest(serviceRequest);
         } else {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
         }
+    }
+    private void makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
+        Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
+        ServiceRequest serviceRequest = new StopServiceRequest(stopIDs, displayName);
 
+        if (serviceRequest.isValid()) {
+            requestList.AddServiceRequest(serviceRequest);
+        } else {
+            Log.w(TAG, "Created invalid servicerequest, not adding to list");
+        }
     }
 
     // Parses the input to figure out if it's a stopid, stopname, etc.
@@ -125,8 +133,11 @@ public class OmniBarInputHandler {
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
-                    for (String id : convertedID)
-                        makeServiceRequest(id, requestText);
+                    makeMultiStopServiceRequest(convertedID, requestText);
+                    for (String id : convertedID) {
+//                        makeServiceRequest(id, requestText);
+//                        makeMultiStopServiceRequest( convertedID, requestText );
+                    }
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
 
