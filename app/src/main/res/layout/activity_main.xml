@@ -20,7 +20,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:background="#FFAAAAAA"
+        android:background="#ffe25725"
         android:id="@+id/separator"
         android:layout_below="@+id/service_request_fragment"
         android:paddingLeft="40dp"
