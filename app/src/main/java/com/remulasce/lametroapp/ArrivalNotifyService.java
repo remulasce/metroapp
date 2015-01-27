@@ -91,7 +91,7 @@ public class ArrivalNotifyService extends Service {
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
 					if (runNum == 0) {
-                        toast ("Next arrival in "+LaMetroUtil.secondsToDisplay(seconds));
+                        toast ("Next arrival "+LaMetroUtil.secondsToDisplay(seconds));
 					}
 				}
 				

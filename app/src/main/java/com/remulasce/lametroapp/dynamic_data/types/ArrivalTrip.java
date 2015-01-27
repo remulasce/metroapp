@@ -88,8 +88,8 @@ public class ArrivalTrip extends Trip {
 
     public void executeAction( final Context context ) {
         new AlertDialog.Builder(context)
-                .setTitle("Arrival Notification")
-                .setMessage("Notify when this vehicle arrives?")
+                .setTitle(context.getString(R.string.notify_confirmation_title))
+                .setMessage(context.getString(R.string.notify_confirmation_text))
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                     @Override

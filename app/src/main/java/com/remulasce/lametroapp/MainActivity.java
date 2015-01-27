@@ -181,8 +181,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             requestFragment.loadSavedRequests();
         }
 
-        String label = ( intentFilled ) ? "Form Filled From Intent"
-                : "Form Filled From Preferences";
+        String label = "No Form Prefill";
+        if ( intentFilled ) { label = "Form Filled From Intent"; }
+        else if (requestFragment.numRequests() > 0) { label = "Form Filled From Preferences"; }
+
         t.send( new HitBuilders.EventBuilder()
                 .setCategory( "MainScreen" )
                 .setAction( "Field Population" )

@@ -75,6 +75,10 @@ public class ServiceRequestListFragment extends Fragment {
         }
     }
 
+    public int numRequests() {
+        return requests.size();
+    }
+
     public ServiceRequestListFragment() {
         // Required empty public constructor
     }

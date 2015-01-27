@@ -9,5 +9,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="test_list_entries">test aoeu aoe</string>
     <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
+    <string name="notify_confirmation_text">Track the arrival time of this vehicle in a notification, and buzz when it is almost arrived?</string>
+    <string name="notify_confirmation_title">Vehicle Tracking</string>
 
 </resources>
