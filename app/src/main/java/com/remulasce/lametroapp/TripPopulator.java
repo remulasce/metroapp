@@ -238,7 +238,9 @@ public class TripPopulator {
                     long start = Tracking.startTime();
 
                     adapter.clear();
-                    adapter.addAll( activeTrips );
+                    for (Trip t : activeTrips) {
+                        adapter.add(t);
+                    }
                     adapter.sort( tripPriorityComparator );
                     adapter.notifyDataSetChanged();
 
