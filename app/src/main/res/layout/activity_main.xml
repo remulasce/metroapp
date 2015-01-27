@@ -19,7 +19,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="6dp"
         android:background="#ffe25725"
         android:id="@+id/separator"
         android:layout_below="@+id/service_request_fragment"
