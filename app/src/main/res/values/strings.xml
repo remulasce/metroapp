@@ -8,6 +8,6 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="test_list_entries">test aoeu aoe</string>
-    <string name="trip_list_hint">Arrival predictions for those stops show up here</string>
+    <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
 
 </resources>

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
@@ -42,13 +44,17 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
+    // ugh.
+    protected Context c;
+
     protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
-    public TripPopulator( ListView list, TextView hint, ProgressBar progress ) {
+    public TripPopulator( ListView list, TextView hint, ProgressBar progress, Context c ) {
         this.list = list;
         this.progress = progress;
         this.hint = hint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
+        this.c = c;
 
         adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
@@ -227,7 +233,17 @@ public class TripPopulator {
                         }
 
                     } else {
-                        hint.setVisibility(View.INVISIBLE);
+                        if ( hint.getVisibility() == View.VISIBLE ) {
+                            hint.setVisibility(View.INVISIBLE);
+
+                            uiHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(c, "Tap an arrival to set a notification for it", Toast.LENGTH_LONG).show();
+                                }
+                            }, 3000);
+                        }
+
                         progress.setVisibility(View.INVISIBLE);
                     }
 

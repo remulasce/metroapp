@@ -123,7 +123,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     protected void setupActionListeners() {
-        populator = new TripPopulator( tripList, tripListHint, tripListProgress );
+        populator = new TripPopulator( tripList, tripListHint, tripListProgress, this );
         tripList.setOnItemClickListener( tripClickListener );
     }
 
