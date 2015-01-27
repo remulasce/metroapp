@@ -223,7 +223,7 @@ public class ArrivalNotifyService extends Service {
 	            msg2 += "\n" + lastDestination;
 	        }
 	        else if (secondsTillArrival <= 90) {
-	            msg2 = "Next arrival: "+secondsTillArrival+" seconds";
+	            msg2 = secondsTillArrival+" seconds";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            
@@ -233,7 +233,7 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else {
-	            msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
+	            msg2 = (secondsTillArrival/60)+" minutes";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            lastDisplayedSeconds = secondsTillArrival;
