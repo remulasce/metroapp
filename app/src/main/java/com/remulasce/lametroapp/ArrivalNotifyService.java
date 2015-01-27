@@ -55,6 +55,7 @@ public class ArrivalNotifyService extends Service {
 	    boolean run = true;
 
 	    public int stopID;
+        public String stopName;
 	    public String vehicleNumber;
 	    public String agency;
 	    public String routeName;
@@ -87,6 +88,7 @@ public class ArrivalNotifyService extends Service {
 				if (seconds != -1) {
 				    isValid = true;
 				    lastDestination = arrival.destination;
+                    stopName = arrival.stopName;
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
@@ -181,6 +183,7 @@ public class ArrivalNotifyService extends Service {
 	        final String lastDestination = netTask.lastDestination;
 	        final String vehicleNumber = netTask.vehicleNumber;
 	        final String routeName = netTask.routeName;
+            final String stopName = netTask.stopName;
 	        final int stopID = netTask.stopID;
 	        
 	        final boolean isValid = netTask.isValid;
@@ -216,10 +219,12 @@ public class ArrivalNotifyService extends Service {
 	        }
 	        else if (secondsTillArrival <= 0) {
 	            msg2 = "Vehicle arrived";
+                msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	        }
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = "Next arrival: "+secondsTillArrival+" seconds";
+                msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            
 	            if( isValid && lastDisplayedSeconds > 90) {
@@ -229,6 +234,7 @@ public class ArrivalNotifyService extends Service {
 	        }
 	        else {
 	            msg2 = "Next arrival: "+(secondsTillArrival/60)+" minutes";
+                msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
@@ -266,7 +272,7 @@ public class ArrivalNotifyService extends Service {
 	                        
 	                if ( doVibrate ) {
 	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-                        toast ("Vehicle arrives in "+LaMetroUtil.secondsToDisplay(secondsTillArrival));
+                        toast ("Vehicle arrives "+LaMetroUtil.secondsToDisplay(secondsTillArrival));
 	                    
 	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 	                    v.vibrate(2000);
@@ -391,11 +397,14 @@ public class ArrivalNotifyService extends Service {
 	private class StupidArrival {
 	    public String destination;
 	    public int arrivalTime;
-	}
+        public String stopName;
+    }
 	public StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
 		int time = -1;
 		String lastDestination = "";
-		
+
+        String stopName = "";
+
 		XmlPullParserFactory factory;
 		try {
 			factory = XmlPullParserFactory.newInstance();
@@ -410,7 +419,8 @@ public class ArrivalNotifyService extends Service {
 				} else if(eventType == XmlPullParser.END_DOCUMENT) {
 				} else if(eventType == XmlPullParser.START_TAG) {
 					String name = xpp.getName();
-					
+
+                    if(name.equals("predictions")) { stopName = xpp.getAttributeValue(null, "stopTitle"); }
 					if(name.equals("direction")) { curDirection = xpp.getAttributeValue(null, "title"); }
 					if(name.equals( "prediction" )) {
 
@@ -445,6 +455,7 @@ public class ArrivalNotifyService extends Service {
 		
 		StupidArrival ret = new StupidArrival();
 		ret.arrivalTime = time;
+        ret.stopName = stopName;
 		ret.destination = lastDestination;
 		return ret;
 	}
