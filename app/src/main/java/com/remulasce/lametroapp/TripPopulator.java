@@ -28,7 +28,8 @@ import com.remulasce.lametroapp.basic_types.ServiceRequest;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 100;
+    protected final static int UPDATE_INTERVAL = 1000;
+    protected Object waitLock = new Object();
 
     protected ListView list;
     protected TextView hint;
@@ -84,6 +85,10 @@ public class TripPopulator {
 
         serviceRequests.clear();
         serviceRequests.addAll(requests);
+
+        synchronized (waitLock) {
+            waitLock.notify();
+        }
     }
 
     public void SetServiceRequests( Collection<ServiceRequest> requests) {
@@ -121,7 +126,10 @@ public class TripPopulator {
                 updateListView();
 
                 try {
-                    Thread.sleep( UPDATE_INTERVAL );
+                    synchronized (waitLock) {
+                        waitLock.wait(UPDATE_INTERVAL);
+                    }
+//                    Thread.sleep( UPDATE_INTERVAL );
                 } catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
