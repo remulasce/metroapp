@@ -64,4 +64,11 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/network_status_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

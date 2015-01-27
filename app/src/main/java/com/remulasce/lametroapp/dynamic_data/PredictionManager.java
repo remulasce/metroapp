@@ -17,19 +17,25 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 public class PredictionManager {
 	static final String TAG = "PredictionManager";
-	static final int UPDATE_INTERVAL = 5000;
+	static final int UPDATE_INTERVAL = 10000;
 	
 	static PredictionManager manager;
+    static NetworkStatusReporter statusReporter;
+
 	public static PredictionManager getInstance() {
 		if( manager == null ) { manager = new PredictionManager(); }
 		return manager;
 	}
+    public static void setStatusReporter( NetworkStatusReporter reporter ) {
+        statusReporter = reporter;
+    }
 	
-	
+
 	protected final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
 	protected UpdateStager updater;
 	
@@ -158,11 +164,20 @@ public class PredictionManager {
 						builder.append(line);
 					}
 				} else {
+                    if (statusReporter != null) {
+                        statusReporter.reportFailure();
+                    }
 					Log.e(TAG, "Failed to download file");
 				}
 			} catch (ClientProtocolException e) {
+                if (statusReporter != null) {
+                    statusReporter.reportFailure();
+                }
 				e.printStackTrace();
 			} catch (IOException e) {
+                if (statusReporter != null) {
+                    statusReporter.reportFailure();
+                }
 				e.printStackTrace();
 			}
 			return builder.toString();

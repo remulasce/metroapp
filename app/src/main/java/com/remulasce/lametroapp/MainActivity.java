@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
@@ -45,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     ListView tripList;
     TextView tripListHint;
+    View networkStatusView;
     ProgressBar tripListProgress;
 
     TripPopulator populator;
@@ -52,6 +54,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     OmniAutoCompleteAdapter autoCompleteAdapter;
     MetroLocationRetriever locationService;
     SettingFieldSaver fieldSaver;
+    NetworkStatusReporter networkStatusReporter;
 
     Tracker t;
 
@@ -69,8 +72,14 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         setupActionListeners();
         setupOmniBar();
+        setupNetworkStatus();
 
         setupDefaults( getIntent() );
+    }
+
+    private void setupNetworkStatus() {
+        networkStatusReporter = new NetworkStatusReporter(networkStatusView);
+        PredictionManager.setStatusReporter(networkStatusReporter);
     }
 
     private void setupFieldSaver() {
@@ -106,6 +115,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
         tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
+        networkStatusView = (View) findViewById(R.id.network_status_bar);
 
         requestFragment = (ServiceRequestListFragment) getFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
