@@ -40,7 +40,7 @@ public class PredictionManager {
 	protected UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
-		synchronized (trackingList) {
+//		synchronized (trackingList) {
 			if (!trackingList.contains(p)) {
 				trackingList.add(p);
 			}
@@ -50,7 +50,7 @@ public class PredictionManager {
 					new Thread(updater, "Prediction Update Checker").start();
 				}
 			}
-		}
+//		}
 	}
 	
 	public void pauseTracking() {
@@ -77,9 +77,9 @@ public class PredictionManager {
 	}
 	
 	public void stopTracking( Prediction p ) {
-		synchronized (trackingList) {
+//		synchronized (trackingList) {
 			trackingList.remove(p);
-		}
+//		}
 	}
 	
 	protected class UpdateStager implements Runnable {
