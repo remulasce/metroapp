@@ -21,7 +21,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -43,13 +42,9 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
 
 public class ArrivalNotifyService extends Service {
-	String displayedTitle = "";
-	String displayedText = "";
-
 	private NetTask netTask;
 	private NotificationTask notificationTask;
-	
-	
+
 	private class NetTask implements Runnable {
 
 	    boolean run = true;
@@ -72,7 +67,6 @@ public class ArrivalNotifyService extends Service {
 	    
 		@Override
 		public void run() {
-			Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
 			StrictMode.ThreadPolicy policy = new StrictMode.
 					ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
@@ -103,7 +97,7 @@ public class ArrivalNotifyService extends Service {
 				
 				try {
 					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
-				} catch (InterruptedException e) {}
+				} catch (InterruptedException e) { e.printStackTrace(); }
 			}
 		}
 		
@@ -136,11 +130,11 @@ public class ArrivalNotifyService extends Service {
 	        
 	        return true;
 	    }
-	};
+	}
 
 	private class NotificationTask implements Runnable {
 		
-	    public boolean run = true;;
+	    public boolean run = true;
 
 	    public int lastDisplayedSeconds = 10000;
 	    
@@ -163,7 +157,7 @@ public class ArrivalNotifyService extends Service {
 				updateNotificationText(mBuilder);
 				try {
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {}
+				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
 
@@ -184,7 +178,6 @@ public class ArrivalNotifyService extends Service {
             final String stopName = netTask.stopName;
 	        final int stopID = netTask.stopID;
 	        
-	        final boolean isValid = netTask.isValid;
 	        boolean vibrate = false;
 	        
     		if ( netTask.runNum > 5 ) {
@@ -225,7 +218,7 @@ public class ArrivalNotifyService extends Service {
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            
-	            if( isValid && lastDisplayedSeconds > 90) {
+	            if( lastDisplayedSeconds > 90) {
 	                vibrate = true;
 	            }
 	            lastDisplayedSeconds = secondsTillArrival;
@@ -303,7 +296,7 @@ public class ArrivalNotifyService extends Service {
 	            }
 	        });
 	    }
-	};
+	}
 	
 
 	
@@ -413,9 +406,7 @@ public class ArrivalNotifyService extends Service {
 			int eventType = xpp.getEventType();
 			String curDirection = "";
 			while (eventType != XmlPullParser.END_DOCUMENT) {
-				if(eventType == XmlPullParser.START_DOCUMENT) {
-				} else if(eventType == XmlPullParser.END_DOCUMENT) {
-				} else if(eventType == XmlPullParser.START_TAG) {
+				if(eventType == XmlPullParser.START_TAG) {
 					String name = xpp.getName();
 
                     if(name.equals("predictions")) { stopName = xpp.getAttributeValue(null, "stopTitle"); }
@@ -428,9 +419,7 @@ public class ArrivalNotifyService extends Service {
 						int predTime = Integer.valueOf(timeString); 
 						if (predTime >= 0 && ( predTime < time || time < 0) )
 						{
-							if ( ! (destination == null || destination.equals(curDirection))) {
-								//skip
-							}
+							if ( ! (destination == null || destination.equals(curDirection))) {	}
 							else if ( vehicleNumber != null && !vehicleNumber.equals(vehicleNum) ) {
 								
 							}
@@ -440,8 +429,6 @@ public class ArrivalNotifyService extends Service {
 							}
 						}
 					}
-				} else if(eventType == XmlPullParser.END_TAG) {
-				} else if(eventType == XmlPullParser.TEXT) {
 				}
 				eventType = xpp.next();
 			}
