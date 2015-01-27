@@ -231,7 +231,7 @@ public class TripPopulator {
                         progress.setVisibility(View.INVISIBLE);
                     }
 
-                    Tracking.sendUITime( "TripPopulator", "Refresh TripList", start );
+                    Tracking.averageUITime( "TripPopulator", "Refresh TripList", start );
                 }
             } );
         }

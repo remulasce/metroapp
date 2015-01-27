@@ -32,8 +32,13 @@ public class Tracking {
 	public static long startTime() {
 	    return System.currentTimeMillis();
 	}
+    // Avg. for like frame updates that are too numerous to send directly.
+    public static void averageUITime( String name, String label, long startTime ) {
+
+    }
+    // sendUITime for stuff that happens as direct user input, and should be individually tracked.
 	public static void sendUITime( String name, String label, long startTime ) {
-//	    sendTime( "UITiming", name, label, startTime );
+	    sendTime( "UITiming", name, label, startTime );
 	}
     public static long timeSpent(long startTime) {
         return System.currentTimeMillis() - startTime;

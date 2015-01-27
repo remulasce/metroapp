@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
@@ -65,16 +66,23 @@ public class OmniBarInputHandler {
     protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            long t = Tracking.startTime();
+
             String requestText = textView.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
 
+            Tracking.sendUITime("OmniBarInputHandler", "omniDoneListener", t);
             return true;
         }
     };
     protected View.OnClickListener omniButtonListener = new View.OnClickListener() {
         public void onClick( View v ) {
+            long t = Tracking.startTime();
+
             String requestText = omniField.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
+
+            Tracking.sendUITime("OmniBarInputHandler", "omniButtonListener", t);
         }
     };
     protected  View.OnClickListener clearButtonListener = new View.OnClickListener() {
@@ -134,10 +142,7 @@ public class OmniBarInputHandler {
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
                     makeMultiStopServiceRequest(convertedID, requestText);
-                    for (String id : convertedID) {
-//                        makeServiceRequest(id, requestText);
-//                        makeMultiStopServiceRequest( convertedID, requestText );
-                    }
+
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
 
