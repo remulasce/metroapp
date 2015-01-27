@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URI;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,6 +18,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,6 +26,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
@@ -262,8 +265,11 @@ public class ArrivalNotifyService extends Service {
 	                        .setStyle(bigTextStyle);
 	                        
 	                if ( doVibrate ) {
-	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-                        toast ("Vehicle arrives "+LaMetroUtil.secondsToDisplay(secondsTillArrival));
+//	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+                        Uri uri = Uri.parse("android.resource://"
+                                + ArrivalNotifyService.this.getPackageName() + "/" + R.raw.notification_custom);
+                        mBuilder.setSound(uri);
+                        toast("Vehicle arrives " + LaMetroUtil.secondsToDisplay(secondsTillArrival));
 	                    
 	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 	                    v.vibrate(2000);
