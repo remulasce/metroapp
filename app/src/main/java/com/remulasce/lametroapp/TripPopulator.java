@@ -44,10 +44,6 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
-    // Track timing
-    protected long timeSpentUpdating = 0;
-    protected long numberOfUpdates = 0;
-
     // ugh.
     protected Context c;
 
@@ -125,6 +121,12 @@ public class TripPopulator {
 
         Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
+        // Track timing
+        protected long timeSpentUpdating = 0;
+        protected long numberOfUpdates = 0;
+
+        protected long timeSpentUpdatingUI = 0;
+
         @Override
         public void run() {
             Log.i( TAG, "UpdateRunner starting" );
@@ -148,7 +150,8 @@ public class TripPopulator {
                 numberOfUpdates++;
 
                 if (numberOfUpdates > 100) {
-                    Tracking.sendRawUITime("TripPopulater", "Averaged update time", t);
+                    Tracking.sendRawUITime("TripPopulater", "Averaged update time", timeSpentUpdating / numberOfUpdates);
+                    Tracking.sendRawUITime("TripPopulater", "Averaged UI update time", timeSpentUpdatingUI / numberOfUpdates);
                     numberOfUpdates = 0;
                     timeSpentUpdating = 0;
                 }
@@ -260,8 +263,7 @@ public class TripPopulator {
 
                         progress.setVisibility(View.INVISIBLE);
                     }
-
-                    Tracking.averageUITime( "TripPopulator", "Refresh TripList", start );
+                    timeSpentUpdatingUI += Tracking.timeSpent(start);
                 }
             } );
         }
