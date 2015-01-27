@@ -13,11 +13,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.analytics.Logging;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
@@ -45,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     ListView tripList;
     TextView tripListHint;
+    ProgressBar tripListProgress;
 
     TripPopulator populator;
     MetroStaticsProvider staticsProvider;
@@ -104,13 +105,14 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
+        tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
 
         requestFragment = (ServiceRequestListFragment) getFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
     }
 
     protected void setupActionListeners() {
-        populator = new TripPopulator( tripList, tripListHint );
+        populator = new TripPopulator( tripList, tripListHint, tripListProgress );
         tripList.setOnItemClickListener( tripClickListener );
     }
 

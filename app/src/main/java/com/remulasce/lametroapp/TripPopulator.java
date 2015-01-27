@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.Tracking;
@@ -31,6 +32,7 @@ public class TripPopulator {
 
     protected ListView list;
     protected TextView hint;
+    protected ProgressBar progress;
     protected ArrayAdapter< Trip > adapter;
     protected final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
@@ -41,8 +43,9 @@ public class TripPopulator {
 
     protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
-    public TripPopulator( ListView list, TextView hint ) {
+    public TripPopulator( ListView list, TextView hint, ProgressBar progress ) {
         this.list = list;
+        this.progress = progress;
         this.hint = hint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
@@ -204,8 +207,15 @@ public class TripPopulator {
 
                     if (activeTrips.size() == 0) {
                         hint.setVisibility(View.VISIBLE);
+
+                        if (serviceRequests.size() != 0) {
+                            progress.setVisibility(View.VISIBLE);
+                            progress.setProgress(1);
+                        }
+
                     } else {
                         hint.setVisibility(View.INVISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
                     }
 
                     Tracking.sendUITime( "TripPopulator", "Refresh TripList", start );
