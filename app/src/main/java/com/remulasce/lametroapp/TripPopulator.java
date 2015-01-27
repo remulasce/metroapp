@@ -149,11 +149,12 @@ public class TripPopulator {
                 timeSpentUpdating += Tracking.timeSpent(t);
                 numberOfUpdates++;
 
-                if (numberOfUpdates > 100) {
+                if (numberOfUpdates > 50) {
                     Tracking.sendRawUITime("TripPopulater", "Averaged update time", timeSpentUpdating / numberOfUpdates);
                     Tracking.sendRawUITime("TripPopulater", "Averaged UI update time", timeSpentUpdatingUI / numberOfUpdates);
                     numberOfUpdates = 0;
                     timeSpentUpdating = 0;
+                    timeSpentUpdatingUI = 0;
                 }
 
             }

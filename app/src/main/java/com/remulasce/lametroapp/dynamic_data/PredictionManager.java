@@ -24,7 +24,7 @@ import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 public class PredictionManager {
 	static final String TAG = "PredictionManager";
 	static final int UPDATE_INTERVAL = 10000;
-	
+
 	static PredictionManager manager;
     static NetworkStatusReporter statusReporter;
 
@@ -50,6 +50,10 @@ public class PredictionManager {
                 new Thread(updater, "Prediction Update Checker").start();
             }
         }
+
+        synchronized (updater.updateObject) {
+            updater.updateObject.notify();
+        }
 	}
 	
 	public void pauseTracking() {
@@ -73,6 +77,10 @@ public class PredictionManager {
                 Log.w(TAG, "Resuming an existing prediction updater");
             }
 		}
+
+        synchronized (updater.updateObject) {
+            updater.updateObject.notify();
+        }
 	}
 	
 	public void stopTracking( Prediction p ) {
@@ -81,6 +89,8 @@ public class PredictionManager {
 	
 	protected class UpdateStager implements Runnable {
 		public boolean run = true;
+        public Object updateObject = new Object();
+
 		@Override
 		public void run() {
 			while (run) {
@@ -102,14 +112,15 @@ public class PredictionManager {
                 }
 
 				try {
-					Thread.sleep(500);
+                    synchronized (updateObject) {
+                        updateObject.wait(500);
+                    }
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 					
 			}
 		}
-		
 	}
 	
 	protected void GetUpdate( Prediction p ) {
