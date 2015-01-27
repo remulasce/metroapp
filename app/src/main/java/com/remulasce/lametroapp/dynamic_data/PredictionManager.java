@@ -17,6 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
@@ -40,17 +41,15 @@ public class PredictionManager {
 	protected UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
-//		synchronized (trackingList) {
-			if (!trackingList.contains(p)) {
-				trackingList.add(p);
-			}
-			synchronized (this) {
-				if (updater == null) {
-					updater = new UpdateStager();
-					new Thread(updater, "Prediction Update Checker").start();
-				}
-			}
-//		}
+        if (!trackingList.contains(p)) {
+            trackingList.add(p);
+        }
+        synchronized (this) {
+            if (updater == null) {
+                updater = new UpdateStager();
+                new Thread(updater, "Prediction Update Checker").start();
+            }
+        }
 	}
 	
 	public void pauseTracking() {
@@ -77,16 +76,13 @@ public class PredictionManager {
 	}
 	
 	public void stopTracking( Prediction p ) {
-//		synchronized (trackingList) {
-			trackingList.remove(p);
-//		}
+        trackingList.remove(p);
 	}
 	
 	protected class UpdateStager implements Runnable {
 		public boolean run = true;
 		@Override
 		public void run() {
-			
 			while (run) {
                 for (int i = trackingList.size() - 1; i >= 0; i--) {
                     try {
@@ -119,19 +115,19 @@ public class PredictionManager {
 	protected void GetUpdate( Prediction p ) {
 		RequestHandler r = new RequestHandler( p );
 		new Thread(r, "Prediction update "+p.getRequestString()).start();
-		
 	}
 	
 	protected class RequestHandler implements Runnable {
 		Prediction prediction;
 
-		
 		public RequestHandler( Prediction p ) {
 			this.prediction = p;
 		}
 
 		@Override
 		public void run() {
+            long t = Tracking.startTime();
+
 			String request = prediction.getRequestString();
 			Log.v(TAG, "Handling request "+request);
 			
@@ -141,7 +137,8 @@ public class PredictionManager {
 			prediction.handleResponse(response);
 			
 			prediction.setUpdated();
-			
+
+			Tracking.sendTime("PredictionManager", "UpdateRunner", "Total Run", t);
 		}
 		
 		
@@ -182,6 +179,5 @@ public class PredictionManager {
 			}
 			return builder.toString();
 		}
-		
 	}
 }
