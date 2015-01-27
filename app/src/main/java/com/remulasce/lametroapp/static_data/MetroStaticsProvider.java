@@ -21,14 +21,14 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     private static final String TAG = "MetroStaticsProvider";
 
 
-    private GTFSStopsReader stopsReader;
+    private SQLPreloadedStopsReader stopsReader;
 
     private HashMap<String, String> stopNameCache;
     private HashMap<String, Collection<String>> stopIDCache;
 
 
     public MetroStaticsProvider(Context context) {
-        stopsReader = new GTFSStopsReader(context);
+        stopsReader = new SQLPreloadedStopsReader(context);
     }
 
     private void addToCache(Object k, Object v, Map cache, int maxCacheEntries, int numRemoveFull) {
