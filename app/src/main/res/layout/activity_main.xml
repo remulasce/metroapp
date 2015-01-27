@@ -61,8 +61,9 @@
         android:indeterminate="true"
         android:progress="1"
         android:visibility="invisible"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/trip_list_hint"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="57dp" />
 
     <include
         android:layout_width="wrap_content"
