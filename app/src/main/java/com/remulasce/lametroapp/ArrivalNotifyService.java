@@ -141,12 +141,10 @@ public class ArrivalNotifyService extends Service {
 	private class NotificationTask implements Runnable {
 		
 	    public boolean run = true;;
-//	    protected NetTask source;
-	    
+
 	    public int lastDisplayedSeconds = 10000;
 	    
-	    public NotificationTask(NetTask source) {
-//	        this.source = source;
+	    public NotificationTask() {
 	    }
 	    
 		@Override
@@ -318,7 +316,7 @@ public class ArrivalNotifyService extends Service {
 	    }
 	    
         netTask = new NetTask();
-        notificationTask = new NotificationTask(netTask);
+        notificationTask = new NotificationTask();
         
 		netTask.agency			= intent.getExtras().getString("Agency");
 		netTask.stopID			= intent.getExtras().getInt("StopID");
