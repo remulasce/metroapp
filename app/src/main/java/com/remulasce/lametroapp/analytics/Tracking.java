@@ -18,12 +18,6 @@ public class Tracking {
 	      
 	      t = analytics.newTracker(R.xml.lametro_tracker);
           t.enableAdvertisingIdCollection(true);
-	      
-	      t.send(new HitBuilders.EventBuilder()
-	    	.setCategory("Analytics")
-	    	.setAction("Tracker created")
-	    	.setLabel("lametro_tracker")
-	    	.build());
 		}
 		
 		return t;
