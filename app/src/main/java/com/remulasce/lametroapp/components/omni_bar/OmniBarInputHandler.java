@@ -154,7 +154,7 @@ public class OmniBarInputHandler {
                 // Not valid.
                 else {
                     Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
-                    Toast.makeText(c, "Invalid stopname or id", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(c, "Invalid stop name", Toast.LENGTH_SHORT).show();
 
                     t.send(new HitBuilders.EventBuilder()
                             .setCategory("AutoComplete")
