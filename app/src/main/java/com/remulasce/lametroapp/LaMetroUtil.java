@@ -201,20 +201,20 @@ public class LaMetroUtil {
 
     }
 
-    public static String secondsToDisplay( int seconds ) {
+    public static String timeToDisplay(int seconds) {
         if ( seconds > 60 ) {
-            return "in " + standaloneSecondsToDisplay(seconds);
+            return "in " + standaloneTimeToDisplay(seconds);
         }
         if ( seconds > 1 ) {
-            return "in " + standaloneSecondsToDisplay(seconds);
+            return "in " + standaloneTimeToDisplay(seconds);
         }
         if ( seconds == 0 ) {
-            return "in " + standaloneSecondsToDisplay(seconds);
+            return "in " + standaloneTimeToDisplay(seconds);
         }
-        return standaloneSecondsToDisplay(seconds);
+        return standaloneTimeToDisplay(seconds);
     }
 
-    public static String standaloneSecondsToDisplay( int seconds ) {
+    public static String standaloneTimeToDisplay(int seconds) {
         if ( seconds > 60 ) {
             return String.valueOf( seconds / 60 ) + " min";
         }
@@ -225,6 +225,16 @@ public class LaMetroUtil {
             return "1s";
         }
         return "arrived";
+    }
+
+    /** Returns the number of seconds to display as a subtext to the timeToDisplay methods.
+     * Returns % 60 normally
+     * Returns empty string if seconds <= 60, because timeToDisplay will display seconds remaining
+     *  in the main display.
+     */
+    public static String standaloneSecondsRemainderTime(int seconds) {
+        if (seconds <= 60) { return ""; }
+        return (seconds % 60)+"s";
     }
 
     public static String getAgencyFromRoute( Route route, Stop stop )

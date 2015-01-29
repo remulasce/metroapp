@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.URI;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,14 +17,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -90,7 +87,7 @@ public class ArrivalNotifyService extends Service {
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
 					if (runNum == 0) {
-                        toast ("Next arrival "+LaMetroUtil.secondsToDisplay(seconds));
+                        toast ("Next arrival "+LaMetroUtil.timeToDisplay(seconds));
 					}
 				}
 				
@@ -269,7 +266,7 @@ public class ArrivalNotifyService extends Service {
                         Uri uri = Uri.parse("android.resource://"
                                 + ArrivalNotifyService.this.getPackageName() + "/" + R.raw.notification_custom);
                         mBuilder.setSound(uri);
-                        toast("Vehicle arrives " + LaMetroUtil.secondsToDisplay(secondsTillArrival));
+                        toast("Vehicle arrives " + LaMetroUtil.timeToDisplay(secondsTillArrival));
 	                    
 	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 	                    v.vibrate(2000);

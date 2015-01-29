@@ -43,7 +43,7 @@ public class ArrivalTrip extends Trip {
         String destination = (destinationStartsWithNum ? "" : routeString + ": " ) + destString + " \n";
         String stop_ = stopString + "\n";
         String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " "; 
-        String time = LaMetroUtil.secondsToDisplay( seconds );
+        String time = LaMetroUtil.timeToDisplay(seconds);
 //        String raw = " (" + seconds + "s)";
         
         return stop_ 
@@ -61,7 +61,8 @@ public class ArrivalTrip extends Trip {
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
-        TextView prediction_text = (TextView) rowView.findViewById(R.id.prediction_time_estimate);
+        TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
+        TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
         TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
@@ -80,7 +81,8 @@ public class ArrivalTrip extends Trip {
 
         stop_text.setText(stopString);
         route_text.setText(routeDestString);
-        prediction_text.setText(LaMetroUtil.standaloneSecondsToDisplay(seconds));
+        prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
+        prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
         vehicle_text.setText(vehicle);
 
         return rowView;
