@@ -45,6 +45,24 @@
         android:text="@string/about_text_legal"
         android:layout_alignParentBottom="true"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="If you like this app, you can give me some money!"
+        android:id="@+id/donate_text"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/about_author"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Donate"
+        android:id="@+id/donate_button"
+        android:layout_below="@+id/donate_text"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

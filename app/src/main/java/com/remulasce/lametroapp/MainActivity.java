@@ -2,6 +2,7 @@ package com.remulasce.lametroapp;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -44,6 +45,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     AutoCompleteTextView omniField;
     ImageButton omniButton;
     Button clearButton;
+    Button donateButton;
 
     OmniBarInputHandler omniHandler;
     ServiceRequestListFragment requestFragment;
@@ -79,6 +81,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupActionListeners();
         setupOmniBar();
         setupNetworkStatus();
+        setupAboutPage();
 
         setupDefaults( getIntent() );
     }
@@ -107,7 +110,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupActionBar() {
         android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
 
-//        mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setDisplayShowTitleEnabled(false);
         mActionBar.setCustomView(R.layout.omni_search_box);
@@ -136,10 +138,21 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    protected void setupAboutPage() {
+        donateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
+                startActivity(browserIntent);
+            }
+        });
+    }
+
     protected void linkViewReferences() {
         omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
         omniButton = (ImageButton) findViewById( R.id.omni_button );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
+        donateButton = (Button) findViewById( R.id.donate_button );
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
