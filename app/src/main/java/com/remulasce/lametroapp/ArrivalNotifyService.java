@@ -205,6 +205,7 @@ public class ArrivalNotifyService extends Service {
 	        if ( !netTask.isValid || minutesSinceEstimate < 0 || minutesSinceEstimate > 5) {
 	            msg2 = "Getting prediction...";
 	            if (destination != null) {
+                    msg2 += "\n";
 	                msg2 += "\n" + destination;
 	            }
 	        }
