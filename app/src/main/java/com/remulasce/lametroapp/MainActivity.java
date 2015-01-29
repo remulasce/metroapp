@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -214,6 +215,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         if ( stop.isValid() ) {
             makeServiceRequest(stop.getStopID());
+            // Early devices don't support notification actions
+            // So this is the only way to disable arrival notification for them
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                NotifyServiceManager.stopNotifyService(this);
+            }
         }
 
         boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();

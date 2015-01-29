@@ -62,12 +62,12 @@ public class SettingFieldSaver implements FieldSaver {
             String requestNameTerminated = SERVICEREQUEST_ITEM_NAME + i +"_";
 
             Collection<String> stopids = request.getRaw();
-            editor.putInt(requestNameTerminated+"numstops", request.getRaw().size());
+            editor.putInt(requestNameTerminated + "numstops", request.getRaw().size());
 
             int stopNum = 0;
             for (String s : stopids) {
 //                put.add("0 " + s);
-                editor.putString(requestNameTerminated+request.getRaw() + "stop"+stopNum, s);
+                editor.putString(requestNameTerminated+"stop"+stopNum, s);
 
                 stopNum++;
             }
@@ -132,9 +132,11 @@ public class SettingFieldSaver implements FieldSaver {
 
             numstops = preferences.getInt(requestName + "numstops", 0);
             for (int ii = 0; ii < numstops; ii++) {
-                stopIDs.add(preferences.getString(requestName+"stop"+ii, null));
+                String id = preferences.getString(requestName+"stop"+ii, null);
+                if (id != null) {
+                    stopIDs.add(id);
+                }
             }
-
 
             ServiceRequest add = new StopServiceRequest(stopIDs, displayname);
             if (scope.equals("false")) { add.descope(); }

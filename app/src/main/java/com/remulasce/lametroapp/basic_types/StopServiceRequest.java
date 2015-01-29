@@ -28,7 +28,7 @@ public class StopServiceRequest extends ServiceRequest {
 
     //Returns if the service request makes any sense to fulfill
     public boolean isValid() {
-        if ( stops == null || stops.isEmpty() || displayName == null || displayName.isEmpty()) { return false; }
+        if ( stops == null || stops.isEmpty() || stops.contains( null )|| displayName == null || displayName.isEmpty()) { return false; }
 
         return true;
     }
