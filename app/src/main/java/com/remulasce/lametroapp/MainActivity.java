@@ -159,7 +159,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
         networkStatusView = (View) findViewById(R.id.network_status_bar);
 
-        requestFragment = (ServiceRequestListFragment) getFragmentManager()
+        requestFragment = (ServiceRequestListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
     }
 
