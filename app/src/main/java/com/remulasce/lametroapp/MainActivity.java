@@ -107,7 +107,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupActionBar() {
         android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
 
-        mActionBar.setDisplayShowHomeEnabled(true);
+//        mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setDisplayShowTitleEnabled(false);
         mActionBar.setCustomView(R.layout.omni_search_box);
@@ -117,7 +117,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_launcher,  /* nav drawer icon to replace 'Up' caret */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
