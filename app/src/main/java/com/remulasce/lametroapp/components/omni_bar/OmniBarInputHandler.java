@@ -72,6 +72,12 @@ public class OmniBarInputHandler {
                     .setCategory("AutoComplete")
                     .setAction("AutoComplete Selected")
                     .build());
+            long t = Tracking.startTime();
+
+            String requestText = omniField.getText().toString();
+            makeServiceRequestFromOmniInput(requestText);
+
+            Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
         }
     };
 
