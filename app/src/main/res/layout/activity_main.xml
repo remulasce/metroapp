@@ -85,12 +85,9 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:paddingLeft="20dp"
-        android:paddingBottom="10dp"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#fff2f2f2">
+        android:dividerHeight="0dp">
 
         <include
             android:layout_width="wrap_content"
