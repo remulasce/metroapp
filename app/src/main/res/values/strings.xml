@@ -11,5 +11,8 @@
     <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
     <string name="notify_confirmation_text">Track the arrival time of this vehicle in a notification, and buzz when it is almost arrived?</string>
     <string name="notify_confirmation_title">Vehicle Tracking</string>
+    <string name="about_text_title">Los Angeles Metro Companion</string>
+    <string name="about_text_author">Made by Fintan O\'Grady\nlametrodeveloper@gmail.com</string>
+    <string name="about_text_legal" >This app uses realtime arrival information provided by NextBus and Metro.\n\nHowever, it is not endorsed by Metro</string>
 
 </resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:id="@+id/left_drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    android:paddingTop="20dp"
+    android:choiceMode="singleChoice"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="0dp"
+    android:background="#fff2f2f2">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logo_image"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/about_title"
+        android:layout_below="@id/logo_image"
+        android:paddingTop="20dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/about_text_title"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/about_author"
+        android:text="@string/about_text_author"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/about_title"
+        android:autoLink="email" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/legal"
+        android:text="@string/about_text_legal"
+        android:layout_alignParentBottom="true"/>
+
+
+
+</RelativeLayout>
