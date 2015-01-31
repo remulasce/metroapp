@@ -69,7 +69,7 @@ public class OmniBarInputHandler {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             t.send(new HitBuilders.EventBuilder()
-                    .m("AutoComplete")
+                    .setCategory("AutoComplete")
                     .setAction("AutoComplete Selected")
                     .build());
             long t = Tracking.startTime();

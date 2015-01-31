@@ -138,6 +138,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                         .setCategory( "About Page" )
                         .setAction( "Pane Opened" )
                         .build() );
+
+                t.setScreenName("About Page");
+                t.send(new HitBuilders.AppViewBuilder().build());
             }
         };
 
@@ -215,7 +218,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     protected void startAnalytics() {
+
         t = Tracking.getTracker( getApplicationContext() );
+        t.setScreenName("About Page");
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
     protected void setupDefaults( Intent bundle ) {
