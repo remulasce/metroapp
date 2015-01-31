@@ -128,10 +128,10 @@ public class ArrivalTrip extends Trip {
         // Current implementation prioritizes mainly distance on arrivals 10m away
         // Then it's a combination of distance/time.
 
-        // 10 minutes away is where you start getting good priority.
+        // 20 minutes away is where you start getting good priority.
         // After that you just get chump change up to 2 hours.
         float eta = parentArrival.getEstimatedArrivalSeconds();
-        float time =  Math.max(0, .9f * (1.0f - eta / 600f ) );
+        float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
         time += Math.max( 0, .1f * (1 - eta / (60f * 60 * 2) ) );
 
