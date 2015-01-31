@@ -135,6 +135,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         return lastRetrievedLocation;
     }
 
+    /** Location in meters */
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         long t = Tracking.startTime();

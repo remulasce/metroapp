@@ -3,6 +3,7 @@ package com.remulasce.lametroapp.dynamic_data.types;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
+import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 public class ArrivalTrip extends Trip {
 
@@ -121,7 +124,36 @@ public class ArrivalTrip extends Trip {
     
     @Override
     public float getPriority() {
-        return 75 - parentArrival.getEstimatedArrivalSeconds() * 2;
+        // 1.0 priority is equivalent to one arriving-now or one current-stop.
+        // Current implementation prioritizes mainly distance on arrivals 10m away
+        // Then it's a combination of distance/time.
+
+        // 10 minutes away is where you start getting good priority.
+        // After that you just get chump change up to 2 hours.
+        float eta = parentArrival.getEstimatedArrivalSeconds();
+        float time =  Math.max(0, .9f * (1.0f - eta / 600f ) );
+
+        time += Math.max( 0, .1f * (1 - eta / (60f * 60 * 2) ) );
+
+        // 20 miles away you start, you get more at 1 mile.
+        float proximity = 0;
+
+        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
+        if (retriever != null) {
+            double distance = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+
+            // ~20 miles
+            proximity += Math.max(0,
+                    .2f * (float) (1 - (distance / 32000)));
+            // ~1 mile
+            proximity += Math.max(0,
+                    .8f * (float) (1 - (distance / 1600)));
+            proximity = Math.max(proximity, 0);
+        } else {
+            proximity = 0;
+        }
+        float overallPriority = time + proximity;
+        return overallPriority;
     }
     
     @Override

@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +26,11 @@ public class SettingFieldSaver implements FieldSaver {
 
 
     private SharedPreferences preferences;
+    private StopLocationTranslator locations;
 
-    public SettingFieldSaver(Context c) {
+    public SettingFieldSaver(Context c, StopLocationTranslator locations) {
         preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        this.locations = locations;
     }
 
     /* Format:
@@ -138,7 +142,14 @@ public class SettingFieldSaver implements FieldSaver {
                 }
             }
 
-            ServiceRequest add = new StopServiceRequest(stopIDs, displayname);
+            Collection<Stop> stops = new ArrayList<Stop>();
+            for (String id : stopIDs) {
+                Stop stop = new Stop(id);
+                stop.setLocation(locations.getStopLocation(stop));
+                stops.add(stop);
+            }
+
+            ServiceRequest add = new StopServiceRequest(stops, displayname);
             if (scope.equals("false")) { add.descope(); }
 
             if (!add.isValid()) {

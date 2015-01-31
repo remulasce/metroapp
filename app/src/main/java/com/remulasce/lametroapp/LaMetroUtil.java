@@ -15,9 +15,12 @@ import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
+import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
+
+    public static StopLocationTranslator locationTranslator;
 
     public static boolean isValidStop( String stop ) {
         if ( stop == null ) {
@@ -130,6 +133,10 @@ public class LaMetroUtil {
                             Stop s = new Stop( curStopTag );
                             s.setStopName( curStopName );
                             Vehicle v = new Vehicle( vehicleNum );
+
+                            if (locationTranslator != null) {
+                                s.setLocation(locationTranslator.getStopLocation(s));
+                            }
 
                             a.setDestination( d );
                             a.setRoute( r );
