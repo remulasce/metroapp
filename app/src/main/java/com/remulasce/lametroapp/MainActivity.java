@@ -290,6 +290,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onResume() {
         super.onResume();
+
+        t.setScreenName("Main Screen");
+        t.send(new HitBuilders.AppViewBuilder().build());
+
         locationService.startLocating(this);
 
     }
