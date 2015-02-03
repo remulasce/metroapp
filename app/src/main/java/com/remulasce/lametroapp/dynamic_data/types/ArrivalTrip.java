@@ -133,6 +133,9 @@ public class ArrivalTrip extends Trip {
         float eta = parentArrival.getEstimatedArrivalSeconds();
         float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
+        // Super-duper arrivals shouldn't really jump all the way up.
+        time = Math.max(time, .75f);
+
         time += Math.max( 0, .1f * (1 - eta / (60f * 60 * 2) ) );
         time *= .7f;
 
