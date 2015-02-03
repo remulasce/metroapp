@@ -134,6 +134,7 @@ public class ArrivalTrip extends Trip {
         float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
         time += Math.max( 0, .1f * (1 - eta / (60f * 60 * 2) ) );
+        time *= .7f;
 
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
@@ -145,9 +146,9 @@ public class ArrivalTrip extends Trip {
             // ~20 miles
             proximity += Math.max(0,
                     .2f * (float) (1 - (distance / 32000)));
-            // ~1 mile
+            // ~2 miles
             proximity += Math.max(0,
-                    .8f * (float) (1 - (distance / 1600)));
+                    .8f * (float) (1 - (distance / 3200)));
             proximity = Math.max(proximity, 0);
         } else {
             proximity = 0;
