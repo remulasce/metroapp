@@ -129,7 +129,7 @@ public class ArrivalTrip extends Trip {
         // Then it's a combination of distance/time.
 
         // 20 minutes away is where you start getting good priority.
-        // After that you just get chump change up to 2 hours.
+        // After that you just get chump change up to 45m.
         float eta = parentArrival.getEstimatedArrivalSeconds();
         float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
@@ -137,7 +137,7 @@ public class ArrivalTrip extends Trip {
         time = Math.min(time, .8f);
 
         // Really late arrivals can reduce total priority a little
-        time += Math.max( -.2f, .1f * (1 - eta / (60f * 60 * 2) ) );
+        time += Math.max( -.2f, .1f * (1 - eta / (60f * 60 * .66f) ) );
         time *= .7f;
 
         // 20 miles away you start, you get more at 1 mile.
