@@ -136,7 +136,8 @@ public class ArrivalTrip extends Trip {
         // Super-duper arrivals shouldn't really jump all the way up.
         time = Math.min(time, .8f);
 
-        time += Math.max( 0, .1f * (1 - eta / (60f * 60 * 2) ) );
+        // Really late arrivals can reduce total priority a little
+        time += Math.max( -.2f, .1f * (1 - eta / (60f * 60 * 2) ) );
         time *= .7f;
 
         // 20 miles away you start, you get more at 1 mile.
