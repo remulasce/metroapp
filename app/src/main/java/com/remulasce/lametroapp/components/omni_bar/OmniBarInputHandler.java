@@ -22,6 +22,7 @@ import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -138,8 +139,18 @@ public class OmniBarInputHandler {
     private void makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
 
+        Collection<Stop> stops = new ArrayList<Stop>();
+
         for (String stop : stopIDs) {
-            makeServiceRequest(stop, displayName);
+            stops.add(new Stop(stop));
+        }
+
+        ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
+
+        if (serviceRequest.isValid()) {
+            requestList.AddServiceRequest(serviceRequest);
+        } else {
+            Log.w(TAG, "Created invalid servicerequest, not adding to list");
         }
     }
 

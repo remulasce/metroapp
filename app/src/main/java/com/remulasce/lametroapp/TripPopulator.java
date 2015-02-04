@@ -259,9 +259,11 @@ public class TripPopulator {
                             uiHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(c, "Tap an arrival to set a notification for it", Toast.LENGTH_LONG).show();
+                                    if (TripPopulator.this.running) {
+                                        Toast.makeText(c, "Tap an arrival to set a notification for it", Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            }, 1000);
+                            }, 3000);
                         }
 
                         progress.setVisibility(View.INVISIBLE);
