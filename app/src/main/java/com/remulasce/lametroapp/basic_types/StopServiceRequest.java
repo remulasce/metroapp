@@ -8,27 +8,29 @@ import java.util.Collection;
 
 /**
  * Created by Remulasce on 1/26/2015.
+ *
+ * It's a service request added to show what vehicles are arriving.
  */
 public class StopServiceRequest extends ServiceRequest {
 
-    Collection<String> stops;
+    Collection<Stop> stops;
     Collection<Prediction> predictions = new ArrayList<Prediction>();
 
     public StopServiceRequest() {}
-    public StopServiceRequest(Collection<String> stopIDs, String displayName) {
-        this.stops = stopIDs;
+    public StopServiceRequest(Collection<Stop> stops, String displayName) {
+        this.stops = stops;
         this.displayName = displayName;
     }
-    public StopServiceRequest(String stopID, String displayName) {
-        stops = new ArrayList<String>();
-        stops.add(stopID);
+    public StopServiceRequest(Stop stop, String displayName) {
+        stops = new ArrayList<Stop>();
+        stops.add(stop);
 
         this.displayName = displayName;
     }
 
     //Returns if the service request makes any sense to fulfill
     public boolean isValid() {
-        if ( stops == null || stops.isEmpty() || stops.contains( null )|| displayName == null || displayName.isEmpty()) { return false; }
+        if ( stops == null || stops.isEmpty() || stops.contains( null ) || displayName == null || displayName.isEmpty()) { return false; }
 
         return true;
     }
@@ -40,8 +42,7 @@ public class StopServiceRequest extends ServiceRequest {
         }
 
         if (predictions.isEmpty()) {
-            for (String raw : stops) {
-                Stop s = new Stop(raw);
+            for (Stop s : stops) {
                 predictions.add(new StopPrediction(s, null));
             }
         }
@@ -51,6 +52,13 @@ public class StopServiceRequest extends ServiceRequest {
 
     @Override
     public Collection<String> getRaw() {
-        return new ArrayList<String>(stops);
+        ArrayList<String> strings = new ArrayList<String>();
+
+        for (Stop s : stops) {
+            strings.add(s.getStopID());
+        }
+
+        return strings;
+//        return new ArrayList<String>(stops);
     }
 }

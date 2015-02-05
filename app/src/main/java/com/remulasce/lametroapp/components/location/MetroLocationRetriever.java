@@ -87,7 +87,7 @@ public class MetroLocationRetriever implements LocationRetriever {
             }
 
             LocationRequest request = new LocationRequest();
-            request.setInterval(5 * 1000);
+            request.setInterval(60 * 1000);
             request.setFastestInterval(500);
             request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
@@ -135,6 +135,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         return lastRetrievedLocation;
     }
 
+    /** Location in meters */
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         long t = Tracking.startTime();

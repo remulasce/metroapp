@@ -15,11 +15,14 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
+import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.static_data.StopNameTranslator;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -38,6 +41,7 @@ public class OmniBarInputHandler {
     private Button clearButton;
     private ServiceRequestListFragment requestList;
     private StopNameTranslator stopNames;
+    private StopLocationTranslator stopLocations;
     private Tracker t;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
@@ -45,12 +49,14 @@ public class OmniBarInputHandler {
 
     public OmniBarInputHandler(AutoCompleteTextView textView, ImageButton addButton, Button clearButton,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
+                               StopLocationTranslator locations,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = addButton;
         this.clearButton = clearButton;
         this.requestList = requestList;
         this.stopNames = stopNames;
+        this.stopLocations = locations;
 
         this.t = t;
         this.c = c;
@@ -118,7 +124,11 @@ public class OmniBarInputHandler {
 
     private void makeServiceRequest( String stopID, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-        ServiceRequest serviceRequest = new StopServiceRequest(stopID, displayName);
+
+        Stop add = new Stop(stopID);
+        add.setLocation(stopLocations.getStopLocation(add));
+
+        ServiceRequest serviceRequest = new StopServiceRequest(add, displayName);
 
         if (serviceRequest.isValid()) {
             requestList.AddServiceRequest(serviceRequest);
@@ -128,7 +138,14 @@ public class OmniBarInputHandler {
     }
     private void makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
-        ServiceRequest serviceRequest = new StopServiceRequest(stopIDs, displayName);
+
+        Collection<Stop> stops = new ArrayList<Stop>();
+
+        for (String stop : stopIDs) {
+            stops.add(new Stop(stop));
+        }
+
+        ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
 
         if (serviceRequest.isValid()) {
             requestList.AddServiceRequest(serviceRequest);

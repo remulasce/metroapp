@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -25,6 +26,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
+import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
@@ -93,11 +95,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupFieldSaver() {
-        fieldSaver = new SettingFieldSaver(this);
+        fieldSaver = new SettingFieldSaver(this, staticsProvider);
     }
 
     private void setupLocation() {
         locationService = new MetroLocationRetriever(this, staticsProvider);
+        GlobalLocationProvider.setRetriever(locationService);
     }
 
     private void setupOmniBar() {
@@ -105,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
 
-        omniHandler = new OmniBarInputHandler(omniField, omniButton, clearButton, requestFragment, staticsProvider, t, this);
+        omniHandler = new OmniBarInputHandler(omniField, omniButton, clearButton, requestFragment, staticsProvider, staticsProvider, t, this);
     }
 
     private void setupActionBar() {
@@ -134,10 +137,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                t.send( new HitBuilders.EventBuilder()
-                        .setCategory( "About Page" )
-                        .setAction( "Pane Opened" )
-                        .build() );
+                t.send(new HitBuilders.EventBuilder()
+                        .setCategory("About Page")
+                        .setAction("Pane Opened")
+                        .build());
 
                 t.setScreenName("About Page");
                 t.send(new HitBuilders.AppViewBuilder().build());
@@ -185,6 +188,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void initializeStaticData() {
         staticsProvider = new MetroStaticsProvider(this);
         staticsProvider.initialize();
+
+        // ugh.
+        LaMetroUtil.locationTranslator = staticsProvider;
     }
 
     protected OnItemClickListener tripClickListener = new OnItemClickListener() {
@@ -208,7 +214,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
     private void makeServiceRequest( String stopID, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-        ServiceRequest serviceRequest = new StopServiceRequest(stopID, displayName);
+        Stop add = new Stop(stopID);
+        add.setLocation(staticsProvider.getStopLocation(add));
+
+        ServiceRequest serviceRequest = new StopServiceRequest(add, displayName);
 
         if (serviceRequest.isValid()) {
             requestFragment.AddServiceRequest(serviceRequest);

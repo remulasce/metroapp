@@ -40,5 +40,4 @@ public class ServiceRequestListAdapter extends ArrayAdapter{
 
         return rowView;
     }
-
 }
