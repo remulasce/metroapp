@@ -221,16 +221,22 @@ public class ArrivalNotifyService extends Service {
 	            msg2 = secondsTillArrival+" seconds";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
-	            
-	            if( lastDisplayedSeconds > notificationTime) {
-	                vibrate = true;
-	            }
+
+                if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+                    vibrate = true;
+                }
+
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else {
 	            msg2 = (secondsTillArrival/60)+" minutes";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
+
+                if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+                    vibrate = true;
+                }
+
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
