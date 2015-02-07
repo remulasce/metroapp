@@ -42,7 +42,8 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
 
 public class ArrivalNotifyService extends Service {
-	private NetTask netTask;
+
+    private NetTask netTask;
 	private NotificationTask notificationTask;
 
 	private class NetTask implements Runnable {
@@ -55,7 +56,8 @@ public class ArrivalNotifyService extends Service {
 	    public String agency;
 	    public String routeName;
 	    public String destination;
-	    
+        public int notificationTime = 90;
+
 	    public boolean isValid = false;
 	    
 	    int runNum = 0;
@@ -177,6 +179,7 @@ public class ArrivalNotifyService extends Service {
 	        final String routeName = netTask.routeName;
             final String stopName = netTask.stopName;
 	        final int stopID = netTask.stopID;
+            final int notificationTime = netTask.notificationTime;
 	        
 	        boolean vibrate = false;
 	        
@@ -219,7 +222,7 @@ public class ArrivalNotifyService extends Service {
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            
-	            if( lastDisplayedSeconds > 90) {
+	            if( lastDisplayedSeconds > notificationTime) {
 	                vibrate = true;
 	            }
 	            lastDisplayedSeconds = secondsTillArrival;
@@ -319,7 +322,8 @@ public class ArrivalNotifyService extends Service {
 		netTask.stopID			= intent.getExtras().getInt("StopID");
 		netTask.routeName		= intent.getExtras().getString("Route");
 		netTask.destination		= intent.getExtras().getString("Destination");
-		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber"); 
+		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber");
+        netTask.arrivalTime     = intent.getExtras().getInt("NotificationTime", 120);
 		
 		netTask.cleanParameters();
 		

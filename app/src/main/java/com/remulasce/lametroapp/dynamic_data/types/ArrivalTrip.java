@@ -7,6 +7,7 @@ import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -100,9 +101,11 @@ public class ArrivalTrip extends Trip {
         t.setScreenName("Notify Confirm Dialog");
         t.send(new HitBuilders.AppViewBuilder().build());
 
+        final View dialogView = View.inflate(context, R.layout.arrival_notify_dialog, null);
+
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
-                .setMessage(context.getString(R.string.notify_confirmation_text))
+                .setView( dialogView )
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -110,8 +113,18 @@ public class ArrivalTrip extends Trip {
                         t.setScreenName("Notify Confirm Accept");
                         t.send(new HitBuilders.AppViewBuilder().build());
 
+                        EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+
+                        int seconds = 120;
+
+                        try {
+                            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                                parentArrival.destination, parentArrival.vehicle, context);
+                                parentArrival.destination, parentArrival.vehicle, seconds, context);
                     }
 
                 })
