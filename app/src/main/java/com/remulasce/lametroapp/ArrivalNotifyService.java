@@ -228,7 +228,8 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else {
-	            msg2 = (secondsTillArrival/60)+" minutes";
+                // Plus one rounds up
+	            msg2 = (secondsTillArrival/60 + 1)+" minutes";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 	            lastDisplayedSeconds = secondsTillArrival;
