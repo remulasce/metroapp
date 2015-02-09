@@ -19,4 +19,9 @@ public class Destination implements Serializable {
     public boolean isValid() {
         return raw != null && !raw.isEmpty();
     }
+
+    // Ugh.
+    public int hashCode() {
+        return raw.hashCode();
+    }
 }

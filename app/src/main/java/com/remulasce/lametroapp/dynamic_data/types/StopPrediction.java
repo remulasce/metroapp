@@ -18,7 +18,7 @@ import com.remulasce.lametroapp.basic_types.Stop;
  */
 public class StopPrediction extends Prediction {
     protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 100;
+    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
 
     protected Stop stop;
     protected Route route;
@@ -103,6 +103,7 @@ public class StopPrediction extends Prediction {
 
         List< Arrival > arrivals = LaMetroUtil.parseAllArrivals( response );
 
+        // This doesn't actually work.
         for ( Arrival newA : arrivals ) {
             newA.setScope( inScope );
             if ( arrivalTracked( newA ) ) {
