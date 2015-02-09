@@ -239,7 +239,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         Vehicle veh = new Vehicle( bundle.getStringExtra( "VehicleNumber" ) );
 
         if ( stop.isValid() ) {
-            makeServiceRequest(stop.getStopID());
+//            makeServiceRequest(stop.getStopID());
             // Early devices don't support notification actions
             // So this is the only way to disable arrival notification for them
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -247,7 +247,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             }
         }
 
-        boolean intentFilled = route.isValid() || stop.isValid() || veh.isValid();
+        // It's confusing to clear stuff out when you hit the notification.
+        boolean intentFilled = false; // route.isValid() || stop.isValid() || veh.isValid();
 
         if ( !intentFilled ) {
             requestFragment.loadSavedRequests();
