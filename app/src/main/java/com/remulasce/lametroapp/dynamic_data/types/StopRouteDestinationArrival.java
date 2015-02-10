@@ -39,6 +39,7 @@ public class StopRouteDestinationArrival {
         this.destination = d;
 
         arrivals = new CopyOnWriteArrayList<Arrival>();
+        trip = new MultiArrivalTrip(this);
 
         Log.d(TAG, "New StopRouteDestinationArrival: "+s+" "+r+" "+d);
     }
@@ -111,7 +112,7 @@ public class StopRouteDestinationArrival {
 
     public Collection<Arrival> getArrivals() {
         Log.d(TAG, "GetArrivals");
-        return null;
+        return arrivals;
     }
 
     public Route getRoute() {

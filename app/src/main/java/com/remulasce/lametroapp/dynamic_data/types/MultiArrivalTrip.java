@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -55,13 +57,10 @@ public class MultiArrivalTrip extends Trip {
     public View getView(ViewGroup parent, Context context) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.trip_item, parent, false);
+        RelativeLayout rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
-        TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
-        TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
-        TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
@@ -78,14 +77,43 @@ public class MultiArrivalTrip extends Trip {
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
 
 
-        int seconds = (int) parentArrival.getEstimatedArrivalSeconds();
-        String vehicle = "Veh " + parentArrival.vehicle.getString() + " ";
-
         stop_text.setText(stopString);
         route_text.setText(routeDestString);
-        prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
-        prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
-        vehicle_text.setText(vehicle);
+
+        for (Arrival a : parentArrival.getArrivals()) {
+
+            LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
+            RelativeLayout updateTimeView = null;
+
+            for (int i = 0; i < rowView.getChildCount(); i++) {
+                View v = rowView.getChildAt(i);
+
+                Object tag = v.getTag();
+                if (tag instanceof Arrival) {
+                    if ((tag).equals(a)) {
+                        updateTimeView = (RelativeLayout) v;
+                    }
+                }
+            }
+            if (updateTimeView == null) {
+                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
+
+                timesLayout.addView(updateTimeView);
+            }
+
+            TextView prediction_text_minutes = (TextView) updateTimeView.findViewById(R.id.prediction_time_minutes);
+            TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
+            TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
+
+            int seconds = (int) a.getEstimatedArrivalSeconds();
+            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+
+            prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
+            prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
+
+            vehicle_text.setText(vehicle);
+
+        }
 
         return rowView;
     }
@@ -117,9 +145,9 @@ public class MultiArrivalTrip extends Trip {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                                parentArrival.destination, parentArrival.vehicle, seconds, context);
+// TODO
+//                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
+//                                parentArrival.destination, parentArrival.vehicle, seconds, context);
                     }
 
                 })
@@ -155,7 +183,9 @@ public class MultiArrivalTrip extends Trip {
 
         // 20 minutes away is where you start getting good priority.
         // After that you just get chump change up to 45m.
-        float eta = parentArrival.getEstimatedArrivalSeconds();
+//        float eta = parentArrival.getEstimatedArrivalSeconds();
+        float eta = parentArrival.getRequestedUpdateInterval() / 50;
+
         float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
         // Super-duper arrivals shouldn't really jump all the way up.
@@ -189,6 +219,7 @@ public class MultiArrivalTrip extends Trip {
     @Override
     public boolean isValid() {
 //        return parentArrival.getEstimatedArrivalSeconds() > 0;
-        return parentArrival.isInScope() && parentArrival.getEstimatedArrivalSeconds() > 0;
+        //TODO
+        return parentArrival.isInScope();// && parentArrival.getEstimatedArrivalSeconds() > 0;
     }
 }

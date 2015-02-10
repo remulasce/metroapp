@@ -137,7 +137,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         //Then update all the destinations we have
         for (StopRouteDestinationArrival a : trackedArrivals) {
             a.updateArrivalTimes(arrivals);
-//            callback.tripUpdated(a.getTrip());
+            callback.tripUpdated(a.getTrip());
         }
     }
     @Override
