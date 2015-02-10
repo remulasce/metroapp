@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class StopPrediction extends Prediction {
     
     protected boolean inScope = false; 
 
-    final Map< Destination, Arrival > directionMap = new HashMap< Destination, Arrival >();
+//    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
+    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
 
     Arrival firstArrival;
     Trip firstTrip;
@@ -43,12 +45,13 @@ public class StopPrediction extends Prediction {
 
     @Override
     public void startPredicting() {
-        synchronized ( directionMap ) {
+        synchronized ( trackedArrivals ) {
             inScope = true;
             PredictionManager.getInstance().startTracking( this );
             
-            for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
-                e.getValue().setScope( true );
+//            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
+            for (Arrival e : trackedArrivals) {
+                e.setScope( true );
             }
         }
     }
@@ -58,8 +61,8 @@ public class StopPrediction extends Prediction {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
         
-        for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
-            e.getValue().setScope( false );
+        for (Arrival e : trackedArrivals) {
+            e.setScope( false );
         }
     }
 
@@ -107,13 +110,21 @@ public class StopPrediction extends Prediction {
         for ( Arrival newA : arrivals ) {
             newA.setScope( inScope );
             if ( arrivalTracked( newA ) ) {
-                Arrival a;
-                synchronized ( directionMap ) {
-                    a = directionMap.get( newA.getDirection() );
+                Arrival a = null;
+
+                synchronized ( trackedArrivals ) {
+                    for (Arrival arrival : trackedArrivals) {
+                        if (arrival.getDirection() == newA.getDirection() &&
+                                arrival.getStop() == newA.getStop() &&
+                                arrival.getVehicleNum() == newA.getVehicleNum()) {
+                            a = arrival;
+                        }
+                    }
                 }
+
                 if ( a == null ) {
-                    synchronized ( directionMap ) {
-                        directionMap.put( newA.getDirection(), newA );
+                    synchronized ( trackedArrivals ) {
+                        trackedArrivals.add( newA );
                     }
                     a = newA;
                 }
@@ -139,8 +150,8 @@ public class StopPrediction extends Prediction {
 
     protected Arrival firstArrival() {
         Arrival first = null;
-        synchronized ( directionMap ) {
-            for ( Arrival a : directionMap.values() ) {
+        synchronized ( trackedArrivals ) {
+            for ( Arrival a : trackedArrivals ) {
                 if ( first == null
                         || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
                 {
@@ -179,9 +190,9 @@ public class StopPrediction extends Prediction {
     public List< Trip > getAllSentTrips() {
         List< Trip > ret = new ArrayList< Trip >();
 
-        synchronized ( directionMap ) {
-            for ( Entry< Destination, Arrival > e : directionMap.entrySet() ) {
-                ret.add( e.getValue().getFirstTrip() );
+        synchronized ( trackedArrivals ) {
+            for ( Arrival e : trackedArrivals ) {
+                ret.add( e.getFirstTrip() );
             }
         }
 
