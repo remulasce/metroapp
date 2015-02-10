@@ -69,7 +69,6 @@ public class StopRouteDestinationArrival {
 
         interval = Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
 
-        Log.v(TAG, "GetRequestedUpdateInterval SRDArrival "+interval);
         return interval;
     }
 

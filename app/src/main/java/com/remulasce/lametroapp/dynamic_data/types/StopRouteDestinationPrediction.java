@@ -154,16 +154,32 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public int getRequestedUpdateInterval() {
-        Arrival first = null;
-        int firstTime;
+        StopRouteDestinationArrival first = null;
 
-        if ( first == null ) {
-            firstTime = 15;
-        } else {
-            firstTime = (int) first.getEstimatedArrivalSeconds();
+        float firstTime;
+        float interval = 0;
+
+        // We find the soonest arrival and use the interval for that to make sure it gets
+        // updated as often as it needs.
+        for ( StopRouteDestinationArrival a : trackedArrivals ) {
+            if ( first == null
+                    || a.getRequestedUpdateInterval() < first.getRequestedUpdateInterval() )
+            {
+                if ( a.getRequestedUpdateInterval() != -1 ) {
+                    first = a;
+                }
+            }
         }
 
-        return Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
+
+        if ( first == null ) {
+            interval = 15 * INTERVAL_INCREASE_PER_SECOND;
+        } else {
+            interval = first.getRequestedUpdateInterval();
+        }
+
+        Log.v(TAG, "GetRequestedUpdateInterval SRDArrival "+interval);
+        return (int) Math.max( MINIMUM_UPDATE_INTERVAL, interval );
     }
 
     @Override
