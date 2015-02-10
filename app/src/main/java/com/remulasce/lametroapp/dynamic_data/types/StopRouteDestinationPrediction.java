@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
+import android.util.Log;
+
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -13,6 +15,7 @@ import java.util.List;
 That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
  */
 public class StopRouteDestinationPrediction extends Prediction {
+    public static final String TAG = "SRDPrediction";
     protected final int MINIMUM_UPDATE_INTERVAL = 5000;
     protected final int INTERVAL_INCREASE_PER_SECOND = 50;
 
@@ -41,6 +44,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void startPredicting() {
+        Log.d(TAG, "StartPredicting SRDP");
         synchronized ( trackedArrivals ) {
             inScope = true;
             PredictionManager.getInstance().startTracking( this );
@@ -122,6 +126,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                     synchronized (trackedArrivals) {
                         StopRouteDestinationArrival newSRDA = new StopRouteDestinationArrival(
                                 newA.getStop(), newA.getRoute(), newA.getDirection());
+                        newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
 
                         a = newSRDA;
