@@ -115,6 +115,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                 synchronized (trackedArrivals) {
                     for (StopRouteDestinationArrival arrival : trackedArrivals) {
                         if (arrival.getDirection().equals(newA.getDirection()) &&
+                                arrival.getRoute().equals(newA.getRoute()) &&
                                 arrival.getStop().equals(newA.getStop())) {
                             a = arrival;
                             break;
