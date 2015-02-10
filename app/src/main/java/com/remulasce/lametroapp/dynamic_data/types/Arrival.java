@@ -29,7 +29,7 @@ public class Arrival {
 
     public Arrival() {
         firstTrip = new ArrivalTrip( this );
-        
+
         route = new Route();
         destination = new Destination();
         stop = new Stop();
@@ -97,10 +97,17 @@ public class Arrival {
     public int hashCode() {
         String h = "";
         if (route.isValid()) h += route.getString();
+        if (destination.isValid()) h += destination.getString();
         if (stop.isValid()) h += stop.getString();
         if (vehicle.isValid()) h += vehicle.getString();
         
         return h.hashCode();
+    }
+
+    public boolean equals( Object o ) {
+        if ( o.getClass() != this.getClass()) { return false; }
+
+        return (o.hashCode() == this.hashCode());
     }
 
     public void setScope(boolean inScope) {

@@ -293,7 +293,11 @@ public class TripPopulator {
                 }
                 if ( !activeTrips.contains( trip ) ) {
                     activeTrips.add( trip );
+                    Log.d(TAG, "Adding trip to activetrips");
+                } else {
+                    Log.i(TAG, "Active trip udpated");
                 }
+
             }
         };
     }

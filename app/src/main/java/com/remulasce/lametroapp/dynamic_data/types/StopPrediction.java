@@ -118,6 +118,7 @@ public class StopPrediction extends Prediction {
                                 arrival.getStop().equals( newA.getStop() ) &&
                                 arrival.getVehicleNum().equals( newA.getVehicleNum() )) {
                             a = arrival;
+                            break;
                         }
                     }
                 }

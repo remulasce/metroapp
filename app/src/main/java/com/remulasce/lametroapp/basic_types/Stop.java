@@ -73,7 +73,6 @@ public class Stop implements Serializable {
     public boolean equals( Object o ) {
         if ( o.getClass() != this.getClass()) { return false; }
 
-        Destination other = (Destination) o;
         return (o.hashCode() == this.hashCode());
     }
 }
