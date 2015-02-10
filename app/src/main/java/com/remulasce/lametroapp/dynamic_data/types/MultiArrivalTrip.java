@@ -85,8 +85,13 @@ public class MultiArrivalTrip extends Trip {
             LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
             RelativeLayout updateTimeView = null;
 
-            for (int i = 0; i < rowView.getChildCount(); i++) {
-                View v = rowView.getChildAt(i);
+            int seconds = (int) a.getEstimatedArrivalSeconds();
+            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+
+            // Find a view we've already made for this arrival
+            // Wow no. Because we don't reuse the view.
+            for (int i = 0; i < timesLayout.getChildCount(); i++) {
+                View v = timesLayout.getChildAt(i);
 
                 Object tag = v.getTag();
                 if (tag instanceof Arrival) {
@@ -95,8 +100,15 @@ public class MultiArrivalTrip extends Trip {
                     }
                 }
             }
+            // If the bus already arrived, remove the display
+            if (updateTimeView != null && seconds <= 0) {
+                timesLayout.removeView(updateTimeView);
+                continue;
+            }
+            // If we couldn't find the view again, make it.
             if (updateTimeView == null) {
                 updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
+                updateTimeView.setTag(a);
 
                 timesLayout.addView(updateTimeView);
             }
@@ -105,8 +117,7 @@ public class MultiArrivalTrip extends Trip {
             TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
             TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
 
-            int seconds = (int) a.getEstimatedArrivalSeconds();
-            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+
 
             prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
             prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
