@@ -114,9 +114,9 @@ public class StopPrediction extends Prediction {
 
                 synchronized ( trackedArrivals ) {
                     for (Arrival arrival : trackedArrivals) {
-                        if (arrival.getDirection() == newA.getDirection() &&
-                                arrival.getStop() == newA.getStop() &&
-                                arrival.getVehicleNum() == newA.getVehicleNum()) {
+                        if (arrival.getDirection().equals( newA.getDirection() ) &&
+                                arrival.getStop().equals( newA.getStop() ) &&
+                                arrival.getVehicleNum().equals( newA.getVehicleNum() )) {
                             a = arrival;
                         }
                     }
