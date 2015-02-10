@@ -106,7 +106,6 @@ public class StopPrediction extends Prediction {
 
         List< Arrival > arrivals = LaMetroUtil.parseAllArrivals( response );
 
-        // This doesn't actually work.
         for ( Arrival newA : arrivals ) {
             newA.setScope( inScope );
             if ( arrivalTracked( newA ) ) {
