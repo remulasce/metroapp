@@ -43,7 +43,7 @@ public class ArrivalTrip extends Trip {
         String routeString = route.getString();
         String stopString = stop.getStopName();
         String destString = dest.getString();
-        int seconds = parentArrival.getEstimatedArrivalSeconds();
+        int seconds = (int) parentArrival.getEstimatedArrivalSeconds();
         
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         
@@ -84,7 +84,7 @@ public class ArrivalTrip extends Trip {
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
-        int seconds = parentArrival.getEstimatedArrivalSeconds();
+        int seconds = (int) parentArrival.getEstimatedArrivalSeconds();
 
         stop_text.setText(stopString);
         route_text.setText(routeDestString);

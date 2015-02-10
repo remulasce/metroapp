@@ -1,34 +1,30 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-
 import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.dynamic_data.PredictionManager;
-import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 
-/* You make a stop prediction. It gets all the arrivals at a stop, based
- * on input. Etc.
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/* This thing makes all the StopRouteDestinationArrivals each stop could need.
+That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
  */
-public class StopPrediction extends Prediction {
+public class StopRouteDestinationPrediction extends Prediction {
     protected final int MINIMUM_UPDATE_INTERVAL = 5000;
     protected final int INTERVAL_INCREASE_PER_SECOND = 50;
 
     protected Stop stop;
     protected Route route;
     protected TripUpdateCallback callback;
-    
-    protected boolean inScope = false; 
+
+    protected boolean inScope = false;
 
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
-    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
+//    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
+    final Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
     Arrival firstArrival;
     Trip firstTrip;
@@ -36,7 +32,7 @@ public class StopPrediction extends Prediction {
     long lastUpdate;
     boolean inUpdate = false;
 
-    public StopPrediction( Stop stop, Route route ) {
+    public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
         this.route = route;
         this.firstArrival = new Arrival();
@@ -50,7 +46,7 @@ public class StopPrediction extends Prediction {
             PredictionManager.getInstance().startTracking( this );
             
 //            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
-            for (Arrival e : trackedArrivals) {
+            for (StopRouteDestinationArrival e : trackedArrivals) {
                 e.setScope( true );
             }
         }
@@ -61,7 +57,7 @@ public class StopPrediction extends Prediction {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
         
-        for (Arrival e : trackedArrivals) {
+        for (StopRouteDestinationArrival e : trackedArrivals) {
             e.setScope( false );
         }
     }
@@ -104,38 +100,41 @@ public class StopPrediction extends Prediction {
     public void handleResponse( String response ) {
         lastUpdate = System.currentTimeMillis();
 
-        List< Arrival > arrivals = LaMetroUtil.parseAllArrivals( response );
+        List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
 
-        for ( Arrival newA : arrivals ) {
-            newA.setScope( inScope );
-            if ( arrivalTracked( newA ) ) {
-                Arrival a = null;
+        // First, add new destinations if we find any.
+        for (Arrival newA : arrivals) {
+            newA.setScope(inScope);
+            if (arrivalTracked(newA)) {
+                StopRouteDestinationArrival a = null;
 
-                synchronized ( trackedArrivals ) {
-                    for (Arrival arrival : trackedArrivals) {
-                        if (arrival.getDirection().equals( newA.getDirection() ) &&
-                                arrival.getStop().equals( newA.getStop() ) &&
-                                arrival.getVehicleNum().equals( newA.getVehicleNum() )) {
+                synchronized (trackedArrivals) {
+                    for (StopRouteDestinationArrival arrival : trackedArrivals) {
+                        if (arrival.getDirection().equals(newA.getDirection()) &&
+                                arrival.getStop().equals(newA.getStop())) {
                             a = arrival;
                             break;
                         }
                     }
                 }
 
-                if ( a == null ) {
-                    synchronized ( trackedArrivals ) {
-                        trackedArrivals.add( newA );
+                if (a == null) {
+                    synchronized (trackedArrivals) {
+                        StopRouteDestinationArrival newSRDA = new StopRouteDestinationArrival(
+                                newA.getStop(), newA.getRoute(), newA.getDirection());
+                        trackedArrivals.add(newSRDA);
+
+                        a = newSRDA;
                     }
-                    a = newA;
                 }
-                else {
-                    a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
-                }
-                callback.tripUpdated( a.getFirstTrip() );
             }
         }
+        //Then update all the destinations we have
+        for (StopRouteDestinationArrival a : trackedArrivals) {
+            a.updateArrivalTimes(arrivals);
+//            callback.tripUpdated(a.getTrip());
+        }
     }
-
     @Override
     public void setUpdated() {
         synchronized ( this ) {
@@ -148,25 +147,9 @@ public class StopPrediction extends Prediction {
         return route;
     }
 
-    protected Arrival firstArrival() {
-        Arrival first = null;
-        synchronized ( trackedArrivals ) {
-            for ( Arrival a : trackedArrivals ) {
-                if ( first == null
-                        || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
-                {
-                    if ( a.getEstimatedArrivalSeconds() != -1 ) {
-                        first = a;
-                    }
-                }
-            }
-        }
-        return first;
-    }
-
     @Override
     public int getRequestedUpdateInterval() {
-        Arrival first = firstArrival();
+        Arrival first = null;
         int firstTime;
 
         if ( first == null ) {

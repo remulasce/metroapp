@@ -2,6 +2,7 @@ package com.remulasce.lametroapp.basic_types;
 
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
+import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +44,7 @@ public class StopServiceRequest extends ServiceRequest {
 
         if (predictions.isEmpty()) {
             for (Stop s : stops) {
-                predictions.add(new StopPrediction(s, null));
+                predictions.add(new StopRouteDestinationPrediction(s, null));
             }
         }
 

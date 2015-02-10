@@ -22,7 +22,5 @@ public abstract class Prediction {
 	public abstract String getRequestString();
 	public abstract void handleResponse(String response);
 	
-	public abstract List<Trip> getAllSentTrips();
-	
 	public abstract void setTripCallback( TripUpdateCallback callback );
 }

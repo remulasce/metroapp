@@ -37,12 +37,12 @@ public class Arrival {
     }
 
     /** In seconds from now */
-    public int getEstimatedArrivalSeconds() {
-        return (int) Math.max( 0, ( lastPrediction - System.currentTimeMillis() ) / 1000 );
+    public float getEstimatedArrivalSeconds() {
+        return Math.max( 0, ( lastPrediction - System.currentTimeMillis() ) / 1000f );
     }
 
-    public void setEstimatedArrivalSeconds( int secondsTillArrival ) {
-        lastPrediction = System.currentTimeMillis() + secondsTillArrival * 1000;
+    public void setEstimatedArrivalSeconds( float secondsTillArrival ) {
+        lastPrediction = System.currentTimeMillis() + (int)(secondsTillArrival * 1000);
         lastUpdate = System.currentTimeMillis();
     }
 
