@@ -145,6 +145,7 @@ public class MultiArrivalTrip extends Trip {
             timesLayout.removeView(r);
         }
 
+        rowView.requestLayout();
         return rowView;
     }
 
