@@ -51,4 +51,7 @@ public class Trip {
 	    return true;
 	}
 
+    public void dismiss() {
+        return;
+    }
 }

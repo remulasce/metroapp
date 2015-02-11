@@ -68,7 +68,9 @@ public class TripPopulator {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    adapter.remove(adapter.getItem(position));
+                                    Trip t = adapter.getItem(position);
+                                    t.dismiss();
+                                    adapter.remove(t);
                                 }
                                 adapter.notifyDataSetChanged();
                             }

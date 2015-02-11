@@ -247,8 +247,10 @@ public class MultiArrivalTrip extends Trip {
     
     @Override
     public boolean isValid() {
-//        return parentArrival.getEstimatedArrivalSeconds() > 0;
-        //TODO
         return parentArrival.isInScope();// && parentArrival.getEstimatedArrivalSeconds() > 0;
+    }
+
+    public void dismiss() {
+        parentArrival.setScope(false);
     }
 }
