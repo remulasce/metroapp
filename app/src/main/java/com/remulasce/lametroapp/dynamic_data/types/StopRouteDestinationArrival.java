@@ -111,7 +111,6 @@ public class StopRouteDestinationArrival {
     }
 
     public Collection<Arrival> getArrivals() {
-        Log.d(TAG, "GetArrivals");
         return arrivals;
     }
 

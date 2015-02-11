@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
@@ -174,9 +175,8 @@ public class MultiArrivalTrip extends Trip {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-// TODO
-//                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-//                                parentArrival.destination, parentArrival.vehicle, seconds, context);
+                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
+                                parentArrival.destination, null, seconds, context);
                     }
 
                 })
