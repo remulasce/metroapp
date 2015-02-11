@@ -217,7 +217,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 float velocityY = Math.abs(mVelocityTracker.getYVelocity());
                 boolean dismiss = false;
                 boolean dismissRight = false;
-                if (Math.abs(deltaX) > mViewWidth / 2) {
+                if (Math.abs(deltaX) > mViewWidth / 2 && mSwiping) {
                     dismiss = true;
                     dismissRight = deltaX > 0;
                 } else if (mMinFlingVelocity <= velocityX && velocityX <= mMaxFlingVelocity
@@ -334,7 +334,8 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                         setAlpha(pendingDismiss.view, 1f);
                         setTranslationX(pendingDismiss.view, 0);
                         lp = pendingDismiss.view.getLayoutParams();
-                        lp.height = originalHeight;
+//                        lp.height = originalHeight; ugh. Modification Fintan O'Grady.
+                        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         pendingDismiss.view.setLayoutParams(lp);
                     }
 

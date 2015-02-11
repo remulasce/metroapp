@@ -93,6 +93,8 @@ public class MultiArrivalTrip extends Trip {
         LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
 
         List<RelativeLayout> updateViews = new ArrayList<RelativeLayout>();
+        // If we change the size of the view, we should invalidate it and redraw.
+        boolean sizeChanged = false;
         // Find all the arrival rows we can reuse in this view.
         for (int i = 0; i < timesLayout.getChildCount(); i++) {
             View v = timesLayout.getChildAt(i);
@@ -122,7 +124,8 @@ public class MultiArrivalTrip extends Trip {
             }
             // If there's no recycled views left, make one.
             else {
-                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
+                sizeChanged = true;
+                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, timesLayout, false);
                 updateTimeView.setTag(a);
 
                 timesLayout.addView(updateTimeView);
@@ -142,10 +145,19 @@ public class MultiArrivalTrip extends Trip {
 
         // Remove extra recycled arrivals
         for (RelativeLayout r : updateViews) {
+            sizeChanged = true;
             timesLayout.removeView(r);
         }
 
-        rowView.requestLayout();
+        // This might not actually be necessary.
+        if (sizeChanged) {
+            timesLayout.requestLayout();
+            timesLayout.invalidate();
+
+            rowView.requestLayout();
+            rowView.invalidate();
+        }
+
         return rowView;
     }
 
