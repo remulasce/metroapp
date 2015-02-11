@@ -26,6 +26,7 @@ import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
@@ -44,6 +45,8 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
+    protected SwipeDismissListViewTouchListener dismissListener;
+
     // ugh.
     protected Context c;
 
@@ -58,6 +61,22 @@ public class TripPopulator {
 
         adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
+
+        dismissListener = new SwipeDismissListViewTouchListener(
+                        list,
+                        new SwipeDismissListViewTouchListener.OnDismissCallback() {
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    adapter.remove(adapter.getItem(position));
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+        list.setOnTouchListener(dismissListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        list.setOnScrollListener(dismissListener.makeScrollListener());
     }
 
     public void StartPopulating() {
