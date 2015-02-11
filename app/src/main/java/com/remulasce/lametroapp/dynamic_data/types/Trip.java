@@ -39,7 +39,7 @@ public class Trip {
 		// ...
 	}
 
-    public View getView(ViewGroup parent, Context context) {
+    public View getView(ViewGroup parent, Context context, View recycleView) {
         return null;
     }
 	

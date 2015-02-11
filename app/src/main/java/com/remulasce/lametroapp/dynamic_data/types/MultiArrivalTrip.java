@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
@@ -54,10 +53,17 @@ public class MultiArrivalTrip extends Trip {
     }
 
     @Override
-    public View getView(ViewGroup parent, Context context) {
+    public View getView(ViewGroup parent, Context context, View recycleView) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        RelativeLayout rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
+
+        RelativeLayout rowView;
+
+        if (recycleView != null && recycleView.getRootView().getId() == R.id.multi_trip_item) {
+            rowView = (RelativeLayout)recycleView;
+        } else {
+            rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
+        }
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
@@ -88,36 +94,19 @@ public class MultiArrivalTrip extends Trip {
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
 
-            // Find a view we've already made for this arrival
-            // Wow no. Because we don't reuse the view.
-            for (int i = 0; i < timesLayout.getChildCount(); i++) {
-                View v = timesLayout.getChildAt(i);
-
-                Object tag = v.getTag();
-                if (tag instanceof Arrival) {
-                    if ((tag).equals(a)) {
-                        updateTimeView = (RelativeLayout) v;
-                    }
-                }
-            }
-            // If the bus already arrived, remove the display
-            if (updateTimeView != null && seconds <= 0) {
-                timesLayout.removeView(updateTimeView);
+            // If the bus already arrived, don't add it.
+            if (seconds <= 0) {
                 continue;
             }
-            // If we couldn't find the view again, make it.
-            if (updateTimeView == null) {
-                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
-                updateTimeView.setTag(a);
 
-                timesLayout.addView(updateTimeView);
-            }
+            updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
+            updateTimeView.setTag(a);
+
+            timesLayout.addView(updateTimeView);
 
             TextView prediction_text_minutes = (TextView) updateTimeView.findViewById(R.id.prediction_time_minutes);
             TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
             TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
-
-
 
             prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
             prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));

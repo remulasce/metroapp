@@ -3,7 +3,6 @@ package com.remulasce.lametroapp.dynamic_data.types;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,7 @@ public class ArrivalTrip extends Trip {
     }
 
     @Override
-    public View getView(ViewGroup parent, Context context) {
+    public View getView(ViewGroup parent, Context context, View recycleView) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.trip_item, parent, false);
