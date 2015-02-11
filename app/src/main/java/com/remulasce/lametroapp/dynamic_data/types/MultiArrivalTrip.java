@@ -23,6 +23,11 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 public class MultiArrivalTrip extends Trip {
 
     protected StopRouteDestinationArrival parentArrival;
@@ -59,7 +64,7 @@ public class MultiArrivalTrip extends Trip {
 
         RelativeLayout rowView;
 
-        if (recycleView != null && recycleView.getRootView().getId() == R.id.multi_trip_item) {
+        if (recycleView != null && recycleView.getId() == R.id.multi_trip_item) {
             rowView = (RelativeLayout)recycleView;
         } else {
             rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
@@ -77,42 +82,66 @@ public class MultiArrivalTrip extends Trip {
         String stopString = stop.getStopName();
         String destString = dest.getString();
 
-
-
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
-
 
         stop_text.setText(stopString);
         route_text.setText(routeDestString);
 
+
+        LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
+
+        List<RelativeLayout> updateViews = new ArrayList<RelativeLayout>();
+        // Find all the arrival rows we can reuse in this view.
+        for (int i = 0; i < timesLayout.getChildCount(); i++) {
+            View v = timesLayout.getChildAt(i);
+
+            Object tag = v.getTag();
+            if (tag instanceof Arrival) {
+                updateViews.add((RelativeLayout) v);
+            }
+        }
+
+        // Get all the Arrivals displayed
         for (Arrival a : parentArrival.getArrivals()) {
 
-            LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
             RelativeLayout updateTimeView = null;
 
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
 
-            // If the bus already arrived, don't add it.
+            // If the bus already arrived, don't add the display
             if (seconds <= 0) {
                 continue;
             }
+            // If there's recycled views to use
+            if (updateViews.size() > 0) {
+                updateTimeView = updateViews.get(0);
+                updateViews.remove(0);
+            }
+            // If there's no recycled views left, make one.
+            else {
+                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
+                updateTimeView.setTag(a);
 
-            updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, null, true);
-            updateTimeView.setTag(a);
-
-            timesLayout.addView(updateTimeView);
+                timesLayout.addView(updateTimeView);
+            }
 
             TextView prediction_text_minutes = (TextView) updateTimeView.findViewById(R.id.prediction_time_minutes);
             TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
             TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
+
 
             prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
             prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
 
             vehicle_text.setText(vehicle);
 
+        }
+
+        // Remove extra recycled arrivals
+        for (RelativeLayout r : updateViews) {
+            timesLayout.removeView(r);
         }
 
         return rowView;
