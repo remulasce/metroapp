@@ -54,7 +54,7 @@ public class StopRouteDestinationPrediction extends Prediction {
             
 //            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
             for (StopRouteDestinationArrival e : trackedArrivals) {
-                e.setScope( true );
+//                e.setScope( true );
             }
         }
     }
@@ -65,7 +65,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         PredictionManager.getInstance().stopTracking( this );
         
         for (StopRouteDestinationArrival e : trackedArrivals) {
-            e.setScope( false );
+//            e.setScope( false );
         }
     }
 

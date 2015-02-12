@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
 
+import java.io.Serializable;
+
 
 /** Individual trips are displayed to the user as the result of his
  * input.
@@ -19,7 +21,7 @@ import com.remulasce.lametroapp.R;
  * @author Fintan
  *
  */
-public class Trip {
+public class Trip implements Serializable {
 	protected String text = "...";
 	
 	public String getInfo() {

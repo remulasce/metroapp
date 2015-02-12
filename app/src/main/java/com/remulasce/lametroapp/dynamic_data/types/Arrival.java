@@ -6,12 +6,14 @@ import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
 
+import java.io.Serializable;
+
 /**
  * One arrival is one route-direction's arrival at one stop. This is the
  * building block of all information because it's the only way to get realtime
  * predictions.
  */
-public class Arrival {
+public class Arrival implements Serializable {
 
     Route route;
     Destination destination;

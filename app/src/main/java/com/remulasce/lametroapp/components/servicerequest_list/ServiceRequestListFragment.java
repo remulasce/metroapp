@@ -111,8 +111,23 @@ public class ServiceRequestListFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        saveServiceRequests(requests);
+
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        saveServiceRequests(requests);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {

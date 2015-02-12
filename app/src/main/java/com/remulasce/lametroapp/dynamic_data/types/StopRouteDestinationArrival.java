@@ -6,6 +6,7 @@ import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * All the things have to match. So red and purple lines to Union Station from 7th/Metro
  *  require two of these.
  */
-public class StopRouteDestinationArrival {
+public class StopRouteDestinationArrival implements Serializable {
     protected final int MINIMUM_UPDATE_INTERVAL = 5000;
     protected final int INTERVAL_INCREASE_PER_SECOND = 50;
 
