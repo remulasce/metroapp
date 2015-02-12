@@ -62,7 +62,6 @@ public class SettingFieldSaver implements FieldSaver {
 
         int i = 0;
         for (ServiceRequest request : requests) {
-//            Set<String> put = new HashSet<String>();
             String requestNameTerminated = SERVICEREQUEST_ITEM_NAME + i +"_";
 
             Collection<String> stopids = request.getRaw();
@@ -70,19 +69,13 @@ public class SettingFieldSaver implements FieldSaver {
 
             int stopNum = 0;
             for (String s : stopids) {
-//                put.add("0 " + s);
                 editor.putString(requestNameTerminated+"stop"+stopNum, s);
 
                 stopNum++;
             }
-//            put.add("1 " + request.getDisplayName());
             editor.putString(requestNameTerminated+"displayname", request.getDisplayName());
-//            put.add("2 " + request.isInScope());
             editor.putString(requestNameTerminated+"inscope", String.valueOf(request.isInScope()));
 
-
-//            Only supported in API 11
-//            editor.putStringSet(SERVICEREQUEST_ITEM_NAME + i, put);
             i++;
         }
 
@@ -97,24 +90,6 @@ public class SettingFieldSaver implements FieldSaver {
         int requestCount = preferences.getInt(SERVICEREQUEST_COUNT_NAME, 0);
 
         for (int i = 0; i < requestCount; i++) {
-//            Set<String> set = new HashSet<String>();
-//            set = preferences.getStringSet(SERVICEREQUEST_ITEM_NAME + i, set);
-//
-//            Collection<String> raw = new ArrayList<String>();
-//            String displayname = "bad request load";
-//            String scope = "bad request load";
-//
-//            for (String s : set) {
-//                if (s.startsWith("0")) {
-//                    raw.add(s.substring(2));
-//                }
-//                if (s.startsWith("1")) {
-//                    displayname = s.substring(2);
-//                }
-//                if (s.startsWith("2")) {
-//                     scope = s.substring(2);
-//                }
-
 //            NEW: (to work around putStringSet):
 //            Instead of a set in servicerequest_xx, we put:
 //            servicerequest_xx_numstops: int number of stopids
