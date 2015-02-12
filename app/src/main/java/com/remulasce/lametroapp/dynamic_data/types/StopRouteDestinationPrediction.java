@@ -54,6 +54,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void cancelTrips() {
+        inScope = false;
         for (StopRouteDestinationArrival e : trackedArrivals) {
             e.setScope( false );
         }

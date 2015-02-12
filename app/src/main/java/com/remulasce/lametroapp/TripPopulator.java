@@ -287,6 +287,9 @@ public class TripPopulator {
                             progress.setVisibility(View.VISIBLE);
                             progress.setProgress(1);
                         }
+                        else {
+                            progress.setVisibility(View.INVISIBLE);
+                        }
 
                     } else {
                         if ( hint.getVisibility() == View.VISIBLE ) {
@@ -323,7 +326,7 @@ public class TripPopulator {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {
-                    Log.v( TAG, "Skipped invalid trip " + trip.getInfo() );
+                    Log.d( TAG, "Skipped invalid trip " + trip.getInfo() );
                     activeTrips.remove( trip );
                     return;
                 }
@@ -331,7 +334,7 @@ public class TripPopulator {
                     activeTrips.add( trip );
                     Log.d(TAG, "Adding trip to activetrips");
                 } else {
-                    Log.i(TAG, "Active trip udpated");
+                    Log.v(TAG, "Active trip updated");
                 }
 
             }
