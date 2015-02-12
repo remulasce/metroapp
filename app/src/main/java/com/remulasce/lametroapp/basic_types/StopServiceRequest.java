@@ -54,8 +54,6 @@ public class StopServiceRequest extends ServiceRequest {
 
     @Override
     public void restoreTrips() {
-        predictions.clear();
-
         for (Prediction p : predictions) {
             p.restoreTrips();
         }

@@ -135,6 +135,7 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
+        requestList.setOnItemClickListener(onItemClickListener);
         mListener.getTripPopulator().SetServiceRequests(requests);
     }
 
@@ -163,6 +164,8 @@ public class ServiceRequestListFragment extends Fragment {
 
     private void raiseRequestClickedDialog(final ServiceRequest request) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Restore Arrivals");
+        builder.setMessage("Show all arrivals to this stop, restoring destinations that had been swiped away?");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 request.restoreTrips();

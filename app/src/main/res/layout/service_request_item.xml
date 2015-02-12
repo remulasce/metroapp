@@ -4,12 +4,13 @@
     android:layout_height="wrap_content"
     android:layout_weight="1.0"
     android:gravity="fill_horizontal"
+    android:descendantFocusability="blocksDescendants"
     android:paddingBottom="6dp"
     android:paddingLeft="10dp"
     android:paddingRight="0dp"
     android:paddingTop="6dp">
 
-    <ImageButton
+    <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:id="@+id/service_request_cancel"

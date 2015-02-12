@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
@@ -31,7 +32,7 @@ public class ServiceRequestListAdapter extends ArrayAdapter{
         View rowView = inflater.inflate(R.layout.service_request_item, parent, false);
 
         TextView t = (TextView) rowView.findViewById(R.id.service_request_text);
-        ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
+        ImageView b = (ImageView) rowView.findViewById(R.id.service_request_cancel);
 
         b.setTag(getItem(position));
         b.setOnClickListener(cancelButtonListener);
