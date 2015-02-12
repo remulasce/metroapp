@@ -19,4 +19,14 @@ public class Route implements Serializable {
     public boolean isValid() {
         return raw != null && !raw.isEmpty();
     }
+
+    // Ugh.
+    public int hashCode() {
+        return raw.hashCode();
+    }
+    public boolean equals( Object o ) {
+        if ( o.getClass() != this.getClass()) { return false; }
+
+        return (o.hashCode() == this.hashCode());
+    }
 }

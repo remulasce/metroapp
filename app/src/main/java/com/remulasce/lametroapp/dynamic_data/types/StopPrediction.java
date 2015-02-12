@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import com.remulasce.lametroapp.basic_types.Stop;
  */
 public class StopPrediction extends Prediction {
     protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 100;
+    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
 
     protected Stop stop;
     protected Route route;
@@ -26,7 +27,8 @@ public class StopPrediction extends Prediction {
     
     protected boolean inScope = false; 
 
-    final Map< Destination, Arrival > directionMap = new HashMap< Destination, Arrival >();
+//    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
+    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
 
     Arrival firstArrival;
     Trip firstTrip;
@@ -43,12 +45,13 @@ public class StopPrediction extends Prediction {
 
     @Override
     public void startPredicting() {
-        synchronized ( directionMap ) {
+        synchronized ( trackedArrivals ) {
             inScope = true;
             PredictionManager.getInstance().startTracking( this );
             
-            for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
-                e.getValue().setScope( true );
+//            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
+            for (Arrival e : trackedArrivals) {
+                e.setScope( true );
             }
         }
     }
@@ -58,8 +61,8 @@ public class StopPrediction extends Prediction {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
         
-        for (Entry<Destination, Arrival> e : directionMap.entrySet()) {
-            e.getValue().setScope( false );
+        for (Arrival e : trackedArrivals) {
+            e.setScope( false );
         }
     }
 
@@ -106,13 +109,22 @@ public class StopPrediction extends Prediction {
         for ( Arrival newA : arrivals ) {
             newA.setScope( inScope );
             if ( arrivalTracked( newA ) ) {
-                Arrival a;
-                synchronized ( directionMap ) {
-                    a = directionMap.get( newA.getDirection() );
+                Arrival a = null;
+
+                synchronized ( trackedArrivals ) {
+                    for (Arrival arrival : trackedArrivals) {
+                        if (arrival.getDirection().equals( newA.getDirection() ) &&
+                                arrival.getStop().equals( newA.getStop() ) &&
+                                arrival.getVehicleNum().equals( newA.getVehicleNum() )) {
+                            a = arrival;
+                            break;
+                        }
+                    }
                 }
+
                 if ( a == null ) {
-                    synchronized ( directionMap ) {
-                        directionMap.put( newA.getDirection(), newA );
+                    synchronized ( trackedArrivals ) {
+                        trackedArrivals.add( newA );
                     }
                     a = newA;
                 }
@@ -138,8 +150,8 @@ public class StopPrediction extends Prediction {
 
     protected Arrival firstArrival() {
         Arrival first = null;
-        synchronized ( directionMap ) {
-            for ( Arrival a : directionMap.values() ) {
+        synchronized ( trackedArrivals ) {
+            for ( Arrival a : trackedArrivals ) {
                 if ( first == null
                         || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
                 {
@@ -160,7 +172,7 @@ public class StopPrediction extends Prediction {
         if ( first == null ) {
             firstTime = 15;
         } else {
-            firstTime = first.getEstimatedArrivalSeconds();
+            firstTime = (int) first.getEstimatedArrivalSeconds();
         }
 
         return Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
@@ -172,19 +184,6 @@ public class StopPrediction extends Prediction {
             inUpdate = true;
         }
 
-    }
-
-    @Override
-    public List< Trip > getAllSentTrips() {
-        List< Trip > ret = new ArrayList< Trip >();
-
-        synchronized ( directionMap ) {
-            for ( Entry< Destination, Arrival > e : directionMap.entrySet() ) {
-                ret.add( e.getValue().getFirstTrip() );
-            }
-        }
-
-        return ret;
     }
 
     public int hashCode() {

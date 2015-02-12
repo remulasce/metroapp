@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -22,11 +24,16 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
-public class ArrivalTrip extends Trip {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-    protected Arrival parentArrival;
+public class MultiArrivalTrip extends Trip {
 
-    public ArrivalTrip( Arrival parentArrival ) {
+    protected StopRouteDestinationArrival parentArrival;
+
+    public MultiArrivalTrip(StopRouteDestinationArrival parentArrival) {
         this.parentArrival = parentArrival;
     }
 
@@ -42,34 +49,30 @@ public class ArrivalTrip extends Trip {
         String routeString = route.getString();
         String stopString = stop.getStopName();
         String destString = dest.getString();
-        int seconds = (int) parentArrival.getEstimatedArrivalSeconds();
-        
+
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         
         String destination = (destinationStartsWithNum ? "" : routeString + ": " ) + destString + " \n";
         String stop_ = stopString + "\n";
-        String vehicle = "Vehicle " + parentArrival.vehicle.getString() + " "; 
-        String time = LaMetroUtil.timeToDisplay(seconds);
-//        String raw = " (" + seconds + "s)";
-        
-        return stop_ 
-                + destination
-                + vehicle
-                + time
-                ;//+ raw;
+
+        return stop_ + destination;
     }
 
     @Override
     public View getView(ViewGroup parent, Context context, View recycleView) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.trip_item, parent, false);
+
+        RelativeLayout rowView;
+
+        if (recycleView != null && recycleView.getId() == R.id.multi_trip_item) {
+            rowView = (RelativeLayout)recycleView;
+        } else {
+            rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
+        }
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
-        TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
-        TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
-        TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
         ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
@@ -79,17 +82,87 @@ public class ArrivalTrip extends Trip {
         String routeString = route.getString();
         String stopString = stop.getStopName();
         String destString = dest.getString();
-        String vehicle = "Veh " + parentArrival.vehicle.getString() + " ";
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
-        int seconds = (int) parentArrival.getEstimatedArrivalSeconds();
 
         stop_text.setText(stopString);
         route_text.setText(routeDestString);
-        prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
-        prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
-        vehicle_text.setText(vehicle);
+
+
+        LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
+
+        List<RelativeLayout> updateViews = new ArrayList<RelativeLayout>();
+        // If we change the size of the view, we should invalidate it and redraw.
+        boolean sizeChanged = false;
+        // Find all the arrival rows we can reuse in this view.
+        for (int i = 0; i < timesLayout.getChildCount(); i++) {
+            View v = timesLayout.getChildAt(i);
+
+            Object tag = v.getTag();
+            if (tag instanceof Arrival) {
+                updateViews.add((RelativeLayout) v);
+            }
+        }
+
+        // Get all the Arrivals displayed
+        for (Arrival a : parentArrival.getArrivals()) {
+
+            RelativeLayout updateTimeView = null;
+
+            int seconds = (int) a.getEstimatedArrivalSeconds();
+            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+
+            // If the bus already arrived, don't add the display
+            if (seconds <= 0) {
+                continue;
+            }
+            // If there's recycled views to use
+            if (updateViews.size() > 0) {
+                updateTimeView = updateViews.get(0);
+                updateViews.remove(0);
+            }
+            // If there's no recycled views left, make one.
+            else {
+                sizeChanged = true;
+                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, timesLayout, false);
+                updateTimeView.setTag(a);
+
+                timesLayout.addView(updateTimeView);
+            }
+
+            TextView prediction_text_minutes = (TextView) updateTimeView.findViewById(R.id.prediction_time_minutes);
+            TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
+            TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
+
+
+            prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
+            prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
+
+            vehicle_text.setText(vehicle);
+
+        }
+
+        // Remove extra recycled arrivals
+        for (RelativeLayout r : updateViews) {
+            sizeChanged = true;
+            timesLayout.removeView(r);
+        }
+
+        // This might not actually be necessary.
+        if (sizeChanged) {
+            timesLayout.requestLayout();
+            timesLayout.invalidate();
+
+            rowView.requestLayout();
+            rowView.invalidate();
+        }
+
+        if (parentArrival.isInScope()) {
+            rowView.setVisibility(View.VISIBLE);
+        } else {
+            rowView.setVisibility(View.INVISIBLE);
+        }
 
         return rowView;
     }
@@ -121,9 +194,8 @@ public class ArrivalTrip extends Trip {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                         NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                                parentArrival.destination, parentArrival.vehicle, seconds, context);
+                                parentArrival.destination, null, seconds, context);
                     }
 
                 })
@@ -141,7 +213,7 @@ public class ArrivalTrip extends Trip {
         return parentArrival.hashCode();
     }
     public boolean equals( Object obj ) {
-        if (!(obj instanceof ArrivalTrip))
+        if (!(obj instanceof MultiArrivalTrip))
             return false;
         if (obj == this)
             return true;
@@ -159,7 +231,9 @@ public class ArrivalTrip extends Trip {
 
         // 20 minutes away is where you start getting good priority.
         // After that you just get chump change up to 45m.
-        float eta = parentArrival.getEstimatedArrivalSeconds();
+//        float eta = parentArrival.getEstimatedArrivalSeconds();
+        float eta = parentArrival.getRequestedUpdateInterval() / 50;
+
         float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
 
         // Super-duper arrivals shouldn't really jump all the way up.
@@ -192,7 +266,10 @@ public class ArrivalTrip extends Trip {
     
     @Override
     public boolean isValid() {
-//        return parentArrival.getEstimatedArrivalSeconds() > 0;
-        return parentArrival.isInScope() && parentArrival.getEstimatedArrivalSeconds() > 0;
+        return parentArrival.isInScope();// && parentArrival.getEstimatedArrivalSeconds() > 0;
+    }
+
+    public void dismiss() {
+        parentArrival.setScope(false);
     }
 }

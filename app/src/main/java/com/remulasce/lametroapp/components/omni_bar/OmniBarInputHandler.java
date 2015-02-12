@@ -65,7 +65,7 @@ public class OmniBarInputHandler {
     }
 
     private void linkViewHandlers() {
-        addButton.setOnClickListener(omniButtonListener);
+        if (addButton != null) addButton.setOnClickListener(omniButtonListener);
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
