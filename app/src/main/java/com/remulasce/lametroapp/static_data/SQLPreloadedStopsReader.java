@@ -39,6 +39,11 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     private static final String DOUBLE_TYPE = " REAL";
     private static final String COMMA_SEP = ",";
 
+    // Only send one in trackDivider hits
+    // It's kind of like an average.
+    private int trackNumber = 0;
+    private final int trackDivider = 50;
+
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + StopNameEntry.TABLE_NAME + " (" +
                     StopNameEntry._ID + " INTEGER PRIMARY KEY," +
@@ -113,7 +118,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             ret = new BasicLocation(latitude, longitude);
         }
 
-        Tracking.sendTime("SQL", "StopNames", "getLocation", t);
+        if (trackNumber++ % trackDivider == 0) {
+            Tracking.sendTime("SQL", "StopNames", "getLocation", t);
+        }
         Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
 
         return ret;
@@ -192,7 +199,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             }
         }
 
-        Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+        if (trackNumber++ % trackDivider == 0) {
+            Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+        }
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 
         return ret.values();
@@ -216,7 +225,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         if (matching.size() > 0) {
             ret = matching.iterator().next().stopName;
         }
-        Tracking.sendTime("SQL", "StopNames", "getStopName", t);
+        if (trackNumber++ % trackDivider == 0) {
+            Tracking.sendTime("SQL", "StopNames", "getStopName", t);
+        }
         Log.d(TAG,"Got stopname for "+stopID+", "+ ret);
 
         return ret;
@@ -243,7 +254,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         cleanStopIDs(ret);
 
-        Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+        if (trackNumber++ % trackDivider == 0) {
+            Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+        }
         Log.d(TAG,"Got stopID for "+stopName+", "+ ret);
 
         return ret;
