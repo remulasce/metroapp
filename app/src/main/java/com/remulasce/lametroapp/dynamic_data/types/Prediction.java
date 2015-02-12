@@ -11,10 +11,13 @@ import java.util.List;
  *
  */
 public abstract class Prediction implements Serializable{
+    // Start/stop for live updates
 	public abstract void startPredicting();
 	public abstract void stopPredicting();
 
+    // Cancel / restore stop tracking entirely
     public abstract void restoreTrips();
+    public abstract void cancelTrips();
 	
 	//ms
 	public abstract int getRequestedUpdateInterval();

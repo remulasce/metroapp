@@ -42,6 +42,7 @@ public abstract class ServiceRequest implements Serializable {
 
     public abstract Collection<Prediction> makePredictions();
     public abstract void restoreTrips();
+    public abstract void cancelRequest();
 
     // This is used for serialization, because we didn't do an actual good job with serialization.
     public abstract Collection<String> getRaw();

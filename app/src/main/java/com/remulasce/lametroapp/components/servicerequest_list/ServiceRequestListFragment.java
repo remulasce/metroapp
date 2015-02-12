@@ -189,6 +189,7 @@ public class ServiceRequestListFragment extends Fragment {
     private void cancelRequest(ServiceRequest s) {
         Log.d(TAG, "Cancelling request: "+s);
         s.descope();
+        s.cancelRequest();
         requests.remove(s);
         requestsChanged(true);
     }

@@ -50,9 +50,9 @@ public class StopPrediction extends Prediction {
             PredictionManager.getInstance().startTracking( this );
             
 //            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
-            for (Arrival e : trackedArrivals) {
-                e.setScope( true );
-            }
+//            for (Arrival e : trackedArrivals) {
+//                e.setScope( true );
+//            }
         }
     }
 
@@ -61,14 +61,21 @@ public class StopPrediction extends Prediction {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
         
-        for (Arrival e : trackedArrivals) {
-            e.setScope( false );
-        }
+//        for (Arrival e : trackedArrivals) {
+//            e.setScope( false );
+//        }
     }
 
     @Override
     public void restoreTrips() {
         firstArrival.setScope(true);
+    }
+
+    @Override
+    public void cancelTrips() {
+        for (Arrival e : trackedArrivals) {
+            e.setScope( false );
+        }
     }
 
     @Override
