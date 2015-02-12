@@ -67,7 +67,7 @@ public class StopServiceRequest extends ServiceRequest {
     @Override
     public boolean hasTripsToDisplay() {
         for (Prediction p : predictions) {
-            if (p.isInScope()) {
+            if (p.hasAnyPredictions()) {
                 return true;
             }
         }
