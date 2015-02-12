@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @author Fintan
  *
  */
-public abstract class Prediction {
+public abstract class Prediction implements Serializable{
 	public abstract void startPredicting();
 	public abstract void stopPredicting();
 	

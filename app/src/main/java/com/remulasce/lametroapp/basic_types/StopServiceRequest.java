@@ -1,11 +1,17 @@
 package com.remulasce.lametroapp.basic_types;
 
+import android.location.Location;
+
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Remulasce on 1/26/2015.
@@ -61,5 +67,25 @@ public class StopServiceRequest extends ServiceRequest {
 
         return strings;
 //        return new ArrayList<String>(stops);
+    }
+
+    private void writeObject(ObjectOutputStream oos)
+            throws IOException {
+        // default serialization
+//        oos.defaultWriteObject();
+        // write the object
+        oos.writeObject(stops);
+        oos.writeObject(predictions);
+    }
+
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        // default deserialization
+//        ois.defaultReadObject();
+
+        stops = (Collection<Stop>) ois.readObject();
+        predictions = (Collection<Prediction>) ois.readObject();
+        // ... more code
+
     }
 }

@@ -3,12 +3,13 @@ package com.remulasce.lametroapp.basic_types;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * Created by Remulasce on 12/16/2014.
  */
-public abstract class ServiceRequest {
+public abstract class ServiceRequest implements Serializable {
     String displayName = "ServiceRequest";
     boolean inScope = true;
 

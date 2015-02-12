@@ -7,6 +7,9 @@ import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +30,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
 //    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
-    final Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+    Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
     Arrival firstArrival;
     Trip firstTrip;
@@ -193,5 +196,27 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     public int hashCode() {
         return ( stop.getString() + route.getString() ).hashCode();
+    }
+
+    private void writeObject(ObjectOutputStream oos)
+            throws IOException {
+        // default serialization
+//        oos.defaultWriteObject();
+        // write the object
+        oos.writeObject(stop);
+        oos.writeObject(route);
+        oos.writeObject(trackedArrivals);
+        oos.writeBoolean(inScope);
+    }
+
+    private void readObject(ObjectInputStream ois)
+            throws ClassNotFoundException, IOException {
+        // default deserialization
+//        ois.defaultReadObject();
+
+        stop = (Stop) ois.readObject();
+        route = (Route) ois.readObject();
+        trackedArrivals = (Collection<StopRouteDestinationArrival>) ois.readObject();
+        inScope = ois.readBoolean();
     }
 }
