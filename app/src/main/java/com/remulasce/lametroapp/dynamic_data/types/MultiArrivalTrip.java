@@ -260,7 +260,7 @@ public class MultiArrivalTrip extends Trip {
         } else {
             proximity = 0;
         }
-        float overallPriority = time + proximity;
+        float overallPriority = proximity; //time + proximity;
         return overallPriority;
     }
     
