@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.basic_types.Vehicle;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
@@ -172,7 +175,21 @@ public class MultiArrivalTrip extends Trip {
         t.setScreenName("Notify Confirm Dialog");
         t.send(new HitBuilders.AppViewBuilder().build());
 
-        final View dialogView = View.inflate(context, R.layout.arrival_notify_dialog, null);
+        final View dialogView = View.inflate(context, R.layout.multi_arrival_notify_dialog, null);
+
+        RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
+
+        for (Arrival a : parentArrival.getArrivals()) {
+            if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {
+                RadioButton button = new RadioButton(context);
+                button.setText("Vehicle " + a.getVehicleNum().getString() + " " + LaMetroUtil.timeToDisplay((int)a.getEstimatedArrivalSeconds()));
+                button.setTag(a);
+
+                radios.addView(button);
+            }
+        }
+
+        radios.check(((RadioButton)radios.getChildAt(0)).getId());
 
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
@@ -185,7 +202,10 @@ public class MultiArrivalTrip extends Trip {
                         t.send(new HitBuilders.AppViewBuilder().build());
 
                         EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+                        RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
+
+                        Vehicle vehicle = null;
                         int seconds = 120;
 
                         try {
@@ -193,8 +213,20 @@ public class MultiArrivalTrip extends Trip {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
+                        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
+                            try {
+                                int id = vehicleRadio.getCheckedRadioButtonId();
+                                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
+
+                                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                                parentArrival.destination, null, seconds, context);
+                                parentArrival.destination, vehicle, seconds, context);
                     }
 
                 })
