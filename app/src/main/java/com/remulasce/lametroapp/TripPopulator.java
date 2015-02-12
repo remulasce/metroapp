@@ -95,6 +95,7 @@ public class TripPopulator {
         }
         Log.d( TAG, "Starting TripPopulator" );
         running = true;
+        dismissLock = false;
 
         updateRunner = new UpdateRunner();
         updateThread = new Thread( updateRunner, "UpdateRunner" );
