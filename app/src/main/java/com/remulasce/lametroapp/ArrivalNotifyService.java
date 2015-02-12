@@ -329,7 +329,7 @@ public class ArrivalNotifyService extends Service {
 		netTask.routeName		= intent.getExtras().getString("Route");
 		netTask.destination		= intent.getExtras().getString("Destination");
 		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber");
-        netTask.arrivalTime     = intent.getExtras().getInt("NotificationTime", 120);
+        netTask.notificationTime= intent.getExtras().getInt("NotificationTime", 120);
 		
 		netTask.cleanParameters();
 		
