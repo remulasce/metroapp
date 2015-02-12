@@ -264,6 +264,16 @@ public class TripPopulator {
             activeTrips.removeAll( inactiveTrips );
         }
 
+        private boolean couldServiceRequestsHavePending() {
+            for (ServiceRequest r : serviceRequests) {
+                if (r.hasTripsToDisplay()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // Actually push what happened to the user
         private void updateListView() {
             uiHandler.post( new Runnable() {
@@ -280,10 +290,10 @@ public class TripPopulator {
                     adapter.sort( tripPriorityComparator );
                     adapter.notifyDataSetChanged();
 
-                    if (activeTrips.size() == 0) {
+                    if (activeTrips.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);
 
-                        if (serviceRequests.size() != 0) {
+                        if (serviceRequests.size() != 0 && couldServiceRequestsHavePending()) {
                             progress.setVisibility(View.VISIBLE);
                             progress.setProgress(1);
                         }

@@ -79,6 +79,16 @@ public class StopPrediction extends Prediction {
     }
 
     @Override
+    public boolean isInScope() {
+        return inScope;
+    }
+
+    @Override
+    public boolean hasAnyPredictions() {
+        return firstArrival.isInScope();
+    }
+
+    @Override
     public void setTripCallback( TripUpdateCallback callback ) {
         this.callback = callback;
 

@@ -18,6 +18,9 @@ public abstract class Prediction implements Serializable{
     // Cancel / restore stop tracking entirely
     public abstract void restoreTrips();
     public abstract void cancelTrips();
+
+    public abstract boolean isInScope();
+    public abstract boolean hasAnyPredictions();
 	
 	//ms
 	public abstract int getRequestedUpdateInterval();

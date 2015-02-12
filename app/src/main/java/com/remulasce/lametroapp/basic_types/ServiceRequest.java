@@ -27,6 +27,8 @@ public abstract class ServiceRequest implements Serializable {
         inScope = false;
     }
 
+    public abstract boolean hasTripsToDisplay();
+
     public boolean isInScope() {
         return inScope;
     }
@@ -43,6 +45,9 @@ public abstract class ServiceRequest implements Serializable {
     public abstract Collection<Prediction> makePredictions();
     public abstract void restoreTrips();
     public abstract void cancelRequest();
+
+    public abstract boolean updateAvailable();
+    public abstract void updateTaken();
 
     // This is used for serialization, because we didn't do an actual good job with serialization.
     public abstract Collection<String> getRaw();

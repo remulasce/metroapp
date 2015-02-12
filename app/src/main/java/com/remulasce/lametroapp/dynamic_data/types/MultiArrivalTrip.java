@@ -73,7 +73,6 @@ public class MultiArrivalTrip extends Trip {
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
-        ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
         Stop stop = parentArrival.getStop();

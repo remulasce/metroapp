@@ -60,6 +60,26 @@ public class StopServiceRequest extends ServiceRequest {
     }
 
     @Override
+    public boolean updateAvailable() {
+        return updateAvailable;
+    }
+
+    @Override
+    public boolean hasTripsToDisplay() {
+        for (Prediction p : predictions) {
+            if (p.isInScope()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void updateTaken() {
+        updateAvailable = false;
+    }
+
+    @Override
     public Collection<Prediction> makePredictions() {
         // Assume Stop
         if (!isValid()) {
