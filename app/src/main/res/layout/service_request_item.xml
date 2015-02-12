@@ -6,6 +6,7 @@
     android:gravity="fill_horizontal"
     android:paddingBottom="6dp"
     android:paddingLeft="10dp"
+    android:paddingRight="0dp"
     android:paddingTop="6dp">
 
     <ImageButton
@@ -15,15 +16,15 @@
         android:background="@drawable/abc_ic_clear_holo_light"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/service_request_cancel_button_hint" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Service Request"
+        android:text="@string/service_request_example_name"
         android:id="@+id/service_request_text"
-        android:layout_weight="1.0"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"

@@ -18,5 +18,7 @@
     <string name="drawer_close">drawer close</string>
     <string name="ok">\"OK\"</string>
     <string name="cancel">Cancel</string>
+    <string name="service_request_cancel_button_hint">Remove Service Request</string>
+    <string name="service_request_example_name">Service Request</string>
 
 </resources>
