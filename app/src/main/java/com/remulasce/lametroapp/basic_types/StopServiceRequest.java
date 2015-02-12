@@ -23,6 +23,8 @@ public class StopServiceRequest extends ServiceRequest {
     Collection<Stop> stops;
     Collection<Prediction> predictions = new ArrayList<Prediction>();
 
+    private boolean updateAvailable = true;
+
     public StopServiceRequest() {}
     public StopServiceRequest(Collection<Stop> stops, String displayName) {
         this.stops = stops;
@@ -41,6 +43,15 @@ public class StopServiceRequest extends ServiceRequest {
 
         return true;
     }
+    @Override
+    public void restoreTrips() {
+        predictions.clear();
+
+        for (Prediction p : predictions) {
+            p.restoreTrips();
+        }
+    }
+
     @Override
     public Collection<Prediction> makePredictions() {
         // Assume Stop

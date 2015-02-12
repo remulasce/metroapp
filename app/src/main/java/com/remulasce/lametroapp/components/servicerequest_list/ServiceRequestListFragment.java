@@ -1,6 +1,8 @@
 package com.remulasce.lametroapp.components.servicerequest_list;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -95,6 +97,8 @@ public class ServiceRequestListFragment extends Fragment {
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
         hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
+
+        requestList.setOnItemClickListener(onItemClickListener);
         return view;
     }
 
@@ -157,12 +161,28 @@ public class ServiceRequestListFragment extends Fragment {
         requestsChanged(saveRequests);
     }
 
+    private void raiseRequestClickedDialog(final ServiceRequest request) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                request.restoreTrips();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
             ServiceRequest s = (ServiceRequest) adapterView.getItemAtPosition(pos);
-            cancelRequest(s);
+
+            raiseRequestClickedDialog(s);
         }
     };
 

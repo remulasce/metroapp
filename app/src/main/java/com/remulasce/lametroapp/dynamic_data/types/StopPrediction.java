@@ -67,6 +67,11 @@ public class StopPrediction extends Prediction {
     }
 
     @Override
+    public void restoreTrips() {
+        firstArrival.setScope(true);
+    }
+
+    @Override
     public void setTripCallback( TripUpdateCallback callback ) {
         this.callback = callback;
 

@@ -46,16 +46,18 @@ public class StopRouteDestinationPrediction extends Prediction {
     }
 
     @Override
+    public void restoreTrips() {
+        for ( StopRouteDestinationArrival arrival : trackedArrivals ) {
+            arrival.setScope(true);
+        }
+    }
+
+    @Override
     public void startPredicting() {
         Log.d(TAG, "StartPredicting SRDP");
         synchronized ( trackedArrivals ) {
             inScope = true;
             PredictionManager.getInstance().startTracking( this );
-            
-//            for (Entry<Destination, Arrival> e : trackedArrivals.entrySet()) {
-            for (StopRouteDestinationArrival e : trackedArrivals) {
-//                e.setScope( true );
-            }
         }
     }
 
@@ -63,10 +65,6 @@ public class StopRouteDestinationPrediction extends Prediction {
     public void stopPredicting() {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
-        
-        for (StopRouteDestinationArrival e : trackedArrivals) {
-//            e.setScope( false );
-        }
     }
 
     @Override

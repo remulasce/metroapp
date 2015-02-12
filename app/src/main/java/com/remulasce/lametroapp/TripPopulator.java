@@ -210,7 +210,6 @@ public class TripPopulator {
             // Add new stops
             for ( ServiceRequest request : serviceRequests) {
                 if ( !trackedMap.containsKey( request ) ) {
-
                     newRequests.add(request);
                 }
             }

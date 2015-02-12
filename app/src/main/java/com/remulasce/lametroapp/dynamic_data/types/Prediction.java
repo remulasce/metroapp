@@ -13,6 +13,8 @@ import java.util.List;
 public abstract class Prediction implements Serializable{
 	public abstract void startPredicting();
 	public abstract void stopPredicting();
+
+    public abstract void restoreTrips();
 	
 	//ms
 	public abstract int getRequestedUpdateInterval();
