@@ -158,6 +158,12 @@ public class MultiArrivalTrip extends Trip {
             rowView.invalidate();
         }
 
+        if (parentArrival.isInScope()) {
+            rowView.setVisibility(View.VISIBLE);
+        } else {
+            rowView.setVisibility(View.INVISIBLE);
+        }
+
         return rowView;
     }
 

@@ -76,8 +76,6 @@ public class TripPopulator {
                             }
                         });
         list.setOnTouchListener(dismissListener);
-        // Setting this scroll listener is required to ensure that during ListView scrolling,
-        // we don't look for swipes.
         list.setOnScrollListener(dismissListener.makeScrollListener());
     }
 
@@ -260,7 +258,9 @@ public class TripPopulator {
 
                     adapter.clear();
                     for (Trip t : activeTrips) {
-                        adapter.add(t);
+                        if (t.isValid()) {
+                            adapter.add(t);
+                        }
                     }
                     adapter.sort( tripPriorityComparator );
                     adapter.notifyDataSetChanged();
