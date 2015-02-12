@@ -111,6 +111,8 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          *                               order for convenience.
          */
         void onDismiss(ListView listView, int[] reverseSortedPositions);
+        // Mod Fintan O'Grady: onBeginDismiss callback so we know when to stop messing with the TRipList.
+        void onBeginDismiss(ListView listView);
     }
 
     /**
@@ -227,6 +229,10 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 }
                 if (dismiss) {
                     // dismiss
+                    //Fintan O'Grady modification: Notify when dismiss begins, so we know to stop
+                    // messing with the ListView.
+                    mCallback.onBeginDismiss(mListView);
+
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
                     ++mDismissAnimationRefCount;

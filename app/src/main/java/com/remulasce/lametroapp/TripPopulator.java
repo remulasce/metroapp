@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Semaphore;
 
 import android.content.Context;
 import android.os.Handler;
@@ -31,8 +32,10 @@ import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 1000;
+    protected final static int UPDATE_INTERVAL = 500;
     protected Object waitLock = new Object();
+    // When the swipe-to-dismiss library is working, it really doesn't want the list
+    protected boolean dismissLock = false;
 
     protected ListView list;
     protected TextView hint;
@@ -71,8 +74,14 @@ public class TripPopulator {
                                     Trip t = adapter.getItem(position);
                                     t.dismiss();
                                     adapter.remove(t);
+                                    dismissLock = false;
                                 }
                                 adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onBeginDismiss(ListView listView) {
+                                dismissLock = true;
                             }
                         });
         list.setOnTouchListener(dismissListener);
@@ -151,6 +160,11 @@ public class TripPopulator {
             Log.i( TAG, "UpdateRunner starting" );
 
             while ( run ) {
+                // Don't update while an item is dismissing.
+                if (dismissLock) {
+                    continue;
+                }
+
                 long t = Tracking.startTime();
 
                 updateTrackedMap();
