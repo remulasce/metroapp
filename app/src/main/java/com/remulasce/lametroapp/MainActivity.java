@@ -32,6 +32,7 @@ import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
+import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.components.persistence.SettingFieldSaver;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
@@ -62,7 +63,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     MetroStaticsProvider staticsProvider;
     OmniAutoCompleteAdapter autoCompleteAdapter;
     MetroLocationRetriever locationService;
-    SettingFieldSaver fieldSaver;
+    SerializedFileFieldSaver fieldSaver;
     NetworkStatusReporter networkStatusReporter;
 
     Tracker t;
@@ -95,7 +96,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupFieldSaver() {
-        fieldSaver = new SettingFieldSaver(this, staticsProvider);
+        fieldSaver = new SerializedFileFieldSaver(this, staticsProvider);
     }
 
     private void setupLocation() {
