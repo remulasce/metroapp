@@ -209,7 +209,8 @@ public class MultiArrivalTrip extends Trip {
                         int seconds = 120;
 
                         try {
-                            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60;
+                            // Add 60 for rounding.
+                            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
