@@ -66,6 +66,8 @@ public class TripPopulator {
         adapter = new TripListAdapter( list.getContext(), R.layout.trip_item);
         list.setAdapter(adapter);
 
+        final Context context = c;
+
         dismissListener = new SwipeDismissListViewTouchListener(
                         list,
                         new SwipeDismissListViewTouchListener.OnDismissCallback() {
@@ -76,6 +78,8 @@ public class TripPopulator {
                                     t.dismiss();
                                     adapter.remove(t);
                                     dismissLock = false;
+
+                                    Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
                                 }
                                 adapter.notifyDataSetChanged();
                             }

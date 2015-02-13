@@ -39,13 +39,14 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/notify_dialog_time"
-            android:layout_toEndOf="@+id/notify_dialog_time"
-            android:layout_toRightOf="@+id/notify_dialog_time"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
             android:text="minutes away"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_alignBaseline="@+id/notify_dialog_time"
+            android:layout_alignBottom="@+id/notify_dialog_time"
+            android:layout_toRightOf="@+id/notify_dialog_time"
+            android:layout_toEndOf="@+id/notify_dialog_time" />
 
         <ImageView
             android:id="@+id/imageView"
