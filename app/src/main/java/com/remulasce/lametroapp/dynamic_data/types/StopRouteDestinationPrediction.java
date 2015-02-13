@@ -182,6 +182,8 @@ public class StopRouteDestinationPrediction extends Prediction {
     public void setUpdated() {
         synchronized ( this ) {
             inUpdate = false;
+            needsQuickUpdate = false;
+
             this.lastUpdate = System.currentTimeMillis();
         }
     }
@@ -193,8 +195,6 @@ public class StopRouteDestinationPrediction extends Prediction {
     @Override
     public int getRequestedUpdateInterval() {
         if (needsQuickUpdate) {
-            needsQuickUpdate = false;
-
             return 0;
         }
 
@@ -217,7 +217,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
 
         if ( first == null ) {
-            interval = 15 * INTERVAL_INCREASE_PER_SECOND;
+            interval = 30 * 1000;
         } else {
             interval = first.getRequestedUpdateInterval();
         }
