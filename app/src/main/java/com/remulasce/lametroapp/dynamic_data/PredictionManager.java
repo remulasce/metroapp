@@ -23,7 +23,7 @@ import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 public class PredictionManager {
 	static final String TAG = "PredictionManager";
-	static final int UPDATE_INTERVAL = 10000;
+	static final int UPDATE_INTERVAL = 5000;
 
 	static PredictionManager manager;
     static NetworkStatusReporter statusReporter;

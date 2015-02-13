@@ -28,6 +28,8 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     protected boolean inScope = false;
 
+    private boolean needsQuickUpdate = false;
+
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
 //    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
     Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
@@ -51,6 +53,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         for ( StopRouteDestinationArrival arrival : trackedArrivals ) {
             arrival.setScope(true);
         }
+        needsQuickUpdate = true;
     }
 
     @Override
@@ -189,6 +192,12 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public int getRequestedUpdateInterval() {
+        if (needsQuickUpdate) {
+            needsQuickUpdate = false;
+
+            return 0;
+        }
+
         StopRouteDestinationArrival first = null;
 
         float firstTime;
