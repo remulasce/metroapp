@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -9,9 +10,17 @@ import java.util.List;
  * @author Fintan
  *
  */
-public abstract class Prediction {
+public abstract class Prediction implements Serializable{
+    // Start/stop for live updates
 	public abstract void startPredicting();
 	public abstract void stopPredicting();
+
+    // Cancel / restore stop tracking entirely
+    public abstract void restoreTrips();
+    public abstract void cancelTrips();
+
+    public abstract boolean isInScope();
+    public abstract boolean hasAnyPredictions();
 	
 	//ms
 	public abstract int getRequestedUpdateInterval();
@@ -21,8 +30,6 @@ public abstract class Prediction {
 	
 	public abstract String getRequestString();
 	public abstract void handleResponse(String response);
-	
-	public abstract List<Trip> getAllSentTrips();
 	
 	public abstract void setTripCallback( TripUpdateCallback callback );
 }

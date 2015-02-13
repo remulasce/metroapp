@@ -6,12 +6,14 @@ import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
 
+import java.io.Serializable;
+
 /**
  * One arrival is one route-direction's arrival at one stop. This is the
  * building block of all information because it's the only way to get realtime
  * predictions.
  */
-public class Arrival {
+public class Arrival implements Serializable {
 
     Route route;
     Destination destination;
@@ -29,7 +31,7 @@ public class Arrival {
 
     public Arrival() {
         firstTrip = new ArrivalTrip( this );
-        
+
         route = new Route();
         destination = new Destination();
         stop = new Stop();
@@ -37,12 +39,12 @@ public class Arrival {
     }
 
     /** In seconds from now */
-    public int getEstimatedArrivalSeconds() {
-        return (int) Math.max( 0, ( lastPrediction - System.currentTimeMillis() ) / 1000 );
+    public float getEstimatedArrivalSeconds() {
+        return Math.max( 0, ( lastPrediction - System.currentTimeMillis() ) / 1000f );
     }
 
-    public void setEstimatedArrivalSeconds( int secondsTillArrival ) {
-        lastPrediction = System.currentTimeMillis() + secondsTillArrival * 1000;
+    public void setEstimatedArrivalSeconds( float secondsTillArrival ) {
+        lastPrediction = System.currentTimeMillis() + (int)(secondsTillArrival * 1000);
         lastUpdate = System.currentTimeMillis();
     }
 
@@ -97,10 +99,17 @@ public class Arrival {
     public int hashCode() {
         String h = "";
         if (route.isValid()) h += route.getString();
+        if (destination.isValid()) h += destination.getString();
         if (stop.isValid()) h += stop.getString();
         if (vehicle.isValid()) h += vehicle.getString();
         
         return h.hashCode();
+    }
+
+    public boolean equals( Object o ) {
+        if ( o.getClass() != this.getClass()) { return false; }
+
+        return (o.hashCode() == this.hashCode());
     }
 
     public void setScope(boolean inScope) {

@@ -15,6 +15,7 @@ import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
@@ -35,7 +38,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private static final String DATABASE_NAME = "StopNames.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 8;
     private static final String TEXT_TYPE = " TEXT";
     private static final String DOUBLE_TYPE = " REAL";
     private static final String COMMA_SEP = ",";
@@ -83,6 +86,9 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     @Override
     public void initialize() {
         Log.d(TAG, "StopName table forcing initialization check");
+
+//        getWritableDatabase().execSQL(SQL_DELETE_ENTRIES);
+//        onCreate(getWritableDatabase());
 
         // Getting the database should force its creation via onCreate if it has not yet been
         // created.
@@ -368,7 +374,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
 
         try {
-            BufferedReader file = getStopsFileReader();
+            BufferedReader file = new BufferedReader(new InputStreamReader(getStopsFileReader()));
 
             String line;
             int entries = 0;
@@ -386,7 +392,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
                 entries++;
 
                 if (entries % 1000 == 0) {
-                    Log.d(TAG, "Still updating database; "+ entries+ " entries so far");
+                    Log.d(TAG, "Still updating database; " + entries + " entries so far in "+Tracking.timeSpent(start)+ "ms");
                 }
             }
 
@@ -443,7 +449,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
-        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
+//        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
 
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
@@ -456,19 +462,24 @@ public class GTFSStopsReader extends SQLiteOpenHelper
                 null,
                 values);
 
-        Log.v(TAG, "New stop rowid is "+newRowId);
+//        Log.v(TAG, "New stop rowid is "+newRowId);
     }
 
-    private BufferedReader getStopsFileReader() throws IOException {
+    private InputStream getStopsFileReader() throws IOException {
         InputStream inputStream = context.getAssets().open("stops.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        return reader;
+        return inputStream;
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
+        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
+        onCreate(sqLiteDatabase);
+    }
+    @Override
+    public void onDowngrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
         sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
         onCreate(sqLiteDatabase);
     }

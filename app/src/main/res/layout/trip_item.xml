@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:paddingBottom="4dp"
+    android:paddingLeft="4dp"
+    android:paddingTop="2dp">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Example Station"
+        android:id="@+id/prediction_stop_name"
+        android:layout_marginLeft="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="King's cross etc Station"
+        android:layout_marginLeft="-8dp"
+        android:id="@+id/prediction_destination_name"
+        android:layout_below="@+id/prediction_time_minutes"
+        android:layout_alignLeft="@+id/prediction_time_minutes"
+        android:layout_alignStart="@+id/prediction_time_minutes" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="5 min"
+        android:id="@+id/prediction_time_minutes"
+        android:layout_below="@+id/prediction_stop_name"
+        android:layout_marginLeft="40dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Veh 434"
+        android:id="@+id/prediction_vehicle"
+        android:textColor="#64646464"
+        android:layout_above="@+id/prediction_destination_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="10s"
+        android:id="@+id/prediction_time_seconds"
+        android:layout_alignBaseline="@+id/prediction_time_minutes"
+        android:layout_toRightOf="@+id/prediction_time_minutes"
+        android:layout_toEndOf="@+id/prediction_time_minutes"
+        android:textColor="@android:color/secondary_text_dark"
+        android:layout_marginLeft="2dp" />
+</RelativeLayout>

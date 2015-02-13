@@ -7,6 +7,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -27,13 +29,23 @@ public class MetroLocationRetriever implements LocationRetriever {
     LocationManager locationManager;
 
     GoogleApiClient mGoogleApiClient;
+    Tracker t;
 
     Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
+        this.t = Tracking.getTracker(c);
 
-        startLocationRequests(c);
+        setupLocation(c);
+    }
+
+    private void setupLocation(Context c) {
+        mGoogleApiClient = new GoogleApiClient.Builder(c)
+                .addConnectionCallbacks(connectionCallbacks)
+                .addOnConnectionFailedListener(connectionFailedListener)
+                .addApi(LocationServices.API)
+                .build();
     }
 
     // Because of power concerns, we only can do location when allowed to do so.
@@ -44,20 +56,10 @@ public class MetroLocationRetriever implements LocationRetriever {
 
     public void stopLocating(Context c) {
         Log.i(TAG, "Stopping location service");
-        try {
-            LocationServices.FusedLocationApi.removeLocationUpdates(
-                    mGoogleApiClient, locationListener);
-        } catch (IllegalStateException e) {
-            Log.w(TAG, "Stopping unstarted location service");
-        }
+        mGoogleApiClient.disconnect();
     }
 
     protected synchronized void startLocationRequests(Context c) {
-        mGoogleApiClient = new GoogleApiClient.Builder(c)
-                .addConnectionCallbacks(connectionCallbacks)
-                .addOnConnectionFailedListener(connectionFailedListener)
-                .addApi(LocationServices.API)
-                .build();
         mGoogleApiClient.connect();
         Log.d(TAG, "startLocationRequests");
     }
@@ -67,13 +69,27 @@ public class MetroLocationRetriever implements LocationRetriever {
         public void onConnected(Bundle bundle) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (lastLocation != null) {
+                Log.i(TAG, "Location service connected");
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Location Service" )
+                        .setAction( "OnConnected" )
+                        .setLabel( "Location Available" )
+                        .build() );
+
                 lastRetrievedLocation = lastLocation;
+            } else {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Location Service" )
+                        .setAction( "OnConnected" )
+                        .setLabel( "No Last Location" )
+                        .build() );
+                Log.i(TAG, "location service connected, but no location available");
             }
 
             LocationRequest request = new LocationRequest();
-            request.setInterval(15 * 1000);
-            request.setFastestInterval(1000);
-            request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            request.setInterval(60 * 1000);
+            request.setFastestInterval(500);
+            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             try {
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, request, locationListener);
@@ -85,7 +101,6 @@ public class MetroLocationRetriever implements LocationRetriever {
         @Override
         public void onConnectionSuspended(int i) {
             Log.w(TAG, "OnConnectionSuspended");
-
         }
     };
 
@@ -101,6 +116,10 @@ public class MetroLocationRetriever implements LocationRetriever {
         @Override
         public void onConnectionFailed(ConnectionResult connectionResult) {
             Log.w(TAG, "Location reading failed");
+            t.send( new HitBuilders.EventBuilder()
+                    .setCategory( "Location Service" )
+                    .setAction( "OnConnectionFailed" )
+                    .build() );
         }
     };
 
@@ -116,6 +135,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         return lastRetrievedLocation;
     }
 
+    /** Location in meters */
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         long t = Tracking.startTime();

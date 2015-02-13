@@ -15,9 +15,12 @@ import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.Vehicle;
+import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 public class LaMetroUtil {
     public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
+
+    public static StopLocationTranslator locationTranslator;
 
     public static boolean isValidStop( String stop ) {
         if ( stop == null ) {
@@ -131,6 +134,10 @@ public class LaMetroUtil {
                             s.setStopName( curStopName );
                             Vehicle v = new Vehicle( vehicleNum );
 
+                            if (locationTranslator != null) {
+                                s.setLocation(locationTranslator.getStopLocation(s));
+                            }
+
                             a.setDestination( d );
                             a.setRoute( r );
                             a.setStop( s );
@@ -201,17 +208,40 @@ public class LaMetroUtil {
 
     }
 
-    public static String secondsToDisplay( int seconds ) {
+    public static String timeToDisplay(int seconds) {
         if ( seconds > 60 ) {
-            return "in " + String.valueOf( seconds / 60 ) + " min";
+            return "in " + standaloneTimeToDisplay(seconds);
         }
         if ( seconds > 1 ) {
-            return "in " + String.valueOf( seconds ) + "s";
+            return "in " + standaloneTimeToDisplay(seconds);
         }
         if ( seconds == 0 ) {
-            return "in " + "1s";
+            return "in " + standaloneTimeToDisplay(seconds);
+        }
+        return standaloneTimeToDisplay(seconds);
+    }
+
+    public static String standaloneTimeToDisplay(int seconds) {
+        if ( seconds > 60 ) {
+            return String.valueOf( seconds / 60 ) + " min";
+        }
+        if ( seconds > 1 ) {
+            return String.valueOf( seconds ) + "s";
+        }
+        if ( seconds == 0 ) {
+            return "1s";
         }
         return "arrived";
+    }
+
+    /** Returns the number of seconds to display as a subtext to the timeToDisplay methods.
+     * Returns % 60 normally
+     * Returns empty string if seconds <= 60, because timeToDisplay will display seconds remaining
+     *  in the main display.
+     */
+    public static String standaloneSecondsRemainderTime(int seconds) {
+        if (seconds <= 60) { return ""; }
+        return (seconds % 60)+"s";
     }
 
     public static String getAgencyFromRoute( Route route, Stop stop )

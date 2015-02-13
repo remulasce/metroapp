@@ -1,8 +1,10 @@
 package com.remulasce.lametroapp.components.servicerequest_list;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.TripPopulator;
@@ -29,27 +32,52 @@ public class ServiceRequestListFragment extends Fragment {
 
     private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
+    private TextView hintText;
 
     private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
         //noinspection unchecked
-        return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items);
+        return new ServiceRequestListAdapter(getActivity(), R.layout.service_request_item, items, onCancelListener);
     }
 
     public void AddServiceRequest(ServiceRequest serviceRequest) {
-        Log.d(TAG, "Adding service request " + serviceRequest);
-        if (!requests.contains(serviceRequest)) {
-            requests.add(serviceRequest);
+        if (duplicateRequest(serviceRequest)) {
+            Log.w(TAG, "Ignored duplicate service request");
+            return;
+        }
 
-            requestsChanged();
+        Log.d(TAG, "Adding service request " + serviceRequest);
+        requests.add(serviceRequest);
+
+        requestsChanged(true);
+    }
+
+    private boolean duplicateRequest(ServiceRequest serviceRequest) {
+        for (ServiceRequest r : requests ) {
+            if (r.getDisplayName().equals(serviceRequest.getDisplayName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void requestsChanged(boolean saveRequests) {
+        requestList.setAdapter(makeAdapter(requests));
+        updateTripPopulator(requests);
+        if (saveRequests) {
+            saveServiceRequests(requests);
+        }
+
+        if (requests.size() > 0) {
+            hintText.setVisibility(View.INVISIBLE);
+        } else {
+            hintText.setVisibility(View.VISIBLE);
         }
     }
 
-    private void requestsChanged() {
-        requestList.setAdapter(makeAdapter(requests));
-        updateTripPopulator(requests);
-        saveServiceRequests(requests);
+    public int numRequests() {
+        return requests.size();
     }
 
     public ServiceRequestListFragment() {
@@ -68,6 +96,8 @@ public class ServiceRequestListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_service_request_list, container, false);
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
+        hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
+
         requestList.setOnItemClickListener(onItemClickListener);
         return view;
     }
@@ -85,12 +115,27 @@ public class ServiceRequestListFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        saveServiceRequests(requests);
+
         super.onDetach();
         mListener = null;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        saveServiceRequests(requests);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
     private void updateTripPopulator(List<ServiceRequest> requests) {
-//        mListener.getTripPopulator().StopSelectionChanged(convertToStringLine(requests));
+        requestList.setOnItemClickListener(onItemClickListener);
         mListener.getTripPopulator().SetServiceRequests(requests);
     }
 
@@ -103,10 +148,35 @@ public class ServiceRequestListFragment extends Fragment {
     public void loadSavedRequests() {
         Log.d(TAG, "Loading saved requests");
 
-        this.requests.clear();
+        clearAllRequests(false);
         this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
 
-        requestsChanged();
+        requestsChanged(false);
+    }
+
+    private void clearAllRequests(boolean saveRequests) {
+        for (ServiceRequest each : requests) {
+            each.descope();
+        }
+        requests.clear();
+        requestsChanged(saveRequests);
+    }
+
+    private void raiseRequestClickedDialog(final ServiceRequest request) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Restore Arrivals");
+        builder.setMessage("Show all arrivals to this stop, restoring destinations that had been swiped away?");
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                request.restoreTrips();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
@@ -114,10 +184,24 @@ public class ServiceRequestListFragment extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
             ServiceRequest s = (ServiceRequest) adapterView.getItemAtPosition(pos);
-            s.descope();
-            requests.remove(s);
 
-            requestsChanged();
+            raiseRequestClickedDialog(s);
+        }
+    };
+
+    private void cancelRequest(ServiceRequest s) {
+        Log.d(TAG, "Cancelling request: "+s);
+        s.descope();
+        s.cancelRequest();
+        requests.remove(s);
+        requestsChanged(true);
+    }
+
+    private View.OnClickListener onCancelListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            ServiceRequest request = (ServiceRequest) view.getTag();
+            cancelRequest(request);
         }
     };
 

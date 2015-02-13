@@ -64,4 +64,15 @@ public class Stop implements Serializable {
     public BasicLocation getLocation() {
         return location;
     }
+
+
+    // Ugh.
+    public int hashCode() {
+        return raw.hashCode();
+    }
+    public boolean equals( Object o ) {
+        if ( o.getClass() != this.getClass()) { return false; }
+
+        return (o.hashCode() == this.hashCode());
+    }
 }

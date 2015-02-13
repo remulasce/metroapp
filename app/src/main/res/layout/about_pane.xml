@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_drawer"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    android:paddingLeft="20dp"
+    android:paddingRight="14dp"
+    android:paddingBottom="16dp"
+    android:paddingTop="20dp"
+    android:choiceMode="singleChoice"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="0dp"
+    android:background="#ffeeeeee">
+
+    <ScrollView
+        android:id="@+id/legal_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/legal"
+            android:text="@string/about_text_legal"
+            android:layout_alignParentBottom="true"/>
+
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="260dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:id="@+id/scrollView"
+        android:layout_above="@+id/legal_scroll"
+        android:paddingBottom="20dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/logo_image"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_launcher" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/about_title"
+                android:layout_below="@id/logo_image"
+                android:paddingTop="20dp"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:text="@string/about_text_title"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/about_author"
+                android:text="@string/about_text_author"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/about_title"
+                android:autoLink="email" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="If you like this app, you can give me some money!"
+                android:id="@+id/donate_text"
+                android:layout_marginTop="50dp"
+                android:layout_below="@+id/about_author"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donate"
+                android:id="@+id/donate_button"
+                android:layout_below="@+id/donate_text"
+                android:layout_centerHorizontal="true" />
+
+
+
+            </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

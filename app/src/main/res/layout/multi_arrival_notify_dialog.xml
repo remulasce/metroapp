@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/arg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+
+
+        <EditText
+            android:id="@+id/notify_dialog_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/notification_confirmation_time_description"
+            android:layout_alignStart="@+id/notification_confirmation_time_description"
+            android:layout_below="@+id/textView"
+            android:ems="2"
+            android:inputType="number"
+            android:text="2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play a sound when it is "
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/trip_options_radio_group"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:text="minutes away"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_alignBaseline="@+id/notify_dialog_time"
+            android:layout_alignBottom="@+id/notify_dialog_time"
+            android:layout_toRightOf="@+id/notify_dialog_time"
+            android:layout_toEndOf="@+id/notify_dialog_time" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView3"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/arrival_notification_example" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Example"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <RadioGroup
+            android:id="@+id/trip_options_radio_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="false"
+            android:layout_below="@+id/notification_confirmation_time_description"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"
+            android:showDividers="beginning|end"
+            android:layout_alignParentEnd="true"></RadioGroup>
+
+        <TextView
+            android:id="@+id/notification_confirmation_time_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:text="Select a vehicle to track"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/imageView"
+            android:layout_alignLeft="@+id/textView"
+            android:layout_alignStart="@+id/textView" />
+
+    </RelativeLayout>
+</ScrollView>

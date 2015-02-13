@@ -5,12 +5,21 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="131dp"
+        android:layout_height="100dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:id="@+id/service_request_list"
         android:layout_gravity="center_horizontal|top"
-        android:drawSelectorOnTop="false"
-        />
+        tools:listitem="@layout/service_request_item" />
+
+    <TextView
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Add stops in the field above"
+        android:visibility="invisible"
+        android:id="@+id/service_request_hint_text"
+        android:layout_gravity="center" />
 
 </FrameLayout>

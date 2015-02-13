@@ -3,17 +3,19 @@ package com.remulasce.lametroapp.basic_types;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 /**
  * Created by Remulasce on 12/16/2014.
  */
-public class ServiceRequest {
-    String raw = "ServiceRequest";
+public abstract class ServiceRequest implements Serializable {
     String displayName = "ServiceRequest";
     boolean inScope = true;
 
+
     public ServiceRequest() {}
     public ServiceRequest(String s) {
-        this.raw = s;
         this.displayName = s;
     }
 
@@ -25,31 +27,33 @@ public class ServiceRequest {
         inScope = false;
     }
 
+    public abstract boolean hasTripsToDisplay();
+
     public boolean isInScope() {
         return inScope;
     }
 
-    public String toString() {
-        return raw;
-    }
     public String getDisplayName() { return displayName; }
 
     //Returns if the service request makes any sense to fulfill
     public boolean isValid() {
-        if (raw == null ||raw.isEmpty() || displayName == null || displayName.isEmpty()) { return false; }
+        if ( displayName == null || displayName.isEmpty()) { return false; }
 
         return true;
     }
 
-    public Prediction makePrediction() {
-        // Assume Stop
-        Stop s = new Stop(raw);
-        StopPrediction prediction = new StopPrediction(s, null);
+    public abstract Collection<Prediction> makePredictions();
+    public abstract void restoreTrips();
+    public abstract void cancelRequest();
 
-        return prediction;
-    }
+    public abstract boolean updateAvailable();
+    public abstract void updateTaken();
 
-    public String getRaw() {
-        return raw;
+    // This is used for serialization, because we didn't do an actual good job with serialization.
+    public abstract Collection<String> getRaw();
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 }

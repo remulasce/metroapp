@@ -24,7 +24,7 @@ import com.remulasce.lametroapp.basic_types.Vehicle;
  */
 public class NotifyServiceManager {
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
-                                         Vehicle vehicle, Context context ) {
+                                         Vehicle vehicle, int secondsToNotify, Context context ) {
 
         Tracker t = Tracking.getTracker(context);
         Intent i = new Intent( context, ArrivalNotifyService.class );
@@ -50,6 +50,12 @@ public class NotifyServiceManager {
             if ( route != null && route.isValid() ) {
                 i.putExtra( "Route", route.getString() );
             }
+
+            if (secondsToNotify < 0) {
+                secondsToNotify = 90;
+            }
+
+            i.putExtra("NotificationTime", secondsToNotify);
 
             context.stopService( i );
             context.startService( i );
