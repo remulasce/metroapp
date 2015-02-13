@@ -49,6 +49,7 @@ public class TripPopulator {
     protected Thread updateThread;
     protected boolean running = false;
 
+    protected long lastDismissTutorialShow = 0;
     protected SwipeDismissListViewTouchListener dismissListener;
 
     // ugh.
@@ -79,7 +80,10 @@ public class TripPopulator {
                                     adapter.remove(t);
                                     dismissLock = false;
 
-                                    Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
+                                    if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
+                                        Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
+                                        lastDismissTutorialShow = System.currentTimeMillis();
+                                    }
                                 }
                                 adapter.notifyDataSetChanged();
                             }
@@ -203,7 +207,7 @@ public class TripPopulator {
         // If we have new stops, set them to track and add them to the trackedMap.
         // If stops have been removed, do the opposite.
         protected void updateTrackedMap() {
-            Log.v( TAG, "Updating Tracked Map" );
+            Log.v(TAG, "Updating Tracked Map");
 
             removeOldStops();
             addNewStops();
@@ -340,7 +344,7 @@ public class TripPopulator {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {
-                    Log.d( TAG, "Skipped invalid trip " + trip.getInfo() );
+                    Log.d(TAG, "Skipped invalid trip " + trip.getInfo());
                     activeTrips.remove( trip );
                     return;
                 }
