@@ -133,6 +133,11 @@ public class StopRouteDestinationArrival implements Serializable {
 
     public void setScope(boolean inScope) {
         this.isInScope = inScope;
+
+        for (Arrival a : arrivals) {
+            a.setScope(inScope);
+        }
+
         Log.d(TAG, "Setting scopes: "+inScope);
     }
     public boolean isInScope() {

@@ -21,18 +21,19 @@
             android:layout_below="@+id/textView"
             android:ems="2"
             android:inputType="number"
-            android:text="2" />
+            android:text="2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/trip_options_radio_group"
-            android:layout_centerHorizontal="true"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
             android:text="Play a sound when it is "
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/trip_options_radio_group"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -41,8 +42,8 @@
             android:layout_alignBottom="@+id/notify_dialog_time"
             android:layout_toEndOf="@+id/notify_dialog_time"
             android:layout_toRightOf="@+id/notify_dialog_time"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
             android:text="minutes away"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -54,7 +55,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/textView3"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:src="@drawable/arrival_notification_example" />
 
         <TextView
@@ -83,11 +84,12 @@
             android:id="@+id/notification_confirmation_time_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="21dp"
             android:text="Select a vehicle to track"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/imageView"
+            android:layout_alignLeft="@+id/textView"
+            android:layout_alignStart="@+id/textView" />
 
     </RelativeLayout>
 </ScrollView>
