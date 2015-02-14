@@ -62,6 +62,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         for (StopRouteDestinationArrival e : trackedArrivals) {
             e.setScope( false );
         }
+        stopPredicting();
     }
 
     @Override
