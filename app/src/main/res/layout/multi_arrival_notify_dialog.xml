@@ -52,21 +52,21 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView3"
-            android:layout_marginBottom="30dp"
-            android:src="@drawable/arrival_notification_example" />
+            android:src="@drawable/arrival_notification_example"
+            android:adjustViewBounds="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/trip_options_radio_group"
+            android:layout_alignEnd="@+id/trip_options_radio_group" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:text="Example"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:textStyle="italic" />
 
         <RadioGroup
             android:id="@+id/trip_options_radio_group"
@@ -85,7 +85,7 @@
             android:id="@+id/notification_confirmation_time_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="50dp"
             android:text="Select a vehicle to track"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/imageView"
