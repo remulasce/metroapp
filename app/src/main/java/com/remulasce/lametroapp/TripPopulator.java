@@ -3,11 +3,13 @@ package com.remulasce.lametroapp;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -272,6 +274,16 @@ public class TripPopulator {
             activeTrips.removeAll( inactiveTrips );
         }
 
+        protected List<Trip> sortTrips(Collection<Trip> trips) {
+            // Ugh.
+            // But, we used to do this literally inside the UI update thread.
+            // So we're coming out a little ahead.
+            List<Trip> sortedTrips = new ArrayList<Trip>(trips);
+            Collections.sort(sortedTrips, tripPriorityComparator);
+
+            return sortedTrips;
+        }
+
         private boolean couldServiceRequestsHavePending() {
             for (ServiceRequest r : serviceRequests) {
                 if (r.hasTripsToDisplay()) {
@@ -284,19 +296,20 @@ public class TripPopulator {
 
         // Actually push what happened to the user
         private void updateListView() {
+            // We literally used to do this inside the ui update thread.
+            final List<Trip> sorted = sortTrips(activeTrips);
+
             uiHandler.post( new Runnable() {
                 @Override
                 public void run() {
                     long start = Tracking.startTime();
 
                     adapter.clear();
-                    for (Trip t : activeTrips) {
+                    for (Trip t : sorted) {
                         if (t.isValid()) {
                             adapter.add(t);
                         }
                     }
-                    adapter.sort( tripPriorityComparator );
-                    adapter.notifyDataSetChanged();
 
                     if (activeTrips.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);

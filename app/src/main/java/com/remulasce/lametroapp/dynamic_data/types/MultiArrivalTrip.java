@@ -36,6 +36,9 @@ public class MultiArrivalTrip extends Trip {
 
     protected StopRouteDestinationArrival parentArrival;
 
+    long lastLocationUpdate = 0;
+    double lastDistanceToStop = 0;
+
     public MultiArrivalTrip(StopRouteDestinationArrival parentArrival) {
         this.parentArrival = parentArrival;
     }
@@ -279,8 +282,11 @@ public class MultiArrivalTrip extends Trip {
         float proximity = 0;
 
         LocationRetriever retriever = GlobalLocationProvider.getRetriever();
-        if (retriever != null) {
-            double distance = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+        if (retriever != null && System.currentTimeMillis() > lastLocationUpdate + 30000) {
+            lastLocationUpdate = System.currentTimeMillis();
+            lastDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+
+            double distance = lastDistanceToStop;
 
             // ~20 miles
             proximity += Math.max(0,
