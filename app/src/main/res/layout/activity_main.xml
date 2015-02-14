@@ -15,17 +15,16 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="com.remulasce.lametroapp.MainActivity" >
 
-        <SlidingDrawer
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:content="@+id/content"
-            android:handle="@+id/handle"
-            android:id="@+id/slidingDrawer"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+        <com.mobidevelop.spl.widget.SplitPaneLayout android:layout_width="match_parent"
+            xmlns:spl="http://schemas.android.com/apk/res-auto"
+            android:layout_height="match_parent"
+            spl:orientation="vertical"
+            spl:splitterPosition="15%"
+            spl:splitterSize="40dp"
+            spl:splitterBackground="#ffe25725">
 
-            <LinearLayout
+
+            <RelativeLayout
                 android:id="@+id/content"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -63,45 +62,42 @@
                     android:layout_below="@+id/separator"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
-            </LinearLayout>
 
-            <Button
-                android:id="@+id/handle"
-                android:layout_width="wrap_content"
+                <ProgressBar
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_list_progress"
+                    android:indeterminate="true"
+                    android:progress="1"
+                    android:visibility="invisible"
+                    android:layout_below="@+id/trip_list_hint"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="57dp" />
+            </RelativeLayout>
+
+
+            <ListView
+                android:id="@+id/tripList"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Handle" />
-        </SlidingDrawer>
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                tools:listitem="@layout/trip_item">
+            </ListView>
 
-        <ListView
-            android:id="@+id/tripList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            tools:listitem="@layout/trip_item"
-            android:layout_below="@+id/trip_list_progress">
-        </ListView>
+        </com.mobidevelop.spl.widget.SplitPaneLayout>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/trip_list_progress"
-            android:indeterminate="true"
-            android:progress="1"
-            android:visibility="invisible"
-            android:layout_below="@+id/trip_list_hint"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="57dp" />
 
         <include
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             layout="@layout/network_status_bar"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:id="@+id/network_status_bar" />
 
     </RelativeLayout>
 

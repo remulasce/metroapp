@@ -25,5 +25,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.nineoldandroids:library:2.4.0+'
+    compile 'com.mobidevelop.spl:split-pane-layout:1.0.0'
 
 }
