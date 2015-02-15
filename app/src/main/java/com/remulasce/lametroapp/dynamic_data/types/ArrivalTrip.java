@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -70,7 +71,7 @@ public class ArrivalTrip extends Trip {
         TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
         TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
         TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
-        ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
+        ImageView b = (ImageView) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
         Stop stop = parentArrival.getStop();

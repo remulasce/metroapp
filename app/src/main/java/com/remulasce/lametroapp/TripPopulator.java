@@ -334,6 +334,14 @@ public class TripPopulator {
                                     }
                                 }
                             }, 3000);
+                            uiHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (TripPopulator.this.running) {
+                                        Toast.makeText(c, "Swipe an arrival to dismiss it", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }, 5000);
                         }
 
                         progress.setVisibility(View.INVISIBLE);

@@ -296,7 +296,7 @@ public class MultiArrivalTrip extends Trip {
         proximity += Math.max(0,
                 .8f * (float) (1 - (distance / 3200)));
         proximity = Math.max(proximity, 0);
-        
+
         float overallPriority = proximity; //time + proximity;
         return overallPriority;
     }
