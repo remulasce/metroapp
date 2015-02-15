@@ -21,12 +21,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/legal"
-            android:text="@string/about_text_legal"
-            android:layout_alignParentBottom="true"/>
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Legal / Info"
+                android:id="@+id/legal_info_button" />
+
+        </LinearLayout>
 
     </ScrollView>
 

@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -47,9 +48,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private static final String TAG = "MainActivity";
 
     AutoCompleteTextView omniField;
-//    ImageButton omniButton;
     Button clearButton;
     Button donateButton;
+    Button legalButton;
 
     OmniBarInputHandler omniHandler;
     ServiceRequestListFragment requestFragment;
@@ -171,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 //        omniButton = (ImageButton) findViewById( R.id.omni_button );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
+        legalButton = (Button) findViewById(R.id.legal_info_button);
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
@@ -184,6 +186,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void setupActionListeners() {
         populator = new TripPopulator( tripList, tripListHint, tripListProgress, this );
         tripList.setOnItemClickListener( tripClickListener );
+
+        legalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(MainActivity.this.getString(R.string.notify_confirmation_title))
+                        .setView( View.inflate(MainActivity.this, R.layout.legal_page, null) ).show();
+            }
+        });
     }
 
     private void initializeStaticData() {

@@ -14,6 +14,12 @@ package com.remulasce.lametroapp.libraries;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * <
+ * MODIFIED by Fintan O'Grady Copyright 2015
+ * Modifications are denoted with comments including my name.
+ * >
+ *
  */
 
         import android.graphics.Rect;
