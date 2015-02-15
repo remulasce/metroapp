@@ -285,19 +285,18 @@ public class MultiArrivalTrip extends Trip {
         if (retriever != null && System.currentTimeMillis() > lastLocationUpdate + 30000) {
             lastLocationUpdate = System.currentTimeMillis();
             lastDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
-
-            double distance = lastDistanceToStop;
-
-            // ~20 miles
-            proximity += Math.max(0,
-                    .2f * (float) (1 - (distance / 32000)));
-            // ~2 miles
-            proximity += Math.max(0,
-                    .8f * (float) (1 - (distance / 3200)));
-            proximity = Math.max(proximity, 0);
-        } else {
-            proximity = 0;
         }
+
+        double distance = lastDistanceToStop;
+
+        // ~20 miles
+        proximity += Math.max(0,
+                .2f * (float) (1 - (distance / 32000)));
+        // ~2 miles
+        proximity += Math.max(0,
+                .8f * (float) (1 - (distance / 3200)));
+        proximity = Math.max(proximity, 0);
+        
         float overallPriority = proximity; //time + proximity;
         return overallPriority;
     }
