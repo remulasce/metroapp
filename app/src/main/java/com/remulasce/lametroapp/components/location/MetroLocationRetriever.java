@@ -146,13 +146,9 @@ public class MetroLocationRetriever implements LocationRetriever {
             return -1;
         }
 
-//        Log.v(TAG, "__time1 "+Tracking.timeSpent(t));
-
         BasicLocation stopRawLoc = stop.getLocation();
         double stopLatitude = Double.valueOf(stopRawLoc.latitude);
         double stopLongitude = Double.valueOf(stopRawLoc.longitude);
-
-//        Log.v(TAG, "__time2 "+Tracking.timeSpent(t));
 
         float[] results = new float[4];
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),

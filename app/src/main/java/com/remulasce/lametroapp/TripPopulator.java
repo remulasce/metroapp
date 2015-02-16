@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
@@ -77,14 +78,23 @@ public class TripPopulator {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    Trip t = adapter.getItem(position);
-                                    t.dismiss();
-                                    adapter.remove(t);
-                                    dismissLock = false;
+                                    try {
+                                        Trip t = adapter.getItem(position);
+                                        t.dismiss();
+                                        adapter.remove(t);
+                                        dismissLock = false;
 
-                                    if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
-                                        Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
-                                        lastDismissTutorialShow = System.currentTimeMillis();
+                                        if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
+                                            Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
+                                            lastDismissTutorialShow = System.currentTimeMillis();
+                                        }
+                                    } catch (IndexOutOfBoundsException e) {
+                                        Log.w(TAG, "Tried to dismiss out-of-bounds trip");
+                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
+                                                .setCategory( "TripPopulator" )
+                                                .setAction( "Dismiss Trip" )
+                                                .setLabel( "Index out of bounds" )
+                                                .build() );
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
