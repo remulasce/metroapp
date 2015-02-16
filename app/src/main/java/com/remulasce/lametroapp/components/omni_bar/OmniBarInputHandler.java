@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +37,11 @@ import java.util.Collection;
 public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
-    private AutoCompleteTextView omniField;
+    private ProgressAutoCompleteTextView omniField;
     private ImageButton addButton;
     private Button clearButton;
     private ServiceRequestListFragment requestList;
+    private ProgressBar autocompleteProgress;
     private StopNameTranslator stopNames;
     private StopLocationTranslator stopLocations;
     private Tracker t;
@@ -47,12 +49,14 @@ public class OmniBarInputHandler {
     //Poor form to require Context, we just need to show Toasts occasionally.
     private Context c;
 
-    public OmniBarInputHandler(AutoCompleteTextView textView, ImageButton addButton, Button clearButton,
+    public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
+                               ProgressBar autocompleteProgress,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
                                StopLocationTranslator locations,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = addButton;
+        this.autocompleteProgress = autocompleteProgress;
         this.clearButton = clearButton;
         this.requestList = requestList;
         this.stopNames = stopNames;
@@ -69,6 +73,8 @@ public class OmniBarInputHandler {
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
+
+        omniField.setLoadingIndicator(autocompleteProgress);
     }
 
     protected AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {

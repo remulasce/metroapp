@@ -29,6 +29,7 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
@@ -47,10 +48,11 @@ import com.remulasce.lametroapp.basic_types.Vehicle;
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
-    AutoCompleteTextView omniField;
+    ProgressAutoCompleteTextView omniField;
     Button clearButton;
     Button donateButton;
     Button legalButton;
+    ProgressBar autocompleteProgress;
 
     OmniBarInputHandler omniHandler;
     ServiceRequestListFragment requestFragment;
@@ -110,7 +112,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
 
-        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, requestFragment, staticsProvider, staticsProvider, t, this);
+        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, t, this);
     }
 
     private void setupActionBar() {
@@ -168,11 +170,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     protected void linkViewReferences() {
-        omniField = (AutoCompleteTextView) findViewById( R.id.omni_text );
+        omniField = (ProgressAutoCompleteTextView) findViewById( R.id.omni_text );
 //        omniButton = (ImageButton) findViewById( R.id.omni_button );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
+        autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
