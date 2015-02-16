@@ -237,7 +237,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     // dismiss
                     //Fintan O'Grady modification: Notify when dismiss begins, so we know to stop
                     // messing with the ListView.
+                    // Also, only allow one dismiss at a time, including final animation.
                     mCallback.onBeginDismiss(mListView);
+                    mPaused = true;
 
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
@@ -339,6 +341,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
                     mCallback.onDismiss(mListView, dismissPositions);
+
+                    // Mod Fintan O'Grady: Only one dismissal at a time.
+                    mPaused = false;
 
                     ViewGroup.LayoutParams lp;
                     for (PendingDismissData pendingDismiss : mPendingDismisses) {
