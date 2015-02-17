@@ -10,7 +10,7 @@
     <string name="test_list_entries">test aoeu aoe</string>
     <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
     <string name="notify_confirmation_text">Display a notification with the ETA of this vehicle</string>
-    <string name="notify_confirmation_title">Vehicle Tracking</string>
+    <string name="notify_confirmation_title">Live Notification</string>
     <string name="about_text_title">Los Angeles Metro Companion</string>
     <string name="about_text_author">Made by Fintan O\'Grady\nlametrodeveloper@gmail.com</string>
     <string name="about_text_legal" >This app uses realtime arrival information provided by NextBus and Metro.\n\nHowever, it is not endorsed by Metro</string>

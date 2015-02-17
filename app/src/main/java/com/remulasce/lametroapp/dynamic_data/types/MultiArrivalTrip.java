@@ -195,40 +195,29 @@ public class MultiArrivalTrip extends Trip {
             radios.check(first.getId());
         }
 
+        launchNotificationConfirmation(context, t, dialogView);
+    }
+
+    private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
+        final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+        final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
+
+        setTrackingEventListeners(time, vehicleRadio, t);
+
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
                 .setView( dialogView )
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         t.setScreenName("Notify Confirm Accept");
                         t.send(new HitBuilders.AppViewBuilder().build());
 
-                        EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
-                        RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
-
-
                         Vehicle vehicle = null;
                         int seconds = 120;
 
-                        try {
-                            // Add 60 for rounding.
-                            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
-                            try {
-                                int id = vehicleRadio.getCheckedRadioButtonId();
-                                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
-
-                                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        seconds = getTime(seconds, time);
+                        vehicle = getVehicle(vehicleRadio, dialogView);
 
                         NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
                                 parentArrival.destination, vehicle, seconds, context);
@@ -244,7 +233,55 @@ public class MultiArrivalTrip extends Trip {
                 })
                 .show();
     }
-    
+
+    private int getTime(int seconds, EditText time) {
+        try {
+            // Add 60 for rounding.
+            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return seconds;
+    }
+
+    private Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
+        Vehicle vehicle = null;
+
+        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
+            try {
+                int id = vehicleRadio.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
+
+                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return vehicle;
+    }
+
+    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory("Notify Confirmation")
+                        .setAction("Time Changed")
+                        .build() );
+            }
+        });
+
+        vehicleRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory("Notify Confirmation")
+                        .setAction("Vehicle Changed")
+                        .build() );
+            }
+        });
+    }
+
     public int hashCode() {
         return parentArrival.hashCode();
     }
