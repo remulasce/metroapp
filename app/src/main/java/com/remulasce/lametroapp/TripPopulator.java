@@ -1,18 +1,5 @@
 package com.remulasce.lametroapp;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Semaphore;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,18 +13,28 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
     protected final static int UPDATE_INTERVAL = 1000;
-    protected Object waitLock = new Object();
+    protected final Object waitLock = new Object();
     // When the swipe-to-dismiss library is working, it really doesn't want the list
     protected boolean dismissLock = false;
 
