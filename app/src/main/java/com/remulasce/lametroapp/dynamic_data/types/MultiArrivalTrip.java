@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,9 +27,7 @@ import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class MultiArrivalTrip extends Trip {
 
@@ -113,7 +110,7 @@ public class MultiArrivalTrip extends Trip {
         // Get all the Arrivals displayed
         for (Arrival a : parentArrival.getArrivals()) {
 
-            RelativeLayout updateTimeView = null;
+            RelativeLayout updateTimeView;
 
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
