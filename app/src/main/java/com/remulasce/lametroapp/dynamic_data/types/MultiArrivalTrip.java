@@ -261,24 +261,9 @@ public class MultiArrivalTrip extends Trip {
     
     @Override
     public float getPriority() {
-        // 1.0 priority is equivalent to one arriving-now or one current-stop.
-        // Current implementation prioritizes mainly distance on arrivals 10m away
-        // Then it's a combination of distance/time.
-
-        // 20 minutes away is where you start getting good priority.
-        // After that you just get chump change up to 45m.
-//        float eta = parentArrival.getEstimatedArrivalSeconds();
-        float eta = parentArrival.getRequestedUpdateInterval() / 50;
-
-        float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
-
-        // Super-duper arrivals shouldn't really jump all the way up.
-        time = Math.min(time, .8f);
-
-        // Really late arrivals can reduce total priority a little
-        time += Math.max( -.2f, .1f * (1 - eta / (60f * 60 * .66f) ) );
-        time *= .7f;
-
+        // Priority is just how close the stop is.
+        // Extra bonus points for being very close
+        // It used to matter when we also prioritized arrival time, but no longer changes anything.
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
 
@@ -298,8 +283,7 @@ public class MultiArrivalTrip extends Trip {
                 .8f * (float) (1 - (distance / 3200)));
         proximity = Math.max(proximity, 0);
 
-        float overallPriority = proximity; //time + proximity;
-        return overallPriority;
+        return proximity;
     }
     
     @Override
