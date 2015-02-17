@@ -14,7 +14,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:id="@+id/service_request_cancel"
-        android:background="@drawable/abc_ic_clear_holo_light"
+        android:background="@drawable/ic_action_remove"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

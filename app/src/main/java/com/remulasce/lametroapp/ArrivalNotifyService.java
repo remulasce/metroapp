@@ -152,7 +152,7 @@ public class ArrivalNotifyService extends Service {
             cancelIntent.setAction("com.remulasce.lametroapp.cancel_notification");
 
             PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.addAction(R.drawable.abc_ic_clear, "Cancel", cancelPendingIntent);
+            mBuilder.addAction(R.drawable.ic_action_remove, "Cancel", cancelPendingIntent);
 
 
             while (run) {
