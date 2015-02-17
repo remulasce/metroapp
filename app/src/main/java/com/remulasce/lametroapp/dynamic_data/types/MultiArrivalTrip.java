@@ -182,6 +182,7 @@ public class MultiArrivalTrip extends Trip {
 
         RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
+
         for (Arrival a : parentArrival.getArrivals()) {
             if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {
                 RadioButton button = new RadioButton(context);
@@ -192,7 +193,10 @@ public class MultiArrivalTrip extends Trip {
             }
         }
 
-        radios.check(((RadioButton)radios.getChildAt(0)).getId());
+        RadioButton first = (RadioButton)radios.getChildAt(0);
+        if (first != null) {
+            radios.check(first.getId());
+        }
 
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
