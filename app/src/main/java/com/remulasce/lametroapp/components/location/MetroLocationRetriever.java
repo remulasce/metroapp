@@ -155,6 +155,7 @@ public class MetroLocationRetriever implements LocationRetriever {
                 stopLatitude, stopLongitude, results);
 
         Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+results[0]);
+        Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
 
         return results[0];
     }

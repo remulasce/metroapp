@@ -8,6 +8,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.R;
 
+import java.util.HashMap;
+
 public class Tracking {
 
 	static Tracker t;
@@ -26,9 +28,42 @@ public class Tracking {
 	public static long startTime() {
 	    return System.currentTimeMillis();
 	}
+
+
+    static class AveragedDatum {
+        public double totalValue = 0;
+        public double numPoints = 0;
+    }
+
+    static HashMap<String, HashMap<String, AveragedDatum>> averagedValues = new HashMap<String, HashMap<String, AveragedDatum>>();
     // Avg. for like frame updates that are too numerous to send directly.
     public static void averageUITime( String name, String label, long startTime ) {
-        // TODO
+
+        AveragedDatum data;
+
+        HashMap<String, AveragedDatum> labels = averagedValues.get(name);
+        if (labels == null) {
+            labels = new HashMap<String, AveragedDatum>();
+            averagedValues.put(name, labels);
+        }
+
+        data = labels.get(label);
+        if (data == null) {
+            data = new AveragedDatum();
+            labels.put(label, data);
+        }
+
+        data.totalValue += timeSpent(startTime);
+        data.numPoints += 1;
+
+        synchronized (data) {
+            if (data.numPoints >= 1000) {
+                sendRawUITime(name, label, (long) (data.totalValue / data.numPoints));
+
+                data.numPoints = 0;
+                data.totalValue = 0;
+            }
+        }
     }
     // sendUITime for stuff that happens as direct user input, and should be individually tracked.
 	public static void sendUITime( String name, String label, long startTime ) {
