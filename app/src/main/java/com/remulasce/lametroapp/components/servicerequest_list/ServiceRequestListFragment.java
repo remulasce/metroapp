@@ -205,20 +205,6 @@ public class ServiceRequestListFragment extends Fragment {
         }
     };
 
-    // Temp method converts all the ServiceRequests into stringly typed STopIDs,
-    // as would be expected from the old StopList.
-    // This is a stop-gap until we convert the whole thing to ServiceRequests.
-    private String convertToStringLine(List<ServiceRequest> requests) {
-        StringBuilder s = new StringBuilder();
-
-        for (ServiceRequest request : requests) {
-            s.append(request.toString());
-            s.append(" ");
-        }
-
-        return s.toString();
-    }
-
     public interface ServiceRequestListFragmentSupport {
         public TripPopulator getTripPopulator();
         public FieldSaver getFieldSaver();
