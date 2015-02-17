@@ -6,19 +6,15 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,24 +22,19 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.analytics.Tracking;
-import com.remulasce.lametroapp.basic_types.StopServiceRequest;
+import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
-import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
-import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
-import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
+import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
+import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
+import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
-import com.remulasce.lametroapp.components.persistence.SettingFieldSaver;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
-import com.remulasce.lametroapp.basic_types.Route;
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
-import com.remulasce.lametroapp.basic_types.Stop;
-import com.remulasce.lametroapp.basic_types.Vehicle;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
@@ -171,7 +162,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     protected void linkViewReferences() {
         omniField = (ProgressAutoCompleteTextView) findViewById( R.id.omni_text );
-//        omniButton = (ImageButton) findViewById( R.id.omni_button );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
@@ -180,7 +170,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
         tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
-        networkStatusView = (View) findViewById(R.id.network_status_bar);
+        networkStatusView = findViewById(R.id.network_status_bar);
 
         requestFragment = (ServiceRequestListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.service_request_fragment);
@@ -216,31 +206,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         }
     };
 
-    // Try to find the stopname from the table
-    private void makeServiceRequest( String stopID ) {
-        String displayName;
-
-        displayName = staticsProvider.getStopName(stopID);
-        if (displayName == null) {
-            displayName = stopID;
-        }
-
-        makeServiceRequest(stopID, displayName);
-    }
-    private void makeServiceRequest( String stopID, String displayName ) {
-        Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-        Stop add = new Stop(stopID);
-        add.setLocation(staticsProvider.getStopLocation(add));
-
-        ServiceRequest serviceRequest = new StopServiceRequest(add, displayName);
-
-        if (serviceRequest.isValid()) {
-            requestFragment.AddServiceRequest(serviceRequest);
-        } else {
-            Log.w(TAG, "Created invalid servicerequest, not adding to list");
-        }
-    }
-
     protected void startAnalytics() {
 
         t = Tracking.getTracker( getApplicationContext() );
@@ -249,12 +214,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     protected void setupDefaults( Intent bundle ) {
-        Route route = new Route( bundle.getStringExtra( "Route" ) );
         Stop stop = new Stop( bundle.getStringExtra( "StopID" ) );
-        Vehicle veh = new Vehicle( bundle.getStringExtra( "VehicleNumber" ) );
 
         if ( stop.isValid() ) {
-//            makeServiceRequest(stop.getStopID());
             // Early devices don't support notification actions
             // So this is the only way to disable arrival notification for them
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -262,16 +224,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             }
         }
 
-        // It's confusing to clear stuff out when you hit the notification.
-        boolean intentFilled = false; // route.isValid() || stop.isValid() || veh.isValid();
+        requestFragment.loadSavedRequests();
 
-        if ( !intentFilled ) {
-            requestFragment.loadSavedRequests();
-        }
 
-        String label = "No Form Prefill";
-        if ( intentFilled ) { label = "Form Filled From Intent"; }
-        else if (requestFragment.numRequests() > 0) { label = "Form Filled From Preferences"; }
+        String label = "Form Filled From Preferences";
+
+        if (requestFragment.numRequests() > 0) { label = "Form Filled From Preferences"; }
 
         t.send( new HitBuilders.EventBuilder()
                 .setCategory( "MainScreen" )
@@ -320,7 +278,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         t.send(new HitBuilders.AppViewBuilder().build());
 
         locationService.startLocating(this);
-
     }
 
     @Override
@@ -330,14 +287,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        // Handle your other action bar items...
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
     @Override
     public TripPopulator getTripPopulator() {
