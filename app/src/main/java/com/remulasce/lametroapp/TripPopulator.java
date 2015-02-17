@@ -191,13 +191,6 @@ public class TripPopulator {
 
                 updateListView();
 
-                try {
-                    synchronized (waitLock) {
-                        waitLock.wait(UPDATE_INTERVAL);
-                    }
-                } catch ( InterruptedException e ) {
-                    e.printStackTrace();
-                }
                 timeSpentUpdating += Tracking.timeSpent(t);
                 numberOfUpdates++;
 
@@ -209,6 +202,13 @@ public class TripPopulator {
                     timeSpentUpdatingUI = 0;
                 }
 
+                try {
+                    synchronized (waitLock) {
+                        waitLock.wait(UPDATE_INTERVAL);
+                    }
+                } catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
             }
             Log.i( TAG, "UpdateRunner ending" );
         }
