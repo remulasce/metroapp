@@ -1,6 +1,5 @@
 package com.remulasce.lametroapp.components.persistence;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -8,22 +7,22 @@ import android.util.Log;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Remulasce on 1/11/2015.
+ *
+ * Old SettingFieldSaver saved string backings to the Settings fields.
+ *
+ * Unused, since now we save Java Serialized objects to file.
  */
 public class SettingFieldSaver implements FieldSaver {
     private static final String PREFERENCES_NAME = "Fields";

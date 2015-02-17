@@ -131,7 +131,6 @@ public class ServiceRequestListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
