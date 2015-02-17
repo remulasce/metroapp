@@ -353,7 +353,9 @@ public class TripPopulator {
 
                         progress.setVisibility(View.INVISIBLE);
                     }
-                    timeSpentUpdatingUI += Tracking.timeSpent(start);
+
+                    long l = Tracking.timeSpent(start);
+                    timeSpentUpdatingUI += l;
                 }
             } );
         }
