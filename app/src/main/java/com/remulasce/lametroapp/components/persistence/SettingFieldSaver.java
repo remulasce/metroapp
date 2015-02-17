@@ -41,7 +41,6 @@ public class SettingFieldSaver implements FieldSaver {
         preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         this.locations = locations;
 
-        //TODO
         context = c;
     }
 
