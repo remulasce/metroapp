@@ -25,9 +25,9 @@ public class Tracking {
 		return t;
 	}
 
-    // in ms from nanotime/1000
+    // in nanoseconds (1/Billionth second) from nanotime
 	public static long startTime() {
-	    return System.nanoTime() / 1000;
+	    return System.nanoTime();
 	}
 
 
@@ -73,9 +73,9 @@ public class Tracking {
     public static void sendRawUITime( String name, String label, long timeSpent ) {
         sendRawTime( "UITiming", name, label, timeSpent );
     }
-    // Input and output in ms
+    // Input in nanoseconds, output in millis
     public static long timeSpent(long startTime) {
-        return (System.nanoTime() / 1000 - startTime);
+        return (System.nanoTime() - startTime) / 1000000;
     }
     public static void sendTime( String category, String name, String label, long startTime) {
         sendRawTime( category, name, label, timeSpent( startTime ) );
