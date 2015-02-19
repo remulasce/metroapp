@@ -48,7 +48,7 @@ public class Logging {
                     FileOutputStream fileOutputStream = new FileOutputStream(logFile);
                     BufferedOutputStream stream = new BufferedOutputStream(fileOutputStream);
 
-                    String line = "";
+                    String line;
                     while (run) {
                         if ((line = bufferedReader.readLine()) != null) {
                             stream.write((line+"\n").getBytes());

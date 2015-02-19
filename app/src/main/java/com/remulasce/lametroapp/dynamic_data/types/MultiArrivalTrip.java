@@ -213,7 +213,7 @@ public class MultiArrivalTrip extends Trip {
                         t.setScreenName("Notify Confirm Accept");
                         t.send(new HitBuilders.AppViewBuilder().build());
 
-                        Vehicle vehicle = null;
+                        Vehicle vehicle;
                         int seconds = 120;
 
                         seconds = getTime(seconds, time);

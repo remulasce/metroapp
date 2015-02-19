@@ -449,20 +449,11 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
-//        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
-
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
         values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
         values.put(StopNameEntry.COLUMN_NAME_LATITUDE, latitude);
         values.put(StopNameEntry.COLUMN_NAME_LONGITUDE, longitude);
-
-        long newRowId = sqLiteDatabase.insert(
-                StopNameEntry.TABLE_NAME,
-                null,
-                values);
-
-//        Log.v(TAG, "New stop rowid is "+newRowId);
     }
 
     private InputStream getStopsFileReader() throws IOException {

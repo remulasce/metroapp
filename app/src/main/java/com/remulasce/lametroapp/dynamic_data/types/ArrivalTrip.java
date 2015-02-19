@@ -70,7 +70,6 @@ public class ArrivalTrip extends Trip {
         TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
         TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
         TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
-        ImageView b = (ImageView) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
         Stop stop = parentArrival.getStop();

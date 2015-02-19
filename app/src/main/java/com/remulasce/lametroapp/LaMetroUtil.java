@@ -104,7 +104,7 @@ public class LaMetroUtil {
 
                         Arrival a = new Arrival();
 
-                        String vehicleNum = "";
+                        String vehicleNum;
                         int seconds = -1;
 
                         String timeString = xpp.getAttributeValue( null, "seconds" );
