@@ -35,26 +35,12 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private static final String DATABASE_NAME = "StopNames.db";
     private static final int DATABASE_VERSION = 8;
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String DOUBLE_TYPE = " REAL";
-    private static final String COMMA_SEP = ",";
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
     private int trackNumber = 0;
     private final int trackDivider = 50;
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + StopNameEntry.TABLE_NAME + " (" +
-                    StopNameEntry._ID + " INTEGER PRIMARY KEY," +
-                    StopNameEntry.COLUMN_NAME_STOPID + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_STOPNAME + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE +
-                    " )";
-
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + StopNameEntry.TABLE_NAME;
 
     public static abstract class StopNameEntry implements BaseColumns {
         public static final String TABLE_NAME = "stopnames";
@@ -63,12 +49,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
-    private static String[] projection = {
-            StopNameEntry.COLUMN_NAME_STOPID,
-            StopNameEntry.COLUMN_NAME_STOPNAME,
-            StopNameEntry.COLUMN_NAME_LATITUDE,
-            StopNameEntry.COLUMN_NAME_LONGITUDE
-    };
+
 
     private class SQLEntry {
         public String stopID;
@@ -87,9 +68,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     @Override
     public void initialize() {
         Log.d(TAG, "StopName table forcing initialization check");
-
-//        getWritableDatabase().execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(getWritableDatabase());
 
         // Getting the database should force its creation via onCreate if it has not yet been
         // created.
@@ -118,9 +96,15 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             ret = new BasicLocation(latitude, longitude);
         }
 
+        if (ret == null) {
+            Log.w(TAG, "Location couldn't be found for "+stop);
+            return ret;
+        }
+
         if (trackNumber++ % trackDivider == 0) {
             Tracking.sendTime("SQL", "StopNames", "getLocation", t);
         }
+
         Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
 
         return ret;

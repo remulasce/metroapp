@@ -34,7 +34,7 @@ public class OmniAutoCompleteEntry {
 
     public boolean hasLocation() { return true; }
 
-    public boolean hasStop() { return true; }
+    public boolean hasStop() { return hasStop; }
     public void setStop(Stop s) { this.stop = s; hasStop = true; }
     public Stop getStop() {
         return this.stop;

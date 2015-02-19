@@ -159,55 +159,6 @@ public class LaMetroUtil {
         return ret;
     }
 
-    public static void parseFirstArrival( Arrival arrival, String response ) {
-
-        XmlPullParserFactory factory;
-        try {
-            factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware( true );
-            XmlPullParser xpp = factory.newPullParser();
-
-            xpp.setInput( new StringReader( response ) );
-            int eventType = xpp.getEventType();
-
-            String curDirection = "";
-            String shortDir = "";
-            int time = -1;
-
-            while ( eventType != XmlPullParser.END_DOCUMENT ) {
-                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.END_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
-                    String name = xpp.getName();
-
-                    if ( name.equals( "direction" ) ) {
-                        curDirection = xpp.getAttributeValue( null, "title" );
-                    }
-                    if ( name.equals( "prediction" ) ) {
-                        String timeString = xpp.getAttributeValue( null, "seconds" );
-
-                        int predTime = Integer.valueOf( timeString );
-                        if ( predTime >= 0 && ( predTime < time || time < 0 ) )
-                        {
-                            time = predTime;
-                            shortDir = curDirection;
-                        }
-                    }
-                } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
-                eventType = xpp.next();
-            }
-
-            if ( time != -1 ) {
-                arrival.setEstimatedArrivalSeconds( time );
-                arrival.setDestination( new Destination( shortDir ) );
-            }
-
-        } catch ( XmlPullParserException e1 ) {
-            e1.printStackTrace();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
-
-    }
-
     public static String timeToDisplay(int seconds) {
         if ( seconds > 60 ) {
             return "in " + standaloneTimeToDisplay(seconds);

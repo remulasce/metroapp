@@ -25,16 +25,12 @@ import com.remulasce.lametroapp.basic_types.Stop;
 public class MetroLocationRetriever implements LocationRetriever {
     private static final String TAG = "LocationRetriever";
 
-    private final StopLocationTranslator locationTranslator;
-    private LocationManager locationManager;
-
     private GoogleApiClient mGoogleApiClient;
     private final Tracker t;
 
     private Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
-        this.locationTranslator = locations;
         this.t = Tracking.getTracker(c);
 
         setupLocation(c);
@@ -122,14 +118,6 @@ public class MetroLocationRetriever implements LocationRetriever {
                     .build() );
         }
     };
-
-    private Location getLocation(LocationManager manager) {
-        Log.i(TAG, "LocationRetriever getting new location");
-        Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        return manager.getLastKnownLocation(provider);
-    }
 
     private Location getBestLocation() {
         return lastRetrievedLocation;

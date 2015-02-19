@@ -62,12 +62,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
-    private static String[] projection = {
-            StopNameEntry.COLUMN_NAME_STOPID,
-            StopNameEntry.COLUMN_NAME_STOPNAME,
-            StopNameEntry.COLUMN_NAME_LATITUDE,
-            StopNameEntry.COLUMN_NAME_LONGITUDE
-    };
 
     private class SQLEntry {
         public String stopID;
