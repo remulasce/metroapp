@@ -60,7 +60,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                     // Prioritize them based on stuff
                     try {
                         prioritizeNearbyStops(results);
-                    } catch (Exception e) {e.printStackTrace();};
+                    } catch (Exception e) {e.printStackTrace();}
 
                     // Assign the data to the FilterResults
                     filterResults.values = results;
