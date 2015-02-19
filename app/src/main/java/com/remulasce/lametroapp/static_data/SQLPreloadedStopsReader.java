@@ -150,7 +150,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             }
 
             Log.d(TAG, "Autocomplete searching for " + s);
-//            Collection<SQLEntry> matchingEntries = getMatchingEntriesRaw(makeAutoCompleteNameRequest(s), db);
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
@@ -200,7 +199,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-//        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
         Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
                 new String[] {stopID}, db);
 
@@ -364,49 +362,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return ret;
     }
 
-//    @Override
-//    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//        long start = Tracking.startTime();
-//        Log.d(TAG, "Creating stopname database table");
-//        sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
-//
-//        try {
-//            BufferedReader file = new BufferedReader(new InputStreamReader(getStopsFileReader()));
-//
-//            String line;
-//            int entries = 0;
-//            file.readLine();
-//            while ( (line = file.readLine()) != null ) {
-//                // stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,stop_url,location_type,paren
-//                String[] split = line.split(",");
-//
-//                String stopID = split[0];
-//                String stopName = split[2];
-//                Double latitude = Double.valueOf(split[4]);
-//                Double longitude = Double.valueOf(split[5]);
-//
-//                putNewStopDef(sqLiteDatabase, stopID, stopName, latitude, longitude);
-//                entries++;
-//
-//                if (entries % 1000 == 0) {
-//                    Log.d(TAG, "Still updating database; " + entries + " entries so far in "+Tracking.timeSpent(start)+ "ms");
-//                }
-//            }
-//
-//            long time = Tracking.timeSpent(start);
-//            Tracking.sendTime("SQL", "StopNames", "Initial Setup", start);
-//            Log.i(TAG, "Finished parsing stopnames list, "+entries+" entries took "+time+" ms");
-//            file.close();
-//
-//        } catch (IOException e) {
-//            Log.e(TAG, "Failed to create stops database; file IO exception");
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            Log.e(TAG, "Failed to create stops database, unknown error");
-//            e.printStackTrace();
-//        }
-//    }
-
     // Request for a stopname, given stopid
     private String makeStopLocationRequest(String stopID) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +
@@ -446,38 +401,17 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
-//        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
-
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
         values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
         values.put(StopNameEntry.COLUMN_NAME_LATITUDE, latitude);
         values.put(StopNameEntry.COLUMN_NAME_LONGITUDE, longitude);
-
-        long newRowId = sqLiteDatabase.insert(
-                StopNameEntry.TABLE_NAME,
-                null,
-                values);
-
-//        Log.v(TAG, "New stop rowid is "+newRowId);
     }
 
     private InputStream getStopsFileReader() throws IOException {
         InputStream inputStream = context.getAssets().open("stops.txt");
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         return inputStream;
     }
 
-
-//    @Override
-//    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-//        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(sqLiteDatabase);
-//    }
-//    @Override
-//    public void onDowngrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-//        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(sqLiteDatabase);
-//    }
 }

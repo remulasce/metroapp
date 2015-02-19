@@ -9,11 +9,6 @@ import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
