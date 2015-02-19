@@ -74,7 +74,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         this.context = context;
     }
 
-    @Override
     public void initialize() {
         Log.d(TAG, "StopName table forcing initialization check");
 

@@ -73,22 +73,27 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    ArrayList<OmniAutoCompleteEntry> n = new ArrayList<OmniAutoCompleteEntry>((Collection<OmniAutoCompleteEntry>)results.values);
-                    Collections.sort(n, new Comparator<OmniAutoCompleteEntry>() {
-                        @Override
-                        public int compare(OmniAutoCompleteEntry omniAutoCompleteEntry, OmniAutoCompleteEntry omniAutoCompleteEntry2) {
-                            if (omniAutoCompleteEntry.getPriority() < omniAutoCompleteEntry2.getPriority()) {
-                                return 1;
-                            } else if (omniAutoCompleteEntry.getPriority() > omniAutoCompleteEntry2.getPriority()) {
-                                return -1;
-                            } else {
-                                return 0;
+                if (results != null && results.count > 0 ) {
+                    try {
+                        ArrayList<OmniAutoCompleteEntry> n = new ArrayList<OmniAutoCompleteEntry>((Collection<OmniAutoCompleteEntry>) results.values);
+                        Collections.sort(n, new Comparator<OmniAutoCompleteEntry>() {
+                            @Override
+                            public int compare(OmniAutoCompleteEntry omniAutoCompleteEntry, OmniAutoCompleteEntry omniAutoCompleteEntry2) {
+                                if (omniAutoCompleteEntry.getPriority() < omniAutoCompleteEntry2.getPriority()) {
+                                    return 1;
+                                } else if (omniAutoCompleteEntry.getPriority() > omniAutoCompleteEntry2.getPriority()) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
                             }
-                        }
-                    });
-                    resultList = n;
-                    notifyDataSetChanged();
+                        });
+                        resultList = n;
+                        notifyDataSetChanged();
+                    } catch (ClassCastException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "Results of omniautocomplete publish results not expected");
+                    }
                 }
                 else {
                     notifyDataSetInvalidated();
