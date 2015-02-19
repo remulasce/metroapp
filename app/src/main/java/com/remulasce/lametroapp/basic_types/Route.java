@@ -13,7 +13,7 @@ public class Route implements Serializable {
     }
 
     public String getString() {
-        return new String( raw );
+        return raw;
     }
 
     public boolean isValid() {

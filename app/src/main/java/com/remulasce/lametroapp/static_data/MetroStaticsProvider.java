@@ -50,6 +50,10 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
         Log.i(TAG, cache.size()+" objects in cache");
     }
 
+    public void initialize() {
+        stopsReader.initialize();
+    }
+
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
         Collection<OmniAutoCompleteEntry> ret = stopsReader.autocompleteStopName(input);
