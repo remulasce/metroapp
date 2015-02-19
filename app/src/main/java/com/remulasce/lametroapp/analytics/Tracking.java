@@ -57,9 +57,11 @@ public class Tracking {
         data.totalValue += timeSpent(startTime);
         data.numPoints += 1;
 
-        synchronized (data) {
-            if (data.numPoints >= 1000) {
-                sendRawUITime(name, label, (long) (data.totalValue / data.numPoints));
+        if (data.numPoints >= 1000) {
+            synchronized (data) {
+                if (data.numPoints > 0) {
+                    sendRawUITime(name, label, (long) (data.totalValue / data.numPoints));
+                }
 
                 data.numPoints = 0;
                 data.totalValue = 0;
