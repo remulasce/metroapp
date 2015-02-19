@@ -14,6 +14,6 @@ public class TripListAdapter extends ArrayAdapter <Trip> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return ((Trip)getItem(position)).getView( parent, getContext(), convertView);
+        return (getItem(position)).getView( parent, getContext(), convertView);
     }
 }
