@@ -85,11 +85,6 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -126,11 +121,6 @@ public class ServiceRequestListFragment extends Fragment {
         super.onStop();
 
         saveServiceRequests(requests);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {

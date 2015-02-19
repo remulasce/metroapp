@@ -61,10 +61,6 @@ public class Arrival implements Serializable {
         return System.currentTimeMillis() - lastUpdate;
     }
 
-    public void updated() {
-
-    }
-
     public void setDestination( Destination d ) {
         this.destination = d;
     }
