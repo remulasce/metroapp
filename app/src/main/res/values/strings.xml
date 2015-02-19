@@ -2,12 +2,7 @@
 <resources>
 
     <string name="app_name">Metro Companion App</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="omnibox_button_display">+</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="test_list_entries">test aoeu aoe</string>
     <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
     <string name="notify_confirmation_text">Display a notification with the ETA of this vehicle</string>
     <string name="notify_confirmation_title">Live Notification</string>

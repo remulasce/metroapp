@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/arg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="20dp">
 
