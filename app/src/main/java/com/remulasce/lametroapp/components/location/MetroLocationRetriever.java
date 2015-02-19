@@ -23,13 +23,13 @@ import com.remulasce.lametroapp.basic_types.Stop;
  * Created by Remulasce on 1/7/2015.
  */
 public class MetroLocationRetriever implements LocationRetriever {
-    private static String TAG = "LocationRetriever";
+    private static final String TAG = "LocationRetriever";
 
-    private StopLocationTranslator locationTranslator;
+    private final StopLocationTranslator locationTranslator;
     private LocationManager locationManager;
 
     private GoogleApiClient mGoogleApiClient;
-    private Tracker t;
+    private final Tracker t;
 
     private Location lastRetrievedLocation;
 
@@ -64,7 +64,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         Log.d(TAG, "startLocationRequests");
     }
 
-    private GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+    private final GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(Bundle bundle) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -104,7 +104,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    private LocationListener locationListener = new LocationListener() {
+    private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "Received new location "+location);
@@ -112,7 +112,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    private GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
+    private final GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
         @Override
         public void onConnectionFailed(ConnectionResult connectionResult) {
             Log.w(TAG, "Location reading failed");

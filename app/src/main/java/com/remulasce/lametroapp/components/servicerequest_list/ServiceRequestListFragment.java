@@ -34,7 +34,7 @@ public class ServiceRequestListFragment extends Fragment {
     private ListView requestList;
     private TextView hintText;
 
-    private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
+    private final List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
         //noinspection unchecked
@@ -178,7 +178,7 @@ public class ServiceRequestListFragment extends Fragment {
         dialog.show();
     }
 
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
@@ -196,7 +196,7 @@ public class ServiceRequestListFragment extends Fragment {
         requestsChanged(true);
     }
 
-    private View.OnClickListener onCancelListener = new View.OnClickListener() {
+    private final View.OnClickListener onCancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ServiceRequest request = (ServiceRequest) view.getTag();

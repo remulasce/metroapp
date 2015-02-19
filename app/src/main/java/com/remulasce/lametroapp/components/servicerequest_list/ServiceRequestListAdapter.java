@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Remulasce on 12/16/2014.
  */
 public class ServiceRequestListAdapter extends ArrayAdapter{
-    private View.OnClickListener cancelButtonListener;
+    private final View.OnClickListener cancelButtonListener;
 
     public ServiceRequestListAdapter(Context context, int resource, List<ServiceRequest> values, View.OnClickListener cancelButtonListener) {
         super(context, resource, values);

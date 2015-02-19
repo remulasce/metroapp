@@ -27,7 +27,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
 
 
 
-    Context context;
+    final Context context;
 
     public SerializedFileFieldSaver(Context c, StopLocationTranslator locations) {
         context = c;

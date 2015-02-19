@@ -77,7 +77,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public double longitude;
     }
 
-    private Context context;
+    private final Context context;
 
     public SQLPreloadedStopsReader(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

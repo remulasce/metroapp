@@ -7,8 +7,8 @@ import java.io.Serializable;
  * Seriously, it's latitude and longitude.
  */
 public class BasicLocation implements Serializable{
-    public double latitude;
-    public double longitude;
+    public final double latitude;
+    public final double longitude;
 
     public BasicLocation(double latitude, double longitude) {
         this.latitude = latitude;

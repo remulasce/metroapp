@@ -76,7 +76,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         public double longitude;
     }
 
-    private Context context;
+    private final Context context;
 
     public GTFSStopsReader(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

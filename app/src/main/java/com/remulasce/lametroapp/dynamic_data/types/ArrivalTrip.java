@@ -25,7 +25,7 @@ import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 public class ArrivalTrip extends Trip {
 
-    private Arrival parentArrival;
+    private final Arrival parentArrival;
 
     public ArrivalTrip( Arrival parentArrival ) {
         this.parentArrival = parentArrival;

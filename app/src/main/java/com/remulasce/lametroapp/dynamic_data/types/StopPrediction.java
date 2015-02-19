@@ -21,8 +21,8 @@ public class StopPrediction extends Prediction {
     private final int MINIMUM_UPDATE_INTERVAL = 5000;
     private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
-    private Stop stop;
-    private Route route;
+    private final Stop stop;
+    private final Route route;
     private TripUpdateCallback callback;
     
     private boolean inScope = false;
@@ -30,8 +30,8 @@ public class StopPrediction extends Prediction {
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
     private final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
 
-    private Arrival firstArrival;
-    private Trip firstTrip;
+    private final Arrival firstArrival;
+    private final Trip firstTrip;
 
     private long lastUpdate;
     private boolean inUpdate = false;

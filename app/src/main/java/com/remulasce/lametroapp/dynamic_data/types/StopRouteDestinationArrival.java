@@ -28,9 +28,9 @@ public class StopRouteDestinationArrival implements Serializable {
     Route route;
     Destination destination;
 
-    private Collection<Arrival> arrivals;
+    private final Collection<Arrival> arrivals;
 
-    private Trip trip;
+    private final Trip trip;
 
     private boolean isInScope = false;
 

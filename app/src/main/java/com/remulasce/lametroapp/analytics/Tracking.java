@@ -36,7 +36,7 @@ public class Tracking {
         public double numPoints = 0;
     }
 
-    private static HashMap<String, HashMap<String, AveragedDatum>> averagedValues = new HashMap<String, HashMap<String, AveragedDatum>>();
+    private static final HashMap<String, HashMap<String, AveragedDatum>> averagedValues = new HashMap<String, HashMap<String, AveragedDatum>>();
     // Avg. for like frame updates that are too numerous to send directly.
     public static void averageUITime( String name, String label, long startTime ) {
 

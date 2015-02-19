@@ -27,7 +27,7 @@ public class Arrival implements Serializable {
     private long lastPrediction;
     private long lastUpdate;
 
-    private Trip firstTrip;
+    private final Trip firstTrip;
 
     public Arrival() {
         firstTrip = new ArrivalTrip( this );

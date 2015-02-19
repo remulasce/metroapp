@@ -38,22 +38,22 @@ public class TripPopulator {
     // When the swipe-to-dismiss library is working, it really doesn't want the list
     private boolean dismissLock = false;
 
-    private ListView list;
-    private TextView hint;
-    private ProgressBar progress;
-    private ArrayAdapter< Trip > adapter;
+    private final ListView list;
+    private final TextView hint;
+    private final ProgressBar progress;
+    private final ArrayAdapter< Trip > adapter;
     private final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
-    private Handler uiHandler;
+    private final Handler uiHandler;
     private UpdateRunner updateRunner;
     private Thread updateThread;
     private boolean running = false;
 
     private long lastDismissTutorialShow = 0;
-    private SwipeDismissListViewTouchListener dismissListener;
+    private final SwipeDismissListViewTouchListener dismissListener;
 
     // ugh.
-    private Context c;
+    private final Context c;
 
     private final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
@@ -166,7 +166,7 @@ public class TripPopulator {
     protected class UpdateRunner implements Runnable {
         boolean run = true;
 
-        Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
+        final Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
         // Track timing
         long timeSpentUpdating = 0;
@@ -373,7 +373,7 @@ public class TripPopulator {
 
         // Tracked requests send us this when they get or update data.
         // In here, new Trips are added to our list of active Trips
-        TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
+        final TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {

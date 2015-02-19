@@ -31,8 +31,8 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
-    private Arrival firstArrival;
-    private Trip firstTrip;
+    private final Arrival firstArrival;
+    private final Trip firstTrip;
 
     private long lastUpdate;
     private boolean inUpdate = false;

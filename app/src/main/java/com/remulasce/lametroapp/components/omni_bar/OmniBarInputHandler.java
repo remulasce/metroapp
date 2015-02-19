@@ -37,17 +37,17 @@ import java.util.Collection;
 public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
-    private ProgressAutoCompleteTextView omniField;
-    private ImageButton addButton;
-    private Button clearButton;
-    private ServiceRequestListFragment requestList;
-    private ProgressBar autocompleteProgress;
-    private StopNameTranslator stopNames;
-    private StopLocationTranslator stopLocations;
-    private Tracker t;
+    private final ProgressAutoCompleteTextView omniField;
+    private final ImageButton addButton;
+    private final Button clearButton;
+    private final ServiceRequestListFragment requestList;
+    private final ProgressBar autocompleteProgress;
+    private final StopNameTranslator stopNames;
+    private final StopLocationTranslator stopLocations;
+    private final Tracker t;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
-    private Context c;
+    private final Context c;
 
     public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
                                ProgressBar autocompleteProgress,
@@ -77,7 +77,7 @@ public class OmniBarInputHandler {
         omniField.setLoadingIndicator(autocompleteProgress);
     }
 
-    private AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             t.send(new HitBuilders.EventBuilder()
@@ -93,7 +93,7 @@ public class OmniBarInputHandler {
         }
     };
 
-    private TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+    private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             long t = Tracking.startTime();
@@ -105,7 +105,7 @@ public class OmniBarInputHandler {
             return true;
         }
     };
-    private View.OnClickListener omniButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener omniButtonListener = new View.OnClickListener() {
         public void onClick( View v ) {
             long t = Tracking.startTime();
 
@@ -115,7 +115,7 @@ public class OmniBarInputHandler {
             Tracking.sendUITime("OmniBarInputHandler", "omniButtonListener", t);
         }
     };
-    private View.OnClickListener clearButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener clearButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             clearFields();

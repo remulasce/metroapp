@@ -31,7 +31,7 @@ import java.util.List;
 
 public class MultiArrivalTrip extends Trip {
 
-    private StopRouteDestinationArrival parentArrival;
+    private final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
     private double lastDistanceToStop = 0;

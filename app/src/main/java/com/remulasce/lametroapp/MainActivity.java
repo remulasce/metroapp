@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         LaMetroUtil.locationTranslator = staticsProvider;
     }
 
-    private OnItemClickListener tripClickListener = new OnItemClickListener() {
+    private final OnItemClickListener tripClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
             Trip trip = (Trip) parent.getItemAtPosition( position );

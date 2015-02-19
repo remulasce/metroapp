@@ -31,10 +31,10 @@ public class SettingFieldSaver implements FieldSaver {
     private static final String SERVICEREQUEST_ITEM_NAME = "servicerequest_";
 
 
-    private SharedPreferences preferences;
-    private StopLocationTranslator locations;
+    private final SharedPreferences preferences;
+    private final StopLocationTranslator locations;
 
-    private Context context;
+    private final Context context;
 
     public SettingFieldSaver(Context c, StopLocationTranslator locations) {
         preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);

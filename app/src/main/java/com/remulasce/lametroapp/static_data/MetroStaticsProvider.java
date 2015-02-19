@@ -21,7 +21,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     private static final String TAG = "MetroStaticsProvider";
 
 
-    private SQLPreloadedStopsReader stopsReader;
+    private final SQLPreloadedStopsReader stopsReader;
 
     private HashMap<String, String> stopNameCache;
     private HashMap<String, Collection<String>> stopIDCache;

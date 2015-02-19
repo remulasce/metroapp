@@ -20,11 +20,11 @@ import java.util.Comparator;
  */
 public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 {
-    private String TAG = "OmniAutoCompleteAdapter";
+    private final String TAG = "OmniAutoCompleteAdapter";
 
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
-    private AutoCompleteStopFiller autocomplete;
-    private LocationRetriever locations;
+    private final AutoCompleteStopFiller autocomplete;
+    private final LocationRetriever locations;
 
     public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteStopFiller t,
                                    LocationRetriever locations) {
