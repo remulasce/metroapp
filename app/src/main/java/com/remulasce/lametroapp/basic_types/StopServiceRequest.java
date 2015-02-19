@@ -16,8 +16,8 @@ import java.util.Collection;
  */
 public class StopServiceRequest extends ServiceRequest {
 
-    Collection<Stop> stops;
-    Collection<Prediction> predictions = new ArrayList<Prediction>();
+    private Collection<Stop> stops;
+    private Collection<Prediction> predictions = new ArrayList<Prediction>();
 
     private boolean updateAvailable = true;
 

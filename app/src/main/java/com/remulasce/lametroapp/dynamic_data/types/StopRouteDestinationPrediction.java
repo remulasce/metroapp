@@ -18,24 +18,24 @@ import java.util.List;
 That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
  */
 public class StopRouteDestinationPrediction extends Prediction {
-    public static final String TAG = "SRDPrediction";
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private static final String TAG = "SRDPrediction";
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
 
-    protected Stop stop;
-    protected Route route;
-    protected TripUpdateCallback callback;
+    private Stop stop;
+    private Route route;
+    private TripUpdateCallback callback;
 
-    protected boolean inScope = false;
+    private boolean inScope = false;
 
     private boolean needsQuickUpdate = false;
 
-    Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+    private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
-    Arrival firstArrival;
-    Trip firstTrip;
+    private Arrival firstArrival;
+    private Trip firstTrip;
 
-    long lastUpdate;
-    boolean inUpdate = false;
+    private long lastUpdate;
+    private boolean inUpdate = false;
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
@@ -116,7 +116,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         return System.currentTimeMillis() - lastUpdate;
     }
 
-    protected boolean arrivalTracked( Arrival a ) {
+    boolean arrivalTracked(Arrival a) {
         if ( !LaMetroUtil.isValidRoute( route ) ) {
             return true;
         }

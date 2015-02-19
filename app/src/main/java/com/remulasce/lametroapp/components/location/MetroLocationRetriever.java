@@ -23,15 +23,15 @@ import com.remulasce.lametroapp.basic_types.Stop;
  * Created by Remulasce on 1/7/2015.
  */
 public class MetroLocationRetriever implements LocationRetriever {
-    static String TAG = "LocationRetriever";
+    private static String TAG = "LocationRetriever";
 
-    StopLocationTranslator locationTranslator;
-    LocationManager locationManager;
+    private StopLocationTranslator locationTranslator;
+    private LocationManager locationManager;
 
-    GoogleApiClient mGoogleApiClient;
-    Tracker t;
+    private GoogleApiClient mGoogleApiClient;
+    private Tracker t;
 
-    Location lastRetrievedLocation;
+    private Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
         this.locationTranslator = locations;
@@ -59,12 +59,12 @@ public class MetroLocationRetriever implements LocationRetriever {
         mGoogleApiClient.disconnect();
     }
 
-    protected synchronized void startLocationRequests(Context c) {
+    synchronized void startLocationRequests(Context c) {
         mGoogleApiClient.connect();
         Log.d(TAG, "startLocationRequests");
     }
 
-    protected GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+    private GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(Bundle bundle) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -104,7 +104,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    protected LocationListener locationListener = new LocationListener() {
+    private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "Received new location "+location);
@@ -112,7 +112,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    protected GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
+    private GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
         @Override
         public void onConnectionFailed(ConnectionResult connectionResult) {
             Log.w(TAG, "Location reading failed");

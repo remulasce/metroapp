@@ -22,7 +22,7 @@ import java.io.Serializable;
  *
  */
 public class Trip implements Serializable {
-	protected String text = "...";
+	private String text = "...";
 	
 	public String getInfo() {
 		return toString();
@@ -53,7 +53,5 @@ public class Trip implements Serializable {
 	    return true;
 	}
 
-    public void dismiss() {
-        return;
-    }
+    public void dismiss() { }
 }

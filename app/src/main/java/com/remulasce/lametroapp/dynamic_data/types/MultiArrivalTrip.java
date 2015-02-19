@@ -31,10 +31,10 @@ import java.util.List;
 
 public class MultiArrivalTrip extends Trip {
 
-    protected StopRouteDestinationArrival parentArrival;
+    private StopRouteDestinationArrival parentArrival;
 
-    long lastLocationUpdate = 0;
-    double lastDistanceToStop = 0;
+    private long lastLocationUpdate = 0;
+    private double lastDistanceToStop = 0;
 
     public MultiArrivalTrip(StopRouteDestinationArrival parentArrival) {
         this.parentArrival = parentArrival;

@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
  */
 public class Logging {
 
-    static RunTaskAble logger = null;
+    private static RunTaskAble logger = null;
 
     public static void StartSavingLogcat(final Context context) {
         Log.d("LogSaver", "LogSaver starting");

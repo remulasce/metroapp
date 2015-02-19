@@ -105,7 +105,7 @@ public class ArrivalNotifyService extends Service {
 		
 		  //Helper fxn, since we only make Types long enough to check validity,
 	    // we should clear the underlying invalid Strings
-	    protected void cleanParameters() {
+          void cleanParameters() {
 	        Stop s = new Stop(stopID);
 	        Route r = new Route(routeName);
 	        Destination d = new Destination(destination);
@@ -117,7 +117,7 @@ public class ArrivalNotifyService extends Service {
 	        if (!v.isValid()) vehicleNumber = null;
 	    }
 		
-	    protected boolean parametersValid() {
+	    boolean parametersValid() {
 	        try {
 	            // We only check Stop, because that's the minimum
 	            // we need.
@@ -360,7 +360,7 @@ public class ArrivalNotifyService extends Service {
 		return null;
 	}
 
-	protected void ShutdownService() {
+	void ShutdownService() {
 	    Log.i("NotifyService", "Shutting down service");
 	    
 	    if ( netTask != null ) { 
@@ -387,7 +387,7 @@ public class ArrivalNotifyService extends Service {
 		ShutdownService();
 	}
 
-	public void toast(final String msg) {
+	void toast(final String msg) {
 		Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
 
 		h.post(new Runnable() {
@@ -404,7 +404,7 @@ public class ArrivalNotifyService extends Service {
 	    public int arrivalTime;
         public String stopName;
     }
-	public StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
+	StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
 		int time = -1;
 		String lastDestination = "";
 
@@ -459,7 +459,7 @@ public class ArrivalNotifyService extends Service {
 		return ret;
 	}
 	
-	public String getXMLArrivalString( int stopID, String agency, String routeName) {
+	String getXMLArrivalString(int stopID, String agency, String routeName) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		String URI = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a="+agency+"&stopId="+stopID;

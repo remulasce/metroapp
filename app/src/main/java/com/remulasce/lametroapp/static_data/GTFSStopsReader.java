@@ -472,7 +472,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
     private InputStream getStopsFileReader() throws IOException {
         InputStream inputStream = context.getAssets().open("stops.txt");
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         return inputStream;
     }

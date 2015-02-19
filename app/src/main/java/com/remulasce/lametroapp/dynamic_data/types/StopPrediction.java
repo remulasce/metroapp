@@ -18,23 +18,23 @@ import com.remulasce.lametroapp.basic_types.Stop;
  * on input. Etc.
  */
 public class StopPrediction extends Prediction {
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
-    protected Stop stop;
-    protected Route route;
-    protected TripUpdateCallback callback;
+    private Stop stop;
+    private Route route;
+    private TripUpdateCallback callback;
     
-    protected boolean inScope = false; 
+    private boolean inScope = false;
 
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
-    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
+    private final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
 
-    Arrival firstArrival;
-    Trip firstTrip;
+    private Arrival firstArrival;
+    private Trip firstTrip;
 
-    long lastUpdate;
-    boolean inUpdate = false;
+    private long lastUpdate;
+    private boolean inUpdate = false;
 
     public StopPrediction( Stop stop, Route route ) {
         this.stop = stop;
@@ -111,7 +111,7 @@ public class StopPrediction extends Prediction {
         return System.currentTimeMillis() - lastUpdate;
     }
 
-    protected boolean arrivalTracked( Arrival a ) {
+    boolean arrivalTracked(Arrival a) {
         if ( !LaMetroUtil.isValidRoute( route ) ) {
             return true;
         }
@@ -170,7 +170,7 @@ public class StopPrediction extends Prediction {
         return route;
     }
 
-    protected Arrival firstArrival() {
+    Arrival firstArrival() {
         Arrival first = null;
         synchronized ( trackedArrivals ) {
             for ( Arrival a : trackedArrivals ) {

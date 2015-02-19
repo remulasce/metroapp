@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public abstract class ServiceRequest implements Serializable {
     String displayName = "ServiceRequest";
-    boolean inScope = true;
+    private boolean inScope = true;
 
 
     public ServiceRequest() {}

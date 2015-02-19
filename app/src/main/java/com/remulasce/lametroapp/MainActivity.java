@@ -40,30 +40,30 @@ import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
-    ProgressAutoCompleteTextView omniField;
-    Button clearButton;
-    Button donateButton;
-    Button legalButton;
-    ProgressBar autocompleteProgress;
+    private ProgressAutoCompleteTextView omniField;
+    private Button clearButton;
+    private Button donateButton;
+    private Button legalButton;
+    private ProgressBar autocompleteProgress;
 
-    OmniBarInputHandler omniHandler;
-    ServiceRequestListFragment requestFragment;
+    private OmniBarInputHandler omniHandler;
+    private ServiceRequestListFragment requestFragment;
 
-    ListView tripList;
-    TextView tripListHint;
-    View networkStatusView;
-    ProgressBar tripListProgress;
+    private ListView tripList;
+    private TextView tripListHint;
+    private View networkStatusView;
+    private ProgressBar tripListProgress;
 
-    TripPopulator populator;
-    MetroStaticsProvider staticsProvider;
-    OmniAutoCompleteAdapter autoCompleteAdapter;
-    MetroLocationRetriever locationService;
-    SerializedFileFieldSaver fieldSaver;
-    NetworkStatusReporter networkStatusReporter;
+    private TripPopulator populator;
+    private MetroStaticsProvider staticsProvider;
+    private OmniAutoCompleteAdapter autoCompleteAdapter;
+    private MetroLocationRetriever locationService;
+    private SerializedFileFieldSaver fieldSaver;
+    private NetworkStatusReporter networkStatusReporter;
 
-    Tracker t;
-    DrawerLayout mDrawerLayout;
-    ActionBarDrawerToggle mDrawerToggle;
+    private Tracker t;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -146,7 +146,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    protected void setupAboutPage() {
+    void setupAboutPage() {
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,7 +161,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         });
     }
 
-    protected void linkViewReferences() {
+    void linkViewReferences() {
         omniField = (ProgressAutoCompleteTextView) findViewById( R.id.omni_text );
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
@@ -177,7 +177,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                 .findFragmentById(R.id.service_request_fragment);
     }
 
-    protected void setupActionListeners() {
+    void setupActionListeners() {
         populator = new TripPopulator( tripList, tripListHint, tripListProgress, this );
         tripList.setOnItemClickListener( tripClickListener );
 
@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         LaMetroUtil.locationTranslator = staticsProvider;
     }
 
-    protected OnItemClickListener tripClickListener = new OnItemClickListener() {
+    private OnItemClickListener tripClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
             Trip trip = (Trip) parent.getItemAtPosition( position );
@@ -207,14 +207,14 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         }
     };
 
-    protected void startAnalytics() {
+    void startAnalytics() {
 
         t = Tracking.getTracker( getApplicationContext() );
         t.setScreenName("About Page");
         t.send(new HitBuilders.AppViewBuilder().build());
     }
 
-    protected void setupDefaults( Intent bundle ) {
+    void setupDefaults(Intent bundle) {
         Stop stop = new Stop( bundle.getStringExtra( "StopID" ) );
 
         if ( stop.isValid() ) {

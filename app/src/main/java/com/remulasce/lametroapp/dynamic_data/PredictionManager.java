@@ -22,11 +22,11 @@ import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 public class PredictionManager {
-	static final String TAG = "PredictionManager";
-	static final int UPDATE_INTERVAL = 5000;
+	private static final String TAG = "PredictionManager";
+	private static final int UPDATE_INTERVAL = 5000;
 
-	static PredictionManager manager;
-    static NetworkStatusReporter statusReporter;
+	private static PredictionManager manager;
+    private static NetworkStatusReporter statusReporter;
 
 	public static PredictionManager getInstance() {
 		if( manager == null ) { manager = new PredictionManager(); }
@@ -37,8 +37,8 @@ public class PredictionManager {
     }
 	
 
-	protected final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
-	protected UpdateStager updater;
+	private final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
+	private UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
         if (!trackingList.contains(p)) {
@@ -107,7 +107,6 @@ public class PredictionManager {
                         }
                     } catch (IndexOutOfBoundsException e) {
                         Log.w(TAG, "Prediction removed out from under PredictionManager");
-                        continue;
                     }
                 }
 

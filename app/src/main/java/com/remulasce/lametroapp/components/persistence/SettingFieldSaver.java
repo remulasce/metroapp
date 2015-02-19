@@ -34,7 +34,7 @@ public class SettingFieldSaver implements FieldSaver {
     private SharedPreferences preferences;
     private StopLocationTranslator locations;
 
-    Context context;
+    private Context context;
 
     public SettingFieldSaver(Context c, StopLocationTranslator locations) {
         preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);

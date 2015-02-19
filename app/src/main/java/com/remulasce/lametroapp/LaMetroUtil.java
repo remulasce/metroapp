@@ -18,7 +18,7 @@ import com.remulasce.lametroapp.basic_types.Vehicle;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 public class LaMetroUtil {
-    public static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
+    private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
 
     public static StopLocationTranslator locationTranslator;
 

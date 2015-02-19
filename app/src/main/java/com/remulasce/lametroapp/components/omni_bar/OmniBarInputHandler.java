@@ -77,7 +77,7 @@ public class OmniBarInputHandler {
         omniField.setLoadingIndicator(autocompleteProgress);
     }
 
-    protected AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             t.send(new HitBuilders.EventBuilder()
@@ -93,7 +93,7 @@ public class OmniBarInputHandler {
         }
     };
 
-    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+    private TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             long t = Tracking.startTime();
@@ -105,7 +105,7 @@ public class OmniBarInputHandler {
             return true;
         }
     };
-    protected View.OnClickListener omniButtonListener = new View.OnClickListener() {
+    private View.OnClickListener omniButtonListener = new View.OnClickListener() {
         public void onClick( View v ) {
             long t = Tracking.startTime();
 
@@ -115,7 +115,7 @@ public class OmniBarInputHandler {
             Tracking.sendUITime("OmniBarInputHandler", "omniButtonListener", t);
         }
     };
-    protected  View.OnClickListener clearButtonListener = new View.OnClickListener() {
+    private View.OnClickListener clearButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             clearFields();

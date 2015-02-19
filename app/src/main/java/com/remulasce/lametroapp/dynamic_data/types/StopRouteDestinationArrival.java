@@ -20,17 +20,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *  require two of these.
  */
 public class StopRouteDestinationArrival implements Serializable {
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
-    public static final String TAG = "SRDArrival";
+    private static final String TAG = "SRDArrival";
     Stop stop;
     Route route;
     Destination destination;
 
-    Collection<Arrival> arrivals;
+    private Collection<Arrival> arrivals;
 
-    Trip trip;
+    private Trip trip;
 
     private boolean isInScope = false;
 

@@ -14,10 +14,10 @@ import com.remulasce.lametroapp.R;
  */
 public class NetworkStatusReporter {
 
-    View statusBar;
-    TextView textView;
+    private View statusBar;
+    private TextView textView;
 
-    Handler uiHandler;
+    private Handler uiHandler;
 
     public NetworkStatusReporter( View statusBar ) {
         this.statusBar = statusBar;

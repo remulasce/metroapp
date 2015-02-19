@@ -7,12 +7,12 @@ import com.remulasce.lametroapp.basic_types.Stop;
  */
 public class OmniAutoCompleteEntry {
 
-    String text = "Unassigned";
-    float priority = 1;
+    private String text = "Unassigned";
+    private float priority = 1;
 
     // meh inheritance
-    boolean hasStop = false;
-    Stop stop = null;
+    private boolean hasStop = false;
+    private Stop stop = null;
 
 
     public OmniAutoCompleteEntry(String text, float priority) {

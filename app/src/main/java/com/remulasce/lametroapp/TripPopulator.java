@@ -33,29 +33,29 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 1000;
-    protected final Object waitLock = new Object();
+    private final static int UPDATE_INTERVAL = 1000;
+    private final Object waitLock = new Object();
     // When the swipe-to-dismiss library is working, it really doesn't want the list
-    protected boolean dismissLock = false;
+    private boolean dismissLock = false;
 
-    protected ListView list;
-    protected TextView hint;
-    protected ProgressBar progress;
-    protected ArrayAdapter< Trip > adapter;
-    protected final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
+    private ListView list;
+    private TextView hint;
+    private ProgressBar progress;
+    private ArrayAdapter< Trip > adapter;
+    private final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
-    protected Handler uiHandler;
-    protected UpdateRunner updateRunner;
-    protected Thread updateThread;
-    protected boolean running = false;
+    private Handler uiHandler;
+    private UpdateRunner updateRunner;
+    private Thread updateThread;
+    private boolean running = false;
 
-    protected long lastDismissTutorialShow = 0;
-    protected SwipeDismissListViewTouchListener dismissListener;
+    private long lastDismissTutorialShow = 0;
+    private SwipeDismissListViewTouchListener dismissListener;
 
     // ugh.
-    protected Context c;
+    private Context c;
 
-    protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
+    private final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
     public TripPopulator( ListView list, TextView hint, ProgressBar progress, Context c ) {
         this.list = list;
@@ -133,7 +133,7 @@ public class TripPopulator {
         running = false;
     }
 
-    protected void rawSetServiceRequests( Collection<ServiceRequest> requests) {
+    void rawSetServiceRequests(Collection<ServiceRequest> requests) {
         Log.d(TAG, "Setting service requests");
 
         serviceRequests.clear();
@@ -164,15 +164,15 @@ public class TripPopulator {
     *
     * */
     protected class UpdateRunner implements Runnable {
-        protected boolean run = true;
+        boolean run = true;
 
         Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
         // Track timing
-        protected long timeSpentUpdating = 0;
-        protected long numberOfUpdates = 0;
+        long timeSpentUpdating = 0;
+        long numberOfUpdates = 0;
 
-        protected long timeSpentUpdatingUI = 0;
+        long timeSpentUpdatingUI = 0;
 
         @Override
         public void run() {
@@ -218,7 +218,7 @@ public class TripPopulator {
 
         // If we have new stops, set them to track and add them to the trackedMap.
         // If stops have been removed, do the opposite.
-        protected void updateTrackedMap() {
+        void updateTrackedMap() {
             Log.v(TAG, "Updating Tracked Map");
 
             removeOldStops();
@@ -274,7 +274,7 @@ public class TripPopulator {
         }
 
         // The Trip will know when its parent request has been removed.
-        protected void cullInvalidTrips() {
+        void cullInvalidTrips() {
             List< Trip > inactiveTrips = new ArrayList< Trip >();
             for ( Trip t : activeTrips ) {
                 if ( !t.isValid() ) {
@@ -284,7 +284,7 @@ public class TripPopulator {
             activeTrips.removeAll( inactiveTrips );
         }
 
-        protected List<Trip> sortTrips(Collection<Trip> trips) {
+        List<Trip> sortTrips(Collection<Trip> trips) {
             // Ugh.
             // But, we used to do this literally inside the UI update thread.
             // So we're coming out a little ahead.
@@ -373,7 +373,7 @@ public class TripPopulator {
 
         // Tracked requests send us this when they get or update data.
         // In here, new Trips are added to our list of active Trips
-        protected TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
+        TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {
