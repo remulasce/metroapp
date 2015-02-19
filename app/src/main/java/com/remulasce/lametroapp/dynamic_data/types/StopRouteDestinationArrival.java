@@ -48,7 +48,7 @@ public class StopRouteDestinationArrival implements Serializable {
     public float getRequestedUpdateInterval() {
         Arrival first = null;
         float firstTime;
-        float interval = 0;
+        float interval;
 
         // We find the soonest arrival and use the interval for that to make sure it gets
         // updated as often as it needs.

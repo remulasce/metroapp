@@ -156,8 +156,6 @@ public class StopRouteDestinationPrediction extends Prediction {
                                 newA.getStop(), newA.getRoute(), newA.getDirection());
                         newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
-
-                        a = newSRDA;
                     }
                 }
             }
@@ -190,7 +188,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         StopRouteDestinationArrival first = null;
 
-        float interval = 0;
+        float interval;
 
         // We find the soonest arrival and use the interval for that to make sure it gets
         // updated as often as it needs.
