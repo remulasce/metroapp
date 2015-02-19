@@ -24,9 +24,9 @@ public class StopRouteDestinationArrival implements Serializable {
     private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
     private static final String TAG = "SRDArrival";
-    Stop stop;
-    Route route;
-    Destination destination;
+    final Stop stop;
+    final Route route;
+    final Destination destination;
 
     private final Collection<Arrival> arrivals;
 

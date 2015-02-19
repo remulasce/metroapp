@@ -22,12 +22,12 @@ import java.util.Collection;
  * objects which manually serialize themselves to avoid spreading too far.
  */
 public class SerializedFileFieldSaver implements FieldSaver {
-    public static final String SERVICE_REQUESTS_SER = "serviceRequests.ser";
-    public static final String TAG = "SettingFieldSaver";
+    private static final String SERVICE_REQUESTS_SER = "serviceRequests.ser";
+    private static final String TAG = "SettingFieldSaver";
 
 
 
-    final Context context;
+    private final Context context;
 
     public SerializedFileFieldSaver(Context c, StopLocationTranslator locations) {
         context = c;

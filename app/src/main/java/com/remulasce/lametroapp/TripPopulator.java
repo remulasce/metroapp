@@ -363,7 +363,7 @@ public class TripPopulator {
             } );
         }
 
-        Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
+        final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
             @Override
             public int compare(Trip lhs, Trip rhs) {
                 return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;

@@ -87,9 +87,9 @@ public class PredictionManager {
         trackingList.remove(p);
 	}
 	
-	protected class UpdateStager implements Runnable {
+	class UpdateStager implements Runnable {
 		public boolean run = true;
-        public Object updateObject = new Object();
+        public final Object updateObject = new Object();
 
 		@Override
 		public void run() {
@@ -122,13 +122,13 @@ public class PredictionManager {
 		}
 	}
 	
-	protected void GetUpdate( Prediction p ) {
+	void GetUpdate(Prediction p) {
 		RequestHandler r = new RequestHandler( p );
 		new Thread(r, "Prediction update "+p.getRequestString()).start();
 	}
 	
-	protected class RequestHandler implements Runnable {
-		Prediction prediction;
+	class RequestHandler implements Runnable {
+		final Prediction prediction;
 
 		public RequestHandler( Prediction p ) {
 			this.prediction = p;
