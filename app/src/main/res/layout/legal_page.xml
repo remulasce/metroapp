@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="This app uses public real-time information provided by Nextrp and Metro.\nHowever, it is not endorsed by Metro."
+        android:text="This app uses public real-time information provided by Nextrip and Metro.\nHowever, it is not endorsed by Metro."
         android:id="@+id/textView6"
         android:layout_marginBottom="20dp" />
 
