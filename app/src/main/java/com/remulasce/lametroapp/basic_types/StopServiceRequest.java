@@ -111,7 +111,13 @@ public class StopServiceRequest extends ServiceRequest {
     private void readObject(ObjectInputStream ois)
             throws ClassNotFoundException, IOException {
 
-        stops = (Collection<Stop>) ois.readObject();
-        predictions = (Collection<Prediction>) ois.readObject();
+        try {
+            stops = (Collection<Stop>) ois.readObject();
+            predictions = (Collection<Prediction>) ois.readObject();
+        } catch (Exception e) {
+            stops = new ArrayList<Stop>();
+            predictions = new ArrayList<Prediction>();
+            e.printStackTrace();
+        }
     }
 }

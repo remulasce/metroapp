@@ -241,7 +241,13 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         stop = (Stop) ois.readObject();
         route = (Route) ois.readObject();
-        trackedArrivals = (Collection<StopRouteDestinationArrival>) ois.readObject();
+        try {
+            trackedArrivals = (Collection<StopRouteDestinationArrival>) ois.readObject();
+        } catch (Exception e) {
+            trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+            e.printStackTrace();
+            Log.w(TAG, "Couldn't load tracked arrivals, making empty list");
+        }
         inScope = ois.readBoolean();
     }
 }
