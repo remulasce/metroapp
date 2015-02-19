@@ -53,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo_image"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_launcher"
+                android:contentDescription="App Icon" />
 
             <TextView
                 android:layout_width="match_parent"

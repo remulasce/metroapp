@@ -108,7 +108,7 @@ public class SettingFieldSaver implements FieldSaver {
             i++;
         }
 
-        editor.commit();
+        editor.apply();
         Log.d("SettingFieldSaver", "Saved "+i+" service requests");
     }
 

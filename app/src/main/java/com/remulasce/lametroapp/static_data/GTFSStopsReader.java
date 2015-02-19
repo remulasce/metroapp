@@ -302,6 +302,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -339,6 +341,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -361,6 +364,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }

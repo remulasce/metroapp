@@ -311,6 +311,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -348,6 +350,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -370,6 +374,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
