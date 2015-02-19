@@ -32,9 +32,10 @@
     <string name="example_station_name">Example Station</string>
     <string name="example_destination_name">King\'s cross etc Station</string>
     <string name="default_notification_time">2</string>
-    <string name="notification_time_description_text">Play an alert sound when vehicle is</string>
+    <string name="notification_time_description_text">Play a sound when it is</string>
     <string name="notification_time_units">minutes away</string>
     <string name="notification_example_content_description">Example of Notification</string>
     <string name="notification_example_caption">Example</string>
+    <string name="notification_vehicle_prompt_text">Select a vehicle to track</string>
 
 </resources>

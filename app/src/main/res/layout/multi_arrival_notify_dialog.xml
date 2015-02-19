@@ -21,7 +21,7 @@
             android:layout_below="@+id/textView"
             android:ems="2"
             android:inputType="number"
-            android:text="2"
+            android:text="@string/default_notification_time"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
 
@@ -29,7 +29,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play a sound when it is "
+            android:text="@string/notification_time_description_text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/trip_options_radio_group"
             android:layout_marginLeft="20dp"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
-            android:text="minutes away"
+            android:text="@string/notification_time_units"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_alignBaseline="@+id/notify_dialog_time"
             android:layout_alignBottom="@+id/notify_dialog_time"
@@ -56,13 +56,14 @@
             android:adjustViewBounds="true"
             android:layout_alignParentTop="true"
             android:layout_alignRight="@+id/trip_options_radio_group"
-            android:layout_alignEnd="@+id/trip_options_radio_group" />
+            android:layout_alignEnd="@+id/trip_options_radio_group"
+            android:contentDescription="@string/notification_example_content_description" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Example"
+            android:text="@string/notification_example_caption"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/imageView"
             android:layout_centerHorizontal="true"
@@ -78,14 +79,14 @@
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="40dp"
             android:layout_marginTop="10dp"
-            android:layout_alignParentEnd="true"></RadioGroup>
+            android:layout_alignParentEnd="true"/>
 
         <TextView
             android:id="@+id/notification_confirmation_time_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Select a vehicle to track"
+            android:text="@string/notification_vehicle_prompt_text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_below="@+id/imageView"
             android:layout_alignLeft="@+id/textView"
