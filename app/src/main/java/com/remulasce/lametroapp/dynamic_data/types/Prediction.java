@@ -1,8 +1,6 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.io.Serializable;
-import java.util.List;
-
 
 
 /** Base class for anything we're requesting

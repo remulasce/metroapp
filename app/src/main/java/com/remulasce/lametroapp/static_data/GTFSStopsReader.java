@@ -15,7 +15,6 @@ import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,10 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
 /** Old stops.txt sql handler
  * Removed in order to use preloded SQL tables

@@ -1,7 +1,6 @@
 package com.remulasce.lametroapp.basic_types;
 
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.dynamic_data.types.StopPrediction;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -2,15 +2,11 @@ package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
-import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 
