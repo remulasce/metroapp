@@ -35,5 +35,6 @@
     <string name="legal_info_button_text">Legal / Info</string>
     <string name="donate_pitch">If you like this app, you can give me some money!</string>
     <string name="donate_button_text">Donate</string>
+    <string name="app_icon_content_description">App Icon</string>
 
 </resources>

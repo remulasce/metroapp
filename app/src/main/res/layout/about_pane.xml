@@ -54,7 +54,7 @@
                 android:id="@+id/logo_image"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_launcher"
-                android:contentDescription="App Icon" />
+                android:contentDescription="@string/app_icon_content_description" />
 
             <TextView
                 android:layout_width="match_parent"
