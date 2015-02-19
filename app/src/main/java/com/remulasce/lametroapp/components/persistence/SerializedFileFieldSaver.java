@@ -60,7 +60,17 @@ public class SerializedFileFieldSaver implements FieldSaver {
         {
             FileInputStream fileIn = context.openFileInput(SERVICE_REQUESTS_SER);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            Collection<ServiceRequest> ret = (Collection<ServiceRequest>) in.readObject();
+
+            Object o = in.readObject();
+            Collection<ServiceRequest> ret;
+
+            try {
+                ret = (Collection<ServiceRequest>) o;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Wrong type loaded from file, returning new empty list");
+                ret = new ArrayList<ServiceRequest>();
+            }
 
             in.close();
             fileIn.close();
