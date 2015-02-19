@@ -107,6 +107,11 @@ public class GTFSStopsReader extends SQLiteOpenHelper
             ret = new BasicLocation(latitude, longitude);
         }
 
+        if (ret == null) {
+            Log.w(TAG, "Couldn't get location for "+stop);
+            return ret;
+        }
+
         Tracking.sendTime("SQL", "StopNames", "getLocation", t);
         Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
 

@@ -89,7 +89,7 @@ public class LaMetroUtil {
             String curStopTag = "";
 
             while ( eventType != XmlPullParser.END_DOCUMENT ) {
-                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.END_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
+                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
                     String name = xpp.getName();
 
                     if ( name.equals( "predictions" ) ) {

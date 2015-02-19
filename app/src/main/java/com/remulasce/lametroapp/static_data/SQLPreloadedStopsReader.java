@@ -96,7 +96,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         if (ret == null) {
             Log.w(TAG, "Location couldn't be found for "+stop);
-            return ret;
+            return null;
         }
 
         if (trackNumber++ % trackDivider == 0) {

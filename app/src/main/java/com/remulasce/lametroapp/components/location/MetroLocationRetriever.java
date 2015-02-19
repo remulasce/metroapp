@@ -133,8 +133,8 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
 
         BasicLocation stopRawLoc = stop.getLocation();
-        double stopLatitude = Double.valueOf(stopRawLoc.latitude);
-        double stopLongitude = Double.valueOf(stopRawLoc.longitude);
+        double stopLatitude = stopRawLoc.latitude;
+        double stopLongitude = stopRawLoc.longitude;
 
         float[] results = new float[4];
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
