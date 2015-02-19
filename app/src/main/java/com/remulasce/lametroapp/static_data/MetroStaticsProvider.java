@@ -16,6 +16,8 @@ import java.util.Random;
 
 /**
  * Created by Remulasce on 1/16/2015.
+ *
+ * Just routes everything through the preloded sql provider.
  */
 public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteStopFiller {
     private static final String TAG = "MetroStaticsProvider";
@@ -58,11 +60,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     @Override
     public BasicLocation getStopLocation(Stop stop) {
         return stopsReader.getStopLocation(stop);
-    }
-
-    @Override
-    public void initialize() {
-        stopsReader.initialize();
     }
 
     @Override

@@ -8,6 +8,9 @@ import android.widget.ProgressBar;
 
 /**
  * Created by Remulasce on 2/15/2015.
+ *
+ * Extension to autocompletetextview enables a progressbar spinnie thing when working
+ * That mitigates having long search times.
  */
 public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     public ProgressAutoCompleteTextView(Context context, AttributeSet attrs) {

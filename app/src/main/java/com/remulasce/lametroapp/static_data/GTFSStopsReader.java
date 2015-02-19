@@ -28,8 +28,10 @@ import java.util.regex.Pattern;
 
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
 
-/**
- * Created by Remulasce on 12/17/2014.
+/** Old stops.txt sql handler
+ * Removed in order to use preloded SQL tables
+ *
+ * Though, actually this is what created the prefilled tables we now ship.
  */
 public class GTFSStopsReader extends SQLiteOpenHelper
         implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {

@@ -8,6 +8,11 @@ import java.util.Collection;
 
 /**
  * Created by Remulasce on 12/16/2014.
+ *
+ * One (or maybe more) servicerequest should be created for each input into the omnibar
+ * Its job is to create the subsequent data types and get them started tracking
+ *
+ * There's not much top-down control, mainly it just starts them up and lets it go.
  */
 public abstract class ServiceRequest implements Serializable {
     String displayName = "ServiceRequest";

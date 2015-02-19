@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by Remulasce on 1/5/2015.
+ * Adapter for the autocomplete drop-down-list on stop entri field.
  */
 public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 {

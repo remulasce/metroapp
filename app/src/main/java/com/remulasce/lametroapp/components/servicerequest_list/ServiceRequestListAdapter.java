@@ -14,9 +14,6 @@ import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 import java.util.List;
 
-/**
- * Created by Remulasce on 12/16/2014.
- */
 public class ServiceRequestListAdapter extends ArrayAdapter{
     private final View.OnClickListener cancelButtonListener;
 

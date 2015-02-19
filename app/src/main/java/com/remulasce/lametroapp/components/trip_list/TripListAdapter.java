@@ -7,9 +7,6 @@ import android.widget.ArrayAdapter;
 
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
-/**
- * Created by Fintan on 1/17/2015.
- */
 public class TripListAdapter extends ArrayAdapter <Trip> {
     public TripListAdapter(Context context, int resource) {
         super(context, resource);

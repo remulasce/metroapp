@@ -20,7 +20,7 @@ import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 /**
- * Created by Remulasce on 1/7/2015.
+ * Gets location from Play Services.
  */
 public class MetroLocationRetriever implements LocationRetriever {
     private static final String TAG = "LocationRetriever";

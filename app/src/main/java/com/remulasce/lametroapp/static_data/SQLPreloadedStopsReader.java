@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Remulasce on 12/17/2014.
+ * Reads the stops database file preloaded in assets somewhere.
+ *
+ * Library deals with moving it all to the right places.
  */
 public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
