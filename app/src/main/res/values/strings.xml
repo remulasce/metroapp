@@ -33,7 +33,7 @@
     <string name="notification_example_caption">Example</string>
     <string name="notification_vehicle_prompt_text">Select a vehicle to track</string>
     <string name="legal_info_button_text">Legal / Info</string>
-    <string name="donate_pitch">If you like this app, you can give me some money!</string>
+    <string name="donate_pitch">I got fed up with how slow other transit apps are, so I made my own.\nDonating helps me make it even better!</string>
     <string name="donate_button_text">Donate</string>
     <string name="app_icon_content_description">App Icon</string>
 
