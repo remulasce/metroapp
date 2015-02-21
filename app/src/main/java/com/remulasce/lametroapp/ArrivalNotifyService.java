@@ -17,12 +17,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -272,10 +276,10 @@ public class ArrivalNotifyService extends Service {
 	                        .setStyle(bigTextStyle);
 	                        
 	                if ( doVibrate ) {
-//	                    mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
                         Uri uri = Uri.parse("android.resource://"
                                 + ArrivalNotifyService.this.getPackageName() + "/" + R.raw.notification_custom);
-                        mBuilder.setSound(uri);
+                        mBuilder.setSound(uri, AudioManager.STREAM_ALARM);
+
                         toast("Vehicle arrives " + LaMetroUtil.timeToDisplay(secondsTillArrival));
 	                    
 	                    Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
