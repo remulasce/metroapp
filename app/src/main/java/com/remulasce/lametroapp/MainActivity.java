@@ -179,8 +179,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             @Override
             public void onClick(View view) {
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(MainActivity.this.getString(R.string.notify_confirmation_title))
-                        .setView( View.inflate(MainActivity.this, R.layout.legal_page, null) ).show();
+                        .setTitle(getString(R.string.legal_info_dialog_title))
+                        .setView(View.inflate(MainActivity.this, R.layout.legal_page, null)).show();
             }
         });
     }
