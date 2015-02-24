@@ -21,12 +21,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/legal"
-            android:text="@string/about_text_legal"
-            android:layout_alignParentBottom="true"/>
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/legal_info_button_text"
+                android:id="@+id/legal_info_button" />
+
+        </LinearLayout>
 
     </ScrollView>
 
@@ -47,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/logo_image"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_launcher"
+                android:contentDescription="@string/app_icon_content_description" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="If you like this app, you can give me some money!"
+                android:text="@string/donate_pitch"
                 android:id="@+id/donate_text"
                 android:layout_marginTop="50dp"
                 android:layout_below="@+id/about_author"
@@ -81,7 +88,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Donate"
+                android:text="@string/donate_button_text"
                 android:id="@+id/donate_button"
                 android:layout_below="@+id/donate_text"
                 android:layout_centerHorizontal="true" />

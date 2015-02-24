@@ -12,14 +12,14 @@
         android:inputType="number"
         android:ems="2"
         android:id="@+id/notify_dialog_time"
-        android:text="2"
+        android:text="@string/default_notification_time"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play an alert sound when vehicle is "
+        android:text="@string/notification_time_description_text"
         android:id="@+id/textView"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/imageView"
@@ -31,7 +31,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="minutes away"
+        android:text="@string/notification_time_units"
         android:id="@+id/textView2"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/notify_dialog_time"
@@ -46,13 +46,14 @@
         android:src="@drawable/arrival_notification_example"
         android:layout_below="@+id/textView3"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/notification_example_content_description" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Example"
+        android:text="@string/notification_example_caption"
         android:id="@+id/textView3"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,11 +13,8 @@ import com.remulasce.lametroapp.basic_types.ServiceRequest;
 
 import java.util.List;
 
-/**
- * Created by Remulasce on 12/16/2014.
- */
 public class ServiceRequestListAdapter extends ArrayAdapter{
-    View.OnClickListener cancelButtonListener;
+    private final View.OnClickListener cancelButtonListener;
 
     public ServiceRequestListAdapter(Context context, int resource, List<ServiceRequest> values, View.OnClickListener cancelButtonListener) {
         super(context, resource, values);

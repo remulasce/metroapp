@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Destination implements Serializable {
     private static final long serialVersionUID = 6069634261484767760L;
 
-    String raw = "";
+    private String raw = "";
     
     public Destination() {}
     public Destination( String dest) {
@@ -13,7 +13,7 @@ public class Destination implements Serializable {
     }
     
     public String getString() {
-        return new String(raw);
+        return raw;
     }
     
     public boolean isValid() {

@@ -7,7 +7,6 @@ import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -20,17 +19,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *  require two of these.
  */
 public class StopRouteDestinationArrival implements Serializable {
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
-    public static final String TAG = "SRDArrival";
-    Stop stop;
-    Route route;
-    Destination destination;
+    private static final String TAG = "SRDArrival";
+    final Stop stop;
+    final Route route;
+    final Destination destination;
 
-    Collection<Arrival> arrivals;
+    private final Collection<Arrival> arrivals;
 
-    Trip trip;
+    private final Trip trip;
 
     private boolean isInScope = false;
 
@@ -49,7 +48,7 @@ public class StopRouteDestinationArrival implements Serializable {
     public float getRequestedUpdateInterval() {
         Arrival first = null;
         float firstTime;
-        float interval = 0;
+        float interval;
 
         // We find the soonest arrival and use the interval for that to make sure it gets
         // updated as often as it needs.

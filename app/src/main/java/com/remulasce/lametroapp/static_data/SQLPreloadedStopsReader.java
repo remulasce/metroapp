@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -15,17 +14,17 @@ import com.remulasce.lametroapp.basic_types.BasicLocation;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Remulasce on 12/17/2014.
+ * Reads the stops database file preloaded in assets somewhere.
+ *
+ * Library deals with moving it all to the right places.
  */
 public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
@@ -35,26 +34,12 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private static final String DATABASE_NAME = "StopNames.db";
     private static final int DATABASE_VERSION = 8;
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String DOUBLE_TYPE = " REAL";
-    private static final String COMMA_SEP = ",";
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
     private int trackNumber = 0;
     private final int trackDivider = 50;
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + StopNameEntry.TABLE_NAME + " (" +
-                    StopNameEntry._ID + " INTEGER PRIMARY KEY," +
-                    StopNameEntry.COLUMN_NAME_STOPID + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_STOPNAME + TEXT_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    StopNameEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE +
-                    " )";
-
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + StopNameEntry.TABLE_NAME;
 
     public static abstract class StopNameEntry implements BaseColumns {
         public static final String TABLE_NAME = "stopnames";
@@ -63,12 +48,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
-    private static String[] projection = {
-            StopNameEntry.COLUMN_NAME_STOPID,
-            StopNameEntry.COLUMN_NAME_STOPNAME,
-            StopNameEntry.COLUMN_NAME_LATITUDE,
-            StopNameEntry.COLUMN_NAME_LONGITUDE
-    };
+
 
     private class SQLEntry {
         public String stopID;
@@ -77,19 +57,15 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public double longitude;
     }
 
-    private Context context;
+    private final Context context;
 
     public SQLPreloadedStopsReader(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
-    @Override
     public void initialize() {
         Log.d(TAG, "StopName table forcing initialization check");
-
-//        getWritableDatabase().execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(getWritableDatabase());
 
         // Getting the database should force its creation via onCreate if it has not yet been
         // created.
@@ -118,9 +94,15 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             ret = new BasicLocation(latitude, longitude);
         }
 
+        if (ret == null) {
+            Log.w(TAG, "Location couldn't be found for "+stop);
+            return null;
+        }
+
         if (trackNumber++ % trackDivider == 0) {
             Tracking.sendTime("SQL", "StopNames", "getLocation", t);
         }
+
         Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
 
         return ret;
@@ -168,7 +150,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             }
 
             Log.d(TAG, "Autocomplete searching for " + s);
-//            Collection<SQLEntry> matchingEntries = getMatchingEntriesRaw(makeAutoCompleteNameRequest(s), db);
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
@@ -218,7 +199,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-//        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
         Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
                 new String[] {stopID}, db);
 
@@ -311,6 +291,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -348,6 +330,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -370,54 +354,13 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
         return ret;
     }
-
-//    @Override
-//    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//        long start = Tracking.startTime();
-//        Log.d(TAG, "Creating stopname database table");
-//        sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
-//
-//        try {
-//            BufferedReader file = new BufferedReader(new InputStreamReader(getStopsFileReader()));
-//
-//            String line;
-//            int entries = 0;
-//            file.readLine();
-//            while ( (line = file.readLine()) != null ) {
-//                // stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,stop_url,location_type,paren
-//                String[] split = line.split(",");
-//
-//                String stopID = split[0];
-//                String stopName = split[2];
-//                Double latitude = Double.valueOf(split[4]);
-//                Double longitude = Double.valueOf(split[5]);
-//
-//                putNewStopDef(sqLiteDatabase, stopID, stopName, latitude, longitude);
-//                entries++;
-//
-//                if (entries % 1000 == 0) {
-//                    Log.d(TAG, "Still updating database; " + entries + " entries so far in "+Tracking.timeSpent(start)+ "ms");
-//                }
-//            }
-//
-//            long time = Tracking.timeSpent(start);
-//            Tracking.sendTime("SQL", "StopNames", "Initial Setup", start);
-//            Log.i(TAG, "Finished parsing stopnames list, "+entries+" entries took "+time+" ms");
-//            file.close();
-//
-//        } catch (IOException e) {
-//            Log.e(TAG, "Failed to create stops database; file IO exception");
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            Log.e(TAG, "Failed to create stops database, unknown error");
-//            e.printStackTrace();
-//        }
-//    }
 
     // Request for a stopname, given stopid
     private String makeStopLocationRequest(String stopID) {
@@ -458,38 +401,17 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
-//        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
-
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
         values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
         values.put(StopNameEntry.COLUMN_NAME_LATITUDE, latitude);
         values.put(StopNameEntry.COLUMN_NAME_LONGITUDE, longitude);
-
-        long newRowId = sqLiteDatabase.insert(
-                StopNameEntry.TABLE_NAME,
-                null,
-                values);
-
-//        Log.v(TAG, "New stop rowid is "+newRowId);
     }
 
     private InputStream getStopsFileReader() throws IOException {
         InputStream inputStream = context.getAssets().open("stops.txt");
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         return inputStream;
     }
 
-
-//    @Override
-//    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-//        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(sqLiteDatabase);
-//    }
-//    @Override
-//    public void onDowngrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-//        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
-//        onCreate(sqLiteDatabase);
-//    }
 }

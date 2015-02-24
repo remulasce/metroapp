@@ -3,11 +3,12 @@ package com.remulasce.lametroapp.dynamic_data.types;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,13 +29,14 @@ import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class MultiArrivalTrip extends Trip {
 
-    protected StopRouteDestinationArrival parentArrival;
+    private final StopRouteDestinationArrival parentArrival;
+
+    private long lastLocationUpdate = 0;
+    private double lastDistanceToStop = 0;
 
     public MultiArrivalTrip(StopRouteDestinationArrival parentArrival) {
         this.parentArrival = parentArrival;
@@ -110,7 +112,7 @@ public class MultiArrivalTrip extends Trip {
         // Get all the Arrivals displayed
         for (Arrival a : parentArrival.getArrivals()) {
 
-            RelativeLayout updateTimeView = null;
+            RelativeLayout updateTimeView;
 
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
@@ -179,6 +181,7 @@ public class MultiArrivalTrip extends Trip {
 
         RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
+
         for (Arrival a : parentArrival.getArrivals()) {
             if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {
                 RadioButton button = new RadioButton(context);
@@ -189,42 +192,44 @@ public class MultiArrivalTrip extends Trip {
             }
         }
 
-        radios.check(((RadioButton)radios.getChildAt(0)).getId());
+        RadioButton first = (RadioButton)radios.getChildAt(0);
+        if (first != null) {
+            radios.check(first.getId());
+        }
+
+        launchNotificationConfirmation(context, t, dialogView);
+    }
+
+    private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
+        final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+        final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
+
+        time.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                InputMethodManager imm = (InputMethodManager)context.getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                return true;
+            }
+        });
+
+        setTrackingEventListeners(time, vehicleRadio, t);
 
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
                 .setView( dialogView )
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         t.setScreenName("Notify Confirm Accept");
                         t.send(new HitBuilders.AppViewBuilder().build());
 
-                        EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
-                        RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
-
-
-                        Vehicle vehicle = null;
+                        Vehicle vehicle;
                         int seconds = 120;
 
-                        try {
-                            // Add 60 for rounding.
-                            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
-                            try {
-                                int id = vehicleRadio.getCheckedRadioButtonId();
-                                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
-
-                                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        seconds = getTime(seconds, time);
+                        vehicle = getVehicle(vehicleRadio, dialogView);
 
                         NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
                                 parentArrival.destination, vehicle, seconds, context);
@@ -240,7 +245,55 @@ public class MultiArrivalTrip extends Trip {
                 })
                 .show();
     }
-    
+
+    private int getTime(int seconds, EditText time) {
+        try {
+            // Add 60 for rounding.
+            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return seconds;
+    }
+
+    private Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
+        Vehicle vehicle = null;
+
+        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
+            try {
+                int id = vehicleRadio.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
+
+                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return vehicle;
+    }
+
+    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory("Notify Confirmation")
+                        .setAction("Time Changed")
+                        .build() );
+            }
+        });
+
+        vehicleRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory("Notify Confirmation")
+                        .setAction("Vehicle Changed")
+                        .build() );
+            }
+        });
+    }
+
     public int hashCode() {
         return parentArrival.hashCode();
     }
@@ -257,43 +310,29 @@ public class MultiArrivalTrip extends Trip {
     
     @Override
     public float getPriority() {
-        // 1.0 priority is equivalent to one arriving-now or one current-stop.
-        // Current implementation prioritizes mainly distance on arrivals 10m away
-        // Then it's a combination of distance/time.
-
-        // 20 minutes away is where you start getting good priority.
-        // After that you just get chump change up to 45m.
-//        float eta = parentArrival.getEstimatedArrivalSeconds();
-        float eta = parentArrival.getRequestedUpdateInterval() / 50;
-
-        float time =  Math.max(0, .9f * (1.0f - eta / 1200f ) );
-
-        // Super-duper arrivals shouldn't really jump all the way up.
-        time = Math.min(time, .8f);
-
-        // Really late arrivals can reduce total priority a little
-        time += Math.max( -.2f, .1f * (1 - eta / (60f * 60 * .66f) ) );
-        time *= .7f;
-
+        // Priority is just how close the stop is.
+        // Extra bonus points for being very close
+        // It used to matter when we also prioritized arrival time, but no longer changes anything.
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
 
         LocationRetriever retriever = GlobalLocationProvider.getRetriever();
-        if (retriever != null) {
-            double distance = retriever.getCurrentDistanceToStop(parentArrival.getStop());
-
-            // ~20 miles
-            proximity += Math.max(0,
-                    .2f * (float) (1 - (distance / 32000)));
-            // ~2 miles
-            proximity += Math.max(0,
-                    .8f * (float) (1 - (distance / 3200)));
-            proximity = Math.max(proximity, 0);
-        } else {
-            proximity = 0;
+        if (retriever != null && System.currentTimeMillis() > lastLocationUpdate + 30000) {
+            lastLocationUpdate = System.currentTimeMillis();
+            lastDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
         }
-        float overallPriority = proximity; //time + proximity;
-        return overallPriority;
+
+        double distance = lastDistanceToStop;
+
+        // ~20 miles
+        proximity += Math.max(0,
+                .2f * (float) (1 - (distance / 32000)));
+        // ~2 miles
+        proximity += Math.max(0,
+                .8f * (float) (1 - (distance / 3200)));
+        proximity = Math.max(proximity, 0);
+
+        return proximity;
     }
     
     @Override

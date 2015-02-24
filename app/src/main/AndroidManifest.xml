@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.remulasce.lametroapp"
-    android:versionCode="10"
-    android:versionName="0.36" >
+    android:versionCode="14"
+    android:versionName="0.6" >
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
 
 
     <application
@@ -31,15 +30,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="CancelReceiver" >
+        <receiver android:name="CancelReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.remulasce.lametroapp.cancel_notification" />
             </intent-filter>
         </receiver>
 
-        <service android:name="ArrivalNotifyService"></service>
+        <service android:name="ArrivalNotifyService"/>
 
-        
         <meta-data android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version" />
     </application>

@@ -1,9 +1,7 @@
 package com.remulasce.lametroapp.components.location;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,21 +18,17 @@ import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 /**
- * Created by Remulasce on 1/7/2015.
+ * Gets location from Play Services.
  */
 public class MetroLocationRetriever implements LocationRetriever {
-    static String TAG = "LocationRetriever";
+    private static final String TAG = "LocationRetriever";
 
-    StopLocationTranslator locationTranslator;
-    LocationManager locationManager;
+    private GoogleApiClient mGoogleApiClient;
+    private final Tracker t;
 
-    GoogleApiClient mGoogleApiClient;
-    Tracker t;
-
-    Location lastRetrievedLocation;
+    private Location lastRetrievedLocation;
 
     public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
-        this.locationTranslator = locations;
         this.t = Tracking.getTracker(c);
 
         setupLocation(c);
@@ -59,12 +53,12 @@ public class MetroLocationRetriever implements LocationRetriever {
         mGoogleApiClient.disconnect();
     }
 
-    protected synchronized void startLocationRequests(Context c) {
+    synchronized void startLocationRequests(Context c) {
         mGoogleApiClient.connect();
         Log.d(TAG, "startLocationRequests");
     }
 
-    protected GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
+    private final GoogleApiClient.ConnectionCallbacks connectionCallbacks = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(Bundle bundle) {
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -104,7 +98,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    protected LocationListener locationListener = new LocationListener() {
+    private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "Received new location "+location);
@@ -112,7 +106,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
-    protected GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
+    private final GoogleApiClient.OnConnectionFailedListener connectionFailedListener = new GoogleApiClient.OnConnectionFailedListener() {
         @Override
         public void onConnectionFailed(ConnectionResult connectionResult) {
             Log.w(TAG, "Location reading failed");
@@ -122,14 +116,6 @@ public class MetroLocationRetriever implements LocationRetriever {
                     .build() );
         }
     };
-
-    private Location getLocation(LocationManager manager) {
-        Log.i(TAG, "LocationRetriever getting new location");
-        Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        return manager.getLastKnownLocation(provider);
-    }
 
     private Location getBestLocation() {
         return lastRetrievedLocation;
@@ -146,19 +132,16 @@ public class MetroLocationRetriever implements LocationRetriever {
             return -1;
         }
 
-//        Log.v(TAG, "__time1 "+Tracking.timeSpent(t));
-
         BasicLocation stopRawLoc = stop.getLocation();
-        double stopLatitude = Double.valueOf(stopRawLoc.latitude);
-        double stopLongitude = Double.valueOf(stopRawLoc.longitude);
-
-//        Log.v(TAG, "__time2 "+Tracking.timeSpent(t));
+        double stopLatitude = stopRawLoc.latitude;
+        double stopLongitude = stopRawLoc.longitude;
 
         float[] results = new float[4];
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
         Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+results[0]);
+        Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
 
         return results[0];
     }

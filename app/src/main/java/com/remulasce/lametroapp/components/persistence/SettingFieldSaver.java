@@ -1,6 +1,5 @@
 package com.remulasce.lametroapp.components.persistence;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -8,22 +7,17 @@ import android.util.Log;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Remulasce on 1/11/2015.
+ *
+ * Old SettingFieldSaver saved string backings to the Settings fields.
+ *
+ * Unused, since now we save Java Serialized objects to file.
  */
 public class SettingFieldSaver implements FieldSaver {
     private static final String PREFERENCES_NAME = "Fields";
@@ -32,16 +26,15 @@ public class SettingFieldSaver implements FieldSaver {
     private static final String SERVICEREQUEST_ITEM_NAME = "servicerequest_";
 
 
-    private SharedPreferences preferences;
-    private StopLocationTranslator locations;
+    private final SharedPreferences preferences;
+    private final StopLocationTranslator locations;
 
-    Context context;
+    private final Context context;
 
     public SettingFieldSaver(Context c, StopLocationTranslator locations) {
         preferences = c.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         this.locations = locations;
 
-        //TODO
         context = c;
     }
 
@@ -74,25 +67,6 @@ public class SettingFieldSaver implements FieldSaver {
 
         int i = 0;
         for (ServiceRequest request : requests) {
-
-            FileOutputStream fos = null;
-            try {
-                fos = context.openFileOutput("t.tmp", Context.MODE_PRIVATE);
-
-                ObjectOutputStream oos = null;
-                oos = new ObjectOutputStream(fos);
-
-                oos.writeObject(request);
-
-                oos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-
-
-
             String requestNameTerminated = SERVICEREQUEST_ITEM_NAME + i +"_";
 
             Collection<String> stopids = request.getRaw();
@@ -110,36 +84,13 @@ public class SettingFieldSaver implements FieldSaver {
             i++;
         }
 
-        editor.commit();
+        editor.apply();
         Log.d("SettingFieldSaver", "Saved "+i+" service requests");
     }
 
     @Override
     public Collection<ServiceRequest> loadServiceRequests() {
         Collection<ServiceRequest> ret = new ArrayList<ServiceRequest>();
-
-        try
-        {
-//                FileInputStream fileIn = new FileInputStream("t.tmp");
-            FileInputStream fileIn = context.openFileInput("t.tmp");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            ServiceRequest read = (ServiceRequest) in.readObject();
-            read.toString();
-            in.close();
-            fileIn.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-            return null;
-        }catch(ClassNotFoundException c)
-        {
-            System.out.println("Employee class not found");
-            c.printStackTrace();
-            return null;
-        }
-
-
 
         int requestCount = preferences.getInt(SERVICEREQUEST_COUNT_NAME, 0);
 

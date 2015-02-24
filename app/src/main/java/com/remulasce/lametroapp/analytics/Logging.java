@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
  */
 public class Logging {
 
-    static RunTaskAble logger = null;
+    private static RunTaskAble logger = null;
 
     public static void StartSavingLogcat(final Context context) {
         Log.d("LogSaver", "LogSaver starting");
@@ -48,7 +48,7 @@ public class Logging {
                     FileOutputStream fileOutputStream = new FileOutputStream(logFile);
                     BufferedOutputStream stream = new BufferedOutputStream(fileOutputStream);
 
-                    String line = "";
+                    String line;
                     while (run) {
                         if ((line = bufferedReader.readLine()) != null) {
                             stream.write((line+"\n").getBytes());

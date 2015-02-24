@@ -34,7 +34,7 @@ public class ServiceRequestListFragment extends Fragment {
     private ListView requestList;
     private TextView hintText;
 
-    private List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
+    private final List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
         //noinspection unchecked
@@ -85,11 +85,6 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -126,12 +121,6 @@ public class ServiceRequestListFragment extends Fragment {
         super.onStop();
 
         saveServiceRequests(requests);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
@@ -179,7 +168,7 @@ public class ServiceRequestListFragment extends Fragment {
         dialog.show();
     }
 
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
             Log.d(TAG, "ServiceRequest Item clicked");
@@ -197,27 +186,13 @@ public class ServiceRequestListFragment extends Fragment {
         requestsChanged(true);
     }
 
-    private View.OnClickListener onCancelListener = new View.OnClickListener() {
+    private final View.OnClickListener onCancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ServiceRequest request = (ServiceRequest) view.getTag();
             cancelRequest(request);
         }
     };
-
-    // Temp method converts all the ServiceRequests into stringly typed STopIDs,
-    // as would be expected from the old StopList.
-    // This is a stop-gap until we convert the whole thing to ServiceRequests.
-    private String convertToStringLine(List<ServiceRequest> requests) {
-        StringBuilder s = new StringBuilder();
-
-        for (ServiceRequest request : requests) {
-            s.append(request.toString());
-            s.append(" ");
-        }
-
-        return s.toString();
-    }
 
     public interface ServiceRequestListFragmentSupport {
         public TripPopulator getTripPopulator();

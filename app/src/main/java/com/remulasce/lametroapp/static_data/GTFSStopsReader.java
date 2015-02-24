@@ -15,7 +15,6 @@ import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,13 +22,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
-import static android.database.sqlite.SQLiteDatabase.openDatabase;
-
-/**
- * Created by Remulasce on 12/17/2014.
+/** Old stops.txt sql handler
+ * Removed in order to use preloded SQL tables
+ *
+ * Though, actually this is what created the prefilled tables we now ship.
  */
 public class GTFSStopsReader extends SQLiteOpenHelper
         implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
@@ -62,12 +59,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
-    private static String[] projection = {
-            StopNameEntry.COLUMN_NAME_STOPID,
-            StopNameEntry.COLUMN_NAME_STOPNAME,
-            StopNameEntry.COLUMN_NAME_LATITUDE,
-            StopNameEntry.COLUMN_NAME_LONGITUDE
-    };
 
     private class SQLEntry {
         public String stopID;
@@ -76,14 +67,13 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         public double longitude;
     }
 
-    private Context context;
+    private final Context context;
 
     public GTFSStopsReader(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
-    @Override
     public void initialize() {
         Log.d(TAG, "StopName table forcing initialization check");
 
@@ -115,6 +105,11 @@ public class GTFSStopsReader extends SQLiteOpenHelper
             double longitude = firstLoc.longitude;
 
             ret = new BasicLocation(latitude, longitude);
+        }
+
+        if (ret == null) {
+            Log.w(TAG, "Couldn't get location for "+stop);
+            return ret;
         }
 
         Tracking.sendTime("SQL", "StopNames", "getLocation", t);
@@ -302,6 +297,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -339,6 +336,7 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -361,6 +359,8 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
                 cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             ret = null;
         }
@@ -449,25 +449,15 @@ public class GTFSStopsReader extends SQLiteOpenHelper
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {
-//        Log.v(TAG, "Putting new stop def, "+stopID+", "+stopName);
-
         ContentValues values = new ContentValues();
         values.put(StopNameEntry.COLUMN_NAME_STOPID, stopID);
         values.put(StopNameEntry.COLUMN_NAME_STOPNAME, stopName);
         values.put(StopNameEntry.COLUMN_NAME_LATITUDE, latitude);
         values.put(StopNameEntry.COLUMN_NAME_LONGITUDE, longitude);
-
-        long newRowId = sqLiteDatabase.insert(
-                StopNameEntry.TABLE_NAME,
-                null,
-                values);
-
-//        Log.v(TAG, "New stop rowid is "+newRowId);
     }
 
     private InputStream getStopsFileReader() throws IOException {
         InputStream inputStream = context.getAssets().open("stops.txt");
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         return inputStream;
     }

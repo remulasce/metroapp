@@ -32,11 +32,11 @@ public class Stop implements Serializable {
         return Integer.valueOf( raw );
     }
     public String getStopID() {
-        return new String(raw);
+        return raw;
     }
 
     public String getString() {
-        return new String( raw );
+        return raw;
     }
 
     public void setStopName( String stopName ) {

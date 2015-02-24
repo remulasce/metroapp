@@ -20,14 +20,14 @@ public class Arrival implements Serializable {
     Stop stop;
     Vehicle vehicle;
     
-    protected boolean isInScope = false;
+    private boolean isInScope = false;
 
     // Nextrip's most recent prediction for when this thing arrives
     // both in ms since epoch, for sub-second refresh frequency
-    long lastPrediction;
-    long lastUpdate;
+    private long lastPrediction;
+    private long lastUpdate;
 
-    Trip firstTrip;
+    private final Trip firstTrip;
 
     public Arrival() {
         firstTrip = new ArrivalTrip( this );
@@ -59,10 +59,6 @@ public class Arrival implements Serializable {
     // In ms
     public long getTimeSinceLastEstimation() {
         return System.currentTimeMillis() - lastUpdate;
-    }
-
-    public void updated() {
-
     }
 
     public void setDestination( Destination d ) {

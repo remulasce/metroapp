@@ -22,11 +22,11 @@ import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 public class PredictionManager {
-	static final String TAG = "PredictionManager";
-	static final int UPDATE_INTERVAL = 5000;
+	private static final String TAG = "PredictionManager";
+	private static final int UPDATE_INTERVAL = 5000;
 
-	static PredictionManager manager;
-    static NetworkStatusReporter statusReporter;
+	private static PredictionManager manager;
+    private static NetworkStatusReporter statusReporter;
 
 	public static PredictionManager getInstance() {
 		if( manager == null ) { manager = new PredictionManager(); }
@@ -37,8 +37,8 @@ public class PredictionManager {
     }
 	
 
-	protected final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
-	protected UpdateStager updater;
+	private final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
+	private UpdateStager updater;
 	
 	public void startTracking( Prediction p ) {
         if (!trackingList.contains(p)) {
@@ -87,9 +87,9 @@ public class PredictionManager {
         trackingList.remove(p);
 	}
 	
-	protected class UpdateStager implements Runnable {
+	class UpdateStager implements Runnable {
 		public boolean run = true;
-        public Object updateObject = new Object();
+        public final Object updateObject = new Object();
 
 		@Override
 		public void run() {
@@ -107,7 +107,6 @@ public class PredictionManager {
                         }
                     } catch (IndexOutOfBoundsException e) {
                         Log.w(TAG, "Prediction removed out from under PredictionManager");
-                        continue;
                     }
                 }
 
@@ -123,13 +122,13 @@ public class PredictionManager {
 		}
 	}
 	
-	protected void GetUpdate( Prediction p ) {
+	void GetUpdate(Prediction p) {
 		RequestHandler r = new RequestHandler( p );
 		new Thread(r, "Prediction update "+p.getRequestString()).start();
 	}
 	
-	protected class RequestHandler implements Runnable {
-		Prediction prediction;
+	class RequestHandler implements Runnable {
+		final Prediction prediction;
 
 		public RequestHandler( Prediction p ) {
 			this.prediction = p;

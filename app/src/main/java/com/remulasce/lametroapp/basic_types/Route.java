@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Route implements Serializable {
     private static final long serialVersionUID = -1330979643298664422L;
 
-    String raw = "";
+    private String raw = "";
 
     public Route() {}
     public Route( String route ) {
@@ -13,7 +13,7 @@ public class Route implements Serializable {
     }
 
     public String getString() {
-        return new String( raw );
+        return raw;
     }
 
     public boolean isValid() {

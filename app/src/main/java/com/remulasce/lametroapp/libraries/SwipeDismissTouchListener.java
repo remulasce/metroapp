@@ -61,20 +61,20 @@ import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
  */
 public class SwipeDismissTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
-    private int mSlop;
-    private int mMinFlingVelocity;
-    private int mMaxFlingVelocity;
-    private long mAnimationTime;
+    private final int mSlop;
+    private final int mMinFlingVelocity;
+    private final int mMaxFlingVelocity;
+    private final long mAnimationTime;
 
     // Fixed properties
-    private View mView;
-    private OnDismissCallback mCallback;
+    private final View mView;
+    private final OnDismissCallback mCallback;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
     // Transient properties
     private float mDownX;
     private boolean mSwiping;
-    private Object mToken;
+    private final Object mToken;
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
 

@@ -1,16 +1,5 @@
 package com.remulasce.lametroapp;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Semaphore;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,40 +11,51 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
 
-    protected final static int UPDATE_INTERVAL = 1000;
-    protected Object waitLock = new Object();
+    private final static int UPDATE_INTERVAL = 1000;
+    private final Object waitLock = new Object();
     // When the swipe-to-dismiss library is working, it really doesn't want the list
-    protected boolean dismissLock = false;
+    private boolean dismissLock = false;
 
-    protected ListView list;
-    protected TextView hint;
-    protected ProgressBar progress;
-    protected ArrayAdapter< Trip > adapter;
-    protected final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
+    private final ListView list;
+    private final TextView hint;
+    private final ProgressBar progress;
+    private final ArrayAdapter< Trip > adapter;
+    private final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
     
-    protected Handler uiHandler;
-    protected UpdateRunner updateRunner;
-    protected Thread updateThread;
-    protected boolean running = false;
+    private final Handler uiHandler;
+    private UpdateRunner updateRunner;
+    private Thread updateThread;
+    private boolean running = false;
 
-    protected long lastDismissTutorialShow = 0;
-    protected SwipeDismissListViewTouchListener dismissListener;
+    private long lastDismissTutorialShow = 0;
+    private final SwipeDismissListViewTouchListener dismissListener;
 
     // ugh.
-    protected Context c;
+    private final Context c;
 
-    protected final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
+    private final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
 
     public TripPopulator( ListView list, TextView hint, ProgressBar progress, Context c ) {
         this.list = list;
@@ -75,14 +75,23 @@ public class TripPopulator {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    Trip t = adapter.getItem(position);
-                                    t.dismiss();
-                                    adapter.remove(t);
-                                    dismissLock = false;
+                                    try {
+                                        Trip t = adapter.getItem(position);
+                                        t.dismiss();
+                                        adapter.remove(t);
+                                        dismissLock = false;
 
-                                    if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
-                                        Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
-                                        lastDismissTutorialShow = System.currentTimeMillis();
+                                        if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
+                                            Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
+                                            lastDismissTutorialShow = System.currentTimeMillis();
+                                        }
+                                    } catch (IndexOutOfBoundsException e) {
+                                        Log.w(TAG, "Tried to dismiss out-of-bounds trip");
+                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
+                                                .setCategory( "TripPopulator" )
+                                                .setAction( "Dismiss Trip" )
+                                                .setLabel( "Index out of bounds" )
+                                                .build() );
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
@@ -124,7 +133,7 @@ public class TripPopulator {
         running = false;
     }
 
-    protected void rawSetServiceRequests( Collection<ServiceRequest> requests) {
+    void rawSetServiceRequests(Collection<ServiceRequest> requests) {
         Log.d(TAG, "Setting service requests");
 
         serviceRequests.clear();
@@ -155,15 +164,15 @@ public class TripPopulator {
     *
     * */
     protected class UpdateRunner implements Runnable {
-        protected boolean run = true;
+        boolean run = true;
 
-        Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
+        final Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
         // Track timing
-        protected long timeSpentUpdating = 0;
-        protected long numberOfUpdates = 0;
+        long timeSpentUpdating = 0;
+        long numberOfUpdates = 0;
 
-        protected long timeSpentUpdatingUI = 0;
+        long timeSpentUpdatingUI = 0;
 
         @Override
         public void run() {
@@ -182,6 +191,20 @@ public class TripPopulator {
 
                 updateListView();
 
+                timeSpentUpdating += Tracking.timeSpent(t);
+                numberOfUpdates++;
+
+                if (numberOfUpdates > 50) {
+                    long timeSpent = timeSpentUpdating / numberOfUpdates;
+                    Tracking.sendRawUITime("TripPopulator", "Averaged update time", timeSpent);
+
+                    long timeSpentUI = timeSpentUpdatingUI / numberOfUpdates;
+                    Tracking.sendRawUITime("TripPopulator", "Averaged UI update time", timeSpentUI);
+                    numberOfUpdates = 0;
+                    timeSpentUpdating = 0;
+                    timeSpentUpdatingUI = 0;
+                }
+
                 try {
                     synchronized (waitLock) {
                         waitLock.wait(UPDATE_INTERVAL);
@@ -189,24 +212,13 @@ public class TripPopulator {
                 } catch ( InterruptedException e ) {
                     e.printStackTrace();
                 }
-                timeSpentUpdating += Tracking.timeSpent(t);
-                numberOfUpdates++;
-
-                if (numberOfUpdates > 50) {
-                    Tracking.sendRawUITime("TripPopulater", "Averaged update time", timeSpentUpdating / numberOfUpdates);
-                    Tracking.sendRawUITime("TripPopulater", "Averaged UI update time", timeSpentUpdatingUI / numberOfUpdates);
-                    numberOfUpdates = 0;
-                    timeSpentUpdating = 0;
-                    timeSpentUpdatingUI = 0;
-                }
-
             }
             Log.i( TAG, "UpdateRunner ending" );
         }
 
         // If we have new stops, set them to track and add them to the trackedMap.
         // If stops have been removed, do the opposite.
-        protected void updateTrackedMap() {
+        void updateTrackedMap() {
             Log.v(TAG, "Updating Tracked Map");
 
             removeOldStops();
@@ -262,7 +274,7 @@ public class TripPopulator {
         }
 
         // The Trip will know when its parent request has been removed.
-        protected void cullInvalidTrips() {
+        void cullInvalidTrips() {
             List< Trip > inactiveTrips = new ArrayList< Trip >();
             for ( Trip t : activeTrips ) {
                 if ( !t.isValid() ) {
@@ -270,6 +282,16 @@ public class TripPopulator {
                 }
             }
             activeTrips.removeAll( inactiveTrips );
+        }
+
+        List<Trip> sortTrips(Collection<Trip> trips) {
+            // Ugh.
+            // But, we used to do this literally inside the UI update thread.
+            // So we're coming out a little ahead.
+            List<Trip> sortedTrips = new ArrayList<Trip>(trips);
+            Collections.sort(sortedTrips, tripPriorityComparator);
+
+            return sortedTrips;
         }
 
         private boolean couldServiceRequestsHavePending() {
@@ -284,19 +306,20 @@ public class TripPopulator {
 
         // Actually push what happened to the user
         private void updateListView() {
+            // We literally used to do this inside the ui update thread.
+            final List<Trip> sorted = sortTrips(activeTrips);
+
             uiHandler.post( new Runnable() {
                 @Override
                 public void run() {
                     long start = Tracking.startTime();
 
                     adapter.clear();
-                    for (Trip t : activeTrips) {
+                    for (Trip t : sorted) {
                         if (t.isValid()) {
                             adapter.add(t);
                         }
                     }
-                    adapter.sort( tripPriorityComparator );
-                    adapter.notifyDataSetChanged();
 
                     if (activeTrips.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);
@@ -321,16 +344,26 @@ public class TripPopulator {
                                     }
                                 }
                             }, 3000);
+                            uiHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (TripPopulator.this.running) {
+                                        Toast.makeText(c, "Swipe an arrival to dismiss it", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }, 5000);
                         }
 
                         progress.setVisibility(View.INVISIBLE);
                     }
-                    timeSpentUpdatingUI += Tracking.timeSpent(start);
+
+                    long l = Tracking.timeSpent(start);
+                    timeSpentUpdatingUI += l;
                 }
             } );
         }
 
-        Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
+        final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
             @Override
             public int compare(Trip lhs, Trip rhs) {
                 return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
@@ -340,7 +373,7 @@ public class TripPopulator {
 
         // Tracked requests send us this when they get or update data.
         // In here, new Trips are added to our list of active Trips
-        protected TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
+        final TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
             @Override
             public void tripUpdated( final Trip trip ) {
                 if ( !trip.isValid() ) {

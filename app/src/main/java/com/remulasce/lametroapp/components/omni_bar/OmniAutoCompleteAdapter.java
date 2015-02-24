@@ -16,15 +16,15 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by Remulasce on 1/5/2015.
+ * Adapter for the autocomplete drop-down-list on stop entri field.
  */
 public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 {
-    private String TAG = "OmniAutoCompleteAdapter";
+    private final String TAG = "OmniAutoCompleteAdapter";
 
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
-    private AutoCompleteStopFiller autocomplete;
-    private LocationRetriever locations;
+    private final AutoCompleteStopFiller autocomplete;
+    private final LocationRetriever locations;
 
     public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteStopFiller t,
                                    LocationRetriever locations) {
@@ -60,7 +60,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                     // Prioritize them based on stuff
                     try {
                         prioritizeNearbyStops(results);
-                    } catch (Exception e) {e.printStackTrace();};
+                    } catch (Exception e) {e.printStackTrace();}
 
                     // Assign the data to the FilterResults
                     filterResults.values = results;
@@ -73,22 +73,27 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    ArrayList<OmniAutoCompleteEntry> n = new ArrayList<OmniAutoCompleteEntry>((Collection<OmniAutoCompleteEntry>)results.values);
-                    Collections.sort(n, new Comparator<OmniAutoCompleteEntry>() {
-                        @Override
-                        public int compare(OmniAutoCompleteEntry omniAutoCompleteEntry, OmniAutoCompleteEntry omniAutoCompleteEntry2) {
-                            if (omniAutoCompleteEntry.getPriority() < omniAutoCompleteEntry2.getPriority()) {
-                                return 1;
-                            } else if (omniAutoCompleteEntry.getPriority() > omniAutoCompleteEntry2.getPriority()) {
-                                return -1;
-                            } else {
-                                return 0;
+                if (results != null && results.count > 0 ) {
+                    try {
+                        ArrayList<OmniAutoCompleteEntry> n = new ArrayList<OmniAutoCompleteEntry>((Collection<OmniAutoCompleteEntry>) results.values);
+                        Collections.sort(n, new Comparator<OmniAutoCompleteEntry>() {
+                            @Override
+                            public int compare(OmniAutoCompleteEntry omniAutoCompleteEntry, OmniAutoCompleteEntry omniAutoCompleteEntry2) {
+                                if (omniAutoCompleteEntry.getPriority() < omniAutoCompleteEntry2.getPriority()) {
+                                    return 1;
+                                } else if (omniAutoCompleteEntry.getPriority() > omniAutoCompleteEntry2.getPriority()) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
                             }
-                        }
-                    });
-                    resultList = n;
-                    notifyDataSetChanged();
+                        });
+                        resultList = n;
+                        notifyDataSetChanged();
+                    } catch (ClassCastException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "Results of omniautocomplete publish results not expected");
+                    }
                 }
                 else {
                     notifyDataSetInvalidated();

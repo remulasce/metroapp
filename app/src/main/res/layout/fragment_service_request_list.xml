@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Add stops in the field above"
+        android:text="@string/service_request_list_tutorial_text"
         android:visibility="invisible"
         android:id="@+id/service_request_hint_text"
         android:layout_gravity="center" />

@@ -16,12 +16,14 @@ import java.util.Random;
 
 /**
  * Created by Remulasce on 1/16/2015.
+ *
+ * Just routes everything through the preloded sql provider.
  */
 public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteStopFiller {
     private static final String TAG = "MetroStaticsProvider";
 
 
-    private SQLPreloadedStopsReader stopsReader;
+    private final SQLPreloadedStopsReader stopsReader;
 
     private HashMap<String, String> stopNameCache;
     private HashMap<String, Collection<String>> stopIDCache;
@@ -48,6 +50,10 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
         Log.i(TAG, cache.size()+" objects in cache");
     }
 
+    public void initialize() {
+        stopsReader.initialize();
+    }
+
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
         Collection<OmniAutoCompleteEntry> ret = stopsReader.autocompleteStopName(input);
@@ -58,11 +64,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     @Override
     public BasicLocation getStopLocation(Stop stop) {
         return stopsReader.getStopLocation(stop);
-    }
-
-    @Override
-    public void initialize() {
-        stopsReader.initialize();
     }
 
     @Override

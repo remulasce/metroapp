@@ -1,13 +1,8 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import com.remulasce.lametroapp.R;
 
 import java.io.Serializable;
 
@@ -22,7 +17,7 @@ import java.io.Serializable;
  *
  */
 public class Trip implements Serializable {
-	protected String text = "...";
+	private String text = "...";
 	
 	public String getInfo() {
 		return toString();
@@ -53,7 +48,5 @@ public class Trip implements Serializable {
 	    return true;
 	}
 
-    public void dismiss() {
-        return;
-    }
+    public void dismiss() { }
 }

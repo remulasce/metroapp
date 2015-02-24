@@ -14,9 +14,16 @@ package com.remulasce.lametroapp.libraries;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * <
+ * MODIFIED by Fintan O'Grady Copyright 2015
+ * Modifications are denoted with comments including my name.
+ * >
+ *
  */
 
         import android.graphics.Rect;
+        import android.support.annotation.NonNull;
         import android.view.MotionEvent;
         import android.view.VelocityTracker;
         import android.view.View;
@@ -77,18 +84,18 @@ package com.remulasce.lametroapp.libraries;
  */
 public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
-    private int mSlop;
-    private int mMinFlingVelocity;
-    private int mMaxFlingVelocity;
-    private long mAnimationTime;
+    private final int mSlop;
+    private final int mMinFlingVelocity;
+    private final int mMaxFlingVelocity;
+    private final long mAnimationTime;
 
     // Fixed properties
-    private ListView mListView;
-    private OnDismissCallback mCallback;
+    private final ListView mListView;
+    private final OnDismissCallback mCallback;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
     // Transient properties
-    private List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
+    private final List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
     private int mDismissAnimationRefCount = 0;
     private float mDownX;
     private boolean mSwiping;
@@ -231,7 +238,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     // dismiss
                     //Fintan O'Grady modification: Notify when dismiss begins, so we know to stop
                     // messing with the ListView.
+                    // Also, only allow one dismiss at a time, including final animation.
                     mCallback.onBeginDismiss(mListView);
+                    mPaused = true;
 
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
@@ -294,8 +303,8 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     }
 
     class PendingDismissData implements Comparable<PendingDismissData> {
-        public int position;
-        public View view;
+        public final int position;
+        public final View view;
 
         public PendingDismissData(int position, View view) {
             this.position = position;
@@ -303,7 +312,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         }
 
         @Override
-        public int compareTo(PendingDismissData other) {
+        public int compareTo(@NonNull PendingDismissData other) {
             // Sort by descending position
             return other.position - position;
         }
@@ -333,6 +342,9 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                         dismissPositions[i] = mPendingDismisses.get(i).position;
                     }
                     mCallback.onDismiss(mListView, dismissPositions);
+
+                    // Mod Fintan O'Grady: Only one dismissal at a time.
+                    mPaused = false;
 
                     ViewGroup.LayoutParams lp;
                     for (PendingDismissData pendingDismiss : mPendingDismisses) {

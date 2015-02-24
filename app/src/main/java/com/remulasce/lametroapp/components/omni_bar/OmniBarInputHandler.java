@@ -6,9 +6,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,23 +36,26 @@ import java.util.Collection;
 public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
-    private AutoCompleteTextView omniField;
-    private ImageButton addButton;
-    private Button clearButton;
-    private ServiceRequestListFragment requestList;
-    private StopNameTranslator stopNames;
-    private StopLocationTranslator stopLocations;
-    private Tracker t;
+    private final ProgressAutoCompleteTextView omniField;
+    private final ImageButton addButton;
+    private final Button clearButton;
+    private final ServiceRequestListFragment requestList;
+    private final ProgressBar autocompleteProgress;
+    private final StopNameTranslator stopNames;
+    private final StopLocationTranslator stopLocations;
+    private final Tracker t;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
-    private Context c;
+    private final Context c;
 
-    public OmniBarInputHandler(AutoCompleteTextView textView, ImageButton addButton, Button clearButton,
+    public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
+                               ProgressBar autocompleteProgress,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
                                StopLocationTranslator locations,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = addButton;
+        this.autocompleteProgress = autocompleteProgress;
         this.clearButton = clearButton;
         this.requestList = requestList;
         this.stopNames = stopNames;
@@ -69,9 +72,11 @@ public class OmniBarInputHandler {
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
+
+        omniField.setLoadingIndicator(autocompleteProgress);
     }
 
-    protected AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             t.send(new HitBuilders.EventBuilder()
@@ -87,7 +92,7 @@ public class OmniBarInputHandler {
         }
     };
 
-    protected TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
+    private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             long t = Tracking.startTime();
@@ -99,7 +104,7 @@ public class OmniBarInputHandler {
             return true;
         }
     };
-    protected View.OnClickListener omniButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener omniButtonListener = new View.OnClickListener() {
         public void onClick( View v ) {
             long t = Tracking.startTime();
 
@@ -109,7 +114,7 @@ public class OmniBarInputHandler {
             Tracking.sendUITime("OmniBarInputHandler", "omniButtonListener", t);
         }
     };
-    protected  View.OnClickListener clearButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener clearButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             clearFields();

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -24,7 +23,7 @@ import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 public class ArrivalTrip extends Trip {
 
-    protected Arrival parentArrival;
+    private final Arrival parentArrival;
 
     public ArrivalTrip( Arrival parentArrival ) {
         this.parentArrival = parentArrival;
@@ -70,7 +69,6 @@ public class ArrivalTrip extends Trip {
         TextView prediction_text_minutes = (TextView) rowView.findViewById(R.id.prediction_time_minutes);
         TextView prediction_text_seconds = (TextView) rowView.findViewById(R.id.prediction_time_seconds);
         TextView vehicle_text = (TextView) rowView.findViewById(R.id.prediction_vehicle);
-        ImageButton b = (ImageButton) rowView.findViewById(R.id.service_request_cancel);
 
         Route route = parentArrival.getRoute();
         Stop stop = parentArrival.getStop();

@@ -18,27 +18,24 @@ import java.util.List;
 That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
  */
 public class StopRouteDestinationPrediction extends Prediction {
-    public static final String TAG = "SRDPrediction";
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private static final String TAG = "SRDPrediction";
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
 
-    protected Stop stop;
-    protected Route route;
-    protected TripUpdateCallback callback;
+    private Stop stop;
+    private Route route;
+    private TripUpdateCallback callback;
 
-    protected boolean inScope = false;
+    private boolean inScope = false;
 
     private boolean needsQuickUpdate = false;
 
-//    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
-//    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
-    Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+    private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
-    Arrival firstArrival;
-    Trip firstTrip;
+    private final Arrival firstArrival;
+    private final Trip firstTrip;
 
-    long lastUpdate;
-    boolean inUpdate = false;
+    private long lastUpdate;
+    private boolean inUpdate = false;
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
@@ -62,6 +59,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         for (StopRouteDestinationArrival e : trackedArrivals) {
             e.setScope( false );
         }
+        stopPredicting();
     }
 
     @Override
@@ -86,10 +84,6 @@ public class StopRouteDestinationPrediction extends Prediction {
         synchronized ( trackedArrivals ) {
             inScope = true;
             PredictionManager.getInstance().startTracking( this );
-
-            for (StopRouteDestinationArrival arrival : trackedArrivals ) {
-//                arrival.setScope(true);
-            }
         }
     }
 
@@ -97,10 +91,6 @@ public class StopRouteDestinationPrediction extends Prediction {
     public void stopPredicting() {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
-
-        for (StopRouteDestinationArrival arrival : trackedArrivals ) {
-//            arrival.setScope(false);
-        }
     }
 
     @Override
@@ -126,7 +116,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         return System.currentTimeMillis() - lastUpdate;
     }
 
-    protected boolean arrivalTracked( Arrival a ) {
+    boolean arrivalTracked(Arrival a) {
         if ( !LaMetroUtil.isValidRoute( route ) ) {
             return true;
         }
@@ -166,8 +156,6 @@ public class StopRouteDestinationPrediction extends Prediction {
                                 newA.getStop(), newA.getRoute(), newA.getDirection());
                         newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
-
-                        a = newSRDA;
                     }
                 }
             }
@@ -200,8 +188,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         StopRouteDestinationArrival first = null;
 
-        float firstTime;
-        float interval = 0;
+        float interval;
 
         // We find the soonest arrival and use the interval for that to make sure it gets
         // updated as often as it needs.
@@ -240,9 +227,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     private void writeObject(ObjectOutputStream oos)
             throws IOException {
-        // default serialization
-//        oos.defaultWriteObject();
-        // write the object
+
         oos.writeObject(stop);
         oos.writeObject(route);
         oos.writeObject(trackedArrivals);
@@ -251,12 +236,16 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     private void readObject(ObjectInputStream ois)
             throws ClassNotFoundException, IOException {
-        // default deserialization
-//        ois.defaultReadObject();
 
         stop = (Stop) ois.readObject();
         route = (Route) ois.readObject();
-        trackedArrivals = (Collection<StopRouteDestinationArrival>) ois.readObject();
+        try {
+            trackedArrivals = (Collection<StopRouteDestinationArrival>) ois.readObject();
+        } catch (Exception e) {
+            trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+            e.printStackTrace();
+            Log.w(TAG, "Couldn't load tracked arrivals, making empty list");
+        }
         inScope = ois.readBoolean();
     }
 }

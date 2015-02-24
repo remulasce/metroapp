@@ -2,17 +2,14 @@ package com.remulasce.lametroapp.components.omni_bar;
 
 import com.remulasce.lametroapp.basic_types.Stop;
 
-/**
- * Created by Remulasce on 1/5/2015.
- */
 public class OmniAutoCompleteEntry {
 
-    String text = "Unassigned";
-    float priority = 1;
+    private String text = "Unassigned";
+    private float priority = 1;
 
     // meh inheritance
-    boolean hasStop = false;
-    Stop stop = null;
+    private boolean hasStop = false;
+    private Stop stop = null;
 
 
     public OmniAutoCompleteEntry(String text, float priority) {
@@ -34,7 +31,7 @@ public class OmniAutoCompleteEntry {
 
     public boolean hasLocation() { return true; }
 
-    public boolean hasStop() { return true; }
+    public boolean hasStop() { return hasStop; }
     public void setStop(Stop s) { this.stop = s; hasStop = true; }
     public Stop getStop() {
         return this.stop;

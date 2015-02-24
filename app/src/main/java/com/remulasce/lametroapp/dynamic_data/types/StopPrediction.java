@@ -2,15 +2,11 @@ package com.remulasce.lametroapp.dynamic_data.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
-import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 
@@ -18,23 +14,23 @@ import com.remulasce.lametroapp.basic_types.Stop;
  * on input. Etc.
  */
 public class StopPrediction extends Prediction {
-    protected final int MINIMUM_UPDATE_INTERVAL = 5000;
-    protected final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
-    protected Stop stop;
-    protected Route route;
-    protected TripUpdateCallback callback;
+    private final Stop stop;
+    private final Route route;
+    private TripUpdateCallback callback;
     
-    protected boolean inScope = false; 
+    private boolean inScope = false;
 
 //    final Map< Destination, Arrival > trackedArrivals = new HashMap< Destination, Arrival >();
-    final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
+    private final Collection<Arrival> trackedArrivals = new ArrayList<Arrival>();
 
-    Arrival firstArrival;
-    Trip firstTrip;
+    private final Arrival firstArrival;
+    private final Trip firstTrip;
 
-    long lastUpdate;
-    boolean inUpdate = false;
+    private long lastUpdate;
+    private boolean inUpdate = false;
 
     public StopPrediction( Stop stop, Route route ) {
         this.stop = stop;
@@ -111,7 +107,7 @@ public class StopPrediction extends Prediction {
         return System.currentTimeMillis() - lastUpdate;
     }
 
-    protected boolean arrivalTracked( Arrival a ) {
+    boolean arrivalTracked(Arrival a) {
         if ( !LaMetroUtil.isValidRoute( route ) ) {
             return true;
         }
@@ -170,7 +166,7 @@ public class StopPrediction extends Prediction {
         return route;
     }
 
-    protected Arrival firstArrival() {
+    Arrival firstArrival() {
         Arrival first = null;
         synchronized ( trackedArrivals ) {
             for ( Arrival a : trackedArrivals ) {
