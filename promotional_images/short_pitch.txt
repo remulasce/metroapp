@@ -1,0 +1,2 @@
+Metro Companion App puts predictions a swipe away with a live notification in your phone's status drawer.
+Track multiple arrivals on the same screen without navigating through nested menus.
