@@ -324,7 +324,7 @@ public class TripPopulator {
                     if (activeTrips.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);
 
-                        if (serviceRequests.size() != 0 && couldServiceRequestsHavePending()) {
+                        if (serviceRequests.size() != 0) {// && couldServiceRequestsHavePending()) {
                             progress.setVisibility(View.VISIBLE);
                             progress.setProgress(1);
                         }
