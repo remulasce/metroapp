@@ -34,7 +34,10 @@ import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
+import com.remulasce.lametroapp.static_data.RouteColorer;
+import com.remulasce.lametroapp.static_data.types.RouteColor;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
@@ -57,6 +60,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private MetroStaticsProvider staticsProvider;
     private OmniAutoCompleteAdapter autoCompleteAdapter;
     private MetroLocationRetriever locationService;
+    private RouteColorer routeColorer;
     private SerializedFileFieldSaver fieldSaver;
     private NetworkStatusReporter networkStatusReporter;
 
@@ -189,8 +193,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         staticsProvider = new MetroStaticsProvider(this);
         staticsProvider.initialize();
 
+        routeColorer = new HardcodedMetroColors();
+
         // ugh.
         LaMetroUtil.locationTranslator = staticsProvider;
+        LaMetroUtil.routeColorer = routeColorer;
     }
 
     private final OnItemClickListener tripClickListener = new OnItemClickListener() {

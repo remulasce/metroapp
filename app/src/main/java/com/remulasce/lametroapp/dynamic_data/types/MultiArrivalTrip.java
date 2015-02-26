@@ -3,6 +3,7 @@ package com.remulasce.lametroapp.dynamic_data.types;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,21 @@ public class MultiArrivalTrip extends Trip {
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
+        View color_box = rowView.findViewById(R.id.color_box);
+
+        if (parentArrival.getRoute().getColor() != null) {
+            String color = parentArrival.getRoute().getColor().color;
+            try {
+                color_box.setVisibility(View.VISIBLE);
+                color_box.setBackgroundColor(Color.parseColor(color));
+            } catch (IllegalArgumentException e) {
+                color_box.setVisibility(View.INVISIBLE);
+                color_box.setBackgroundColor(Color.parseColor("white"));
+            }
+        } else {
+            color_box.setVisibility(View.INVISIBLE);
+            color_box.setBackgroundColor(Color.parseColor("white"));
+        }
 
         Route route = parentArrival.getRoute();
         Stop stop = parentArrival.getStop();
