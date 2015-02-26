@@ -8,7 +8,7 @@ Users input the names of Metro bus and rail stops, and the App will display arri
 
 In addition, each arrival to a stop can be tracked with a notification in the phone's drawer, and a sound will be played when the vehicle is almost arrived.
 
-![Demo Sequence](/promotional_images/promo_banner_1.png?raw=true "Promo Banner")
+![Demo Sequence](/promotional_images/sequence_banner.png?raw=true "Sequence Banner")
 
 Metro Companion App has no map view and uses intelligent autocomplete to suggest what stops to track.
 It has one main screen, and one "About" pane. All arrival predictions are listed directly on that one main screen.
