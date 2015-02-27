@@ -35,6 +35,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
 
     @Override
     public void saveServiceRequests(Collection<ServiceRequest> requests) {
+        Log.d(TAG, "Saving service requests: "+requests.size()+ " "+requests);
 
         FileOutputStream fos;
         try {
@@ -55,6 +56,8 @@ public class SerializedFileFieldSaver implements FieldSaver {
 
     @Override
     public Collection<ServiceRequest> loadServiceRequests() {
+        Log.d(TAG, "Loading service requests");
+
         Collection<ServiceRequest> emptyRequests = new ArrayList<ServiceRequest>();
         try
         {
