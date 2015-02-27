@@ -27,4 +27,5 @@ dependencies {
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.nineoldandroids:library:2.4.0'
 
+    testCompile 'junit:junit:4.12'
 }
