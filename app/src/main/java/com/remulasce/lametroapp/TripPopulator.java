@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,6 +103,7 @@ public class TripPopulator {
                                 dismissLock = true;
                             }
                         });
+
         list.setOnTouchListener(dismissListener);
         list.setOnScrollListener(dismissListener.makeScrollListener());
     }
