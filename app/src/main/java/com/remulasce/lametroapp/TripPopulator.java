@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -38,6 +39,8 @@ public class TripPopulator {
     private final Object waitLock = new Object();
     // When the swipe-to-dismiss library is working, it really doesn't want the list
     private boolean dismissLock = false;
+    // When scrolling, don't update, because that causes visible jitter.
+    private boolean scrollLock = false;
 
     private final ListView list;
     private final TextView hint;
@@ -52,6 +55,7 @@ public class TripPopulator {
 
     private long lastDismissTutorialShow = 0;
     private final SwipeDismissListViewTouchListener dismissListener;
+    private final AbsListView.OnScrollListener scrollListener;
 
     // ugh.
     private final Context c;
@@ -104,8 +108,29 @@ public class TripPopulator {
                             }
                         });
 
+        final AbsListView.OnScrollListener dismissScroll = dismissListener.makeScrollListener();
+        scrollListener = new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                dismissScroll.onScrollStateChanged(absListView, i);
+
+                if (i == SCROLL_STATE_IDLE) {
+                    scrollLock = false;
+                } else {
+                    scrollLock = true;
+                }
+
+                Log.v(TAG, "Scroll state: "+i);
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i2, int i3) {
+                dismissScroll.onScroll(absListView, i, i2, i3);
+            }
+        };
+
         list.setOnTouchListener(dismissListener);
-        list.setOnScrollListener(dismissListener.makeScrollListener());
+        list.setOnScrollListener(scrollListener);
     }
 
     public void StartPopulating() {
@@ -182,7 +207,7 @@ public class TripPopulator {
 
             while ( run ) {
                 // Don't update while an item is dismissing.
-                if (dismissLock) {
+                if (dismissLock || scrollLock) {
                     continue;
                 }
 
