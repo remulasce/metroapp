@@ -27,9 +27,6 @@ public class MultiArrivalTripInstrumentationTest extends ActivityInstrumentation
         instrumentation = getInstrumentation();
 
         setActivityInitialTouchMode(true);
-
-
-
     }
 
     public void tearDown() throws Exception {
