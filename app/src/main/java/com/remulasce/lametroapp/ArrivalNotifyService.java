@@ -273,7 +273,7 @@ public class ArrivalNotifyService extends Service {
                             .setSmallIcon(R.mipmap.ic_launcher)
 	                        .setContentTitle(dispTitle)
 	                        .setContentText(dispText)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
 	                        .setStyle(bigTextStyle);
 	                        
 	                if ( doVibrate ) {
