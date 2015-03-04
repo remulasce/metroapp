@@ -3,7 +3,7 @@
 
     <string name="app_name">Metro Companion App</string>
     <string name="action_settings">Settings</string>
-    <string name="trip_list_hint"> Predicted arrivals to those stops will show up here</string>
+    <string name="trip_list_hint">Realtime arrivals to the stops above are shown here</string>
     <string name="notify_confirmation_text">Display a notification with the ETA of this vehicle</string>
     <string name="notify_confirmation_title">Live Notification</string>
     <string name="about_text_title">Los Angeles Metro Companion</string>
