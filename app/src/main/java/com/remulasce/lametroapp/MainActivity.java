@@ -204,7 +204,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         @Override
         public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
             Trip trip = (Trip) parent.getItemAtPosition( position );
-            trip.executeAction( MainActivity.this );
+//            trip.executeAction( MainActivity.this );
         }
     };
 
