@@ -15,8 +15,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.util.Log;
-
+import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
