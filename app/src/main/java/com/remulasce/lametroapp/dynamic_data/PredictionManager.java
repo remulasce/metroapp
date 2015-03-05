@@ -43,6 +43,48 @@ public class PredictionManager {
         if (!trackingList.contains(p)) {
             trackingList.add(p);
         }
+
+        startUpdatingIfNotStarted();
+	}
+
+    public void stopTracking( Prediction p ) {
+        trackingList.remove(p);
+    }
+
+
+
+    public void pauseTracking() {
+        synchronized (this) {
+            Log.d(TAG, "Pausing all prediction tracking");
+
+            pauseUpdating();
+        }
+    }
+    public void resumeTracking() {
+        synchronized (this) {
+            resumeUpdating();
+        }
+
+        synchronized (updater.updateObject) {
+            forceUpdateNow();
+        }
+    }
+
+    private void forceUpdateNow() {
+        updater.updateObject.notify();
+    }
+
+    private void resumeUpdating() {
+        Log.d(TAG, "Resuming all prediction tracking");
+        if (updater == null) {
+            updater = new UpdateStager();
+            new Thread(updater, "Prediction Update Checker").start();
+        } else {
+            Log.w(TAG, "Resuming an existing prediction updater");
+        }
+    }
+
+    private void startUpdatingIfNotStarted() {
         synchronized (this) {
             if (updater == null) {
                 updater = new UpdateStager();
@@ -53,39 +95,16 @@ public class PredictionManager {
         synchronized (updater.updateObject) {
             updater.updateObject.notify();
         }
-	}
-	
-	public void pauseTracking() {
-		synchronized (this) {
-			Log.d(TAG, "Pausing all prediction tracking");
-			if (updater != null) {
-				updater.run = false;
-				updater = null;
-			} else {
-                Log.w(TAG, "Pausing a missing prediction updater");
-            }
-		}
-	}
-	public void resumeTracking() {
-		synchronized (this) {
-			Log.d(TAG, "Resuming all prediction tracking");
-			if (updater == null) {
-				updater = new UpdateStager();
-				new Thread(updater, "Prediction Update Checker").start();
-			} else {
-                Log.w(TAG, "Resuming an existing prediction updater");
-            }
-		}
-
-        synchronized (updater.updateObject) {
-            updater.updateObject.notify();
+    }
+    private void pauseUpdating() {
+        if (updater != null) {
+            updater.run = false;
+            updater = null;
+        } else {
+            Log.w(TAG, "Pausing a missing prediction updater");
         }
-	}
-	
-	public void stopTracking( Prediction p ) {
-        trackingList.remove(p);
-	}
-	
+    }
+
 	class UpdateStager implements Runnable {
 		public boolean run = true;
         public final Object updateObject = new Object();
@@ -93,43 +112,52 @@ public class PredictionManager {
 		@Override
 		public void run() {
 			while (run) {
-                for (int i = trackingList.size() - 1; i >= 0; i--) {
-                    try {
-                        Prediction p = trackingList.get(i);
+                updateOldPredictions();
 
-                        int requestedInterval = p.getRequestedUpdateInterval();
-                        long timeSinceUpdate = p.getTimeSinceLastUpdate();
-                        if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
-                            Log.v(TAG, "Getting update after " + requestedInterval);
-                            p.setGettingUpdate();
-                            GetUpdate(p);
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        Log.w(TAG, "Prediction removed out from under PredictionManager");
-                    }
-                }
-
-				try {
-                    synchronized (updateObject) {
-                        updateObject.wait(500);
-                    }
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-					
-			}
+                waitForNextRun();
+            }
 		}
-	}
+
+        private void waitForNextRun() {
+            try {
+                synchronized (updateObject) {
+                    updateObject.wait(500);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateOldPredictions() {
+            for (int i = trackingList.size() - 1; i >= 0; i--) {
+                try {
+                    Prediction p = trackingList.get(i);
+
+                    int requestedInterval = p.getRequestedUpdateInterval();
+                    long timeSinceUpdate = p.getTimeSinceLastUpdate();
+                    if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+                        Log.v(TAG, "Getting update after " + requestedInterval);
+                        p.setGettingUpdate();
+                        GetUpdate(p);
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    Log.w(TAG, "Prediction removed out from under PredictionManager");
+                }
+            }
+        }
+
+        private void GetUpdate(Prediction p) {
+            PredictionFetcher r = new PredictionFetcher( p );
+            new Thread(r, "Prediction update "+p.getRequestString()).start();
+        }
+    }
 	
-	void GetUpdate(Prediction p) {
-		RequestHandler r = new RequestHandler( p );
-		new Thread(r, "Prediction update "+p.getRequestString()).start();
-	}
+
 	
-	class RequestHandler implements Runnable {
+	class PredictionFetcher implements Runnable {
 		final Prediction prediction;
 
-		public RequestHandler( Prediction p ) {
+		public PredictionFetcher(Prediction p) {
 			this.prediction = p;
 		}
 
