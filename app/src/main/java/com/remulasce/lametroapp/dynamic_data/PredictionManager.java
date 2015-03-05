@@ -20,6 +20,21 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
+/**
+ * PredictionManager fetches updates from NexTrip and feeds the results back to the Predictions.
+ *
+ * It mainly just checks how long it's been since each Prediction has been updated, against how
+ * frequently the Prediction wants to be updated.
+ *
+ * Predictions helpfully just have a getRequestString and handleResponse method.
+ * So we don't have to do any parsing here, just feed Predictions with an update every so often.
+ *
+ * It doesn't do any fancy consolidation or staggering. It just has a minimum interval to prevent
+ * ridiculously high requested frequencies, and it shuts down and restarts everything when the
+ * app opens/closes.
+ */
+
+
 public class PredictionManager {
 	private static final String TAG = "PredictionManager";
 	private static final int UPDATE_INTERVAL = 5000;

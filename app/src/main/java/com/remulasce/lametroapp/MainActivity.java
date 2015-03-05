@@ -25,6 +25,7 @@ import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
+import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
@@ -37,7 +38,6 @@ import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.static_data.RouteColorer;
-import com.remulasce.lametroapp.static_data.types.RouteColor;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
@@ -89,7 +89,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupNetworkStatus() {
-        networkStatusReporter = new NetworkStatusReporter(networkStatusView);
+        networkStatusReporter = new AndroidNetworkStatusReporter(networkStatusView);
         PredictionManager.setStatusReporter(networkStatusReporter);
     }
 
