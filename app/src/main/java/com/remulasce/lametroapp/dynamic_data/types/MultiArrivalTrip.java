@@ -21,6 +21,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
@@ -194,10 +195,10 @@ public class MultiArrivalTrip extends Trip {
     }
 
     public void executeAction( final Context context ) {
-        final Tracker t = Tracking.getTracker(context);
+//        final Tracker t = Tracking.getTracker(context);
 
-        t.setScreenName("Notify Confirm Dialog");
-        t.send(new HitBuilders.AppViewBuilder().build());
+//        t.setScreenName("Notify Confirm Dialog");
+//        t.send(new HitBuilders.AppViewBuilder().build());
 
         final View dialogView = View.inflate(context, R.layout.multi_arrival_notify_dialog, null);
 
@@ -219,7 +220,7 @@ public class MultiArrivalTrip extends Trip {
             radios.check(first.getId());
         }
 
-        launchNotificationConfirmation(context, t, dialogView);
+        launchNotificationConfirmation(context, null, dialogView);
     }
 
     private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
@@ -244,8 +245,8 @@ public class MultiArrivalTrip extends Trip {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        t.setScreenName("Notify Confirm Accept");
-                        t.send(new HitBuilders.AppViewBuilder().build());
+//                        t.setScreenName("Notify Confirm Accept");
+//                        t.send(new HitBuilders.AppViewBuilder().build());
 
                         Vehicle vehicle;
                         int seconds = 120;
@@ -261,8 +262,8 @@ public class MultiArrivalTrip extends Trip {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        t.setScreenName("Notify Confirm Decline");
-                        t.send(new HitBuilders.AppViewBuilder().build());
+//                        t.setScreenName("Notify Confirm Decline");
+//                        t.send(new HitBuilders.AppViewBuilder().build());
                     }
                 })
                 .show();
@@ -295,6 +296,10 @@ public class MultiArrivalTrip extends Trip {
     }
 
     private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
+        if (t == null) {
+            Log.w("MultiArrivalTrip", "Null tracker set");
+            return;
+        }
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

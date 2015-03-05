@@ -94,11 +94,11 @@ public class TripPopulator {
                                         }
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
-                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
-                                                .setCategory( "TripPopulator" )
-                                                .setAction( "Dismiss Trip" )
-                                                .setLabel( "Index out of bounds" )
-                                                .build() );
+//                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
+//                                                .setCategory( "TripPopulator" )
+//                                                .setAction( "Dismiss Trip" )
+//                                                .setLabel( "Index out of bounds" )
+//                                                .build() );
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
