@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.dynamic_data;
+/*
+ package com.remulasce.lametroapp.dynamic_data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -191,3 +192,4 @@ public class PredictionManager {
 		}
 	}
 }
+ */

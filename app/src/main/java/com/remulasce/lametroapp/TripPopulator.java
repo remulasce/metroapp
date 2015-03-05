@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp;
+/*
+ package com.remulasce.lametroapp;
 
 import android.content.Context;
 import android.os.Handler;
@@ -176,7 +177,7 @@ public class TripPopulator {
         rawSetServiceRequests(requests);
     }
 
-    /* UpdateRunner checks our (stops) list every couple seconds to remove old stops and update the display.
+    * UpdateRunner checks our (stops) list every couple seconds to remove old stops and update the display.
     * It removes stops that are no longer active, according to the stop.
     * Then it pushes the Trips it has received asynchronously in the tripUpdateCallback to the ListView.
     *
@@ -189,7 +190,7 @@ public class TripPopulator {
     * The real deal is when a new stop from stops is not found ind trackedMap. When it gets added, it gets
     * activated and given the tripUpdateCallback.
     *
-    * */
+    * *
     protected class UpdateRunner implements Runnable {
         boolean run = true;
 
@@ -419,3 +420,4 @@ public class TripPopulator {
         };
     }
 }
+*/

@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.dynamic_data.types;
+/*
+ackage com.remulasce.lametroapp.dynamic_data.types;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -194,3 +195,4 @@ public class ArrivalTrip extends Trip {
         return parentArrival.isInScope() && parentArrival.getEstimatedArrivalSeconds() > 0;
     }
 }
+ */

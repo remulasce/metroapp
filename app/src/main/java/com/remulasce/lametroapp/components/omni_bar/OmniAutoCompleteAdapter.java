@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.components.omni_bar;
+/*
+ package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,9 +16,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
+**
  * Adapter for the autocomplete drop-down-list on stop entri field.
- */
+ *
 public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 {
     private final String TAG = "OmniAutoCompleteAdapter";
@@ -160,3 +161,4 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
 
 }
+ */

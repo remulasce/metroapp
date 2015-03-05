@@ -1,3 +1,4 @@
+/*
 package com.remulasce.lametroapp.dynamic_data.types;
 
 import android.app.AlertDialog;
@@ -360,3 +361,4 @@ public class MultiArrivalTrip extends Trip {
         parentArrival.setScope(false);
     }
 }
+*/

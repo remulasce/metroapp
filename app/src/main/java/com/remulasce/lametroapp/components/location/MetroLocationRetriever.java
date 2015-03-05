@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.components.location;
+/*
+ package com.remulasce.lametroapp.components.location;
 
 import android.content.Context;
 import android.location.Location;
@@ -17,9 +18,9 @@ import com.remulasce.lametroapp.basic_types.BasicLocation;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.basic_types.Stop;
 
-/**
+**
  * Gets location from Play Services.
- */
+ *
 public class MetroLocationRetriever implements LocationRetriever {
     private static final String TAG = "LocationRetriever";
 
@@ -121,7 +122,8 @@ public class MetroLocationRetriever implements LocationRetriever {
         return lastRetrievedLocation;
     }
 
-    /** Location in meters */
+    * Location in meters *
+    
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
         long t = Tracking.startTime();
@@ -146,3 +148,4 @@ public class MetroLocationRetriever implements LocationRetriever {
         return results[0];
     }
 }
+*/

@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.components.trip_list;
+/*
+ package com.remulasce.lametroapp.components.trip_list;
 
 import android.content.Context;
 import android.view.View;
@@ -17,3 +18,4 @@ public class TripListAdapter extends ArrayAdapter <Trip> {
         return (getItem(position)).getView( parent, getContext(), convertView);
     }
 }
+*/

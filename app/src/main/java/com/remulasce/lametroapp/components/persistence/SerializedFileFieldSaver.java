@@ -1,4 +1,5 @@
-package com.remulasce.lametroapp.components.persistence;
+/*
+ package com.remulasce.lametroapp.components.persistence;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,13 +15,13 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
+**
  * Created by Remulasce on 1/11/2015.
  *
  * It just uses the default object serialization to save to files.
  * So, it relies on pretty much the entire stack being Serializable, except for some
  * objects which manually serialize themselves to avoid spreading too far.
- */
+ *
 public class SerializedFileFieldSaver implements FieldSaver {
     private static final String SERVICE_REQUESTS_SER = "serviceRequests.ser";
     private static final String TAG = "SettingFieldSaver";
@@ -93,3 +94,4 @@ public class SerializedFileFieldSaver implements FieldSaver {
         }
     }
 }
+*/
