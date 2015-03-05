@@ -31,17 +31,12 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
 
-    private final Arrival firstArrival;
-    private final Trip firstTrip;
-
     private long lastUpdate;
     private boolean inUpdate = false;
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
         this.route = route;
-        this.firstArrival = new Arrival();
-        this.firstTrip = new Trip();
     }
 
     @Override

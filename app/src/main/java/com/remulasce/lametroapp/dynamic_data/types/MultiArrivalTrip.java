@@ -80,6 +80,7 @@ public class MultiArrivalTrip extends Trip {
 
         TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
         TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
+        TextView distance_text = (TextView) rowView.findViewById(R.id.prediction_stop_distance);
         View color_box = rowView.findViewById(R.id.color_box);
 
         if (parentArrival.getRoute().getColor() != null) {
@@ -103,6 +104,11 @@ public class MultiArrivalTrip extends Trip {
         String routeString = route.getString();
         String stopString = stop.getStopName();
         String destString = dest.getString();
+
+        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
+        double distance = retriever.getCurrentDistanceToStop(stop);
+
+        distance_text.setText((int)(distance * 0.000621371 * 10) / 10.0 + "mi");
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;

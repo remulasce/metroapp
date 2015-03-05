@@ -265,11 +265,13 @@ public class TripPopulator {
             for (ServiceRequest request: newRequests) {
                 Collection<Prediction> predictions = request.makePredictions();
 
-                trackedMap.put(request, predictions);
+                if (predictions != null) {
+                    trackedMap.put(request, predictions);
 
-                for (Prediction prediction : predictions) {
-                    prediction.setTripCallback(tripUpdateCallback);
-                    prediction.startPredicting();
+                    for (Prediction prediction : predictions) {
+                        prediction.setTripCallback(tripUpdateCallback);
+                        prediction.startPredicting();
+                    }
                 }
             }
         }
