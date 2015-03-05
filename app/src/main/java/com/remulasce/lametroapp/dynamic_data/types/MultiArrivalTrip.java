@@ -66,7 +66,6 @@ public class MultiArrivalTrip extends Trip {
     }
 
 
-
     public int getTime(int seconds, EditText time) {
         try {
             // Add 60 for rounding.

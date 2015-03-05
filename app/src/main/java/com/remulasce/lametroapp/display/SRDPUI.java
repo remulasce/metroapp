@@ -39,6 +39,7 @@ public class SRDPUI implements PredictionUI {
 
             //tripUpdateCallback.tripUpdated(a.getTrip());
             tripUpdateCallback.tripUpdated(new MultiArrivalTrip(a));
+
         }
     }
 }
