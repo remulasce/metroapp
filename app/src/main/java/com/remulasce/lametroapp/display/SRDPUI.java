@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.display;
 
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
@@ -36,7 +36,9 @@ public class SRDPUI implements PredictionUI {
     public void predictionUpdated() {
         Collection<StopRouteDestinationArrival> arrivals = prediction.getArrivals();
         for (StopRouteDestinationArrival a : arrivals) {
-            tripUpdateCallback.tripUpdated(a.getTrip());
+
+            //tripUpdateCallback.tripUpdated(a.getTrip());
+            tripUpdateCallback.tripUpdated(new MultiArrivalTrip(a));
         }
     }
 }
