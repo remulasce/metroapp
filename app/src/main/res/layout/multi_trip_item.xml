@@ -49,4 +49,16 @@
         android:layout_below="@+id/prediction_stop_name"
         android:layout_toRightOf="@+id/color_box"
         android:layout_toEndOf="@+id/color_box" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/secondary_text_dark"
+        android:text="100m"
+        android:id="@+id/prediction_stop_distance"
+        android:layout_marginLeft="8dp"
+        android:layout_alignBaseline="@id/prediction_stop_name"
+        android:layout_toRightOf="@+id/prediction_stop_name"
+        android:layout_toEndOf="@+id/prediction_stop_name" />
 </RelativeLayout>
