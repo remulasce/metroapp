@@ -162,7 +162,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         }
 
         // Let the UI wrapper know we've been updated.
-        callback.predictionUpdated(this);
+        callback.predictionUpdated();
     }
     @Override
     public void setUpdated() {

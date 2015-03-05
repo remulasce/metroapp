@@ -6,5 +6,5 @@ package com.remulasce.lametroapp.dynamic_data.types;
  *
  */
 public interface PredictionUpdateCallback {
-    public void predictionUpdated(Prediction p);
+    public void predictionUpdated();
 }

@@ -33,7 +33,7 @@ public class SRDPUI implements PredictionUI {
     }
 
     @Override
-    public void predictionUpdated(Prediction p) {
+    public void predictionUpdated() {
         Collection<StopRouteDestinationArrival> arrivals = prediction.getArrivals();
         for (StopRouteDestinationArrival a : arrivals) {
             tripUpdateCallback.tripUpdated(a.getTrip());
