@@ -8,15 +8,27 @@
 
 
     <TextView
+        android:id="@+id/prediction_stop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/example_station_name"
-        android:id="@+id/prediction_stop_name"
         android:layout_marginLeft="0dp"
+        android:paddingRight="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/prediction_stop_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/secondary_text_dark"
+        android:text="10.1mi"
+        android:layout_alignBaseline="@id/prediction_stop_name"
+        android:layout_alignRight="@+id/prediction_stop_name"
+        android:layout_alignEnd="@+id/prediction_stop_name" />
 
     <View
         android:id="@+id/color_box"
@@ -30,35 +42,24 @@
         android:layout_below="@+id/prediction_stop_name" />
 
     <LinearLayout
+        android:id="@+id/arrival_times"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/arrival_times"
         android:layout_below="@+id/prediction_destination_name"
         android:layout_centerHorizontal="true">
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/prediction_destination_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/example_destination_name"
-        android:id="@+id/prediction_destination_name"
         android:paddingLeft="4dp"
         android:layout_below="@+id/prediction_stop_name"
         android:layout_toRightOf="@+id/color_box"
         android:layout_toEndOf="@+id/color_box" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/secondary_text_dark"
-        android:text="100m"
-        android:id="@+id/prediction_stop_distance"
-        android:layout_marginLeft="8dp"
-        android:layout_alignBaseline="@id/prediction_stop_name"
-        android:layout_toRightOf="@+id/prediction_stop_name"
-        android:layout_toEndOf="@+id/prediction_stop_name" />
 </RelativeLayout>
