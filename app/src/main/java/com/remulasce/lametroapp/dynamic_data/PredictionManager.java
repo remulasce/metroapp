@@ -1,25 +1,13 @@
 package com.remulasce.lametroapp.dynamic_data;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.platform_support.Network;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * PredictionManager fetches updates from NexTrip and feeds the results back to the Predictions.
