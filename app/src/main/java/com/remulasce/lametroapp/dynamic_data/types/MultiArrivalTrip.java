@@ -35,7 +35,7 @@ import java.util.List;
 
 public class MultiArrivalTrip extends Trip {
 
-    private final StopRouteDestinationArrival parentArrival;
+    public final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
     private double lastDistanceToStop = 0;
@@ -66,8 +66,7 @@ public class MultiArrivalTrip extends Trip {
     }
 
 
-
-    private int getTime(int seconds, EditText time) {
+    public int getTime(int seconds, EditText time) {
         try {
             // Add 60 for rounding.
             seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
@@ -77,7 +76,7 @@ public class MultiArrivalTrip extends Trip {
         return seconds;
     }
 
-    private Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
+    public Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
         Vehicle vehicle = null;
 
         if (vehicleRadio.getCheckedRadioButtonId() != -1) {
@@ -93,7 +92,7 @@ public class MultiArrivalTrip extends Trip {
         return vehicle;
     }
 
-    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
+    public void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
         if (t == null) {
             Log.w("MultiArrivalTrip", "Null tracker set");
             return;

@@ -58,7 +58,9 @@ public class ArrivalTrip extends Trip {
                 ;//+ raw;
     }
 
+    /*
     @Override
+
     public View getView(ViewGroup parent, Context context, View recycleView) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,6 +93,7 @@ public class ArrivalTrip extends Trip {
 
         return rowView;
     }
+    */
 
     public void executeAction( final Context context ) {
 //        final Tracker t = Tracking.getTracker(context);

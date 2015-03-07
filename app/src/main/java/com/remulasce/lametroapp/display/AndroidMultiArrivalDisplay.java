@@ -64,7 +64,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         View color_box = rowView.findViewById(R.id.color_box);
 
         if (trip.parentArrival.getRoute().getColor() != null) {
-            String color = parentArrival.getRoute().getColor().color;
+            String color = trip.parentArrival.getRoute().getColor().color;
             try {
                 color_box.setVisibility(View.VISIBLE);
                 color_box.setBackgroundColor(Color.parseColor(color));
@@ -77,9 +77,9 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             color_box.setBackgroundColor(Color.parseColor("white"));
         }
 
-        Route route = parentArrival.getRoute();
-        Stop stop = parentArrival.getStop();
-        Destination dest = parentArrival.getDirection();
+        Route route = trip.parentArrival.getRoute();
+        Stop stop = trip.parentArrival.getStop();
+        Destination dest = trip.parentArrival.getDirection();
 
         String routeString = route.getString();
         String stopString = stop.getStopName();
@@ -113,8 +113,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         // Get all the Arrivals displayed
-        for (Arrival a : parentArrival.getArrivals()) {
-
+        for (Arrival a : trip.parentArrival.getArrivals()) {
             RelativeLayout updateTimeView;
 
             int seconds = (int) a.getEstimatedArrivalSeconds();
@@ -165,7 +164,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             rowView.invalidate();
         }
 
-        if (parentArrival.isInScope()) {
+        if (trip.parentArrival.isInScope()) {
             rowView.setVisibility(View.VISIBLE);
         } else {
             rowView.setVisibility(View.INVISIBLE);
@@ -175,7 +174,6 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
     }
 
     public void executeAction( final Context context ) {
-        /*
 //        final Tracker t = Tracking.getTracker(context);
 
 //        t.setScreenName("Notify Confirm Dialog");
@@ -186,7 +184,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
 
-        for (Arrival a : parentArrival.getArrivals()) {
+        for (Arrival a : trip.parentArrival.getArrivals()) {
             if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {
                 RadioButton button = new RadioButton(context);
                 button.setText("Vehicle " + a.getVehicleNum().getString() + " " + LaMetroUtil.timeToDisplay((int)a.getEstimatedArrivalSeconds()));
@@ -202,11 +200,9 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         launchNotificationConfirmation(context, null, dialogView);
-        */
     }
 
     private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
-        /*
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
@@ -220,7 +216,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             }
         });
 
-        setTrackingEventListeners(time, vehicleRadio, t);
+        trip.setTrackingEventListeners(time, vehicleRadio, t);
 
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
@@ -234,11 +230,11 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                         Vehicle vehicle;
                         int seconds = 120;
 
-                        seconds = getTime(seconds, time);
-                        vehicle = getVehicle(vehicleRadio, dialogView);
+                        seconds = trip.getTime(seconds, time);
+                        vehicle = trip.getVehicle(vehicleRadio, dialogView);
 
-                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
-                                parentArrival.destination, vehicle, seconds, context);
+                        NotifyServiceManager.SetNotifyService(trip.parentArrival.getStop(), trip.parentArrival.getRoute(),
+                                trip.parentArrival.getDirection(), vehicle, seconds, context);
                     }
 
                 })
@@ -250,11 +246,5 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                     }
                 })
                 .show();
-                */
-    }
-
-    @Override
-    public View getView(ViewGroup parent, Context context, View recycleView) {
-        return null;
     }
 }
