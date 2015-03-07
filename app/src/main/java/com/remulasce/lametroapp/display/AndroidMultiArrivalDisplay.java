@@ -28,7 +28,6 @@ import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 import com.remulasce.lametroapp.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 import java.util.ArrayList;
 import java.util.List;

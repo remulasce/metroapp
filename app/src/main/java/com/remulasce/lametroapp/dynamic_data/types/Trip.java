@@ -31,15 +31,6 @@ public class Trip implements Serializable {
 		return text;
 	}
 	
-//	// Context provided for convenience
-//	public void executeAction(Context context) {
-//		// ...
-//	}
-
-//    public View getView(ViewGroup parent, Context context, View recycleView) {
-//        return null;
-//    }
-	
 	public float getPriority() {
 	    return 50;
 	}
