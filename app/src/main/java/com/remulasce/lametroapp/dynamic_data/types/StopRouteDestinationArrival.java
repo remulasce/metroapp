@@ -7,7 +7,11 @@ import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -110,8 +114,31 @@ public class StopRouteDestinationArrival implements Serializable {
         }
     }
 
+    private Collection<Arrival> sortedArrivals() {
+
+        final List<Arrival> sorted = new ArrayList<Arrival>(arrivals);
+        Collections.sort(sorted, new Comparator<Object>() {
+            @Override
+            public int compare(Object o, Object o2) {
+
+                Arrival a = (Arrival) o;
+                Arrival b = (Arrival) o2;
+
+                if (a.getEstimatedArrivalSeconds() < b.getEstimatedArrivalSeconds()) {
+                    return -1;
+                } else if (a.getEstimatedArrivalSeconds() > b.getEstimatedArrivalSeconds()) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        });
+
+        return sorted;
+    }
+
     public Collection<Arrival> getArrivals() {
-        return arrivals;
+        return sortedArrivals();
     }
 
     public Route getRoute() {

@@ -17,11 +17,11 @@ public class Tracking {
 	public static Tracker getTracker( Context c ) {
 		if (t == null) {
 	      GoogleAnalytics analytics = GoogleAnalytics.getInstance( c );
-	      
+
 	      t = analytics.newTracker(R.xml.lametro_tracker);
           t.enableAdvertisingIdCollection(true);
 		}
-		
+
 		return t;
 	}
 

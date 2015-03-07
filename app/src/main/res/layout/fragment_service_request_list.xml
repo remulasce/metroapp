@@ -10,7 +10,8 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:id="@+id/service_request_list"
         android:layout_gravity="center_horizontal|top"
-        tools:listitem="@layout/service_request_item" />
+        tools:listitem="@layout/service_request_item"
+        android:background="#ffdfdfdf" />
 
     <TextView
         android:layout_margin="20dp"
