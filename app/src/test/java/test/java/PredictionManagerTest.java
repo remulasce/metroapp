@@ -17,7 +17,7 @@ public class PredictionManagerTest extends TestCase {
     protected void setUp() throws Exception {
         network = Mockito.mock(HTTPGetter.class);
 
-        predictionManager = new PredictionManager(network);
+        predictionManager = new PredictionManager();
     }
 
     public void testResumeFirst() throws Exception {

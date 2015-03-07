@@ -4,7 +4,6 @@ import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,7 +38,14 @@ public class PredictionManager {
         statusReporter = reporter;
     }
 
+    public PredictionManager() {
+        this.network = HTTPGetter.getHTTPGetter();
+    }
     private HTTPGetter network;
+
+    public void rawSetNetwork( HTTPGetter network ) {
+        this.network = network;
+    }
 
 	private final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
 	private UpdateStager updater;
