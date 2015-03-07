@@ -1,6 +1,8 @@
 package com.remulasce.lametroapp.display;
 
+import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
@@ -12,5 +14,5 @@ import com.remulasce.lametroapp.dynamic_data.types.Trip;
  */
 public interface AndroidDisplay {
 
-    public View getView((ViewGroup parent, Context context, View recycleView));
+    public View getView(ViewGroup parent, Context context, View recycleView);
 }

@@ -27,6 +27,7 @@ import com.remulasce.lametroapp.basic_types.Vehicle;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 import com.remulasce.lametroapp.dynamic_data.types.Arrival;
+import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 import java.util.ArrayList;
@@ -34,16 +35,18 @@ import java.util.List;
 
 /**
  * Created by Remulasce on 3/5/2015.
+ *
+ * UI layer turns Trips into Views for Android
  */
 public class AndroidMultiArrivalDisplay implements AndroidDisplay{
-    private Trip trip;
+    private MultiArrivalTrip trip;
 
-    public AndroidMultiArrivalDisplay(Trip t) {
+    public AndroidMultiArrivalDisplay(MultiArrivalTrip t) {
         this.trip = t;
     }
 
-    @Override
     public View getView(ViewGroup parent, Context context, View recycleView) {
+
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -60,7 +63,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         TextView distance_text = (TextView) rowView.findViewById(R.id.prediction_stop_distance);
         View color_box = rowView.findViewById(R.id.color_box);
 
-        if (parentArrival.getRoute().getColor() != null) {
+        if (trip.parentArrival.getRoute().getColor() != null) {
             String color = parentArrival.getRoute().getColor().color;
             try {
                 color_box.setVisibility(View.VISIBLE);
@@ -172,6 +175,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
     }
 
     public void executeAction( final Context context ) {
+        /*
 //        final Tracker t = Tracking.getTracker(context);
 
 //        t.setScreenName("Notify Confirm Dialog");
@@ -198,9 +202,11 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         launchNotificationConfirmation(context, null, dialogView);
+        */
     }
 
     private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
+        /*
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
@@ -244,5 +250,11 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                     }
                 })
                 .show();
+                */
+    }
+
+    @Override
+    public View getView(ViewGroup parent, Context context, View recycleView) {
+        return null;
     }
 }
