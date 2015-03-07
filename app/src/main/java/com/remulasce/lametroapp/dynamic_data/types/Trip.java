@@ -30,7 +30,7 @@ public class Trip implements Serializable {
 	public String toString() {
 		return text;
 	}
-	
+
 	public float getPriority() {
 	    return 50;
 	}
