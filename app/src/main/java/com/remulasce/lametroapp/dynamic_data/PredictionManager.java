@@ -137,6 +137,13 @@ public class PredictionManager {
         }
     }
 
+    public boolean isRunning() {
+        if (updater == null) {
+            return false;
+        }
+        return updater.run;
+    }
+
     /** This just compares requestedUpdateInterval vs time since last update on all the predictions.
      * It starts threads to do each actual net update.
      */
