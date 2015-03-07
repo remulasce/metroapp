@@ -33,8 +33,10 @@ import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
+import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
 import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.static_data.RouteColorer;
@@ -57,6 +59,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private ProgressBar tripListProgress;
 
     private TripPopulator populator;
+    private HTTPGetter network;
     private MetroStaticsProvider staticsProvider;
     private OmniAutoCompleteAdapter autoCompleteAdapter;
     private MetroLocationRetriever locationService;
@@ -75,6 +78,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         startAnalytics();
         initializeStaticData();
+        initializeDynamicData();
         setupLocation();
 
         setupActionBar();
@@ -86,6 +90,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupAboutPage();
 
         setupDefaults( getIntent() );
+    }
+
+    private void initializeDynamicData() {
+        network = new AndroidApacheHTTP();
+        HTTPGetter.setHTTPGetter(network);
     }
 
     private void setupNetworkStatus() {

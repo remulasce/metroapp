@@ -1,15 +1,23 @@
 package test.java;
 
+import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
+import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.PredictionUpdateCallback;
 
 import junit.framework.TestCase;
 
+import org.mockito.Mockito;
+
 public class PredictionManagerTest extends TestCase {
 
+    private HTTPGetter network;
     private PredictionManager predictionManager;
 
     protected void setUp() throws Exception {
-        predictionManager = new PredictionManager();
+        network = Mockito.mock(HTTPGetter.class);
+
+        predictionManager = new PredictionManager(network);
     }
 
     public void testResumeFirst() throws Exception {
@@ -27,5 +35,13 @@ public class PredictionManagerTest extends TestCase {
         predictionManager.pauseTracking();
 
         assertTrue(!predictionManager.isRunning());
+    }
+
+    public void testReceiveAnyUpdates() {
+//        when(network.getHTTPResponse(""))
+
+        Prediction p = Mockito.mock(Prediction.class);
+        //when(p.getRequestString())
+
     }
 }
