@@ -266,6 +266,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void onStart() {
         super.onStart();
         requestHandler.StartPopulating();
+        tripPopulator.StartPopulating();
         PredictionManager.getInstance().resumeTracking();
 //        Logging.StartSavingLogcat(this);
     }
@@ -281,6 +282,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
         requestHandler.StopPopulating();
+        tripPopulator.StopPopulating();
 //        Logging.StopSavingLogcat();
     }
 
