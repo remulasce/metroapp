@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private SerializedFileFieldSaver fieldSaver;
     private NetworkStatusReporter networkStatusReporter;
 
-//    private Tracker t;
+    private Tracker t;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -107,7 +107,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(3);
 
-        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, null, this);
+        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, t, this);
     }
 
     private void setupActionBar() {
@@ -131,13 +131,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-//                t.send(new HitBuilders.EventBuilder()
-//                        .setCategory("About Page")
-//                        .setAction("Pane Opened")
-//                        .build());
-//
-//                t.setScreenName("About Page");
-//                t.send(new HitBuilders.AppViewBuilder().build());
+                t.send(new HitBuilders.EventBuilder()
+                        .setCategory("About Page")
+                        .setAction("Pane Opened")
+                        .build());
+
+                t.setScreenName("About Page");
+                t.send(new HitBuilders.AppViewBuilder().build());
             }
         };
 
@@ -148,11 +148,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                t.send( new HitBuilders.EventBuilder()
-//                        .setCategory( "Monetization" )
-//                        .setAction( "Donate Opened" )
-//                        .setLabel( "About Page Button" )
-//                        .build() );
+                t.send( new HitBuilders.EventBuilder()
+                        .setCategory( "Monetization" )
+                        .setAction( "Donate Opened" )
+                        .setLabel( "About Page Button" )
+                        .build() );
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
                 startActivity(browserIntent);
             }
@@ -204,15 +204,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         @Override
         public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
             Trip trip = (Trip) parent.getItemAtPosition( position );
-//            trip.executeAction( MainActivity.this );
+            trip.executeAction( MainActivity.this );
         }
     };
 
     void startAnalytics() {
 
-//        t = Tracking.getTracker( getApplicationContext() );
-//        t.setScreenName("About Page");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        t = Tracking.getTracker( getApplicationContext() );
+        t.setScreenName("About Page");
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
     void setupDefaults(Intent bundle) {
@@ -233,11 +233,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         if (requestFragment.numRequests() > 0) { label = "Form Filled From Preferences"; }
 
-//        t.send( new HitBuilders.EventBuilder()
-//                .setCategory( "MainScreen" )
-//                .setAction( "Field Population" )
-//                .setLabel( label )
-//                .build() );
+        t.send( new HitBuilders.EventBuilder()
+                .setCategory( "MainScreen" )
+                .setAction( "Field Population" )
+                .setLabel( label )
+                .build() );
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -276,8 +276,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void onResume() {
         super.onResume();
 
-//        t.setScreenName("Main Screen");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        t.setScreenName("Main Screen");
+        t.send(new HitBuilders.AppViewBuilder().build());
 
         locationService.startLocating(this);
     }

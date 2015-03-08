@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
-import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 public class TripListAdapter extends ArrayAdapter <Trip> {
@@ -16,7 +14,6 @@ public class TripListAdapter extends ArrayAdapter <Trip> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AndroidMultiArrivalDisplay multiArrivalDisplay = new AndroidMultiArrivalDisplay((MultiArrivalTrip)getItem(position));
-        return multiArrivalDisplay.getView(parent, getContext(), convertView);
+        return (getItem(position)).getView( parent, getContext(), convertView);
     }
 }
