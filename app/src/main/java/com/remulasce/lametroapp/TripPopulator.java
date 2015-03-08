@@ -62,7 +62,7 @@ public class TripPopulator {
     // ugh.
     private final Context c;
 
-    private final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
+    private final ServiceRequestHandler serviceRequestHandler = new ServiceRequestHandler();
 
     public TripPopulator( ListView list, TextView hint, ProgressBar progress, Context c ) {
         this.list = list;

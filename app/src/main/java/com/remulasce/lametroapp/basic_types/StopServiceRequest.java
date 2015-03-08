@@ -14,6 +14,7 @@ import java.util.Collection;
  *
  * It's a service request added to show what vehicles are arriving.
  */
+
 public class StopServiceRequest extends ServiceRequest {
 
     private Collection<Stop> stops;
