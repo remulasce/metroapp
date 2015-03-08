@@ -191,19 +191,19 @@ public class ArrivalNotifyService extends Service {
     		    if ( secondsTillArrival < -30 ) {
     		    
     	        	Log.e("NotifyService", "NotifyService ending because the vehicle has arrived");
-                    Tracker t = Tracking.getTracker( getApplicationContext() );
-        	        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                	        .setAction( "Service Ending" )
-                        	.setLabel( "Vehicle arrived" ).build() );
+//                    Tracker t = Tracking.getTracker( getApplicationContext() );
+//        	        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+//                	        .setAction( "Service Ending" )
+//                        	.setLabel( "Vehicle arrived" ).build() );
         	        ShutdownService();
                     return;
     		    }
     		    if ( minutesSinceEstimate > 5 ) {
                 	Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
-             		Tracker t = Tracking.getTracker( getApplicationContext() );
-                	t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                        	.setAction( "Service Ending" )
-                        	.setLabel( "Estimate timed out" ).build() );
+//             		Tracker t = Tracking.getTracker( getApplicationContext() );
+//                	t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+//                        	.setAction( "Service Ending" )
+//                        	.setLabel( "Estimate timed out" ).build() );
                 	ShutdownService();
                     return;
     		    }
@@ -341,10 +341,10 @@ public class ArrivalNotifyService extends Service {
 		if (!netTask.parametersValid()) {
 		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
 		    
-		    Tracker t = Tracking.getTracker( getApplicationContext() );
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "Bad input in notify service start" ).build() );
-            
+//		    Tracker t = Tracking.getTracker( getApplicationContext() );
+//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+//                    .setAction( "Bad input in notify service start" ).build() );
+//
 		    return Service.START_NOT_STICKY;
 		}
 		

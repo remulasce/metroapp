@@ -86,9 +86,19 @@ public class SerializedFileFieldSaver implements FieldSaver {
         {
             Log.i(TAG, "No persistent requests found");
             return emptyRequests;
-        }catch(ClassNotFoundException c)
+        }
+        catch(ClassNotFoundException c)
         {
             c.printStackTrace();
+            return emptyRequests;
+        }
+        catch(ClassCastException c)
+        {
+            c.printStackTrace();
+            return emptyRequests;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             return emptyRequests;
         }
     }

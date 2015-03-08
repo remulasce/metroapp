@@ -26,14 +26,14 @@ public class NotifyServiceManager {
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
                                          Vehicle vehicle, int secondsToNotify, Context context ) {
 
-        Tracker t = Tracking.getTracker(context);
+//        Tracker t = Tracking.getTracker(context);
         Intent i = new Intent( context, ArrivalNotifyService.class );
 
         if ( !stop.isValid() ) {
-            t.send( new HitBuilders.EventBuilder()
-                    .setCategory( "NotifyService" )
-                    .setAction( "SetNotifyService" )
-                    .setLabel( "Stop invalid" ).build() );
+//            t.send( new HitBuilders.EventBuilder()
+//                    .setCategory( "NotifyService" )
+//                    .setAction( "SetNotifyService" )
+//                    .setLabel( "Stop invalid" ).build() );
             return;
         }
 
@@ -60,22 +60,22 @@ public class NotifyServiceManager {
             context.stopService( i );
             context.startService( i );
 
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "SetNotifyService" ).build() );
+//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+//                    .setAction( "SetNotifyService" ).build() );
         } catch ( IllegalArgumentException e ) {
-            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-                    .setAction( "Bad input to notify service" ).build() );
+//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
+//                    .setAction( "Bad input to notify service" ).build() );
         }
     }
 
     public static void stopNotifyService(Context context) {
         Intent i = new Intent( context, ArrivalNotifyService.class );
-        Tracker t = Tracking.getTracker(context);
-
-        t.send( new HitBuilders.EventBuilder()
-                .setCategory( "NotifyService" )
-                .setAction( "NotifyService Stop Button" )
-                .build() );
+//        Tracker t = Tracking.getTracker(context);
+//
+//        t.send( new HitBuilders.EventBuilder()
+//                .setCategory( "NotifyService" )
+//                .setAction( "NotifyService Stop Button" )
+//                .build() );
 
         context.stopService( i );
     }

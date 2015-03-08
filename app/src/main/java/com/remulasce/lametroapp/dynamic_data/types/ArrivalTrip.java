@@ -58,7 +58,9 @@ public class ArrivalTrip extends Trip {
                 ;//+ raw;
     }
 
+    /*
     @Override
+
     public View getView(ViewGroup parent, Context context, View recycleView) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,12 +93,13 @@ public class ArrivalTrip extends Trip {
 
         return rowView;
     }
+    */
 
     public void executeAction( final Context context ) {
-        final Tracker t = Tracking.getTracker(context);
+//        final Tracker t = Tracking.getTracker(context);
 
-        t.setScreenName("Notify Confirm Dialog");
-        t.send(new HitBuilders.AppViewBuilder().build());
+//        t.setScreenName("Notify Confirm Dialog");
+//        t.send(new HitBuilders.AppViewBuilder().build());
 
         final View dialogView = View.inflate(context, R.layout.arrival_notify_dialog, null);
 
@@ -107,8 +110,8 @@ public class ArrivalTrip extends Trip {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        t.setScreenName("Notify Confirm Accept");
-                        t.send(new HitBuilders.AppViewBuilder().build());
+//                        t.setScreenName("Notify Confirm Accept");
+//                        t.send(new HitBuilders.AppViewBuilder().build());
 
                         EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
 
@@ -128,8 +131,8 @@ public class ArrivalTrip extends Trip {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        t.setScreenName("Notify Confirm Decline");
-                        t.send(new HitBuilders.AppViewBuilder().build());
+//                        t.setScreenName("Notify Confirm Decline");
+//                        t.send(new HitBuilders.AppViewBuilder().build());
                     }
                 })
                 .show();
