@@ -26,7 +26,6 @@ public class ServiceRequestHandler {
 
     private final static int UPDATE_INTERVAL = 1000;
     private final Object waitLock = new Object();
-    private boolean scrollLock = false;
 
     private final List<Trip> activeTrips = new CopyOnWriteArrayList< Trip >();
 
@@ -38,6 +37,27 @@ public class ServiceRequestHandler {
 
     public ServiceRequestHandler( ) {
 
+    }
+
+    final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
+        @Override
+        public int compare(Trip lhs, Trip rhs) {
+            return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+        }
+    };
+
+    List<Trip> sortTrips(Collection<Trip> trips) {
+        // Ugh.
+        // But, we used to do this literally inside the UI update thread.
+        // So we're coming out a little ahead.
+        List<Trip> sortedTrips = new ArrayList<Trip>(trips);
+        Collections.sort(sortedTrips, tripPriorityComparator);
+
+        return sortedTrips;
+    }
+
+    public List<Trip> GetSortedTripList() {
+        return sortTrips(activeTrips);
     }
 
     public void StartPopulating() {
@@ -192,16 +212,6 @@ public class ServiceRequestHandler {
             activeTrips.removeAll( inactiveTrips );
         }
 
-        List<Trip> sortTrips(Collection<Trip> trips) {
-            // Ugh.
-            // But, we used to do this literally inside the UI update thread.
-            // So we're coming out a little ahead.
-            List<Trip> sortedTrips = new ArrayList<Trip>(trips);
-            Collections.sort(sortedTrips, tripPriorityComparator);
-
-            return sortedTrips;
-        }
-
         private boolean couldServiceRequestsHavePending() {
             for (ServiceRequest r : serviceRequests) {
                 if (r.hasTripsToDisplay()) {
@@ -211,13 +221,6 @@ public class ServiceRequestHandler {
 
             return false;
         }
-
-        final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
-            @Override
-            public int compare(Trip lhs, Trip rhs) {
-                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
-            }
-        };
 
 
         // Tracked requests send us this when they get or update data.
