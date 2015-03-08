@@ -9,6 +9,8 @@ import junit.framework.TestCase;
 
 import org.mockito.Mockito;
 
+import static org.mockito.Mockito.when;
+
 public class PredictionManagerTest extends TestCase {
 
     private HTTPGetter network;
@@ -38,7 +40,7 @@ public class PredictionManagerTest extends TestCase {
     }
 
     public void testReceiveAnyUpdates() {
-//        when(network.getHTTPResponse(""))
+        HTTPGetter.setHTTPGetter(network);
 
         Prediction p = Mockito.mock(Prediction.class);
         //when(p.getRequestString())

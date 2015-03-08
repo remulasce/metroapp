@@ -44,12 +44,13 @@ public class TripPopulator {
     // When scrolling, don't update, because that causes visible jitter.
     private boolean scrollLock = false;
 
+    private final ServiceRequestHandler requests;
+
     private final ListView list;
     private final TextView hint;
     private final ProgressBar progress;
     private final ArrayAdapter< Trip > adapter;
-    private final List< Trip > activeTrips = new CopyOnWriteArrayList< Trip >();
-    
+
     private final Handler uiHandler;
     private UpdateRunner updateRunner;
     private Thread updateThread;
@@ -64,7 +65,8 @@ public class TripPopulator {
 
     private final ServiceRequestHandler serviceRequestHandler = new ServiceRequestHandler();
 
-    public TripPopulator( ListView list, TextView hint, ProgressBar progress, Context c ) {
+    public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, ProgressBar progress, Context c ) {
+        this.requests = requests;
         this.list = list;
         this.progress = progress;
         this.hint = hint;
@@ -162,22 +164,6 @@ public class TripPopulator {
         running = false;
     }
 
-    void rawSetServiceRequests(Collection<ServiceRequest> requests) {
-        Log.d(TAG, "Setting service requests");
-
-        serviceRequests.clear();
-        serviceRequests.addAll(requests);
-
-        synchronized (waitLock) {
-            waitLock.notify();
-        }
-    }
-
-    public void SetServiceRequests( Collection<ServiceRequest> requests) {
-        Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
-        rawSetServiceRequests(requests);
-    }
-
     /* UpdateRunner checks our (stops) list every couple seconds to remove old stops and update the display.
     * It removes stops that are no longer active, according to the stop.
     * Then it pushes the Trips it has received asynchronously in the tripUpdateCallback to the ListView.
@@ -215,9 +201,6 @@ public class TripPopulator {
 
                 long t = Tracking.startTime();
 
-                updateTrackedMap();
-                cullInvalidTrips();
-
                 updateListView();
 
                 timeSpentUpdating += Tracking.timeSpent(t);
@@ -245,111 +228,11 @@ public class TripPopulator {
             Log.i( TAG, "UpdateRunner ending" );
         }
 
-        // If we have new stops, set them to track and add them to the trackedMap.
-        // If stops have been removed, do the opposite.
-        void updateTrackedMap() {
-            Log.v(TAG, "Updating Tracked Map");
-
-            removeOldStops();
-            addNewStops();
-        }
-
-        private void addNewStops() {
-            Collection<ServiceRequest> newRequests = new ArrayList<ServiceRequest>();
-            // Add new stops
-            for ( ServiceRequest request : serviceRequests) {
-                if ( !trackedMap.containsKey( request ) ) {
-                    newRequests.add(request);
-                }
-            }
-
-            for (ServiceRequest request: newRequests) {
-                Collection<Prediction> predictions = request.makePredictions();
-
-                if (predictions != null) {
-                    Collection<PredictionUI> uis = new ArrayList<PredictionUI>();
-
-
-                    for (Prediction prediction : predictions) {
-                        if (prediction instanceof StopRouteDestinationPrediction) {
-
-                            PredictionUI pui = new SRDPUI((StopRouteDestinationPrediction) prediction);
-                            uis.add(pui);
-
-                            pui.setTripUpdateCallback(tripUpdateCallback);
-                            prediction.setUpdateCallback(pui);
-                        }
-
-                        prediction.startPredicting();
-                    }
-
-                    trackedMap.put(request, uis);
-                }
-            }
-        }
-
-        private void removeOldStops() {
-            // Remove stops that are no longer tracked
-            ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
-            // check what stops we have mapped that are no longer in UI
-            for ( Entry< ServiceRequest, Collection<PredictionUI> > t : trackedMap.entrySet() ) {
-                boolean stillTracked = false;
-                for ( ServiceRequest s : serviceRequests) {
-                    if ( s == t.getKey() ) {
-                        stillTracked = true;
-                        break;
-                    }
-                }
-                if ( !stillTracked ) {
-                    rem.add( t.getKey() );
-                }
-            }
-
-            // deactivate and remove out-scoped stops
-            for ( ServiceRequest s : rem ) {
-                Collection<PredictionUI> predictions = trackedMap.get(s);
-                for (PredictionUI p : predictions ) {
-                    p.stopPredicting();
-                }
-                trackedMap.remove(s);
-            }
-        }
-
-        // The Trip will know when its parent request has been removed.
-        void cullInvalidTrips() {
-            List< Trip > inactiveTrips = new ArrayList< Trip >();
-            for ( Trip t : activeTrips ) {
-                if ( !t.isValid() ) {
-                    inactiveTrips.add( t );
-                }
-            }
-            activeTrips.removeAll( inactiveTrips );
-        }
-
-        List<Trip> sortTrips(Collection<Trip> trips) {
-            // Ugh.
-            // But, we used to do this literally inside the UI update thread.
-            // So we're coming out a little ahead.
-            List<Trip> sortedTrips = new ArrayList<Trip>(trips);
-            Collections.sort(sortedTrips, tripPriorityComparator);
-
-            return sortedTrips;
-        }
-
-        private boolean couldServiceRequestsHavePending() {
-            for (ServiceRequest r : serviceRequests) {
-                if (r.hasTripsToDisplay()) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         // Actually push what happened to the user
         private void updateListView() {
             // We literally used to do this inside the ui update thread.
-            final List<Trip> sorted = sortTrips(activeTrips);
+            final List<Trip> sorted = requests.GetSortedTripList();
 
             uiHandler.post( new Runnable() {
                 @Override
@@ -363,9 +246,10 @@ public class TripPopulator {
                         }
                     }
 
-                    if (activeTrips.size() == 0 ) {
+                    if (sorted.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);
 
+                        /*
                         if (serviceRequests.size() != 0) {// && couldServiceRequestsHavePending()) {
                             progress.setVisibility(View.VISIBLE);
                             progress.setProgress(1);
@@ -373,6 +257,7 @@ public class TripPopulator {
                         else {
                             progress.setVisibility(View.INVISIBLE);
                         }
+                        */
 
                     } else {
                         if ( hint.getVisibility() == View.VISIBLE ) {
@@ -404,33 +289,5 @@ public class TripPopulator {
                 }
             } );
         }
-
-        final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
-            @Override
-            public int compare(Trip lhs, Trip rhs) {
-                return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
-            }
-        };
-
-
-        // Tracked requests send us this when they get or update data.
-        // In here, new Trips are added to our list of active Trips
-        final TripUpdateCallback tripUpdateCallback = new TripUpdateCallback() {
-            @Override
-            public void tripUpdated( final Trip trip ) {
-                if ( !trip.isValid() ) {
-                    Log.d(TAG, "Skipped invalid trip " + trip.getInfo());
-                    activeTrips.remove( trip );
-                    return;
-                }
-                if ( !activeTrips.contains( trip ) ) {
-                    activeTrips.add( trip );
-                    Log.d(TAG, "Adding trip to activetrips");
-                } else {
-                    Log.v(TAG, "Active trip updated");
-                }
-
-            }
-        };
     }
 }

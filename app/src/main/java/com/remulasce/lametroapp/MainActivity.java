@@ -19,9 +19,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
@@ -58,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private View networkStatusView;
     private ProgressBar tripListProgress;
 
-    private TripPopulator populator;
+    private ServiceRequestHandler requestHandler;
     private HTTPGetter network;
     private MetroStaticsProvider staticsProvider;
     private OmniAutoCompleteAdapter autoCompleteAdapter;
@@ -66,6 +63,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private RouteColorer routeColorer;
     private SerializedFileFieldSaver fieldSaver;
     private NetworkStatusReporter networkStatusReporter;
+
+    private TripPopulator tripPopulator;
 
 //    private Tracker t;
     private DrawerLayout mDrawerLayout;
@@ -185,8 +184,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     void setupActionListeners() {
-        populator = new TripPopulator( tripList, tripListHint, tripListProgress, this );
+//        requestHandler = new TripPopulator( tripList, tripListHint, tripListProgress, this );
+        requestHandler = new ServiceRequestHandler();
+        tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListProgress, this );
+
         tripList.setOnItemClickListener( tripClickListener );
+
 
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,7 +265,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onStart() {
         super.onStart();
-        populator.StartPopulating();
+        requestHandler.StartPopulating();
         PredictionManager.getInstance().resumeTracking();
 //        Logging.StartSavingLogcat(this);
     }
@@ -277,7 +280,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void onStop() {
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
-        populator.StopPopulating();
+        requestHandler.StopPopulating();
 //        Logging.StopSavingLogcat();
     }
 
@@ -302,8 +305,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     }
     @Override
-    public TripPopulator getTripPopulator() {
-        return populator;
+    public ServiceRequestHandler getTripPopulator() {
+        return requestHandler;
     }
 
     @Override
