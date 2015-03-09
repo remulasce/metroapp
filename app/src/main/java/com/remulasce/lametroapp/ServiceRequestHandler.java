@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * At this point it's basically just a list of Requests.
  * It just also lets you get all total Trips made by those requests.
- * 
+ *
  */
 
 public class ServiceRequestHandler {
