@@ -57,7 +57,13 @@ public class ServiceRequestHandler {
     }
 
     public List<Trip> GetSortedTripList() {
-        return sortTrips(activeTrips);
+        List<Trip> ret = new ArrayList<Trip>();
+
+        for (ServiceRequest request : serviceRequests) {
+            ret.addAll(request.getTrips());
+        }
+
+        return sortTrips(ret);
     }
 
     public void StartPopulating() {

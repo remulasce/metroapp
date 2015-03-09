@@ -16,7 +16,14 @@ public class TripListAdapter extends ArrayAdapter <Trip> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AndroidMultiArrivalDisplay multiArrivalDisplay = new AndroidMultiArrivalDisplay((MultiArrivalTrip)getItem(position));
-        return multiArrivalDisplay.getView(parent, getContext(), convertView);
+        Trip item1 = getItem(position);
+
+        if (item1 instanceof MultiArrivalTrip) {
+            MultiArrivalTrip item = (MultiArrivalTrip) item1;
+            AndroidMultiArrivalDisplay multiArrivalDisplay = new AndroidMultiArrivalDisplay(item);
+            return multiArrivalDisplay.getView(parent, getContext(), convertView);
+        }
+
+        return null;
     }
 }
