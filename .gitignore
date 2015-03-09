@@ -1,3 +1,6 @@
+# Custom Metro App
+start_git.bat
+
 # built application files
 *.apk
 *.ap_
