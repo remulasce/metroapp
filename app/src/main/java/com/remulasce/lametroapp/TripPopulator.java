@@ -12,27 +12,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.HitBuilders;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.display.PredictionUI;
-import com.remulasce.lametroapp.display.SRDPUI;
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
-import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
