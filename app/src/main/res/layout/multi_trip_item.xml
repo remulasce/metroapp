@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:paddingBottom="4dp"
+    android:paddingBottom="2dp"
     android:id="@+id/multi_trip_item"
     android:paddingLeft="4dp"
     android:paddingTop="2dp">
@@ -14,10 +14,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/example_station_name"
         android:layout_marginLeft="0dp"
-        android:paddingRight="50dp"
+        android:paddingRight="60dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:paddingBottom="2dp" />
 
     <TextView
         android:id="@+id/prediction_stop_distance"
@@ -35,7 +36,7 @@
         android:id="@+id/color_box"
         android:layout_width="4dp"
         android:layout_height="16dp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="14dp"
         android:background="#ffff0000"
         android:layout_above="@+id/arrival_times"
         android:layout_alignParentLeft="true"

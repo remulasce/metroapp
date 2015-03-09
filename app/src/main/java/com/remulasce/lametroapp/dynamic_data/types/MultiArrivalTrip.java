@@ -34,6 +34,7 @@ import java.util.List;
 
 public class MultiArrivalTrip extends Trip {
 
+    public static final double M_TO_MI = 0.000621371;
     private final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
@@ -107,7 +108,15 @@ public class MultiArrivalTrip extends Trip {
         LocationRetriever retriever = GlobalLocationProvider.getRetriever();
         double distance = retriever.getCurrentDistanceToStop(stop);
 
-        distance_text.setText((int)(distance * 0.000621371 * 10) / 10.0 + "mi");
+        if (distance >= 100) {
+            // No decimal places
+            distance = (int) (distance * M_TO_MI);
+        } else {
+            // One decimal place
+            distance = ( (int) (distance * M_TO_MI * 10) ) / 10.0;
+        }
+
+        distance_text.setText( distance + "mi");
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;

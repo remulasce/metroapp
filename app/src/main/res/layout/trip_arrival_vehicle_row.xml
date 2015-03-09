@@ -10,7 +10,7 @@
         android:layout_alignParentTop="true"
         android:text="@string/example_arrival_time_minutes"
         android:id="@+id/prediction_time_minutes"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="45dp"
         android:textStyle="bold" />
 
     <TextView
