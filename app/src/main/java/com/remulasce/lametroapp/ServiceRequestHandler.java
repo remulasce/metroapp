@@ -1,11 +1,11 @@
 package com.remulasce.lametroapp;
 
+import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.display.PredictionUI;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
-import com.remulasce.lametroapp.analytics.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;

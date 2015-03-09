@@ -1,14 +1,13 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
+import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.dynamic_data.PredictionManager;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-
-import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.dynamic_data.PredictionManager;
-import com.remulasce.lametroapp.basic_types.Route;
-import com.remulasce.lametroapp.basic_types.Stop;
 
 /* You make a stop prediction. It gets all the arrivals at a stop, based
  * on input. Etc.

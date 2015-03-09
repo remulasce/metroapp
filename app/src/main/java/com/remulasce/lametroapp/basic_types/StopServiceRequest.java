@@ -1,6 +1,5 @@
 package com.remulasce.lametroapp.basic_types;
 
-import com.remulasce.lametroapp.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
