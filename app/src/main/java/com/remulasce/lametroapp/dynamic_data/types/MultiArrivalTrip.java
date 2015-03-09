@@ -21,7 +21,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
-import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
@@ -35,7 +34,8 @@ import java.util.List;
 
 public class MultiArrivalTrip extends Trip {
 
-    public final StopRouteDestinationArrival parentArrival;
+    public static final double M_TO_MI = 0.000621371;
+    private final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
     private double lastDistanceToStop = 0;
@@ -65,8 +65,219 @@ public class MultiArrivalTrip extends Trip {
         return stop_ + destination;
     }
 
+    @Override
+    public View getView(ViewGroup parent, Context context, View recycleView) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-    public int getTime(int seconds, EditText time) {
+        RelativeLayout rowView;
+
+        if (recycleView != null && recycleView.getId() == R.id.multi_trip_item) {
+            rowView = (RelativeLayout)recycleView;
+        } else {
+            rowView = (RelativeLayout) inflater.inflate(R.layout.multi_trip_item, parent, false);
+        }
+
+        TextView stop_text = (TextView) rowView.findViewById(R.id.prediction_stop_name);
+        TextView route_text = (TextView) rowView.findViewById(R.id.prediction_destination_name);
+        TextView distance_text = (TextView) rowView.findViewById(R.id.prediction_stop_distance);
+        View color_box = rowView.findViewById(R.id.color_box);
+
+        if (parentArrival.getRoute().getColor() != null) {
+            String color = parentArrival.getRoute().getColor().color;
+            try {
+                color_box.setVisibility(View.VISIBLE);
+                color_box.setBackgroundColor(Color.parseColor(color));
+            } catch (IllegalArgumentException e) {
+                color_box.setVisibility(View.INVISIBLE);
+                color_box.setBackgroundColor(Color.parseColor("white"));
+            }
+        } else {
+            color_box.setVisibility(View.INVISIBLE);
+            color_box.setBackgroundColor(Color.parseColor("white"));
+        }
+
+        Route route = parentArrival.getRoute();
+        Stop stop = parentArrival.getStop();
+        Destination dest = parentArrival.getDirection();
+
+        String routeString = route.getString();
+        String stopString = stop.getStopName();
+        String destString = dest.getString();
+
+        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
+        double distance = retriever.getCurrentDistanceToStop(stop);
+
+        if (distance >= 100) {
+            // No decimal places
+            distance = (int) (distance * M_TO_MI);
+        } else {
+            // One decimal place
+            distance = ( (int) (distance * M_TO_MI * 10) ) / 10.0;
+        }
+
+        distance_text.setText( distance + "mi");
+
+        boolean destinationStartsWithNum = destString.startsWith( routeString );
+        String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
+
+        stop_text.setText(stopString);
+        route_text.setText(routeDestString);
+
+
+        LinearLayout timesLayout = (LinearLayout) rowView.findViewById(R.id.arrival_times);
+
+        List<RelativeLayout> updateViews = new ArrayList<RelativeLayout>();
+        // If we change the size of the view, we should invalidate it and redraw.
+        boolean sizeChanged = false;
+        // Find all the arrival rows we can reuse in this view.
+        for (int i = 0; i < timesLayout.getChildCount(); i++) {
+            View v = timesLayout.getChildAt(i);
+
+            Object tag = v.getTag();
+            if (tag instanceof Arrival) {
+                updateViews.add((RelativeLayout) v);
+            }
+        }
+
+        // Get all the Arrivals displayed
+        for (Arrival a : parentArrival.getArrivals()) {
+
+            RelativeLayout updateTimeView;
+
+            int seconds = (int) a.getEstimatedArrivalSeconds();
+            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+
+            // If the bus already arrived, don't add the display
+            if (seconds <= 0) {
+                continue;
+            }
+            // If there's recycled views to use
+            if (updateViews.size() > 0) {
+                updateTimeView = updateViews.get(0);
+                updateViews.remove(0);
+            }
+            // If there's no recycled views left, make one.
+            else {
+                sizeChanged = true;
+                updateTimeView = (RelativeLayout) inflater.inflate(R.layout.trip_arrival_vehicle_row, timesLayout, false);
+                updateTimeView.setTag(a);
+
+                timesLayout.addView(updateTimeView);
+            }
+
+            TextView prediction_text_minutes = (TextView) updateTimeView.findViewById(R.id.prediction_time_minutes);
+            TextView prediction_text_seconds = (TextView) updateTimeView.findViewById(R.id.prediction_time_seconds);
+            TextView vehicle_text = (TextView) updateTimeView.findViewById(R.id.prediction_vehicle);
+
+
+            prediction_text_minutes.setText(LaMetroUtil.standaloneTimeToDisplay(seconds));
+            prediction_text_seconds.setText(LaMetroUtil.standaloneSecondsRemainderTime(seconds));
+
+            vehicle_text.setText(vehicle);
+
+        }
+
+        // Remove extra recycled arrivals
+        for (RelativeLayout r : updateViews) {
+            sizeChanged = true;
+            timesLayout.removeView(r);
+        }
+
+        // This might not actually be necessary.
+        if (sizeChanged) {
+            timesLayout.requestLayout();
+            timesLayout.invalidate();
+
+            rowView.requestLayout();
+            rowView.invalidate();
+        }
+
+        if (parentArrival.isInScope()) {
+            rowView.setVisibility(View.VISIBLE);
+        } else {
+            rowView.setVisibility(View.INVISIBLE);
+        }
+
+        return rowView;
+    }
+
+    public void executeAction( final Context context ) {
+        final Tracker t = Tracking.getTracker(context);
+
+        t.setScreenName("Notify Confirm Dialog");
+        t.send(new HitBuilders.AppViewBuilder().build());
+
+        final View dialogView = View.inflate(context, R.layout.multi_arrival_notify_dialog, null);
+
+        RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
+
+
+        for (Arrival a : parentArrival.getArrivals()) {
+            if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {
+                RadioButton button = new RadioButton(context);
+                button.setText("Vehicle " + a.getVehicleNum().getString() + " " + LaMetroUtil.timeToDisplay((int)a.getEstimatedArrivalSeconds()));
+                button.setTag(a);
+
+                radios.addView(button);
+            }
+        }
+
+        RadioButton first = (RadioButton)radios.getChildAt(0);
+        if (first != null) {
+            radios.check(first.getId());
+        }
+
+        launchNotificationConfirmation(context, t, dialogView);
+    }
+
+    private void launchNotificationConfirmation(final Context context, final Tracker t, final View dialogView) {
+        final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+        final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
+
+        time.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                InputMethodManager imm = (InputMethodManager)context.getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                return true;
+            }
+        });
+
+        setTrackingEventListeners(time, vehicleRadio, t);
+
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.notify_confirmation_title))
+                .setView( dialogView )
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        t.setScreenName("Notify Confirm Accept");
+                        t.send(new HitBuilders.AppViewBuilder().build());
+
+                        Vehicle vehicle;
+                        int seconds = 120;
+
+                        seconds = getTime(seconds, time);
+                        vehicle = getVehicle(vehicleRadio, dialogView);
+
+                        NotifyServiceManager.SetNotifyService(parentArrival.stop, parentArrival.route,
+                                parentArrival.destination, vehicle, seconds, context);
+                    }
+
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        t.setScreenName("Notify Confirm Decline");
+                        t.send(new HitBuilders.AppViewBuilder().build());
+                    }
+                })
+                .show();
+    }
+
+    private int getTime(int seconds, EditText time) {
         try {
             // Add 60 for rounding.
             seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
@@ -76,7 +287,7 @@ public class MultiArrivalTrip extends Trip {
         return seconds;
     }
 
-    public Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
+    private Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
         Vehicle vehicle = null;
 
         if (vehicleRadio.getCheckedRadioButtonId() != -1) {
@@ -92,11 +303,7 @@ public class MultiArrivalTrip extends Trip {
         return vehicle;
     }
 
-    public void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
-        if (t == null) {
-            Log.w("MultiArrivalTrip", "Null tracker set");
-            return;
-        }
+    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio, final Tracker t) {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

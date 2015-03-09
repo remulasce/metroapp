@@ -1,11 +1,29 @@
 package com.remulasce.lametroapp.analytics;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.remulasce.lametroapp.R;
 
 import java.util.HashMap;
 
 public class Tracking {
 
-    private static Tracking t;
+	private static Tracker t;
+	
+	public static Tracker getTracker( Context c ) {
+		if (t == null) {
+	      GoogleAnalytics analytics = GoogleAnalytics.getInstance( c );
+
+	      t = analytics.newTracker(R.xml.lametro_tracker);
+          t.enableAdvertisingIdCollection(true);
+		}
+
+		return t;
+	}
 
     // in nanoseconds (1/Billionth second) from nanotime
 	public static long startTime() {
@@ -67,10 +85,17 @@ public class Tracking {
 	private static void sendRawTime(String category, String name, String label, long timeSpent) {
 	    Log.v(category, name+" "+label+": "+timeSpent);
 
-        if (t != null) {
-            t.sendRawTime(category, name, label, timeSpent);
-        }
-
+	    if (t == null) {
+	        Log.w(category, "No tracker set, unable to send analytics");
+	        return;
+	    }
+	    
+        t.send( new HitBuilders.TimingBuilder()
+        .setCategory( category )
+        .setValue( timeSpent )
+        .setVariable( name )
+        .setLabel( label )
+        .build() );
 	}
 	
 }

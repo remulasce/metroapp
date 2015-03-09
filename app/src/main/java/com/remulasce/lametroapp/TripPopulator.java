@@ -9,6 +9,7 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,10 +17,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
-import com.remulasce.lametroapp.display.PredictionUI;
-import com.remulasce.lametroapp.display.SRDPUI;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.dynamic_data.types.TripUpdateCallback;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
@@ -94,11 +92,11 @@ public class TripPopulator {
                                         }
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
-//                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
-//                                                .setCategory( "TripPopulator" )
-//                                                .setAction( "Dismiss Trip" )
-//                                                .setLabel( "Index out of bounds" )
-//                                                .build() );
+                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
+                                                .setCategory( "TripPopulator" )
+                                                .setAction( "Dismiss Trip" )
+                                                .setLabel( "Index out of bounds" )
+                                                .build() );
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
@@ -195,7 +193,7 @@ public class TripPopulator {
     protected class UpdateRunner implements Runnable {
         boolean run = true;
 
-        final Map<ServiceRequest, Collection<PredictionUI> > trackedMap = new HashMap< ServiceRequest, Collection<PredictionUI> >();
+        final Map<ServiceRequest, Collection<Prediction> > trackedMap = new HashMap< ServiceRequest, Collection<Prediction> >();
 
         // Track timing
         long timeSpentUpdating = 0;
@@ -267,23 +265,12 @@ public class TripPopulator {
                 Collection<Prediction> predictions = request.makePredictions();
 
                 if (predictions != null) {
-                    Collection<PredictionUI> uis = new ArrayList<PredictionUI>();
-
+                    trackedMap.put(request, predictions);
 
                     for (Prediction prediction : predictions) {
-                        if (prediction instanceof StopRouteDestinationPrediction) {
-
-                            PredictionUI pui = new SRDPUI((StopRouteDestinationPrediction) prediction);
-                            uis.add(pui);
-
-                            pui.setTripUpdateCallback(tripUpdateCallback);
-                            prediction.setUpdateCallback(pui);
-                        }
-
+                        prediction.setTripCallback(tripUpdateCallback);
                         prediction.startPredicting();
                     }
-
-                    trackedMap.put(request, uis);
                 }
             }
         }
@@ -292,7 +279,7 @@ public class TripPopulator {
             // Remove stops that are no longer tracked
             ArrayList< ServiceRequest > rem = new ArrayList< ServiceRequest >();
             // check what stops we have mapped that are no longer in UI
-            for ( Entry< ServiceRequest, Collection<PredictionUI> > t : trackedMap.entrySet() ) {
+            for ( Entry< ServiceRequest, Collection<Prediction> > t : trackedMap.entrySet() ) {
                 boolean stillTracked = false;
                 for ( ServiceRequest s : serviceRequests) {
                     if ( s == t.getKey() ) {
@@ -307,8 +294,8 @@ public class TripPopulator {
 
             // deactivate and remove out-scoped stops
             for ( ServiceRequest s : rem ) {
-                Collection<PredictionUI> predictions = trackedMap.get(s);
-                for (PredictionUI p : predictions ) {
+                Collection<Prediction> predictions = trackedMap.get(s);
+                for (Prediction p : predictions ) {
                     p.stopPredicting();
                 }
                 trackedMap.remove(s);
