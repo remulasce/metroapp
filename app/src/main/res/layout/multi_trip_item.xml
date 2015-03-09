@@ -28,7 +28,8 @@
         android:text="10.1mi"
         android:layout_alignBaseline="@id/prediction_stop_name"
         android:layout_alignRight="@+id/prediction_stop_name"
-        android:layout_alignEnd="@+id/prediction_stop_name" />
+        android:layout_alignEnd="@+id/prediction_stop_name"
+        android:paddingRight="10dp" />
 
     <View
         android:id="@+id/color_box"
