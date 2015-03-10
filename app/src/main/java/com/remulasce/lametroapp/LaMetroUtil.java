@@ -1,22 +1,21 @@
 package com.remulasce.lametroapp;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.remulasce.lametroapp.basic_types.Destination;
+import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.basic_types.Vehicle;
+import com.remulasce.lametroapp.dynamic_data.types.Arrival;
+import com.remulasce.lametroapp.static_data.RouteColorer;
+import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-
-import com.remulasce.lametroapp.dynamic_data.types.Arrival;
-import com.remulasce.lametroapp.basic_types.Destination;
-import com.remulasce.lametroapp.basic_types.Route;
-import com.remulasce.lametroapp.basic_types.Stop;
-import com.remulasce.lametroapp.basic_types.Vehicle;
-import com.remulasce.lametroapp.static_data.RouteColorer;
-import com.remulasce.lametroapp.static_data.StopLocationTranslator;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";

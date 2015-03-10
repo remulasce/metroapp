@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.basic_types;
 
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -46,7 +46,7 @@ public abstract class ServiceRequest implements Serializable {
         return true;
     }
 
-    public abstract Collection<Prediction> makePredictions();
+    public abstract Collection<Trip> getTrips();
     public abstract void restoreTrips();
     public abstract void cancelRequest();
 

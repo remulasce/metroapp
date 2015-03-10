@@ -33,7 +33,7 @@ public class StopRouteDestinationArrival implements Serializable {
 
     private final Collection<Arrival> arrivals;
 
-//    private final Trip trip;
+    private final Trip trip;
 
     private boolean isInScope = false;
 
@@ -43,7 +43,7 @@ public class StopRouteDestinationArrival implements Serializable {
         this.destination = d;
 
         arrivals = new CopyOnWriteArrayList<Arrival>();
-//        trip = new MultiArrivalTrip(this);
+        trip = new MultiArrivalTrip(this);
 
         Log.d(TAG, "New StopRouteDestinationArrival: "+s+" "+r+" "+d);
     }
@@ -153,9 +153,9 @@ public class StopRouteDestinationArrival implements Serializable {
         return destination;
     }
 
-//    public Trip getTrip() {
-//        return trip;
-//    }
+    public Trip getTrip() {
+        return trip;
+    }
 
     public void setScope(boolean inScope) {
         this.isInScope = inScope;

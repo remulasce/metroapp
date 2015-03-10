@@ -1,7 +1,7 @@
 package com.remulasce.lametroapp.platform_support;
 
-import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,9 +23,10 @@ import java.io.InputStreamReader;
  * Probably just remake your own kind of thing on your branch.
  *
  */
-public class Network {
+public class AndroidApacheHTTP extends HTTPGetter{
 
-    public static String sendHTTPRequest(String request, NetworkStatusReporter statusReporter) {
+    @Override
+    public String doGetHTTPResponse(String request, NetworkStatusReporter statusReporter) {
         StringBuilder builder = new StringBuilder();
         HttpClient client = new DefaultHttpClient();
         String URI = request;
@@ -60,5 +61,16 @@ public class Network {
             e.printStackTrace();
         }
         return builder.toString();
+    }
+
+
+    // Singleton.
+    private static AndroidApacheHTTP network;
+    public static AndroidApacheHTTP getNetwork() {
+        if (network == null) {
+            network = new AndroidApacheHTTP();
+        }
+
+        return network;
     }
 }

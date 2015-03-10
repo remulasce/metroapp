@@ -1,7 +1,9 @@
 package com.remulasce.lametroapp.basic_types;
 
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
+import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,6 +16,7 @@ import java.util.Collection;
  *
  * It's a service request added to show what vehicles are arriving.
  */
+
 public class StopServiceRequest extends ServiceRequest {
 
     private Collection<Stop> stops;
@@ -38,6 +41,23 @@ public class StopServiceRequest extends ServiceRequest {
 
         return true;
     }
+
+    @Override
+    public Collection<Trip> getTrips() {
+        Collection<Trip> trips = new ArrayList<Trip>();
+
+        for (Prediction p : this.makePredictions()) {
+            if (p instanceof StopRouteDestinationPrediction) {
+
+                for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction)p).getArrivals()) {
+                    trips.add(srda.getTrip());
+                }
+            }
+        }
+
+        return trips;
+    }
+
     @Override
     public void cancelRequest() {
         for (Prediction p : predictions) {
@@ -74,7 +94,7 @@ public class StopServiceRequest extends ServiceRequest {
         updateAvailable = false;
     }
 
-    @Override
+//    @Override
     public Collection<Prediction> makePredictions() {
         // Assume Stop
         if (!isValid()) {
@@ -83,7 +103,9 @@ public class StopServiceRequest extends ServiceRequest {
 
         if (predictions.isEmpty()) {
             for (Stop s : stops) {
-                predictions.add(new StopRouteDestinationPrediction(s, null));
+                StopRouteDestinationPrediction stopRouteDestinationPrediction = new StopRouteDestinationPrediction(s, null);
+                predictions.add(stopRouteDestinationPrediction);
+                stopRouteDestinationPrediction.startPredicting();
             }
         }
 

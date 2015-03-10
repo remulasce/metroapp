@@ -3,9 +3,6 @@ package com.remulasce.lametroapp;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;

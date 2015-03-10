@@ -5,9 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
-
 /**
  * Created by Remulasce on 3/5/2015.
  *
