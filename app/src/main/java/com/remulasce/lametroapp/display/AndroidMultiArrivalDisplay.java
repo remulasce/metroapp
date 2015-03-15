@@ -20,6 +20,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -173,10 +174,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
     }
 
     public void executeAction( final Context context ) {
-//        final Tracker t = Tracking.getTracker(context);
-
-//        t.setScreenName("Notify Confirm Dialog");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        Tracking.setScreenName("Notify Confirm Dialog");
 
         final View dialogView = View.inflate(context, R.layout.multi_arrival_notify_dialog, null);
 
@@ -223,8 +221,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        t.setScreenName("Notify Confirm Accept");
-//                        t.send(new HitBuilders.AppViewBuilder().build());
+                        Tracking.setScreenName("Notify Confirm Accept");
 
                         Vehicle vehicle;
                         int seconds = 120;
@@ -240,8 +237,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        t.setScreenName("Notify Confirm Decline");
-//                        t.send(new HitBuilders.AppViewBuilder().build());
+                        Tracking.setScreenName("Notify Confirm Decline");
                     }
                 })
                 .show();

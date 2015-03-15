@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -90,10 +91,7 @@ public class ArrivalTrip extends Trip {
     */
 
     public void executeAction( final Context context ) {
-//        final Tracker t = Tracking.getTracker(context);
-
-//        t.setScreenName("Notify Confirm Dialog");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        Tracking.setScreenName("Notify Confirm Dialog");
 
         final View dialogView = View.inflate(context, R.layout.arrival_notify_dialog, null);
 
@@ -104,8 +102,7 @@ public class ArrivalTrip extends Trip {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        t.setScreenName("Notify Confirm Accept");
-//                        t.send(new HitBuilders.AppViewBuilder().build());
+                        Tracking.setScreenName("Notify Confirm Accept");
 
                         EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
 
@@ -125,8 +122,7 @@ public class ArrivalTrip extends Trip {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        t.setScreenName("Notify Confirm Decline");
-//                        t.send(new HitBuilders.AppViewBuilder().build());
+                        Tracking.setScreenName("Notify Confirm Decline");
                     }
                 })
                 .show();
