@@ -5,9 +5,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
@@ -73,22 +70,6 @@ public class MultiArrivalTrip extends Trip {
             }
         }
         return vehicle;
-    }
-
-    public void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio) {
-        time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Tracking.sendEvent("Notify Confirmation", "Time Changed");
-            }
-        });
-
-        vehicleRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                Tracking.sendEvent("Notify Confirmation", "Vehicle Changed");
-            }
-        });
     }
 
     public int hashCode() {

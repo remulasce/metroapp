@@ -199,6 +199,22 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         launchNotificationConfirmation(context, dialogView);
     }
 
+    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio) {
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Tracking.sendEvent("Notify Confirmation", "Time Changed");
+            }
+        });
+
+        vehicleRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                Tracking.sendEvent("Notify Confirmation", "Vehicle Changed");
+            }
+        });
+    }
+
     private void launchNotificationConfirmation(final Context context, final View dialogView) {
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
@@ -213,7 +229,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             }
         });
 
-        trip.setTrackingEventListeners(time, vehicleRadio);
+        setTrackingEventListeners(time, vehicleRadio);
 
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
