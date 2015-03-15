@@ -78,10 +78,7 @@ public class OmniBarInputHandler {
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            t.send(new HitBuilders.EventBuilder()
-//                    .setCategory("AutoComplete")
-//                    .setAction("AutoComplete Selected")
-//                    .build());
+            Tracking.sendEvent("AutoComplete", "AutoComplete Selected");
             long t = Tracking.startTime();
 
             String requestText = omniField.getText().toString();
@@ -172,11 +169,7 @@ public class OmniBarInputHandler {
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
 
-//                    t.send(new HitBuilders.EventBuilder()
-//                            .setCategory("AutoComplete")
-//                            .setAction("AutoComplete Add")
-//                            .setLabel("StopID")
-//                            .build());
+                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "StopID");
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
@@ -189,38 +182,23 @@ public class OmniBarInputHandler {
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
 
-//                    t.send(new HitBuilders.EventBuilder()
-//                            .setCategory("AutoComplete")
-//                            .setAction("AutoComplete Add")
-//                            .setLabel("StopName")
-//                            .build());
+                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "StopName");
                 }
                 // Not valid.
                 else {
                     Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
                     Toast.makeText(c, "Invalid stop name", Toast.LENGTH_SHORT).show();
 
-//                    t.send(new HitBuilders.EventBuilder()
-//                            .setCategory("AutoComplete")
-//                            .setAction("AutoComplete Add")
-//                            .setLabel("Invalid")
-//                            .build());
+                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Invalid");
                 }
             } catch (Exception e) {
-//                t.send(new HitBuilders.EventBuilder()
-//                        .setCategory("AutoComplete")
-//                        .setAction("AutoComplete Add")
-//                        .setLabel("Exception")
-//                        .build());
+                Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Exception");
             }
         }
     }
 
     public void clearFields() {
         omniField.setText("");
-//        t.send( new HitBuilders.EventBuilder()
-//                .setCategory( "MainScreen" )
-//                .setAction( "Clear Fields" )
-//                .build() );
+        Tracking.sendEvent("MainScreen", "Clear Fields");
     }
 }
