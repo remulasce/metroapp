@@ -68,7 +68,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private TripPopulator tripPopulator;
 
-//    private Tracker t;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -177,7 +176,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     void setupActionListeners() {
-//        requestHandler = new TripPopulator( tripList, tripListHint, tripListProgress, this );
         requestHandler = new ServiceRequestHandler();
         tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListProgress, this );
 
@@ -255,7 +253,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         requestHandler.StartPopulating();
         tripPopulator.StartPopulating();
         PredictionManager.getInstance().resumeTracking();
-//        Logging.StartSavingLogcat(this);
     }
 
     @Override
@@ -270,7 +267,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         PredictionManager.getInstance().pauseTracking();
         requestHandler.StopPopulating();
         tripPopulator.StopPopulating();
-//        Logging.StopSavingLogcat();
     }
 
     @Override
