@@ -50,10 +50,7 @@ public class TripPopulator {
     private final SwipeDismissListViewTouchListener dismissListener;
     private final AbsListView.OnScrollListener scrollListener;
 
-    // ugh.
     private final Context c;
-
-    private final ServiceRequestHandler serviceRequestHandler = new ServiceRequestHandler();
 
     public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, ProgressBar progress, Context c ) {
         this.requests = requests;
@@ -86,11 +83,7 @@ public class TripPopulator {
                                         }
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
-//                                        Tracking.getTracker(context).send( new HitBuilders.EventBuilder()
-//                                                .setCategory( "TripPopulator" )
-//                                                .setAction( "Dismiss Trip" )
-//                                                .setLabel( "Index out of bounds" )
-//                                                .build() );
+                                        Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Index out of bounds");
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
