@@ -61,6 +61,18 @@ public class Tracking {
         }
     }
 
+    public static void sendEvent(String category, String action) {
+        if (t != null) {
+            t.do_sendEvent(category, action, null);
+        }
+    }
+    public static void sendEvent(String category, String action, String label) {
+        if (t != null) {
+            t.do_sendEvent(category, action, label);
+        }
+    }
+
+
     // sendUITime for stuff that happens as direct user input, and should be individually tracked.
 	public static void sendUITime( String name, String label, long startTime ) {
 	    sendTime( "UITiming", name, label, startTime );
@@ -86,4 +98,5 @@ public class Tracking {
 
     public void do_setScreenName(String name) {}
     public void do_sendRawTime(String category, String name, String label, long timeSpent) {}
+    public void do_sendEvent(String category, String action, String label) {}
 }
