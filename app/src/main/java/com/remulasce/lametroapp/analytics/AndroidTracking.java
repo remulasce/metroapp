@@ -22,6 +22,7 @@ public class AndroidTracking extends Tracking {
 
         t = analytics.newTracker(R.xml.lametro_tracker);
         t.enableAdvertisingIdCollection(true);
+        t.enableExceptionReporting(true);
     }
 
 
