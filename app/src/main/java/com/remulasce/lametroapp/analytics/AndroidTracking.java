@@ -59,6 +59,15 @@ public class AndroidTracking extends Tracking {
     }
 
     @Override
+    public void do_sendEvent(String category, String action, String label) {
+        t.send( new HitBuilders.EventBuilder()
+                .setCategory( category )
+                .setAction( action )
+                .setLabel( label )
+                .build() );
+    }
+
+    @Override
     public void do_setScreenName(String name) {
         t.setScreenName(name);
         t.send(new HitBuilders.AppViewBuilder().build());

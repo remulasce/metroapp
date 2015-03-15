@@ -140,14 +140,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-
-//                t.send(new HitBuilders .EventBuilder()
-//                        .setCategory("About Page")
-//                        .setAction("Pane Opened")
-//                        .build());
-//
-//                t.setScreenName("About Page");
-//                t.send(new HitBuilders.AppViewBuilder().build());
+                Tracking.setScreenName("About Page");
+                Tracking.sendEvent("About Page", "Pane Opened");
             }
         };
 
@@ -158,11 +152,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                t.send( new HitBuilders.EventBuilder()
-//                        .setCategory( "Monetization" )
-//                        .setAction( "Donate Opened" )
-//                        .setLabel( "About Page Button" )
-//                        .build() );
+                Tracking.sendEvent("Monetization", "Donate Opened", "About Page Button");
+
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
                 startActivity(browserIntent);
             }
@@ -245,11 +236,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         if (requestFragment.numRequests() > 0) { label = "Form Filled From Preferences"; }
 
-//        t.send( new HitBuilders.EventBuilder()
-//                .setCategory( "MainScreen" )
-//                .setAction( "Field Population" )
-//                .setLabel( label )
-//                .build() );
+        Tracking.sendEvent("MainScreen", "Field Population", label);
     }
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
