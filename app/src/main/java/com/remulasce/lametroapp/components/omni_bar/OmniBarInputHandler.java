@@ -79,10 +79,10 @@ public class OmniBarInputHandler {
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            t.send(new HitBuilders.EventBuilder()
-                    .setCategory("AutoComplete")
-                    .setAction("AutoComplete Selected")
-                    .build());
+//            t.send(new HitBuilders.EventBuilder()
+//                    .setCategory("AutoComplete")
+//                    .setAction("AutoComplete Selected")
+//                    .build());
             long t = Tracking.startTime();
 
             String requestText = omniField.getText().toString();
@@ -173,11 +173,11 @@ public class OmniBarInputHandler {
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
 
-                    t.send(new HitBuilders.EventBuilder()
-                            .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add")
-                            .setLabel("StopID")
-                            .build());
+//                    t.send(new HitBuilders.EventBuilder()
+//                            .setCategory("AutoComplete")
+//                            .setAction("AutoComplete Add")
+//                            .setLabel("StopID")
+//                            .build());
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
@@ -190,38 +190,38 @@ public class OmniBarInputHandler {
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
 
-                    t.send(new HitBuilders.EventBuilder()
-                            .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add")
-                            .setLabel("StopName")
-                            .build());
+//                    t.send(new HitBuilders.EventBuilder()
+//                            .setCategory("AutoComplete")
+//                            .setAction("AutoComplete Add")
+//                            .setLabel("StopName")
+//                            .build());
                 }
                 // Not valid.
                 else {
                     Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
                     Toast.makeText(c, "Invalid stop name", Toast.LENGTH_SHORT).show();
 
-                    t.send(new HitBuilders.EventBuilder()
-                            .setCategory("AutoComplete")
-                            .setAction("AutoComplete Add")
-                            .setLabel("Invalid")
-                            .build());
+//                    t.send(new HitBuilders.EventBuilder()
+//                            .setCategory("AutoComplete")
+//                            .setAction("AutoComplete Add")
+//                            .setLabel("Invalid")
+//                            .build());
                 }
             } catch (Exception e) {
-                t.send(new HitBuilders.EventBuilder()
-                        .setCategory("AutoComplete")
-                        .setAction("AutoComplete Add")
-                        .setLabel("Exception")
-                        .build());
+//                t.send(new HitBuilders.EventBuilder()
+//                        .setCategory("AutoComplete")
+//                        .setAction("AutoComplete Add")
+//                        .setLabel("Exception")
+//                        .build());
             }
         }
     }
 
     public void clearFields() {
         omniField.setText("");
-        t.send( new HitBuilders.EventBuilder()
-                .setCategory( "MainScreen" )
-                .setAction( "Clear Fields" )
-                .build() );
+//        t.send( new HitBuilders.EventBuilder()
+//                .setCategory( "MainScreen" )
+//                .setAction( "Clear Fields" )
+//                .build() );
     }
 }

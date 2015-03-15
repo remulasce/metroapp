@@ -84,11 +84,6 @@ public class StopPrediction extends Prediction {
         return firstArrival.isInScope();
     }
 
-    @Override
-    public void setTripCallback( TripUpdateCallback callback ) {
-        this.callback = callback;
-
-    }
 
     @Override
     public String getRequestString() {
@@ -149,9 +144,14 @@ public class StopPrediction extends Prediction {
                 else {
                     a.setEstimatedArrivalSeconds( newA.getEstimatedArrivalSeconds() );
                 }
-                callback.tripUpdated( a.getFirstTrip() );
+                callback.tripUpdated(a.getFirstTrip());
             }
         }
+    }
+
+    @Override
+    public void setUpdateCallback(PredictionUpdateCallback callback) {
+
     }
 
     @Override
