@@ -17,6 +17,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -183,21 +184,16 @@ public class ArrivalNotifyService extends Service {
 	        
     		if ( netTask.runNum > 5 ) {
     		    if ( secondsTillArrival < -30 ) {
-    		    
     	        	Log.e("NotifyService", "NotifyService ending because the vehicle has arrived");
-//                    Tracker t = Tracking.getTracker( getApplicationContext() );
-//        	        t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-//                	        .setAction( "Service Ending" )
-//                        	.setLabel( "Vehicle arrived" ).build() );
+
+                    Tracking.sendEvent("NotifyService", "Service Ending", "Vehicle arrived");
         	        ShutdownService();
                     return;
     		    }
     		    if ( minutesSinceEstimate > 5 ) {
                 	Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
-//             		Tracker t = Tracking.getTracker( getApplicationContext() );
-//                	t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-//                        	.setAction( "Service Ending" )
-//                        	.setLabel( "Estimate timed out" ).build() );
+
+                    Tracking.sendEvent("NotifyService", "Service Ending", "Estimate timed out");
                 	ShutdownService();
                     return;
     		    }
@@ -334,11 +330,8 @@ public class ArrivalNotifyService extends Service {
 		
 		if (!netTask.parametersValid()) {
 		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
-		    
-//		    Tracker t = Tracking.getTracker( getApplicationContext() );
-//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-//                    .setAction( "Bad input in notify service start" ).build() );
-//
+            Tracking.sendEvent("NotifyService", "Bad input in notify service start");
+
 		    return Service.START_NOT_STICKY;
 		}
 		

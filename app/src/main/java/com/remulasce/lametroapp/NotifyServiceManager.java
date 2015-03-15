@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.content.Context;
 import android.content.Intent;
 
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -23,14 +24,11 @@ public class NotifyServiceManager {
     public static void SetNotifyService( Stop stop, Route route, Destination destination,
                                          Vehicle vehicle, int secondsToNotify, Context context ) {
 
-//        Tracker t = Tracking.getTracker(context);
         Intent i = new Intent( context, ArrivalNotifyService.class );
 
         if ( !stop.isValid() ) {
-//            t.send( new HitBuilders.EventBuilder()
-//                    .setCategory( "NotifyService" )
-//                    .setAction( "SetNotifyService" )
-//                    .setLabel( "Stop invalid" ).build() );
+            Tracking.sendEvent("NotifyService", "SetNotifyService", "Stop invalid");
+
             return;
         }
 
@@ -57,22 +55,16 @@ public class NotifyServiceManager {
             context.stopService( i );
             context.startService( i );
 
-//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-//                    .setAction( "SetNotifyService" ).build() );
+            Tracking.sendEvent("NotifyService", "SetNotifyService");
         } catch ( IllegalArgumentException e ) {
-//            t.send( new HitBuilders.EventBuilder().setCategory( "NotifyService" )
-//                    .setAction( "Bad input to notify service" ).build() );
+            Tracking.sendEvent("NotifyService", "Bad input to notify service");
         }
     }
 
     public static void stopNotifyService(Context context) {
         Intent i = new Intent( context, ArrivalNotifyService.class );
-//        Tracker t = Tracking.getTracker(context);
-//
-//        t.send( new HitBuilders.EventBuilder()
-//                .setCategory( "NotifyService" )
-//                .setAction( "NotifyService Stop Button" )
-//                .build() );
+
+        Tracking.sendEvent("NotifyService", "NotifyService Stop Button");
 
         context.stopService( i );
     }
