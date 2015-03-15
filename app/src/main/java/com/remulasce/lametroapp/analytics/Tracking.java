@@ -50,6 +50,17 @@ public class Tracking {
             }
         }
     }
+
+    public static void setTracker(Tracking tracker) {
+        t = tracker;
+    }
+
+    public static void setScreenName(String name) {
+        if (t != null) {
+            t.do_setScreenName(name);
+        }
+    }
+
     // sendUITime for stuff that happens as direct user input, and should be individually tracked.
 	public static void sendUITime( String name, String label, long startTime ) {
 	    sendTime( "UITiming", name, label, startTime );
@@ -68,9 +79,11 @@ public class Tracking {
 	    Log.v(category, name+" "+label+": "+timeSpent);
 
         if (t != null) {
-            t.sendRawTime(category, name, label, timeSpent);
+            t.do_sendRawTime(category, name, label, timeSpent);
         }
-
 	}
-	
+
+
+    public void do_setScreenName(String name) {}
+    public void do_sendRawTime(String category, String name, String label, long timeSpent) {}
 }

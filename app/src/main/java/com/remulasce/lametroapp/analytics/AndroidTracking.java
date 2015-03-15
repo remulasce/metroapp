@@ -11,31 +11,19 @@ import java.util.HashMap;
 
 /**
  * Created by Remulasce on 3/5/2015.
+ *
+ * It's basically a straight pass-through to Google Analytics.
  */
 public class AndroidTracking extends Tracking {
 
     private Tracker t;
-    public Tracker do_getTracker( Context c ) {
-        if (t == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance( c );
+    public AndroidTracking( Context c ) {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance( c );
 
-            t = analytics.newTracker(R.xml.lametro_tracker);
-            t.enableAdvertisingIdCollection(true);
-        }
-
-        return t;
+        t = analytics.newTracker(R.xml.lametro_tracker);
+        t.enableAdvertisingIdCollection(true);
     }
 
-    // in nanoseconds (1/Billionth second) from nanotime
-    public static long do_startTime() {
-        return System.nanoTime();
-    }
-
-
-    class AveragedDatum {
-        public double totalValue = 0;
-        public double numPoints = 0;
-    }
 
     private final HashMap<String, HashMap<String, AveragedDatum>> averagedValues = new HashMap<String, HashMap<String, AveragedDatum>>();
     // Avg. for like frame updates that are too numerous to send directly.
@@ -69,21 +57,15 @@ public class AndroidTracking extends Tracking {
             }
         }
     }
-    // sendUITime for stuff that happens as direct user input, and should be individually tracked.
-    public void do_sendUITime( String name, String label, long startTime ) {
-        sendTime( "UITiming", name, label, startTime );
+
+    @Override
+    public void do_setScreenName(String name) {
+        t.setScreenName(name);
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
-    public void do_sendRawUITime( String name, String label, long timeSpent ) {
-        do_sendRawTime( "UITiming", name, label, timeSpent );
-    }
-    // Input in nanoseconds, output in millis
-    public long do_timeSpent(long startTime) {
-        return (System.nanoTime() - startTime) / 1000000;
-    }
-    public void do_sendTime( String category, String name, String label, long startTime) {
-        do_sendRawTime( category, name, label, timeSpent( startTime ) );
-    }
-    private void do_sendRawTime(String category, String name, String label, long timeSpent) {
+
+    @Override
+    public void do_sendRawTime(String category, String name, String label, long timeSpent) {
         android.util.Log.v(category, name + " " + label + ": " + timeSpent);
 
         if (t == null) {

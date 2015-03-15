@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.remulasce.lametroapp.analytics.AndroidTracking;
+import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
@@ -139,7 +141,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-//                t.send(new HitBuilders.EventBuilder()
+//                t.send(new HitBuilders .EventBuilder()
 //                        .setCategory("About Page")
 //                        .setAction("Pane Opened")
 //                        .build());
@@ -221,10 +223,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     };
 
     void startAnalytics() {
-
-//        t = Tracking.getTracker( getApplicationContext() );
-//        t.setScreenName("About Page");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        AndroidTracking tracking = new AndroidTracking(this);
+        Tracking.setTracker(tracking);
     }
 
     void setupDefaults(Intent bundle) {
@@ -290,8 +290,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     protected void onResume() {
         super.onResume();
 
-//        t.setScreenName("Main Screen");
-//        t.send(new HitBuilders.AppViewBuilder().build());
+        Tracking.setScreenName("Main Screen");
 
         locationService.startLocating(this);
     }
