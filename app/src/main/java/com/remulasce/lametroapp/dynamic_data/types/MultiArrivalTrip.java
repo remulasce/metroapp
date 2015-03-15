@@ -1,21 +1,13 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
-import android.view.View;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-
-import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
-import com.remulasce.lametroapp.basic_types.Vehicle;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 
 public class MultiArrivalTrip extends Trip {
 
-    public static final double M_TO_MI = 0.000621371;
     public final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
@@ -44,32 +36,6 @@ public class MultiArrivalTrip extends Trip {
         String stop_ = stopString + "\n";
 
         return stop_ + destination;
-    }
-
-    public int getTime(int seconds, EditText time) {
-        try {
-            // Add 60 for rounding.
-            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return seconds;
-    }
-
-    public Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
-        Vehicle vehicle = null;
-
-        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
-            try {
-                int id = vehicleRadio.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
-
-                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return vehicle;
     }
 
     public int hashCode() {

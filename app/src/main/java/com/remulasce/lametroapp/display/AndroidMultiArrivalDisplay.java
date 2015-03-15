@@ -16,7 +16,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
@@ -215,6 +214,32 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         });
     }
 
+    private int getTime(int seconds, EditText time) {
+        try {
+            // Add 60 for rounding.
+            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return seconds;
+    }
+
+    private Vehicle getVehicle(RadioGroup vehicleRadio, View dialogView) {
+        Vehicle vehicle = null;
+
+        if (vehicleRadio.getCheckedRadioButtonId() != -1) {
+            try {
+                int id = vehicleRadio.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) dialogView.findViewById(id);
+
+                vehicle = ((Arrival) radioButton.getTag()).getVehicleNum();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return vehicle;
+    }
+
     private void launchNotificationConfirmation(final Context context, final View dialogView) {
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
@@ -242,8 +267,8 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                         Vehicle vehicle;
                         int seconds = 120;
 
-                        seconds = trip.getTime(seconds, time);
-                        vehicle = trip.getVehicle(vehicleRadio, dialogView);
+                        seconds = getTime(seconds, time);
+                        vehicle = getVehicle(vehicleRadio, dialogView);
 
                         NotifyServiceManager.SetNotifyService(trip.parentArrival.getStop(), trip.parentArrival.getRoute(),
                                 trip.parentArrival.getDirection(), vehicle, seconds, context);
