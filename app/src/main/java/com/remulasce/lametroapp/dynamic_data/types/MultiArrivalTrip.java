@@ -18,7 +18,7 @@ import com.remulasce.lametroapp.components.location.LocationRetriever;
 public class MultiArrivalTrip extends Trip {
 
     public static final double M_TO_MI = 0.000621371;
-    private final StopRouteDestinationArrival parentArrival;
+    public final StopRouteDestinationArrival parentArrival;
 
     private long lastLocationUpdate = 0;
     private double lastDistanceToStop = 0;
@@ -47,15 +47,6 @@ public class MultiArrivalTrip extends Trip {
 
         return stop_ + destination;
     }
-
-            // No decimal places
-            distance = (int) (distance * M_TO_MI);
-        } else {
-            // One decimal place
-            distance = ( (int) (distance * M_TO_MI * 10) ) / 10.0;
-        }
-
-        distance_text.setText( distance + "mi");
 
     public int getTime(int seconds, EditText time) {
         try {
