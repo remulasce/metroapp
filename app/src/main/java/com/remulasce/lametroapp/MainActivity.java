@@ -179,9 +179,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         requestHandler = new ServiceRequestHandler();
         tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListProgress, this );
 
-        tripList.setOnItemClickListener( tripClickListener );
-
-
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,14 +199,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         LaMetroUtil.locationTranslator = staticsProvider;
         LaMetroUtil.routeColorer = routeColorer;
     }
-
-    private final OnItemClickListener tripClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick( AdapterView< ? > parent, View view, int position, long id ) {
-            Trip trip = (Trip) parent.getItemAtPosition( position );
-//            trip.executeAction( MainActivity.this );
-        }
-    };
 
     void startAnalytics() {
         AndroidTracking tracking = new AndroidTracking(this);

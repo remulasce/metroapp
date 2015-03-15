@@ -28,6 +28,7 @@ import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.LocationRetriever;
 import com.remulasce.lametroapp.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
+import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +173,12 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         return rowView;
     }
 
+    @Override
+    public Trip getTrip() {
+        return trip;
+    }
+
+    @Override
     public void executeAction( final Context context ) {
         Tracking.setScreenName("Notify Confirm Dialog");
 

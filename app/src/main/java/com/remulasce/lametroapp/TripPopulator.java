@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -15,7 +16,10 @@ import android.widget.Toast;
 import com.remulasce.lametroapp.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
+import com.remulasce.lametroapp.display.AndroidDisplay;
+import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
 import com.remulasce.lametroapp.display.PredictionUI;
+import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
@@ -39,7 +43,7 @@ public class TripPopulator {
     private final ListView list;
     private final TextView hint;
     private final ProgressBar progress;
-    private final ArrayAdapter< Trip > adapter;
+    private final ArrayAdapter< AndroidDisplay > adapter;
 
     private final Handler uiHandler;
     private UpdateRunner updateRunner;
@@ -49,6 +53,7 @@ public class TripPopulator {
     private long lastDismissTutorialShow = 0;
     private final SwipeDismissListViewTouchListener dismissListener;
     private final AbsListView.OnScrollListener scrollListener;
+    private final AdapterView.OnItemClickListener itemClickListener;
 
     private final Context c;
 
@@ -72,9 +77,12 @@ public class TripPopulator {
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
                                     try {
-                                        Trip t = adapter.getItem(position);
+                                        AndroidDisplay item = adapter.getItem(position);
+                                        Trip t = item.getTrip();
+
                                         t.dismiss();
-                                        adapter.remove(t);
+                                        adapter.remove(item);
+
                                         dismissLock = false;
 
                                         if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
@@ -116,8 +124,17 @@ public class TripPopulator {
             }
         };
 
+        itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AndroidDisplay item = (AndroidDisplay) adapterView.getItemAtPosition(i);
+                item.executeAction(context);
+            }
+        };
+
         list.setOnTouchListener(dismissListener);
         list.setOnScrollListener(scrollListener);
+        list.setOnItemClickListener(itemClickListener);
     }
 
     public void StartPopulating() {
@@ -225,7 +242,7 @@ public class TripPopulator {
                     adapter.clear();
                     for (Trip t : sorted) {
                         if (t.isValid()) {
-                            adapter.add(t);
+                            adapter.add(new AndroidMultiArrivalDisplay( (MultiArrivalTrip) t) );
                         }
                     }
 

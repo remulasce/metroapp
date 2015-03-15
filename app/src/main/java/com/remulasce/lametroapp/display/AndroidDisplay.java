@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.remulasce.lametroapp.dynamic_data.types.Trip;
+
 /**
  * Created by Remulasce on 3/5/2015.
  *
@@ -14,5 +16,7 @@ import android.view.ViewGroup;
 public interface AndroidDisplay {
 
     public View getView(ViewGroup parent, Context context, View recycleView);
+    public Trip getTrip();
+    public void executeAction(Context c);
 
 }
