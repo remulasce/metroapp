@@ -1,10 +1,10 @@
 package com.remulasce.lametroapp.basic_types;
 
-import java.io.Serializable;
-
 import android.util.Log;
 
 import com.remulasce.lametroapp.LaMetroUtil;
+
+import java.io.Serializable;
 
 public class Stop implements Serializable {
     private static final long serialVersionUID = 4336735625715608793L;

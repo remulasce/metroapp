@@ -15,13 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
-import com.remulasce.lametroapp.TripPopulator;
+import com.remulasce.lametroapp.ServiceRequestHandler;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -197,7 +195,7 @@ public class ServiceRequestListFragment extends Fragment {
     };
 
     public interface ServiceRequestListFragmentSupport {
-        public TripPopulator getTripPopulator();
+        public ServiceRequestHandler getTripPopulator();
         public FieldSaver getFieldSaver();
     }
 

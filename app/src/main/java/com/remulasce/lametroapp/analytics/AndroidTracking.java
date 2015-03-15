@@ -1,7 +1,6 @@
 package com.remulasce.lametroapp.analytics;
 
 import android.content.Context;
-import android.util.*;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
