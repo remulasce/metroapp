@@ -42,8 +42,13 @@ import java.io.StringReader;
 
 public class ArrivalNotifyService extends Service {
 
+    public static final String TAG = "NotifyService";
     private NetTask netTask;
 	private NotificationTask notificationTask;
+
+    // Unit testing purposes
+    public static boolean test_started = false;
+    public static boolean test_created = false;
 
 	private class NetTask implements Runnable {
 
@@ -184,16 +189,16 @@ public class ArrivalNotifyService extends Service {
 	        
     		if ( netTask.runNum > 5 ) {
     		    if ( secondsTillArrival < -30 ) {
-    	        	Log.e("NotifyService", "NotifyService ending because the vehicle has arrived");
+    	        	Log.e(TAG, "NotifyService ending because the vehicle has arrived");
 
-                    Tracking.sendEvent("NotifyService", "Service Ending", "Vehicle arrived");
+                    Tracking.sendEvent(TAG, "Service Ending", "Vehicle arrived");
         	        ShutdownService();
                     return;
     		    }
     		    if ( minutesSinceEstimate > 5 ) {
-                	Log.e("NotifyService", "NotifyService ending because we haven't received an estimate in a while");
+                	Log.e(TAG, "NotifyService ending because we haven't received an estimate in a while");
 
-                    Tracking.sendEvent("NotifyService", "Service Ending", "Estimate timed out");
+                    Tracking.sendEvent(TAG, "Service Ending", "Estimate timed out");
                 	ShutdownService();
                     return;
     		    }
@@ -307,6 +312,8 @@ public class ArrivalNotifyService extends Service {
 	}
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
+        test_started = true;
+
 	    // Meh good measure
 	    if (netTask != null || notificationTask != null) {
 	       ShutdownService();
@@ -325,12 +332,13 @@ public class ArrivalNotifyService extends Service {
 		netTask.cleanParameters();
 		
 		if (!netTask.parametersValid()) {
-		    Log.e("NotifyService", "Bad input into ArrivalNotify Service");
-            Tracking.sendEvent("NotifyService", "Bad input in notify service start");
+		    Log.e(TAG, "Bad input into ArrivalNotify Service");
+            Tracking.sendEvent(TAG, "Bad input in notify service start");
 
 		    return Service.START_NOT_STICKY;
 		}
-		
+
+        test_started = true;
 		netTask.run = true;
 		notificationTask.run = true;
 
@@ -348,8 +356,14 @@ public class ArrivalNotifyService extends Service {
 		return null;
 	}
 
+    @Override
+    public void onCreate() {
+        Log.i(TAG, "Notify service onCreate");
+        test_created = true;
+    }
+
 	void ShutdownService() {
-	    Log.i("NotifyService", "Shutting down service");
+	    Log.i(TAG, "Shutting down service");
 	    
 	    if ( netTask != null ) { 
 	        netTask.run = false;
