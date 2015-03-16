@@ -305,11 +305,7 @@ public class ArrivalNotifyService extends Service {
 	        });
 	    }
 	}
-	
 
-	
-
-	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	    // Meh good measure
 	    if (netTask != null || notificationTask != null) {
