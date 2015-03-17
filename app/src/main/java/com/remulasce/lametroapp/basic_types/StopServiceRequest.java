@@ -94,7 +94,6 @@ public class StopServiceRequest extends ServiceRequest {
         updateAvailable = false;
     }
 
-//    @Override
     public Collection<Prediction> makePredictions() {
         // Assume Stop
         if (!isValid()) {

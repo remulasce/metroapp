@@ -51,6 +51,10 @@ public class ServiceRequestHandler {
         return sortTrips(ret);
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public void StartPopulating() {
         if ( running ) {
             Log.e( TAG, "Started an already-populating populator" );
