@@ -3,7 +3,6 @@ package test.java;
 import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.dynamic_data.types.PredictionUpdateCallback;
 
 import junit.framework.TestCase;
 
@@ -14,11 +13,11 @@ import static org.mockito.Mockito.when;
 
 public class PredictionManagerTest extends TestCase {
 
-    private HTTPGetter network;
+    private HTTPGetter httpGetter;
     private PredictionManager predictionManager;
 
     protected void setUp() throws Exception {
-        network = Mockito.mock(HTTPGetter.class);
+        httpGetter = Mockito.mock(HTTPGetter.class);
 
         predictionManager = new PredictionManager();
     }
@@ -41,11 +40,11 @@ public class PredictionManagerTest extends TestCase {
     }
 
     public void testReceiveAnyUpdates() {
-        HTTPGetter.setHTTPGetter(network);
+        HTTPGetter.setHTTPGetter(httpGetter);
         Prediction p = Mockito.mock(Prediction.class);
 
 
-        when(network.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null)
+        when(httpGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null)
         ).thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
 
         when (p.getRequestString()).thenReturn("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=lametro-rail&stopId=80122");
