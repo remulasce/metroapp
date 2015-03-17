@@ -54,6 +54,9 @@ public class ServiceRequestHandler {
     public boolean isRunning() {
         return running;
     }
+    public int numRequests() {
+        return serviceRequests.size();
+    }
 
     public void StartPopulating() {
         if ( running ) {

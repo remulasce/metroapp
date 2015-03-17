@@ -2,12 +2,16 @@ package test.java;
 
 import com.remulasce.lametroapp.ServiceRequestHandler;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
 
 import junit.framework.TestCase;
 
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
 
@@ -59,6 +63,9 @@ public class JavaCoreIntegrationTest extends TestCase {
     private void assertCoreStarted() {
         assertTrue("ServiceRequestHandler should be started", serviceRequestHandler.isRunning());
         assertTrue("PredictionManager should have started", predictionManager.isRunning());
+
+        assertTrue("ServiceRequestHandler shouldn't have any requests yet", serviceRequestHandler.numRequests() == 0);
+        assertTrue("PredictionManager shouldn't have any requests yet", predictionManager.numPredictions() == 0);
     }
 
     // This tests shutdown without it even starting.
@@ -76,10 +83,44 @@ public class JavaCoreIntegrationTest extends TestCase {
     }
 
 
-    public void testAddRequest() throws Exception {
+    public void testAddEmptyRequest() throws Exception {
         start();
         assertCoreStarted();
 
-        //ServiceRequest r = new ServiceRequest();
+        ServiceRequest r = Mockito.mock(ServiceRequest.class);
+
+        addRequest(r);
+
+        assertTrue("There should be a request added", serviceRequestHandler.numRequests() == 1);
+    }
+
+    private void addRequest(ServiceRequest r) {
+        ArrayList<ServiceRequest> requests = new ArrayList<ServiceRequest>();
+        requests.add(r);
+
+        serviceRequestHandler.SetServiceRequests(requests);
+    }
+
+    public void testAddStopServiceRequest() throws Exception {
+        start();
+        assertCoreStarted();
+
+        Stop s = new Stop(TestConstants.BLUE_EXPO_7TH_METRO_STOPID);
+        assertTrue("Stop should be valid", s.isValid());
+
+        ServiceRequest r = new StopServiceRequest(s, "Test7thMetroStop");
+        assertTrue("ServiceRequest should be valid", r.isValid());
+        assertTrue("ServiceRequest should be in scope", r.isInScope());
+
+        addRequest(r);
+
+        assertTrue("There should be a request added", serviceRequestHandler.numRequests() == 1);
+
+        assertTrue(predictionManager.isRunning());
+
+        // Side effect: Starts trip predicting.
+        r.getTrips();
+
+        assertTrue(predictionManager.numPredictions() == 0);
     }
 }

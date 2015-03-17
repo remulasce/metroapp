@@ -150,6 +150,9 @@ public class PredictionManager {
         }
         return updater.run;
     }
+    public int numPredictions() {
+        return trackingList.size();
+    }
 
     /** This just compares requestedUpdateInterval vs time since last update on all the predictions.
      * It starts threads to do each actual net update.
