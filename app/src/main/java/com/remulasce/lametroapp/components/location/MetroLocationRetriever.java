@@ -110,6 +110,11 @@ public class MetroLocationRetriever implements LocationRetriever {
     public double getCurrentDistanceToStop(Stop stop) {
         long t = Tracking.startTime();
 
+        if (stop == null || !stop.isValid()) {
+            Log.w(TAG, "Invalid stop provided to get distance to");
+            return -1;
+        }
+
         Location currentLoc = getBestLocation();
         if (currentLoc == null) {
             Log.d(TAG, "Current location unavailable");
@@ -117,6 +122,11 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
 
         BasicLocation stopRawLoc = stop.getLocation();
+        if (stopRawLoc == null) {
+            Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
+            return -1;
+        }
+
         double stopLatitude = stopRawLoc.latitude;
         double stopLongitude = stopRawLoc.longitude;
 

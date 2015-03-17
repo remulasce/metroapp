@@ -31,6 +31,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
+    public static final String TAG = "LaMetroUtil";
 
     public static StopLocationTranslator locationTranslator;
     public static RouteColorer routeColorer;
@@ -88,7 +89,7 @@ public class LaMetroUtil {
     public static List< Arrival > parseAllArrivals( String response ) {
         List< Arrival > ret = new ArrayList< Arrival >();
 
-        parseWithAndroidLibs(response, ret);
+//        parseWithAndroidLibs(response, ret);
         parseWithJavaLibs(response, ret);
 
         return ret;
@@ -109,20 +110,39 @@ public class LaMetroUtil {
             //get the root element
             Element docEle = dom.getDocumentElement();
 
-            NodeList nl = docEle.getElementsByTagName("predictions");
-            if(nl != null && nl.getLength() > 0) {
-                for(int i = 0 ; i < nl.getLength();i++) {
-                    Element el = (Element)nl.item(i);
+            NodeList predictions = docEle.getElementsByTagName("predictions");
+            if(predictions != null && predictions.getLength() > 0) {
+                for(int i = 0 ; i < predictions.getLength();i++) {
+                    Element prediction = (Element)predictions.item(i);
 
-                    NodeList directions = el.getElementsByTagName("direction");
+                    NodeList directions = prediction.getElementsByTagName("direction");
                     for(int j = 0 ; j < directions.getLength(); j++) {
                         Element direction = (Element)directions.item(j);
 
                         NodeList arrivals = direction.getElementsByTagName("prediction");
-                        for(int k = 0 ; k < arrivals.getLength(); j++) {
+                        for(int k = 0 ; k < arrivals.getLength(); k++) {
                             Element arrival = (Element)arrivals.item(k);
 
-                            Log.d("LaMetroUtil", arrival.toString());
+                            int seconds = Integer.parseInt(arrival.getAttribute("seconds"));
+
+                            String directionAttribute = direction.getAttribute("title");
+                            String routeAttribute = prediction.getAttribute("routeTag");
+                            String stopIDAttribute = prediction.getAttribute("stopTag");
+                            String stopTitleAttribute = prediction.getAttribute("stopTitle");
+                            String vehicleAttribute = arrival.getAttribute("vehicle");
+
+                            stopIDAttribute = cleanupStopID(stopIDAttribute);
+
+                            Destination d   = new Destination(directionAttribute);
+                            Route r         = new Route(routeAttribute);
+                            Stop s          = new Stop(stopIDAttribute);
+                            Vehicle v       = new Vehicle(vehicleAttribute);
+
+                            s.setStopName(stopTitleAttribute);
+
+                            addNewArrival(ret, seconds, d, r, s, v);
+
+                            Log.d(TAG, arrival.toString());
                         }
                     }
                 }
@@ -136,6 +156,16 @@ public class LaMetroUtil {
         }catch(IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    // Metro adds _etc to the end of stops sometimes. It's related to multiple entrances per station
+    // or something. This gets rid of that.
+    private static String cleanupStopID(String stopIDAttribute) {
+        int indexOf_ = stopIDAttribute.indexOf( '_' );
+        if ( indexOf_ > 0 ) {
+            stopIDAttribute = stopIDAttribute.substring(0, stopIDAttribute.indexOf('_'));
+        }
+        return stopIDAttribute;
     }
 
     private static void parseWithAndroidLibs(String response, List<Arrival> ret) {
@@ -167,7 +197,7 @@ public class LaMetroUtil {
                     }
                     if ( name.equals( "prediction" ) ) {
 
-                        Arrival a = new Arrival();
+
 
                         String vehicleNum;
                         int seconds = -1;
@@ -188,10 +218,7 @@ public class LaMetroUtil {
                         }
 
                         if ( !updated ) {
-                            int indexOf_ = curStopTag.indexOf( '_' );
-                            if ( indexOf_ > 0 ) {
-                                curStopTag = curStopTag.substring( 0, curStopTag.indexOf( '_' ) );
-                            }
+                            curStopTag = cleanupStopID(curStopTag);
 
                             Destination d = new Destination( curDestination );
                             Route r = new Route( curRoute );
@@ -199,21 +226,7 @@ public class LaMetroUtil {
                             s.setStopName( curStopName );
                             Vehicle v = new Vehicle( vehicleNum );
 
-                            if (locationTranslator != null) {
-                                s.setLocation(locationTranslator.getStopLocation(s));
-                            }
-
-                            if (routeColorer != null) {
-                                r.setColor(routeColorer.getColor(r));
-                            }
-
-                            a.setDestination( d );
-                            a.setRoute( r );
-                            a.setStop( s );
-                            a.setEstimatedArrivalSeconds( seconds );
-                            a.setVehicle( v );
-
-                            ret.add( a );
+                            addNewArrival(ret, seconds, d, r, s, v);
                         }
                     }
                 } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
@@ -224,6 +237,28 @@ public class LaMetroUtil {
         } catch ( IOException e ) {
             e.printStackTrace();
         }
+    }
+
+    private static void addNewArrival(List<Arrival> ret, int seconds, Destination d, Route r, Stop s, Vehicle v) {
+        Log.v(TAG, "Adding new arrival "+seconds+" "+d+" "+r+" "+s+" "+v);
+
+        if (locationTranslator != null) {
+            s.setLocation(locationTranslator.getStopLocation(s));
+        }
+
+        if (routeColorer != null) {
+            r.setColor(routeColorer.getColor(r));
+        }
+
+        Arrival a = new Arrival();
+
+        a.setDestination( d );
+        a.setRoute( r );
+        a.setStop( s );
+        a.setEstimatedArrivalSeconds( seconds );
+        a.setVehicle( v );
+
+        ret.add( a );
     }
 
     public static String timeToDisplay(int seconds) {
