@@ -196,9 +196,6 @@ public class LaMetroUtil {
                         curDestination = xpp.getAttributeValue( null, "title" );
                     }
                     if ( name.equals( "prediction" ) ) {
-
-
-
                         String vehicleNum;
                         int seconds = -1;
 
