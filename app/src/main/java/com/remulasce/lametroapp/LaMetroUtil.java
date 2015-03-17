@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp;
 
+import com.remulasce.lametroapp.analytics.Log;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -8,6 +9,12 @@ import com.remulasce.lametroapp.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.static_data.RouteColorer;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -15,7 +22,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
@@ -76,6 +88,57 @@ public class LaMetroUtil {
     public static List< Arrival > parseAllArrivals( String response ) {
         List< Arrival > ret = new ArrayList< Arrival >();
 
+        parseWithAndroidLibs(response, ret);
+        parseWithJavaLibs(response, ret);
+
+        return ret;
+    }
+
+    private static void parseWithJavaLibs(String response, List<Arrival> ret) {
+        //get the factory
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        try {
+
+            //Using factory get an instance of document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            //parse using builder to get DOM representation of the XML file
+            Document dom = db.parse(new InputSource( new StringReader(response)));
+
+            //get the root element
+            Element docEle = dom.getDocumentElement();
+
+            NodeList nl = docEle.getElementsByTagName("predictions");
+            if(nl != null && nl.getLength() > 0) {
+                for(int i = 0 ; i < nl.getLength();i++) {
+                    Element el = (Element)nl.item(i);
+
+                    NodeList directions = el.getElementsByTagName("direction");
+                    for(int j = 0 ; j < directions.getLength(); j++) {
+                        Element direction = (Element)directions.item(j);
+
+                        NodeList arrivals = direction.getElementsByTagName("prediction");
+                        for(int k = 0 ; k < arrivals.getLength(); j++) {
+                            Element arrival = (Element)arrivals.item(k);
+
+                            Log.d("LaMetroUtil", arrival.toString());
+                        }
+                    }
+                }
+            }
+
+
+        }catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+        }catch(SAXException se) {
+            se.printStackTrace();
+        }catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private static void parseWithAndroidLibs(String response, List<Arrival> ret) {
         XmlPullParserFactory factory;
         try {
             factory = XmlPullParserFactory.newInstance();
@@ -161,8 +224,6 @@ public class LaMetroUtil {
         } catch ( IOException e ) {
             e.printStackTrace();
         }
-
-        return ret;
     }
 
     public static String timeToDisplay(int seconds) {
