@@ -16,6 +16,9 @@ import java.io.InputStreamReader;
  *
  * This is a background task that reads logcat output and writes it to file.
  * That way I can peruse the output offline later.
+ *
+ * I don't use it any more because it was a huge performance drain, log files were kind of hard
+ *   to figure stuff out from, and I stopped having so many stupid breaking bugs.
  */
 public class Logging {
 
