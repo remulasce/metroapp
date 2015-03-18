@@ -23,7 +23,6 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     private Stop stop;
     private Route route;
-    private PredictionUpdateCallback callback;
 
     private boolean inScope = false;
 
@@ -86,12 +85,6 @@ public class StopRouteDestinationPrediction extends Prediction {
     public void stopPredicting() {
         inScope = false;
         PredictionManager.getInstance().stopTracking( this );
-    }
-
-    @Override
-    public void setUpdateCallback(PredictionUpdateCallback callback) {
-        this.callback = callback;
-
     }
 
     @Override
@@ -159,11 +152,6 @@ public class StopRouteDestinationPrediction extends Prediction {
         //Then update all the destinations we have
         for (StopRouteDestinationArrival a : trackedArrivals) {
             a.updateArrivalTimes(arrivals);
-        }
-
-        // Let the UI wrapper know we've been updated.
-        if (callback != null) {
-            callback.predictionUpdated();
         }
     }
     @Override

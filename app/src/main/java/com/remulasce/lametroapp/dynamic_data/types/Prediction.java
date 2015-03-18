@@ -41,7 +41,4 @@ public abstract class Prediction implements Serializable{
     // PredictionManager uses these.
 	public abstract String getRequestString();
 	public abstract void handleResponse(String response);
-
-    // Call this to add / update Trips to the UI. Callback comes from TripPopulator in Android.
-	public abstract void setUpdateCallback(PredictionUpdateCallback callback);
 }

@@ -1,10 +1,9 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
-import android.util.Log;
-
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class StopRouteDestinationArrival implements Serializable {
         arrivals = new CopyOnWriteArrayList<Arrival>();
         trip = new MultiArrivalTrip(this);
 
-        Log.d(TAG, "New StopRouteDestinationArrival: "+s+" "+r+" "+d);
+        Log.d(TAG, "New StopRouteDestinationArrival: " + s + " " + r + " " + d);
     }
 
     // In seconds

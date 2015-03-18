@@ -13,12 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.display.AndroidDisplay;
 import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
-import com.remulasce.lametroapp.display.PredictionUI;
 import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
@@ -180,8 +179,6 @@ public class TripPopulator {
     * */
     protected class UpdateRunner implements Runnable {
         boolean run = true;
-
-        final Map<ServiceRequest, Collection<PredictionUI> > trackedMap = new HashMap< ServiceRequest, Collection<PredictionUI> >();
 
         // Track timing
         long timeSpentUpdating = 0;

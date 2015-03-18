@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.analytics;
 
+import com.remulasce.lametroapp.java_core.analytics.Log;
+
 /**
  * Created by Remulasce on 3/4/2015.
  *

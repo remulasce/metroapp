@@ -10,7 +10,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.BasicLocation;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;

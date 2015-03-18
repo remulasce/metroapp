@@ -6,6 +6,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 
 import java.util.HashMap;
 

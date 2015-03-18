@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.analytics;
+package com.remulasce.lametroapp.java_core.analytics;
 
 /**
  * Created by Remulasce on 3/4/2015.

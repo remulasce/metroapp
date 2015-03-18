@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp;
 
-import com.remulasce.lametroapp.analytics.Log;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.basic_types.Destination;
 import com.remulasce.lametroapp.basic_types.Route;
 import com.remulasce.lametroapp.basic_types.Stop;
@@ -21,7 +21,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;

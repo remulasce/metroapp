@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.basic_types.Stop;
 import com.remulasce.lametroapp.basic_types.StopServiceRequest;

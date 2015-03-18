@@ -27,10 +27,7 @@ public class Arrival implements Serializable {
     private long lastPrediction;
     private long lastUpdate;
 
-    private final Trip firstTrip;
-
     public Arrival() {
-        firstTrip = new ArrivalTrip( this );
 
         route = new Route();
         destination = new Destination();
@@ -88,10 +85,6 @@ public class Arrival implements Serializable {
         return vehicle;
     }
 
-    public Trip getFirstTrip() {
-        return firstTrip;
-    }
-    
     public int hashCode() {
         String h = "";
         if (route.isValid()) h += route.getString();

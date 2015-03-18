@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.analytics;
+package com.remulasce.lametroapp.java_core.analytics;
 
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class Tracking {
 	}
 
 
-    static class AveragedDatum {
+    public static class AveragedDatum {
         public double totalValue = 0;
         public double numPoints = 0;
     }
