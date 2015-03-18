@@ -11,7 +11,6 @@ import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -249,11 +248,11 @@ public class LaMetroUtil {
 
         Arrival a = new Arrival();
 
-        a.setDestination( d );
-        a.setRoute( r );
-        a.setStop( s );
+        a.setDestination(d);
+        a.setRoute(r);
+        a.setStop(s);
         a.setEstimatedArrivalSeconds( seconds );
-        a.setVehicle( v );
+        a.setVehicle(v);
 
         ret.add( a );
     }

@@ -34,6 +34,10 @@ public class PredictionManager {
 		if( manager == null ) { manager = new PredictionManager(); }
 		return manager;
 	}
+    public static void setPredictionManager(PredictionManager manager) {
+        PredictionManager.manager = manager;
+    }
+
     public static void setStatusReporter( NetworkStatusReporter reporter ) {
         statusReporter = reporter;
     }

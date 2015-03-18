@@ -40,9 +40,12 @@ public class JavaCoreIntegrationTest extends TestCase {
         httpGetter = Mockito.mock(HTTPGetter.class);
         when(httpGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null))
                 .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
+        HTTPGetter.setHTTPGetter(httpGetter);
 
         serviceRequestHandler = new ServiceRequestHandler();
         predictionManager = new PredictionManager();
+
+        PredictionManager.setPredictionManager(predictionManager);
     }
 
     private void start() {
@@ -108,7 +111,7 @@ public class JavaCoreIntegrationTest extends TestCase {
         Stop s = new Stop(TestConstants.BLUE_EXPO_7TH_METRO_STOPID);
         assertTrue("Stop should be valid", s.isValid());
 
-        ServiceRequest r = new StopServiceRequest(s, "Test7thMetroStop");
+        StopServiceRequest r = new StopServiceRequest(s, "Test7thMetroStop");
         assertTrue("ServiceRequest should be valid", r.isValid());
         assertTrue("ServiceRequest should be in scope", r.isInScope());
 
@@ -119,8 +122,10 @@ public class JavaCoreIntegrationTest extends TestCase {
         assertTrue(predictionManager.isRunning());
 
         // Side effect: Starts trip predicting.
-        r.getTrips();
+        r.makePredictions();
 
-        assertTrue(predictionManager.numPredictions() == 0);
+        Thread.sleep(1000);
+
+        assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
     }
 }
