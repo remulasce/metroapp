@@ -2,7 +2,7 @@ package com.remulasce.lametroapp.dynamic_data;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
-import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 
 import java.util.List;

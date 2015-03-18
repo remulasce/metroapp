@@ -7,7 +7,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
-import com.remulasce.lametroapp.components.location.LocationRetriever;
+import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
 
 import java.util.ArrayList;

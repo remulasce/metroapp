@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package com.remulasce.lametroapp.dynamic_data.types;
 
-import com.remulasce.lametroapp.basic_types.Destination;
-import com.remulasce.lametroapp.basic_types.Route;
-import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.Destination;
+import com.remulasce.lametroapp.java_core.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
-import com.remulasce.lametroapp.components.location.LocationRetriever;
+import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 
 public class MultiArrivalTrip extends Trip {
 

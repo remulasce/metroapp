@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.static_data;
 
-import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.static_data.types.RouteColor;
 
 /**

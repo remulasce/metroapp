@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.components.location;
 
+import com.remulasce.lametroapp.java_core.location.LocationRetriever;
+
 /**
  * Created by Remulasce on 1/30/2015.
  *

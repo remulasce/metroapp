@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components.network_status;
+package com.remulasce.lametroapp.java_core.network_status;
 
 /**
  * Created by Remulasce on 3/4/2015.

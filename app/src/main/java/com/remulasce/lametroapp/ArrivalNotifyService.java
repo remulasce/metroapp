@@ -18,10 +18,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
-import com.remulasce.lametroapp.basic_types.Destination;
-import com.remulasce.lametroapp.basic_types.Route;
-import com.remulasce.lametroapp.basic_types.Stop;
-import com.remulasce.lametroapp.basic_types.Vehicle;
+import com.remulasce.lametroapp.java_core.basic_types.Destination;
+import com.remulasce.lametroapp.java_core.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

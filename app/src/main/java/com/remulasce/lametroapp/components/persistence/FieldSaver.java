@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.components.persistence;
 
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 
 import java.util.Collection;
 

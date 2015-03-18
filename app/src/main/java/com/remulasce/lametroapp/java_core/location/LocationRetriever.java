@@ -1,6 +1,6 @@
-package com.remulasce.lametroapp.components.location;
+package com.remulasce.lametroapp.java_core.location;
 
-import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 /**
  * Created by Remulasce on 1/7/2015.

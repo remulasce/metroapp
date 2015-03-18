@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.dynamic_data;
 
-import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
 /**
  * Created by Remulasce on 3/7/2015.

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
 /**
  * Created by Remulasce on 1/26/2015.

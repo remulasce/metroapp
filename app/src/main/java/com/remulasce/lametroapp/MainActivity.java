@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
-import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
-import com.remulasce.lametroapp.components.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;

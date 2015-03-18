@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
-import com.remulasce.lametroapp.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 public class OmniAutoCompleteEntry {
 

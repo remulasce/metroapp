@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
-import com.remulasce.lametroapp.basic_types.Stop;
-import com.remulasce.lametroapp.basic_types.StopServiceRequest;
+import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
 import java.util.ArrayList;

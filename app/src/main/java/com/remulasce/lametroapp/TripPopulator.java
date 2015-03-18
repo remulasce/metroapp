@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
-import com.remulasce.lametroapp.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.display.AndroidDisplay;
 import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
@@ -22,10 +21,7 @@ import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TripPopulator {
     private static final String TAG = "TripPopulator";
