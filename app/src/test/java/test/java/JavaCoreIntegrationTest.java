@@ -127,5 +127,7 @@ public class JavaCoreIntegrationTest extends TestCase {
         Thread.sleep(1000);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
+        assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
+
     }
 }
