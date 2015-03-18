@@ -118,7 +118,6 @@ public class JavaCoreIntegrationTest extends TestCase {
         addRequest(r);
 
         assertTrue("There should be a request added", serviceRequestHandler.numRequests() == 1);
-
         assertTrue(predictionManager.isRunning());
 
         // Side effect: Starts trip predicting.
@@ -128,6 +127,5 @@ public class JavaCoreIntegrationTest extends TestCase {
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
-
     }
 }
