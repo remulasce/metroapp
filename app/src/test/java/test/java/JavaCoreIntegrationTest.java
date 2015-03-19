@@ -124,7 +124,7 @@ public class JavaCoreIntegrationTest extends TestCase {
         // Side effect: Starts trip predicting.
         r.startRequest();
 
-        Thread.sleep(50);
+        Thread.sleep(100);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 4 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
