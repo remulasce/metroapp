@@ -17,7 +17,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
+import com.remulasce.lametroapp.analytics.Logging;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
@@ -200,6 +203,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     void startAnalytics() {
         AndroidTracking tracking = new AndroidTracking(this);
         Tracking.setTracker(tracking);
+
+        Log log = new AndroidLog();
+        Log.SetLogger(log);
     }
 
     void setupDefaults(Intent bundle) {

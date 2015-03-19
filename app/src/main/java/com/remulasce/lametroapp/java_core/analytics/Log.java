@@ -37,7 +37,7 @@ public class Log {
 
 
     private static Log actualLogger;
-    public void SetLogger(Log realLog) {
+    public static void SetLogger(Log realLog) {
         actualLogger = realLog;
     }
 
