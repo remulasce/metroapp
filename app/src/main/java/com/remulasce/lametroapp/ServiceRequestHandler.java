@@ -98,6 +98,11 @@ public class ServiceRequestHandler {
         serviceRequests.addAll(requests);
     }
 
+    // This helps with automated testing.
+    public Collection<ServiceRequest> getRequests() {
+        return serviceRequests;
+    }
+
     public void SetServiceRequests( Collection<ServiceRequest> requests) {
         Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
         rawSetServiceRequests(requests);

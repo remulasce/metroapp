@@ -24,6 +24,11 @@ public abstract class ServiceRequest implements Serializable {
     }
 
     // Lifecycle.
+    public enum RequestLifecycleState {
+        STOPPED,
+        PAUSED,
+        RUNNING
+    }
     // Cancel on final kill. Cancel is not recoverable.
     // Use Start for both initial start and post-pause resume.
     //   So you should try not to remake stuff if it's already been made.
@@ -33,9 +38,12 @@ public abstract class ServiceRequest implements Serializable {
     //      entire activity may have been killed since pause.
 //    public void start(){ inScope = true; }
     // eg. start request
-    public abstract void startRequest();
-    public abstract void pauseRequest();
-    public abstract void cancelRequest();
+    public void startRequest() { lifecycleState = RequestLifecycleState.RUNNING; }
+    public void pauseRequest() { lifecycleState = RequestLifecycleState.PAUSED; }
+    public void cancelRequest() { lifecycleState = RequestLifecycleState.STOPPED; }
+
+    protected RequestLifecycleState lifecycleState = RequestLifecycleState.STOPPED;
+    public RequestLifecycleState getLifecycleState() { return lifecycleState; }
 
     // Old lifecycle. Probably doesn't do anything any more.
     public void descope() {
