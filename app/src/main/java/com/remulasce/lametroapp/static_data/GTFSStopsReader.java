@@ -95,9 +95,9 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         BasicLocation ret = null;
         Long t = Tracking.startTime();
 
-        Log.d(TAG, "StopLocation searching for "+stop);
+        Log.v(TAG, "StopLocation searching for "+stop);
         Collection<SQLEntry> entries = getMatchingEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
-        Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
+        Log.v(TAG, "StopLocation found "+entries.size()+" for "+stop);
 
         if (entries.size() > 0 && entries.iterator().hasNext()) {
             SQLEntry firstLoc = entries.iterator().next();

@@ -3,6 +3,7 @@ package com.remulasce.lametroapp.dynamic_data.types;
 import android.util.Log;
 
 import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.dynamic_data.PredictionManager;
@@ -98,10 +99,14 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public long getTimeSinceLastUpdate() {
+        long ret = 0;
         if ( inUpdate ) {
             return 0;
         }
-        return System.currentTimeMillis() - lastUpdate;
+        ret =  System.currentTimeMillis() - lastUpdate;
+        Log.v(TAG, "Time since last update: "+ret+" on "+this.toString());
+
+        return ret;
     }
 
     boolean arrivalTracked(Arrival a) {
@@ -214,7 +219,21 @@ public class StopRouteDestinationPrediction extends Prediction {
     }
 
     public int hashCode() {
-        return ( stop.getString() + route.getString() ).hashCode();
+        StringBuilder build = new StringBuilder();
+
+        if (stop != null) {
+            build.append(stop.getString());
+        }
+
+        if (route != null) {
+            build.append(route.getString());
+        }
+
+        if (build.length() == 0) {
+            Log.e(TAG, "Hashcode had nothing to hash");
+            Tracking.sendEvent("Errors", "StopRouteDestinationPrediction", "Hashcode had nothing to hash");
+        }
+        return ( build.toString() ).hashCode();
     }
 
     private void writeObject(ObjectOutputStream oos)
