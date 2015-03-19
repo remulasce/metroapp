@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupFieldSaver() {
-        fieldSaver = new SerializedFileFieldSaver(this, staticsProvider);
+        fieldSaver = new SerializedFileFieldSaver(this);
     }
 
     private void setupLocation() {

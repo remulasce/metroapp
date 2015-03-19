@@ -3,6 +3,7 @@ package com.remulasce.lametroapp.components.persistence;
 import android.content.Context;
 import android.util.Log;
 
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.static_data.StopLocationTranslator;
 
@@ -29,7 +30,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
 
     private final Context context;
 
-    public SerializedFileFieldSaver(Context c, StopLocationTranslator locations) {
+    public SerializedFileFieldSaver(Context c) {
         context = c;
     }
 
@@ -48,6 +49,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
 
             oos.close();
         } catch (IOException e) {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in saveServiceRequests");
             e.printStackTrace();
         }
 
@@ -84,20 +86,24 @@ public class SerializedFileFieldSaver implements FieldSaver {
         }
         catch(IOException e)
         {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
             Log.i(TAG, "No persistent requests found");
             return emptyRequests;
         }
         catch(ClassNotFoundException c)
         {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
             c.printStackTrace();
             return emptyRequests;
         }
         catch(ClassCastException c)
         {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
             c.printStackTrace();
             return emptyRequests;
         }
         catch (Exception e) {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
             e.printStackTrace();
             return emptyRequests;
         }
