@@ -10,6 +10,7 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 import junit.framework.TestCase;
 
 import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,7 @@ public class PauseResumeTest extends TestCase {
     private void start() {
         serviceRequestHandler.StartPopulating();
         predictionManager.resumeTracking();
+        predictionManager.setThrottle(false);
     }
     private void stop() {
         serviceRequestHandler.StopPopulating();
@@ -107,7 +109,7 @@ public class PauseResumeTest extends TestCase {
 
         r.startRequest();
 
-        Thread.sleep(100);
+        Thread.sleep(10);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
@@ -133,7 +135,7 @@ public class PauseResumeTest extends TestCase {
 
         r.startRequest();
 
-        Thread.sleep(100);
+        Thread.sleep(10);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
@@ -171,9 +173,8 @@ public class PauseResumeTest extends TestCase {
 
         addRequest(r);
         start();
-        Thread.sleep(6000);
-
-        verify(newGetter).doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null);
+        predictionManager.setThrottle(false);
+        Thread.sleep(10);
 
         assertTrue(predictionManager.numPredictions() == 1);
         assertTrue(r.getLifecycleState() == ServiceRequest.RequestLifecycleState.RUNNING);

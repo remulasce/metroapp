@@ -24,10 +24,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class PredictionManager {
-	private static final String TAG = "PredictionManager";
-	private static final int UPDATE_INTERVAL = 5000;
+    private static final String TAG = "PredictionManager";
+	private static int PREDICTION_UPDATE_MAX_INTERVAL = 5000;
+    public static int UPDATE_CHECK_INTERVAL = 500;
 
-	private static PredictionManager manager;
+    private static PredictionManager manager;
     private static NetworkStatusReporter statusReporter;
 
 	public static PredictionManager getInstance() {
@@ -53,6 +54,22 @@ public class PredictionManager {
 
 	private final List<Prediction> trackingList = new CopyOnWriteArrayList<Prediction>();
 	private UpdateStager updater;
+
+    // Normally we won't allow predictions to be updated more often than once every 5 seconds,
+    // for battery life, even if they request high frequency.
+    // You can disable the throttle if you want. Expected use case is the unit tests, which don't
+    // want to sit around, but conceivable you might want to update everything immediately on an
+    // update UI button, or if something else special happens.
+    public void setThrottle(boolean throttlePredictions) {
+        if (throttlePredictions) {
+            PREDICTION_UPDATE_MAX_INTERVAL = 5000;
+            UPDATE_CHECK_INTERVAL = 1;
+        } else {
+            PREDICTION_UPDATE_MAX_INTERVAL = 0;
+            UPDATE_CHECK_INTERVAL = 500;
+        }
+
+    }
 
     /** Start getting updates for this Prediction.
      * Starts the entire PredictionManager if it is not yet started.
@@ -178,7 +195,7 @@ public class PredictionManager {
             try {
                 // updateObject.notify() also breaks out of this statement.
                 synchronized (updateObject) {
-                    updateObject.wait(500);
+                    updateObject.wait(UPDATE_CHECK_INTERVAL);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -192,7 +209,7 @@ public class PredictionManager {
 
                     int requestedInterval = p.getRequestedUpdateInterval();
                     long timeSinceUpdate = p.getTimeSinceLastUpdate();
-                    if (timeSinceUpdate >= Math.max(requestedInterval, UPDATE_INTERVAL)) {
+                    if (timeSinceUpdate >= Math.max(requestedInterval, PREDICTION_UPDATE_MAX_INTERVAL)) {
                         Log.v(TAG, "Getting update after " + requestedInterval);
                         p.setGettingUpdate();
                         GetUpdate(p);

@@ -51,6 +51,7 @@ public class JavaCoreIntegrationTest extends TestCase {
     private void start() {
         serviceRequestHandler.StartPopulating();
         predictionManager.resumeTracking();
+        predictionManager.setThrottle(false);
     }
     private void stop() {
         serviceRequestHandler.StopPopulating();
@@ -123,9 +124,9 @@ public class JavaCoreIntegrationTest extends TestCase {
         // Side effect: Starts trip predicting.
         r.startRequest();
 
-        Thread.sleep(1000);
+        Thread.sleep(50);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
-        assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
+        assertTrue("Request should have received 4 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
     }
 }
