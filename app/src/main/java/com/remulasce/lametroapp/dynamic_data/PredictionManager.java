@@ -226,7 +226,7 @@ public class PredictionManager {
 			Log.v(TAG, "Handling request "+request);
 			
 			String response = sendRequest( request );
-			
+
 			Log.v(TAG, "Response received: "+response);
 			prediction.handleResponse(response);
 			
@@ -236,7 +236,7 @@ public class PredictionManager {
 		}
 
 		public String sendRequest( String request ) {
-            return HTTPGetter.getHTTPResponse(request, statusReporter);
+            return network.doGetHTTPResponse(request, statusReporter);
 		}
 	}
 }

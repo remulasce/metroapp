@@ -85,6 +85,8 @@ public class StopRouteDestinationPrediction extends Prediction {
     @Override
     public void stopPredicting() {
         inScope = false;
+        inUpdate = false;
+        needsQuickUpdate = true;
         PredictionManager.getInstance().stopTracking( this );
     }
 

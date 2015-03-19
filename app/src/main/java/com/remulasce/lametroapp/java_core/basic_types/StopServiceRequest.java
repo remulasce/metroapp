@@ -79,6 +79,7 @@ public class StopServiceRequest extends ServiceRequest {
     @Override
     public void pauseRequest() {
         super.pauseRequest();
+
         for (Prediction p : predictions) {
             p.stopPredicting();
         }

@@ -45,7 +45,7 @@ public class PredictionManagerTest extends TestCase {
 
 
         when(httpGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null)
-        ).thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
+        ).thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0);
 
         when (p.getRequestString()).thenReturn("http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=lametro-rail&stopId=80122");
         when (p.getRequestedUpdateInterval()).thenReturn(0);

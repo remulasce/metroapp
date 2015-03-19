@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -42,7 +43,7 @@ public class PauseResumeTest extends TestCase {
 
         httpGetter = Mockito.mock(HTTPGetter.class);
         when(httpGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null))
-                .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
+                .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0);
         HTTPGetter.setHTTPGetter(httpGetter);
 
         serviceRequestHandler = new ServiceRequestHandler();
@@ -152,21 +153,33 @@ public class PauseResumeTest extends TestCase {
         stop();
         serviceRequestHandler = new ServiceRequestHandler();
 
+        //So we pretend we've totally stopped the app, and now resumed it.
+        // Add extra destination to test that an update was received.
+        HTTPGetter newGetter = Mockito.mock(HTTPGetter.class);
+        when(newGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null))
+                .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_1);
+        HTTPGetter.setHTTPGetter(newGetter);
+
         predictionManager = new PredictionManager();
         PredictionManager.setPredictionManager(predictionManager);
+        predictionManager.rawSetNetwork(newGetter);
 
-        //So we pretend we've totally stopped the app, and now resumed it.
-        start();
 
         // We haven't added anything, and are using new handlers. So they shouldn't be tracking yet.
         assertTrue("No requests should be predicting after cancel", predictionManager.numPredictions() == 0);
         assertTrue("RequestHandler shouldn't be tracking anything after restart", serviceRequestHandler.numRequests() == 0);
 
         addRequest(r);
+        start();
+        Thread.sleep(6000);
+
+        verify(newGetter).doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null);
 
         assertTrue(predictionManager.numPredictions() == 1);
         assertTrue(r.getLifecycleState() == ServiceRequest.RequestLifecycleState.RUNNING);
-        assertTrue("Request should have received 4 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
+        assertTrue("RequestHandler should be tracking again after restart", serviceRequestHandler.numRequests() == 1);
+
+        assertTrue("Request should have received 6 trips: 2 * bogus, 7th * 2, Culver, Long Beach", r.getTrips().size() == 6);
     }
 
 

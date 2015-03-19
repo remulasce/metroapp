@@ -19,7 +19,7 @@ public class LaMetroUtilTest extends TestCase {
 
     public void testParseAllArrivals() throws Exception {
 
-        Collection<Arrival> arrivals = LaMetroUtil.parseAllArrivals(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
+        Collection<Arrival> arrivals = LaMetroUtil.parseAllArrivals(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0);
 
         assert(arrivals.size() == 7);
     }

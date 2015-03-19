@@ -39,7 +39,7 @@ public class JavaCoreIntegrationTest extends TestCase {
 
         httpGetter = Mockito.mock(HTTPGetter.class);
         when(httpGetter.doGetHTTPResponse(TestConstants.BLUE_EXPO_7TH_METRO_REQUEST, null))
-                .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE);
+                .thenReturn(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0);
         HTTPGetter.setHTTPGetter(httpGetter);
 
         serviceRequestHandler = new ServiceRequestHandler();
