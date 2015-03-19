@@ -106,13 +106,14 @@ public class PauseResumeTest extends TestCase {
 
         r.startRequest();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
     }
 
-    // When we serialize and close, we should have no predictions lingering. So it's a clean shutdown test.
+    // We add a request, check it's running. Then we shutdown the entire system as though the activity was ending.
+    // Then restart, adding the request to pretend like it had been serialized.
     public void testShutdown() throws Exception {
         start();
         assertCoreStarted();
@@ -131,7 +132,7 @@ public class PauseResumeTest extends TestCase {
 
         r.startRequest();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
         assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
@@ -144,9 +145,28 @@ public class PauseResumeTest extends TestCase {
 //        assertTrue("RequestHandler shouldn't be tracking anything after stop", serviceRequestHandler.numRequests() == 0);
 
         for (ServiceRequest each : serviceRequestHandler.getRequests()) {
-            assertTrue("All requests should have been paused", each.getLifecycleState() == ServiceRequest.RequestLifecycleState.PAUSED );
+            assertTrue("All requests should have been paused", each.getLifecycleState() == ServiceRequest.RequestLifecycleState.PAUSED);
         }
+        assertTrue(r.getLifecycleState() == ServiceRequest.RequestLifecycleState.PAUSED);
 
+        stop();
+        serviceRequestHandler = new ServiceRequestHandler();
+
+        predictionManager = new PredictionManager();
+        PredictionManager.setPredictionManager(predictionManager);
+
+        //So we pretend we've totally stopped the app, and now resumed it.
+        start();
+
+        // We haven't added anything, and are using new handlers. So they shouldn't be tracking yet.
+        assertTrue("No requests should be predicting after cancel", predictionManager.numPredictions() == 0);
+        assertTrue("RequestHandler shouldn't be tracking anything after restart", serviceRequestHandler.numRequests() == 0);
+
+        addRequest(r);
+
+        assertTrue(predictionManager.numPredictions() == 1);
+        assertTrue(r.getLifecycleState() == ServiceRequest.RequestLifecycleState.RUNNING);
+        assertTrue("Request should have received 4 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
     }
 
 

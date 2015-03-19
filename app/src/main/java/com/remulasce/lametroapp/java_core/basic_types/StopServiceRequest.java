@@ -62,6 +62,7 @@ public class StopServiceRequest extends ServiceRequest {
 
     @Override
     public void startRequest() {
+        super.startRequest();
         if (predictions.size() == 0) {
             makePredictions();
         }
@@ -77,6 +78,7 @@ public class StopServiceRequest extends ServiceRequest {
 
     @Override
     public void pauseRequest() {
+        super.pauseRequest();
         for (Prediction p : predictions) {
             p.stopPredicting();
         }
@@ -84,6 +86,7 @@ public class StopServiceRequest extends ServiceRequest {
 
     @Override
     public void cancelRequest() {
+        super.cancelRequest();
         for (Prediction p : predictions) {
             p.cancelTrips();
             p.stopPredicting();
