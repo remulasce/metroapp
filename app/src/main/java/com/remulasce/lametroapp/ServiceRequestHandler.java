@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by nighelles on 3/7/2015.
  *
- * At this point it's basically just a list of Requests.
+ * At this point it's basically just a list of Requests, plus some lifecycle handling.
  * It just also lets you get all total Trips made by those requests.
  *
  */
@@ -64,6 +64,11 @@ public class ServiceRequestHandler {
             return;
         }
         Log.d( TAG, "Starting TripPopulator" );
+
+        for (ServiceRequest r : serviceRequests) {
+            r.startRequest();
+        }
+
         running = true;
     }
 
@@ -73,7 +78,9 @@ public class ServiceRequestHandler {
         if (!running) {
             Log.e( TAG, "Stopping an already-stopped populator");
             return;
-
+        }
+        for (ServiceRequest r : serviceRequests) {
+            r.pauseRequest();
         }
         running = false;
     }
@@ -81,9 +88,14 @@ public class ServiceRequestHandler {
     void rawSetServiceRequests(Collection<ServiceRequest> requests) {
         Log.d(TAG, "Setting service requests");
 
+        for (ServiceRequest r : requests) {
+            if (!serviceRequests.contains(r)) {
+                r.startRequest();
+            }
+        }
+
         serviceRequests.clear();
         serviceRequests.addAll(requests);
-
     }
 
     public void SetServiceRequests( Collection<ServiceRequest> requests) {

@@ -23,8 +23,18 @@ public abstract class ServiceRequest implements Serializable {
         this.displayName = s;
     }
 
-    // Lifecycle
-    public void start(){ inScope = true; }
+    // Lifecycle.
+    // Cancel on final kill. Cancel is not recoverable.
+    // Use Start for both initial start and post-pause resume.
+    //   So you should try not to remake stuff if it's already been made.
+    // Pause/resume are basically used in serialization. So resume
+    //   needs to make sure /everything/ it needs is set up.
+    //   Specifically, that its predictions are getting updated, since the
+    //      entire activity may have been killed since pause.
+//    public void start(){ inScope = true; }
+    // eg. start request
+    public abstract void startRequest();
+    public abstract void pauseRequest();
     public abstract void cancelRequest();
 
     // Old lifecycle. Probably doesn't do anything any more.

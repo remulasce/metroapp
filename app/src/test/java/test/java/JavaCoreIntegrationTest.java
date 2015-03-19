@@ -121,7 +121,7 @@ public class JavaCoreIntegrationTest extends TestCase {
         assertTrue(predictionManager.isRunning());
 
         // Side effect: Starts trip predicting.
-        r.makePredictions();
+        r.startRequest();
 
         Thread.sleep(1000);
 

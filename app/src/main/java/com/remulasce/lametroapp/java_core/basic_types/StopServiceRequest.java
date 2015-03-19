@@ -4,6 +4,7 @@ import com.remulasce.lametroapp.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,6 +20,7 @@ import java.util.Collection;
 
 public class StopServiceRequest extends ServiceRequest {
 
+    private static final String TAG = "StopServiceRequest";
     private Collection<Stop> stops;
     private Collection<Prediction> predictions = new ArrayList<Prediction>();
 
@@ -46,7 +48,7 @@ public class StopServiceRequest extends ServiceRequest {
     public Collection<Trip> getTrips() {
         Collection<Trip> trips = new ArrayList<Trip>();
 
-        for (Prediction p : this.makePredictions()) {
+        for (Prediction p : this.predictions) {
             if (p instanceof StopRouteDestinationPrediction) {
 
                 for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction)p).getArrivals()) {
@@ -59,9 +61,32 @@ public class StopServiceRequest extends ServiceRequest {
     }
 
     @Override
+    public void startRequest() {
+        if (predictions.size() == 0) {
+            makePredictions();
+        }
+
+        resumeRequest();
+    }
+
+    public void resumeRequest() {
+        for (Prediction p : predictions) {
+            p.startPredicting();
+        }
+    }
+
+    @Override
+    public void pauseRequest() {
+        for (Prediction p : predictions) {
+            p.stopPredicting();
+        }
+    }
+
+    @Override
     public void cancelRequest() {
         for (Prediction p : predictions) {
             p.cancelTrips();
+            p.stopPredicting();
         }
 
         predictions.clear();
@@ -94,21 +119,20 @@ public class StopServiceRequest extends ServiceRequest {
         updateAvailable = false;
     }
 
-    public Collection<Prediction> makePredictions() {
+    private void makePredictions() {
         // Assume Stop
         if (!isValid()) {
-            return null;
+            Log.w(TAG, "Make predictions in invalid StopServiceRequest");
+            return;
         }
 
         if (predictions.isEmpty()) {
             for (Stop s : stops) {
                 StopRouteDestinationPrediction stopRouteDestinationPrediction = new StopRouteDestinationPrediction(s, null);
                 predictions.add(stopRouteDestinationPrediction);
-                stopRouteDestinationPrediction.startPredicting();
+//                stopRouteDestinationPrediction.startPredicting();
             }
         }
-
-        return predictions;
     }
 
     @Override
