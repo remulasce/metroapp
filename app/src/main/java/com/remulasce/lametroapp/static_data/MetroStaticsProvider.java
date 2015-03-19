@@ -26,6 +26,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     private final SQLPreloadedStopsReader stopsReader;
 
     private HashMap<String, String> stopNameCache;
+    private HashMap<String, BasicLocation> stopLocationCache;
     private HashMap<String, Collection<String>> stopIDCache;
 
 
@@ -63,7 +64,24 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public BasicLocation getStopLocation(Stop stop) {
-        return stopsReader.getStopLocation(stop);
+        if (stopLocationCache == null) {
+            Log.d(TAG, "Initializing stoplocation cache");
+            stopLocationCache = new HashMap<String, BasicLocation>();
+        }
+
+        if (stopLocationCache.containsKey(stop)) {
+            Log.v(TAG, "stoplocation cache hit");
+            return stopLocationCache.get(stop);
+        }
+
+        BasicLocation ret = stopsReader.getStopLocation(stop);
+
+        addToCache(stop, ret, stopLocationCache, 20, 4);
+
+        return ret;
+
+
+
     }
 
     @Override
