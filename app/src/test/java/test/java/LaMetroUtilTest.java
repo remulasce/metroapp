@@ -1,7 +1,7 @@
 package test.java;
 
-import com.remulasce.lametroapp.LaMetroUtil;
-import com.remulasce.lametroapp.dynamic_data.types.Arrival;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 
 import junit.framework.TestCase;
 

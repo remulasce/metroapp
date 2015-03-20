@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.dynamic_data.types;
+package com.remulasce.lametroapp.java_core.dynamic_data.types;
 
 
 import com.remulasce.lametroapp.java_core.basic_types.Destination;

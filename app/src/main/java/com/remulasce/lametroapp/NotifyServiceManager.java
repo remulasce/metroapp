@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.content.Context;
 import android.content.Intent;
 
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
@@ -33,7 +34,7 @@ public class NotifyServiceManager {
         }
 
         try {
-            i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute( route, stop ) );
+            i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute(route, stop) );
             i.putExtra( "StopID", stop.getNum() );
 
             if ( destination != null && destination.isValid() ) {

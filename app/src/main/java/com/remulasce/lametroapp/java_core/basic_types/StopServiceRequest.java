@@ -1,9 +1,9 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
-import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationArrival;
-import com.remulasce.lametroapp.dynamic_data.types.StopRouteDestinationPrediction;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationPrediction;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 
 import java.io.IOException;

@@ -6,9 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.remulasce.lametroapp.display.AndroidDisplay;
-import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
-import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
 
 public class TripListAdapter extends ArrayAdapter <AndroidDisplay> {
     public TripListAdapter(Context context, int resource) {

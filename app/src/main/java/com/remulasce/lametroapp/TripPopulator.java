@@ -13,12 +13,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.display.AndroidDisplay;
 import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
-import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.MultiArrivalTrip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
 import java.util.List;

@@ -17,6 +17,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
@@ -93,7 +94,7 @@ public class ArrivalNotifyService extends Service {
 					arrivalUpdatedAt = System.currentTimeMillis();
 	 
 					if (runNum == 0) {
-                        toast ("Next arrival "+LaMetroUtil.timeToDisplay(seconds));
+                        toast ("Next arrival "+ LaMetroUtil.timeToDisplay(seconds));
 					}
 				}
 				

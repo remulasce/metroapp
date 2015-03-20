@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 
 import java.io.Serializable;
 import java.util.Collection;

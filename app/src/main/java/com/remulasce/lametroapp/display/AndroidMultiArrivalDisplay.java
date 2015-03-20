@@ -16,7 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
@@ -26,9 +26,9 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
-import com.remulasce.lametroapp.dynamic_data.types.Arrival;
-import com.remulasce.lametroapp.dynamic_data.types.MultiArrivalTrip;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.MultiArrivalTrip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 
 import java.util.ArrayList;
 import java.util.List;

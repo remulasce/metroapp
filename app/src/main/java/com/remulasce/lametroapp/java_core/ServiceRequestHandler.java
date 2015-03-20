@@ -1,8 +1,8 @@
-package com.remulasce.lametroapp;
+package com.remulasce.lametroapp.java_core;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
-import com.remulasce.lametroapp.dynamic_data.types.Trip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 
 import java.util.ArrayList;
 import java.util.Collection;

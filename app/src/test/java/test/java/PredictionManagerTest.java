@@ -1,8 +1,8 @@
 package test.java;
 
-import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
-import com.remulasce.lametroapp.dynamic_data.PredictionManager;
-import com.remulasce.lametroapp.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
+import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
 
 import junit.framework.TestCase;
 

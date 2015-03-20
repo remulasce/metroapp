@@ -1,11 +1,11 @@
 package test.java;
 
-import com.remulasce.lametroapp.ServiceRequestHandler;
+import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
-import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
-import com.remulasce.lametroapp.dynamic_data.PredictionManager;
+import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
+import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 
 import junit.framework.TestCase;
 

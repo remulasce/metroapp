@@ -1,7 +1,7 @@
 package com.remulasce.lametroapp.platform_support;
 
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
-import com.remulasce.lametroapp.dynamic_data.HTTPGetter;
+import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

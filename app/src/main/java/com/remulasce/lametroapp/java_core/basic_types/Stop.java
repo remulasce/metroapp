@@ -2,7 +2,7 @@ package com.remulasce.lametroapp.java_core.basic_types;
 
 import android.util.Log;
 
-import com.remulasce.lametroapp.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 
 import java.io.Serializable;
 
