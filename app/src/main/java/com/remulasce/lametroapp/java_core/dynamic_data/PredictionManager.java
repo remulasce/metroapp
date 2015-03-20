@@ -243,7 +243,8 @@ public class PredictionManager {
 			Log.v(TAG, "Handling request "+request);
 
             if (statusReporter != null) {
-                statusReporter.reportGettingUpdate();
+                // Testing purposes for now.
+//                statusReporter.reportGettingUpdate();
             }
 
 			String response = sendRequest( request );
