@@ -85,8 +85,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         String stopString = stop.getStopName();
         String destString = dest.getString();
 
-        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
-        double distance = retriever.getCurrentDistanceToStop(stop);
+        double distance = trip.getCurrentDistanceToStop();
 
         distance_text.setText((int)(distance * 0.000621371 * 10) / 10.0 + "mi");
 

@@ -51,7 +51,17 @@ public class MultiArrivalTrip extends Trip {
         int theirCode = obj.hashCode();
         return ourCode == theirCode; 
     }
-    
+
+    public double getCurrentDistanceToStop() {
+        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
+        if (retriever != null && System.currentTimeMillis() > lastLocationUpdate + 30000) {
+            lastLocationUpdate = System.currentTimeMillis();
+            lastDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+        }
+
+        return lastDistanceToStop;
+    }
+
     @Override
     public float getPriority() {
         // Priority is just how close the stop is.
@@ -60,13 +70,7 @@ public class MultiArrivalTrip extends Trip {
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
 
-        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
-        if (retriever != null && System.currentTimeMillis() > lastLocationUpdate + 30000) {
-            lastLocationUpdate = System.currentTimeMillis();
-            lastDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
-        }
-
-        double distance = lastDistanceToStop;
+        double distance = getCurrentDistanceToStop();
 
         // ~20 miles
         proximity += Math.max(0,
