@@ -8,6 +8,7 @@ import android.widget.Filterable;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
+import com.remulasce.lametroapp.static_data.AutoCompleteCombinedFiller;
 import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
 
 import java.util.ArrayList;
@@ -23,13 +24,12 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     private final String TAG = "OmniAutoCompleteAdapter";
 
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
-    private final AutoCompleteStopFiller autocomplete;
+    private final AutoCompleteCombinedFiller autocomplete;
     private final LocationRetriever locations;
 
-    public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteStopFiller t,
+    public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteCombinedFiller t,
                                    LocationRetriever locations) {
         super(context, resource, textView);
-        resultList.add(new OmniAutoCompleteEntry("Test Autocomplete", .1f));
         autocomplete = t;
         this.locations = locations;
     }
@@ -55,7 +55,32 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                     long t = Tracking.startTime();
 
                     // Retrieve the autocomplete results.
-                    Collection<OmniAutoCompleteEntry> results = autocomplete.autocompleteStopName(constraint.toString());
+                    Collection<OmniAutoCompleteEntry> results = new ArrayList<OmniAutoCompleteEntry>();
+
+                    Collection<OmniAutoCompleteEntry> historySuggestions = autocomplete.autocompleteHistorySuggestions(constraint.toString());
+                    Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocomplete.autocompleteStopName(constraint.toString());
+
+                    results.addAll(historySuggestions);
+
+                    // N^2. Fantastic.
+                    // If both history and text suggest the same entry, we need to combine the priorities.
+                    for (OmniAutoCompleteEntry newEntry : autocompleteSuggestions) {
+                        OmniAutoCompleteEntry matchingEntry = null;
+
+                        for (OmniAutoCompleteEntry exstEntry : results) {
+                            if (exstEntry.toString().equals(newEntry.toString())) {
+                                matchingEntry = exstEntry;
+                                break;
+                            }
+                        }
+
+                        if (matchingEntry != null) {
+                            matchingEntry.addPriority(newEntry.getPriority());
+                        } else {
+                            results.add(newEntry);
+                        }
+                    }
+
 
                     // Prioritize them based on stuff
                     try {

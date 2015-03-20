@@ -21,7 +21,7 @@ import java.util.Random;
  *
  * Just routes everything through the preloded sql provider.
  */
-public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteStopFiller {
+public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteCombinedFiller {
     private static final String TAG = "MetroStaticsProvider";
 
 
@@ -59,10 +59,23 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
-        Collection<OmniAutoCompleteEntry> ret = stopsReader.autocompleteStopName(input);
+        Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
+
+        Collection<OmniAutoCompleteEntry> sqlReturns = stopsReader.autocompleteStopName(input);
+        ret.addAll(sqlReturns);
 
         return ret;
     }
+
+    @Override
+    public Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input) {
+        Collection<OmniAutoCompleteEntry> historyReturns = new ArrayList<OmniAutoCompleteEntry>();
+        historyReturns.add(new OmniAutoCompleteEntry("Patsaouras Transit Plaza", 1.5f));
+        historyReturns.add(new OmniAutoCompleteEntry("Redondo Beach Station", 1.5f));
+
+        return historyReturns;
+    }
+
 
     @Override
     public BasicLocation getStopLocation(Stop stop) {
@@ -81,9 +94,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
         addToCache(stop, ret, stopLocationCache, 20, 4);
 
         return ret;
-
-
-
     }
 
     @Override

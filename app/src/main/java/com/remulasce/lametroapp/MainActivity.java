@@ -115,7 +115,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupOmniBar() {
         autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, staticsProvider, locationService);
         omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(3);
+        omniField.setThreshold(0);
 
         omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, null, this);
     }
