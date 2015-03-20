@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class StopRouteDestinationArrival implements Serializable {
     private final int MINIMUM_UPDATE_INTERVAL = 10000;
     private final int MAXIMUM_UPDATE_INTERVAL = 60000;
-    private final int INTERVAL_INCREASE_PER_SECOND = 300;
+    private final int INTERVAL_INCREASE_PER_SECOND = 400;
 
     private static final String TAG = "SRDArrival";
     final Stop stop;
@@ -60,7 +60,7 @@ public class StopRouteDestinationArrival implements Serializable {
             if ( first == null
                     || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
             {
-                if ( a.getEstimatedArrivalSeconds() != -1 ) {
+                if ( a.getEstimatedArrivalSeconds() >= 0 ) {
                     first = a;
                 }
             }
@@ -69,7 +69,7 @@ public class StopRouteDestinationArrival implements Serializable {
         if ( first == null ) {
             firstTime = 15;
         } else {
-            firstTime = (int) first.getEstimatedArrivalSeconds();
+            firstTime = first.getEstimatedArrivalSeconds();
         }
 
         interval = Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
