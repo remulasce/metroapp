@@ -18,8 +18,8 @@ import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
-import com.remulasce.lametroapp.static_data.StopLocationTranslator;
-import com.remulasce.lametroapp.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
+import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
 
 import java.util.ArrayList;
 import java.util.Collection;

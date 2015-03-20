@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.components.location;
+package com.remulasce.lametroapp.java_core.location;
 
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 

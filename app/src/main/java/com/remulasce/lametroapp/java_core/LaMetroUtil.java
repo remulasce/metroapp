@@ -6,8 +6,8 @@ import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
-import com.remulasce.lametroapp.static_data.RouteColorer;
-import com.remulasce.lametroapp.static_data.StopLocationTranslator;
+import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
+import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

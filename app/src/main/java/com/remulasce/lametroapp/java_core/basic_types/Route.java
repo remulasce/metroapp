@@ -1,6 +1,6 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
-import com.remulasce.lametroapp.static_data.types.RouteColor;
+import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 
 import java.io.Serializable;
 

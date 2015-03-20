@@ -24,7 +24,7 @@ import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
-import com.remulasce.lametroapp.components.location.GlobalLocationProvider;
+import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
@@ -39,7 +39,7 @@ import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
 import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
-import com.remulasce.lametroapp.static_data.RouteColorer;
+import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";

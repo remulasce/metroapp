@@ -13,6 +13,8 @@ import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
+import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
+import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
 
 import java.io.BufferedReader;
 import java.io.IOException;

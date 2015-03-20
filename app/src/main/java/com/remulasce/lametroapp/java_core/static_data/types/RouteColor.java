@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.static_data.types;
+package com.remulasce.lametroapp.java_core.static_data.types;
 
 import java.io.Serializable;
 
