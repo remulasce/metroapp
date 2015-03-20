@@ -52,46 +52,12 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
-                    long t = Tracking.startTime();
 
-                    // Retrieve the autocomplete results.
-                    Collection<OmniAutoCompleteEntry> results = new ArrayList<OmniAutoCompleteEntry>();
-
-                    Collection<OmniAutoCompleteEntry> historySuggestions = autocomplete.autocompleteHistorySuggestions(constraint.toString());
-                    Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocomplete.autocompleteStopName(constraint.toString());
-
-                    results.addAll(historySuggestions);
-
-                    // N^2. Fantastic.
-                    // If both history and text suggest the same entry, we need to combine the priorities.
-                    for (OmniAutoCompleteEntry newEntry : autocompleteSuggestions) {
-                        OmniAutoCompleteEntry matchingEntry = null;
-
-                        for (OmniAutoCompleteEntry exstEntry : results) {
-                            if (exstEntry.toString().equals(newEntry.toString())) {
-                                matchingEntry = exstEntry;
-                                break;
-                            }
-                        }
-
-                        if (matchingEntry != null) {
-                            matchingEntry.addPriority(newEntry.getPriority());
-                        } else {
-                            results.add(newEntry);
-                        }
-                    }
-
-
-                    // Prioritize them based on stuff
-                    try {
-                        prioritizeNearbyStops(results);
-                    } catch (Exception e) {e.printStackTrace();}
+                    Collection<OmniAutoCompleteEntry> results = getOmniAutoCompleteEntries(constraint);
 
                     // Assign the data to the FilterResults
                     filterResults.values = results;
                     filterResults.count = results.size();
-
-                    Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
                 }
                 return filterResults;
             }
@@ -125,6 +91,46 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 }
             }};
         return filter;
+    }
+
+    private Collection<OmniAutoCompleteEntry> getOmniAutoCompleteEntries(CharSequence constraint) {
+        long t = Tracking.startTime();
+
+        // Retrieve the autocomplete results.
+        Collection<OmniAutoCompleteEntry> results = new ArrayList<OmniAutoCompleteEntry>();
+
+        Collection<OmniAutoCompleteEntry> historySuggestions = autocomplete.autocompleteHistorySuggestions(constraint.toString());
+        Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocomplete.autocompleteStopName(constraint.toString());
+
+        results.addAll(historySuggestions);
+
+        // N^2. Fantastic.
+        // If both history and text suggest the same entry, we need to combine the priorities.
+        for (OmniAutoCompleteEntry newEntry : autocompleteSuggestions) {
+            OmniAutoCompleteEntry matchingEntry = null;
+
+            for (OmniAutoCompleteEntry exstEntry : results) {
+                if (exstEntry.toString().equals(newEntry.toString())) {
+                    matchingEntry = exstEntry;
+                    break;
+                }
+            }
+
+            if (matchingEntry != null) {
+                matchingEntry.addPriority(newEntry.getPriority());
+            } else {
+                results.add(newEntry);
+            }
+        }
+
+
+        // Prioritize them based on stuff
+        try {
+            prioritizeNearbyStops(results);
+        } catch (Exception e) {e.printStackTrace();}
+
+        Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
+        return results;
     }
 
     private void prioritizeNearbyStops(Collection<OmniAutoCompleteEntry> results) {
