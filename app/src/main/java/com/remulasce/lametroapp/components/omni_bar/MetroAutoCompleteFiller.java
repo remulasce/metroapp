@@ -38,6 +38,8 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         Collection<OmniAutoCompleteEntry> historySuggestions = autocompleteHistory.autocompleteHistorySuggestions(input);
         Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocompleteText.autocompleteStopName(input);
 
+        prioritizeNearbyStops(autocompleteSuggestions);
+
         results.addAll(historySuggestions);
 
         // N^2. Fantastic.
@@ -60,12 +62,6 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         }
 
 
-        // Prioritize them based on stuff
-        try {
-            prioritizeNearbyStops(results);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
         return results;

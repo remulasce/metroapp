@@ -9,4 +9,5 @@ import java.util.Collection;
  */
 public interface AutoCompleteHistoryFiller {
     Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input);
+    void autocompleteSaveSelection(OmniAutoCompleteEntry selected);
 }

@@ -26,6 +26,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
 
     private final SQLPreloadedStopsReader stopsReader;
+    private final AutoCompleteHistoryFiller autoCompleteHistoryFiller;
 
     private HashMap<String, String> stopNameCache;
     private HashMap<String, BasicLocation> stopLocationCache;
@@ -34,6 +35,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     public MetroStaticsProvider(Context context) {
         stopsReader = new SQLPreloadedStopsReader(context);
+        autoCompleteHistoryFiller = new AndroidAutocompleteHistory(context);
     }
 
     private void addToCache(Object k, Object v, Map cache, int maxCacheEntries, int numRemoveFull) {
@@ -69,18 +71,28 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input) {
-        Collection<OmniAutoCompleteEntry> historyReturns = new ArrayList<OmniAutoCompleteEntry>();
+        Log.d(TAG, "Getting autocomplete history entries for "+input);
+        return autoCompleteHistoryFiller.autocompleteHistorySuggestions(input);
+//
+//        Collection<OmniAutoCompleteEntry> historyReturns = new ArrayList<OmniAutoCompleteEntry>();
+//
+//        OmniAutoCompleteEntry e1 = new OmniAutoCompleteEntry("Patsaouras Transit Plaza", 1.5f);
+//        OmniAutoCompleteEntry e2 = new OmniAutoCompleteEntry("Redondo Beach Station", 1.5f);
+//
+//        e1.setStop(new Stop("Redondo Beach Station"));
+//        e2.setStop(new Stop("Patsaouras Transit Plaza"));
+//
+//        historyReturns.add(e1);
+//        historyReturns.add(e2);
+//
+//        return historyReturns;
+    }
 
-        OmniAutoCompleteEntry e1 = new OmniAutoCompleteEntry("Patsaouras Transit Plaza", 1.5f);
-        OmniAutoCompleteEntry e2 = new OmniAutoCompleteEntry("Redondo Beach Station", 1.5f);
+    @Override
+    public void autocompleteSaveSelection(OmniAutoCompleteEntry selected) {
+        Log.d(TAG, "Saving autocomplete entry: "+selected.toString());
+        autoCompleteHistoryFiller.autocompleteSaveSelection(selected);
 
-        e1.setStop(new Stop("Redondo Beach Station"));
-        e2.setStop(new Stop("Patsaouras Transit Plaza"));
-
-        historyReturns.add(e1);
-        historyReturns.add(e2);
-
-        return historyReturns;
     }
 
 

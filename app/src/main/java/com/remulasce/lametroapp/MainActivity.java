@@ -117,7 +117,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         omniField.setAdapter(autoCompleteAdapter);
         omniField.setThreshold(0);
 
-        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, null, this);
+        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, staticsProvider, null, this);
     }
 
     private void setupActionBar() {
@@ -267,7 +267,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onResume();
 
         Tracking.setScreenName("Main Screen");
-
         locationService.startLocating(this);
     }
 

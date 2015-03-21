@@ -20,6 +20,7 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.static_data.AutoCompleteHistoryFiller;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ public class OmniBarInputHandler {
     private final ProgressBar autocompleteProgress;
     private final StopNameTranslator stopNames;
     private final StopLocationTranslator stopLocations;
+    private final AutoCompleteHistoryFiller autoCompleteHistory;
     private final Tracker t;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
@@ -50,7 +52,7 @@ public class OmniBarInputHandler {
     public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
                                ProgressBar autocompleteProgress,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
-                               StopLocationTranslator locations,
+                               StopLocationTranslator locations, AutoCompleteHistoryFiller autoCompleteHistory,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = addButton;
@@ -59,6 +61,7 @@ public class OmniBarInputHandler {
         this.requestList = requestList;
         this.stopNames = stopNames;
         this.stopLocations = locations;
+        this.autoCompleteHistory = autoCompleteHistory;
 
         this.t = t;
         this.c = c;
@@ -73,6 +76,12 @@ public class OmniBarInputHandler {
         omniField.setOnItemClickListener(autocompleteSelectedListener);
 
         omniField.setLoadingIndicator(autocompleteProgress);
+        omniField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                omniField.showDropDown();
+            }
+        });
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -80,6 +89,9 @@ public class OmniBarInputHandler {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Tracking.sendEvent("AutoComplete", "AutoComplete Selected");
             long t = Tracking.startTime();
+
+            OmniAutoCompleteEntry entry = (OmniAutoCompleteEntry) adapterView.getItemAtPosition(i);
+            autoCompleteHistory.autocompleteSaveSelection(entry);
 
             String requestText = omniField.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
@@ -137,7 +149,7 @@ public class OmniBarInputHandler {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
         }
     }
-    private void makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
+    private ServiceRequest makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
 
         Collection<Stop> stops = new ArrayList<Stop>();
@@ -149,9 +161,10 @@ public class OmniBarInputHandler {
         ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
 
         if (serviceRequest.isValid()) {
-            requestList.AddServiceRequest(serviceRequest);
+            return serviceRequest;
         } else {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
+            return null;
         }
     }
 
@@ -173,7 +186,11 @@ public class OmniBarInputHandler {
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
-                    makeMultiStopServiceRequest(convertedID, requestText);
+                    ServiceRequest request = makeMultiStopServiceRequest(convertedID, requestText);
+
+                    if (request != null) {
+                        requestList.AddServiceRequest(request);
+                    }
 
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
