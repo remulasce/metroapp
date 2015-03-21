@@ -243,15 +243,15 @@ public class TripPopulator {
                     if (sorted.size() == 0 ) {
                         hint.setVisibility(View.VISIBLE);
 
-                        /*
-                        if (serviceRequests.size() != 0) {// && couldServiceRequestsHavePending()) {
+
+                        if (requests.getRequests().size() != 0) {// && couldServiceRequestsHavePending()) {
                             progress.setVisibility(View.VISIBLE);
                             progress.setProgress(1);
                         }
                         else {
                             progress.setVisibility(View.INVISIBLE);
                         }
-                        */
+
 
                     } else {
                         if ( hint.getVisibility() == View.VISIBLE ) {
