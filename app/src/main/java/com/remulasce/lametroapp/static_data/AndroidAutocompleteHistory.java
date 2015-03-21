@@ -101,7 +101,8 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         private OmniAutoCompleteEntry getEntry() {
             try {
                 OmniAutoCompleteEntry clone = (OmniAutoCompleteEntry) entry.clone();
-                clone.setPriority(Math.max(.5f, timesUsed / 10.0f));
+                float priority = Math.min(.5f, timesUsed / 10.0f);
+                clone.setPriority(priority);
                 return clone;
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();

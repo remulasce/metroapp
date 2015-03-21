@@ -38,7 +38,8 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         Collection<OmniAutoCompleteEntry> historySuggestions = autocompleteHistory.autocompleteHistorySuggestions(input);
         Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocompleteText.autocompleteStopName(input);
 
-        prioritizeNearbyStops(autocompleteSuggestions);
+        prioritizeNearbySuggestions(autocompleteSuggestions);
+        prioritizeNearbySuggestions(historySuggestions, 0.25f);
 
         results.addAll(historySuggestions);
 
@@ -68,7 +69,10 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
     }
 
 
-    private void prioritizeNearbyStops(Collection<OmniAutoCompleteEntry> results) {
+    private void prioritizeNearbySuggestions(Collection<OmniAutoCompleteEntry> results) {
+        prioritizeNearbySuggestions(results, 1);
+    }
+    private void prioritizeNearbySuggestions(Collection<OmniAutoCompleteEntry> results, final float scaleFactor) {
         Log.d(TAG, "Prioritizing nearby stops");
         long t = Tracking.startTime();
 
@@ -97,6 +101,8 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
                                         .8f * (float)(1 - (distance / 1600)));
 
                                 priority = Math.max(priority, 0);
+
+                                priority *= scaleFactor;
 
                                 if (priority > 0) {
                                     Log.v(TAG, "Adding priority " + priority);
