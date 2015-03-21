@@ -11,6 +11,8 @@ import android.widget.ProgressBar;
  *
  * Extension to autocompletetextview enables a progressbar spinnie thing when working
  * That mitigates having long search times.
+ *
+ * Also, show suggestion drop-down on 0 text input (as soon as it's focused)
  */
 public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     public ProgressAutoCompleteTextView(Context context, AttributeSet attrs) {
@@ -24,6 +26,13 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     public void setLoadingIndicator(ProgressBar view) {
         mLoadingIndicator = view;
     }
+
+
+    @Override
+    public boolean enoughToFilter() {
+        return true;
+    }
+
 
     @Override
     protected void performFiltering(CharSequence text, int keyCode) {
