@@ -1,8 +1,11 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -76,12 +79,22 @@ public class OmniBarInputHandler {
         omniField.setOnItemClickListener(autocompleteSelectedListener);
 
         omniField.setLoadingIndicator(autocompleteProgress);
-        omniField.setOnClickListener(new View.OnClickListener() {
+//        omniField.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent event) {
+//                omniField.showDropDown();
+//                return false;
+//            }
+//        });
+
+        Handler h = new Handler(Looper.getMainLooper());
+        h.postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                omniField.showDropDown();
+            public void run() {
+//                omniField.requestFocus();
             }
-        });
+        }, 100);
+
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {

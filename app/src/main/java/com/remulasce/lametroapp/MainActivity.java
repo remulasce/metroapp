@@ -1,17 +1,23 @@
 package com.remulasce.lametroapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -268,6 +274,51 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         Tracking.setScreenName("Main Screen");
         locationService.startLocating(this);
+
+    }
+
+    // Ugly hack to show history suggestions as soon as ap loads
+    // Except, Android won't actually tell you when it's ok with dialogs showing
+    // So instead we check every xms until we actually have a window.
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            Handler h = new Handler(Looper.getMainLooper());
+            h.postDelayed(showDropdownOnStart, 100);
+        }
+    }
+
+    Runnable showDropdownOnStart = new Runnable() {
+        @Override
+        public void run() {
+            if (omniField.getWindowVisibility() != View.GONE) {// && omniField.isFocused()) {
+                Log.i(TAG, "Showing omni dropdown after startup");
+                omniField.requestFocus();
+                omniField.showDropDown();
+            } else {
+                Handler h = new Handler(Looper.getMainLooper());
+                h.postDelayed(showDropdownOnStart, 100);
+            }
+        }
+    };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (omniField.isFocused()) {
+                Rect outRect = new Rect();
+                omniField.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    omniField.clearFocus();
+                    //
+                    // Hide keyboard
+                    //
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     @Override

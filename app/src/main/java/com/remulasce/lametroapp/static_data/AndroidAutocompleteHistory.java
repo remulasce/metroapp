@@ -50,6 +50,11 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         for (AutocompleteEntry entry : historyEntries) {
             ret.add(entry.getEntry());
         }
+
+        if (ret.size() == 0) {
+            ret.add(new OmniAutoCompleteEntry("Test", 0));
+        }
+
         return ret;
     }
 
@@ -89,7 +94,7 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         }
 
         private boolean matches(OmniAutoCompleteEntry other) {
-            if (other.hasStop()) {
+            if (other.hasStop() && entry.hasStop()) {
                 return entry.getStop().equals(other.getStop());
             } else {
                 // We can't handle this.
