@@ -2,7 +2,9 @@ package com.remulasce.lametroapp.components.omni_bar;
 
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
-public class OmniAutoCompleteEntry implements Cloneable{
+import java.io.Serializable;
+
+public class OmniAutoCompleteEntry implements Cloneable, Serializable {
 
     private String text = "Unassigned";
     private float priority = 1;

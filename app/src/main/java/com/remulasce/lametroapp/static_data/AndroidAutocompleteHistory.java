@@ -2,8 +2,10 @@ package com.remulasce.lametroapp.static_data;
 
 import android.content.Context;
 
+import com.remulasce.lametroapp.components.omni_bar.AutocompleteEntry;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.analytics.Log;
+import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -13,6 +15,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.Serializable;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,25 +32,52 @@ import javax.crypto.spec.OAEPParameterSpec;
  */
 public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     private static final String TAG = "AndroidAutocompleteHistory";
+    public static final String HISTORY_FILE = "autocompleteHistory.ser";
     private Context context;
-
-    private File historyFile;
-    private FileOutputStream writeFile;
-    private BufferedReader readFile;
 
     private List<AutocompleteEntry> historyEntries = new ArrayList<AutocompleteEntry>();
 
     // Shared preferences saving
     public AndroidAutocompleteHistory(Context c) {
         this.context = c;
-
-        this.historyFile = new File(context.getFilesDir(), "autocompleteHistory.txt");
     }
 
 
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input) {
         Log.d(TAG, "Getting autocomplete entries from file");
+
+        FileInputStream fileIn = null;
+        Collection<AutocompleteEntry> savedHistory = null;
+        try {
+            fileIn = context.openFileInput(HISTORY_FILE);
+
+            ObjectInputStream in = null;
+            in = new ObjectInputStream(fileIn);
+
+            Object o = in.readObject();
+
+            savedHistory = (Collection<AutocompleteEntry>) o;
+
+            in.close();
+            fileIn.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (OptionalDataException e1) {
+            e1.printStackTrace();
+        } catch (StreamCorruptedException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        if (savedHistory != null) {
+            historyEntries.clear();
+            historyEntries.addAll(savedHistory);
+        }
+
 
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
@@ -75,44 +109,22 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected);
             historyEntries.add(autocompleteEntry);
         }
-    }
 
-    private class AutocompleteEntry {
-        private OmniAutoCompleteEntry entry;
-        int timesUsed = 1;
+        FileOutputStream fos = null;
+        try {
+            fos = context.openFileOutput(HISTORY_FILE, Context.MODE_PRIVATE);
 
-        private AutocompleteEntry(OmniAutoCompleteEntry entry) {
-            try {
-                this.entry = (OmniAutoCompleteEntry) entry.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            ObjectOutputStream oos;
+            oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(historyEntries);
+
+            oos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        private void incrementUse() {
-            timesUsed++;
-        }
-
-        private boolean matches(OmniAutoCompleteEntry other) {
-            if (other.hasStop() && entry.hasStop()) {
-                return entry.getStop().equals(other.getStop());
-            } else {
-                // We can't handle this.
-                Log.w(TAG, "Tried to save an autocomplete entry with no stop- can't handle");
-                return false;
-            }
-        }
-
-        private OmniAutoCompleteEntry getEntry() {
-            try {
-                OmniAutoCompleteEntry clone = (OmniAutoCompleteEntry) entry.clone();
-                float priority = Math.min(.5f, timesUsed / 10.0f);
-                clone.setPriority(priority);
-                return clone;
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }
