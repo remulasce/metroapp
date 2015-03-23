@@ -282,7 +282,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     // So instead we check every xms until we actually have a window.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus) {
+        if (hasFocus && requestHandler.getRequests().size() == 0) {
             Handler h = new Handler(Looper.getMainLooper());
             h.postDelayed(showDropdownOnStart, 100);
         }
