@@ -5,6 +5,7 @@ import android.content.Context;
 import com.remulasce.lametroapp.components.omni_bar.AutocompleteEntry;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.analytics.Log;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 
 import java.io.BufferedInputStream;
@@ -47,8 +48,34 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     public Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input) {
         Log.d(TAG, "Getting autocomplete entries from file");
 
+        // Check if there's entries saved on disk
+        Collection<AutocompleteEntry> savedHistory = getSavedEntries();
+
+        if (savedHistory != null) {
+            historyEntries.clear();
+            historyEntries.addAll(savedHistory);
+        }
+
+        // Now just make the actual returned entries from whatever we have.
+        Collection<OmniAutoCompleteEntry> ret = makeOmniEntriesFromHistory();
+
+        return ret;
+    }
+
+    private Collection<OmniAutoCompleteEntry> makeOmniEntriesFromHistory() {
+        Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
+
+        for (AutocompleteEntry entry : historyEntries) {
+            ret.add(entry.getEntry());
+        }
+        return ret;
+    }
+
+    private Collection<AutocompleteEntry> getSavedEntries() {
         FileInputStream fileIn = null;
         Collection<AutocompleteEntry> savedHistory = null;
+
+        // This would be nice to do OFF THE FRIGGIN UI THREAD
         try {
             fileIn = context.openFileInput(HISTORY_FILE);
 
@@ -61,37 +88,51 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
             in.close();
             fileIn.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e1) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "Class not found on load");
             e1.printStackTrace();
         } catch (OptionalDataException e1) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "OptionalDataException on load");
             e1.printStackTrace();
         } catch (StreamCorruptedException e1) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "Stream Corrupted on load");
             e1.printStackTrace();
         } catch (IOException e1) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "IO Exception on load");
             e1.printStackTrace();
+        } catch (ClassCastException e) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "Class cast exception on load");
         }
-
-        if (savedHistory != null) {
-            historyEntries.clear();
-            historyEntries.addAll(savedHistory);
-        }
-
-
-        Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
-
-        for (AutocompleteEntry entry : historyEntries) {
-            ret.add(entry.getEntry());
-        }
-
-        return ret;
+        return savedHistory;
     }
 
     @Override
     public void autocompleteSaveSelection(OmniAutoCompleteEntry selected) {
+        if (selected == null) {
+            Log.w(TAG, "Tried to write a null autocomplete selection");
+            return;
+        }
+
         Log.d(TAG, "Writing autocomplete entry to file: " + selected.toString());
 
+        // Check if this selection is already in history
+        boolean updated = updateIfAlreadyTracked(selected);
+
+        // Otherwise make a new entry.
+        if (!updated) {
+            AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected);
+            historyEntries.add(autocompleteEntry);
+        }
+
+        // This currently is on UI thread.
+        saveEntriesToDisk();
+
+    }
+
+    private boolean updateIfAlreadyTracked(OmniAutoCompleteEntry selected) {
         boolean updated = false;
         for (AutocompleteEntry entry : historyEntries) {
             if (entry.matches(selected)) {
@@ -100,15 +141,12 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
                 break;
             }
         }
+        return updated;
+    }
 
-        if (!updated) {
-            AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected);
-            historyEntries.add(autocompleteEntry);
-        }
-
-        FileOutputStream fos = null;
+    private void saveEntriesToDisk() {
         try {
-            fos = context.openFileOutput(HISTORY_FILE, Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(HISTORY_FILE, Context.MODE_PRIVATE);
 
             ObjectOutputStream oos;
             oos = new ObjectOutputStream(fos);
@@ -117,10 +155,11 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
             oos.close();
         } catch (FileNotFoundException e) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "FileNotFound on write");
             e.printStackTrace();
         } catch (IOException e) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "IOException on write");
             e.printStackTrace();
         }
-
     }
 }
