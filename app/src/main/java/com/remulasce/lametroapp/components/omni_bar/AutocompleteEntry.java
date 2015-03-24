@@ -57,6 +57,6 @@ public class AutocompleteEntry implements Serializable {
     }
 
     public float getPriority() {
-        return Math.min(.5f, timesUsed / 10.0f);
+        return Math.min(.25f, timesUsed / 100.0f);
     }
 }

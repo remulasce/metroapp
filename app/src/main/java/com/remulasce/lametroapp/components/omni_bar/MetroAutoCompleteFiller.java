@@ -41,7 +41,7 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         Collection<OmniAutoCompleteEntry> autocompleteSuggestions = autocompleteText.autocompleteStopName(input);
 
         prioritizeNearbySuggestions(autocompleteSuggestions);
-        prioritizeNearbySuggestions(historySuggestions, 0.25f);
+        prioritizeNearbySuggestions(historySuggestions, 0.5f);
 
         // Tempting to put these before priority work, but don't do it.
         limitNumberSuggestions(historySuggestions, 4);
