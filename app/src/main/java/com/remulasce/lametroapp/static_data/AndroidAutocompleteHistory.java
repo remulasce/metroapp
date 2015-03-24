@@ -30,6 +30,20 @@ import javax.crypto.spec.OAEPParameterSpec;
 /**
  * Created by Remulasce on 3/20/2015.
  *
+ * Handles saving & retrieving prioritized autocomplete history entries.
+ * We keep a list of past user-selected autocomplete entries that we know about.
+ * We serialize this list to disk after every write operation.
+ *
+ * When entries are requested from us, we update the list from the disk and have
+ *   each of our internal tracking objects produce a relevant OmniAutoCompleteSelection
+ *   suitable to be shown to user.
+ *
+ * The list we produced is not sorted, but has its priority set based on whatever factors
+ *   are relevant.
+ *
+ * Currently we just use number of total past uses.
+ *
+ *
  */
 public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     private static final String TAG = "AndroidAutocompleteHistory";
@@ -105,6 +119,7 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             e1.printStackTrace();
         } catch (ClassCastException e) {
             Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "Class cast exception on load");
+            e.printStackTrace();
         }
         return savedHistory;
     }
