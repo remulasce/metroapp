@@ -4,7 +4,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 import java.io.Serializable;
 
-public class OmniAutoCompleteEntry implements Cloneable, Serializable {
+public class OmniAutoCompleteEntry implements Cloneable, Serializable, Comparable {
 
     private String text = "Unassigned";
     private float priority = 1;
@@ -44,5 +44,18 @@ public class OmniAutoCompleteEntry implements Cloneable, Serializable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        OmniAutoCompleteEntry other = (OmniAutoCompleteEntry) o;
+
+        if (other.getPriority() > this.getPriority()) {
+            return 1;
+        } else if (other.getPriority() < this.getPriority()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

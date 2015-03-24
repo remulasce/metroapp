@@ -49,7 +49,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     private static final String TAG = "AndroidAutocompleteHistory";
     public static final String HISTORY_FILE = "autocompleteHistory.ser";
-    private static final int MAX_HISTORY_ENTRIES = 2;
+    private static final int MAX_HISTORY_ENTRIES = 20;
     private Context context;
 
     private List<AutocompleteEntry> historyEntries = new ArrayList<AutocompleteEntry>();

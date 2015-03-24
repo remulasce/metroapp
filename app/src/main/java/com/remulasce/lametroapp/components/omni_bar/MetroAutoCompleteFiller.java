@@ -10,6 +10,8 @@ import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Remulasce on 3/20/2015.
@@ -41,6 +43,10 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         prioritizeNearbySuggestions(autocompleteSuggestions);
         prioritizeNearbySuggestions(historySuggestions, 0.25f);
 
+        // Tempting to put these before priority work, but don't do it.
+        limitNumberSuggestions(historySuggestions, 4);
+        limitNumberSuggestions(autocompleteSuggestions, 16);
+
         results.addAll(historySuggestions);
 
         // N^2. Fantastic.
@@ -66,6 +72,20 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
 
         Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
         return results;
+    }
+
+    // We don't want to overwhelm users with choices.
+    // So here's a function to limit all but the N most important suggestions.
+    private void limitNumberSuggestions(Collection<OmniAutoCompleteEntry> historySuggestions, int N) {
+        Log.d(TAG, "Limit number of suggestions to "+N+" from "+historySuggestions);
+
+        ArrayList<OmniAutoCompleteEntry> sorted = new ArrayList<OmniAutoCompleteEntry>(historySuggestions);
+        Collections.sort(sorted);
+
+        historySuggestions.clear();
+        for (int i = 0; i < N && i < sorted.size(); i++) {
+            historySuggestions.add(sorted.get(i));
+        }
     }
 
 
