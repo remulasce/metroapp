@@ -74,16 +74,20 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
         // Now just make the actual returned entries from whatever we have.
         // The underlying autocomplete manager will deal with culling and sorting.
-        Collection<OmniAutoCompleteEntry> ret = makeOmniEntriesFromHistory();
+        Collection<OmniAutoCompleteEntry> ret = makeOmniEntriesFromHistory(input);
         Log.d(TAG, "Returned "+ret.size()+" history autocomplete entries");
         return ret;
     }
 
-    private Collection<OmniAutoCompleteEntry> makeOmniEntriesFromHistory() {
+    // Make all the actual OmniAutoCompleteEntries, which are suitable to be shown directly to user.
+    // But, don't make the ones that don't pass the censor. Filter. Thing.
+    private Collection<OmniAutoCompleteEntry> makeOmniEntriesFromHistory(String filter) {
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
         for (AutocompleteEntry entry : historyEntries) {
-            ret.add(entry.getEntry());
+            if (entry.passesFilter(filter)) {
+                ret.add(entry.getEntry());
+            }
         }
         return ret;
     }
@@ -147,7 +151,7 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
         // Otherwise make a new entry.
         if (!updated) {
-            AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected);
+            AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected, selected.toString());
             historyEntries.add(autocompleteEntry);
         }
 

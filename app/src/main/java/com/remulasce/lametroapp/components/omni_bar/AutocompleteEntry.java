@@ -9,20 +9,30 @@ import java.io.Serializable;
  */
 public class AutocompleteEntry implements Serializable {
     private static final String TAG = "AutocompleteEntry";
+
+    private String filterText;
     private OmniAutoCompleteEntry entry;
     int timesUsed = 1;
 
-    public AutocompleteEntry(OmniAutoCompleteEntry entry) {
+    public AutocompleteEntry(OmniAutoCompleteEntry entry, String filterText) {
         try {
             this.entry = (OmniAutoCompleteEntry) entry.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
+
+        this.filterText = filterText;
     }
 
     public void incrementUse() {
         timesUsed++;
     }
+
+    public boolean passesFilter(String filter) {
+        // Screw capitalization
+        return this.filterText.toLowerCase().startsWith(filter.toLowerCase());
+    }
+
 
     public boolean matches(OmniAutoCompleteEntry other) {
         if (other.hasStop() && entry.hasStop()) {
