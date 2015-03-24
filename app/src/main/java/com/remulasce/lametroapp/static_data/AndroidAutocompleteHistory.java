@@ -71,8 +71,9 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         }
 
         // Now just make the actual returned entries from whatever we have.
+        // The underlying autocomplete manager will deal with culling and sorting.
         Collection<OmniAutoCompleteEntry> ret = makeOmniEntriesFromHistory();
-
+        Log.d(TAG, "Returned "+ret.size()+" history autocomplete entries");
         return ret;
     }
 
