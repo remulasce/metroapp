@@ -49,7 +49,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     private static final String TAG = "AndroidAutocompleteHistory";
     public static final String HISTORY_FILE = "autocompleteHistory.ser";
-    private static final int MAX_HISTORY_ENTRIES = 20;
+    private static final int MAX_HISTORY_ENTRIES = 2;
     private Context context;
 
     private List<AutocompleteEntry> historyEntries = new ArrayList<AutocompleteEntry>();
@@ -136,6 +136,12 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
         Log.d(TAG, "Writing autocomplete entry to file: " + selected.toString());
 
+        // Don't let us hold onto too many entries.
+        // Drop the lowest priority ones when we get too full.
+        // We need to do this occasionall. Not necessarily here.
+        // We do it ahead of the rest of this fxn to guarantee new entries always get added.
+        cullLowestPriorityEntries();
+
         // Check if this selection is already in history
         boolean updated = updateIfAlreadyTracked(selected);
 
@@ -144,10 +150,6 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             AutocompleteEntry autocompleteEntry = new AutocompleteEntry(selected);
             historyEntries.add(autocompleteEntry);
         }
-
-        // Don't let us hold onto too many entries.
-        // Drop the lowest priority ones when we get too full.
-        cullLowestPriorityEntries();
 
         // This currently is on UI thread.
         saveEntriesToDisk();
