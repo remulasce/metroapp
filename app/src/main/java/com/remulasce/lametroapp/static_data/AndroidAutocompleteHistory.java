@@ -85,10 +85,6 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             ret.add(entry.getEntry());
         }
 
-        if (ret.size() == 0) {
-//            ret.add(new OmniAutoCompleteEntry("Test", 0));
-        }
-
         return ret;
     }
 
