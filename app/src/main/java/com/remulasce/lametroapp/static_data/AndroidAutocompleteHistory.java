@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.crypto.AEADBadTagException;
 import javax.crypto.spec.OAEPParameterSpec;
 
 /**
@@ -48,6 +49,7 @@ import javax.crypto.spec.OAEPParameterSpec;
 public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
     private static final String TAG = "AndroidAutocompleteHistory";
     public static final String HISTORY_FILE = "autocompleteHistory.ser";
+    private static final int MAX_HISTORY_ENTRIES = 20;
     private Context context;
 
     private List<AutocompleteEntry> historyEntries = new ArrayList<AutocompleteEntry>();
@@ -143,9 +145,38 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             historyEntries.add(autocompleteEntry);
         }
 
+        // Don't let us hold onto too many entries.
+        // Drop the lowest priority ones when we get too full.
+        cullLowestPriorityEntries();
+
         // This currently is on UI thread.
         saveEntriesToDisk();
 
+    }
+
+    private AutocompleteEntry getLowestPriorityEntry() {
+        AutocompleteEntry lowest = null;
+
+        // We could keep this list sorted, but the priority of these entries could vary
+        // based on time of sorting.
+        // This is because we may have a 'recency' priority which may not be linear in time,
+        //   or other time-based priorities that make the overall P(t) function non-linear.
+        for (AutocompleteEntry entry : historyEntries) {
+            if (lowest == null || entry.getPriority() < lowest.getPriority()) {
+                lowest = entry;
+            }
+        }
+
+        return lowest;
+    }
+
+    private void cullLowestPriorityEntries() {
+        boolean tooManyEntries = historyEntries.size() > MAX_HISTORY_ENTRIES;
+
+        if (tooManyEntries) {
+            Log.d(TAG, "Over max history entries, culling lowest priority entry");
+            historyEntries.remove(getLowestPriorityEntry());
+        }
     }
 
     private boolean updateIfAlreadyTracked(OmniAutoCompleteEntry selected) {
@@ -170,6 +201,8 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             oos.writeObject(historyEntries);
 
             oos.close();
+
+            Log.d(TAG, "Saved "+historyEntries.size()+" autocomplete history entries to disk");
         } catch (FileNotFoundException e) {
             Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "FileNotFound on write");
             e.printStackTrace();

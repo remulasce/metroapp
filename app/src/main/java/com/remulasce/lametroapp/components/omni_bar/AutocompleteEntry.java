@@ -37,12 +37,16 @@ public class AutocompleteEntry implements Serializable {
     public OmniAutoCompleteEntry getEntry() {
         try {
             OmniAutoCompleteEntry clone = (OmniAutoCompleteEntry) entry.clone();
-            float priority = Math.min(.5f, timesUsed / 10.0f);
+            float priority = getPriority();
             clone.setPriority(priority);
             return clone;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public float getPriority() {
+        return Math.min(.5f, timesUsed / 10.0f);
     }
 }
