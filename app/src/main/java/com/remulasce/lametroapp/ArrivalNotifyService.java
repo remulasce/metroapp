@@ -163,7 +163,11 @@ public class ArrivalNotifyService extends Service {
             while (run) {
 				updateNotificationText(mBuilder);
 				try {
-					Thread.sleep(5000);
+                    if (netTask.runNum > 5) {
+                        Thread.sleep(5000);
+                    } else {
+                        Thread.sleep(500);
+                    }
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
