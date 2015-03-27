@@ -9,10 +9,13 @@ import java.io.Serializable;
  */
 public class AutocompleteEntry implements Serializable {
     private static final String TAG = "AutocompleteEntry";
+    // Decay .25 priority in 2 weeks.
+    private static final double RECENCY_DECAY_PER_MILLIS = .25 / (1000 * 60 * 60 * 24 * 14);
 
     private String filterText;
     private OmniAutoCompleteEntry entry;
     int timesUsed = 1;
+    long lastUsed = 0;
 
     public AutocompleteEntry(OmniAutoCompleteEntry entry, String filterText) {
         try {
@@ -26,6 +29,7 @@ public class AutocompleteEntry implements Serializable {
 
     public void incrementUse() {
         timesUsed++;
+        lastUsed = System.currentTimeMillis();
     }
 
     public boolean passesFilter(String filter) {
@@ -60,7 +64,20 @@ public class AutocompleteEntry implements Serializable {
         return null;
     }
 
+    // Priority is how many times we've ever used it, minus how long it's been since our last use.
     public float getPriority() {
-        return Math.min(.25f, timesUsed / 100.0f);
+
+        float freqPriority = Math.min(.25f, timesUsed / 100.0f);
+        float recPriority = Math.max(-.25f, getRecencyPriorityAdjustment());
+        return Math.max(0, freqPriority + recPriority);
+    }
+
+    // Don't show suggestions that haven't been used in a while.
+    // Returns a negative, so add it to total priority.
+    public float getRecencyPriorityAdjustment() {
+        long millisSinceUse = System.currentTimeMillis() - lastUsed;
+
+
+        return (float)(-millisSinceUse * RECENCY_DECAY_PER_MILLIS);
     }
 }
