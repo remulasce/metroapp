@@ -30,7 +30,11 @@ public class AutocompleteEntry implements Serializable {
 
     public boolean passesFilter(String filter) {
         // Screw capitalization
-        return this.filterText.toLowerCase().startsWith(filter.toLowerCase());
+//        return this.filterText.toLowerCase().startsWith(filter.toLowerCase());
+        String regularExpression = ".*\\b" + filter.toLowerCase() + ".*";
+        boolean matches = this.filterText.toLowerCase().matches(regularExpression);
+        Log.d("Autocomplete filter", "Matching "+this.filterText.toLowerCase()+" "+regularExpression+" "+matches);
+        return matches;
     }
 
 
