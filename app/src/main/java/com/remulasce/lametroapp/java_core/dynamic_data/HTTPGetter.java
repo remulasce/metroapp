@@ -11,9 +11,21 @@ public class HTTPGetter {
         return getHTTPGetter().doGetHTTPResponse(message, reporter);
     }
 
-    public String doGetHTTPResponse(String message, NetworkStatusReporter reporter) {
-        return "Not Implemented";
-    }
+    public native String doGetHTTPResponse(String message, NetworkStatusReporter reporter)
+    /*-[
+
+         NSURLResponse *serverResponse = nil;
+         NSError *httpError = nil;
+
+         NSURL *url = [NSURL URLWithString:message];
+         NSURLRequest *request = [NSURLRequest requestWithURL: url];
+
+         NSData *serverData = [NSURLConnection sendSynchronousRequest:request returningResponse:&serverResponse error:&httpError];
+
+         NSString* resultString = [[NSString alloc] initWithData:serverData encoding:NSASCIIStringEncoding];
+
+         return resultString;
+    ]-*/;
 
     private static HTTPGetter getter;
     public static void setHTTPGetter(HTTPGetter set) {
