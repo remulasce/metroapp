@@ -114,7 +114,11 @@ public class OmniBarInputHandler {
                     @Override
                     public void run() {
                         omniField.clearFocus();
-                        omniField.dismissDropDown();
+
+                        InputMethodManager imm = (InputMethodManager)c.getSystemService(
+                                Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+//                        omniField.dismissDropDown();
                     }
                 }, 2000);
             }
