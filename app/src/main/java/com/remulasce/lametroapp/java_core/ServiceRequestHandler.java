@@ -104,7 +104,7 @@ public class ServiceRequestHandler {
     }
 
     public void SetServiceRequests( Collection<ServiceRequest> requests) {
-        Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
+        //Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
         rawSetServiceRequests(requests);
     }
 }

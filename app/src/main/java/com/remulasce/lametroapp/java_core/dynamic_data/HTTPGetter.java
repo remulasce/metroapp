@@ -1,8 +1,11 @@
 package com.remulasce.lametroapp.java_core.dynamic_data;
 
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
+import java.lang.StringBuilder;
+import java.net.*;
+import java.io.*;
 
-/**
+/*
  * Created by Remulasce on 3/7/2015.
  */
 public class HTTPGetter {
@@ -11,22 +14,37 @@ public class HTTPGetter {
         return getHTTPGetter().doGetHTTPResponse(message, reporter);
     }
 
-    public native String doGetHTTPResponse(String message, NetworkStatusReporter reporter)
-    /*-[
-        
-         NSURLResponse *serverResponse = nil;
-         NSError *httpError = nil;
-         
-         NSURL *url = [NSURL URLWithString:message];
-         NSURLRequest *request = [NSURLRequest requestWithURL: url];
-         
-         NSData *serverData = [NSURLConnection sendSynchronousRequest:request returningResponse:&serverResponse error:&httpError];
-         
-         NSString* resultString = [[NSString alloc] initWithData:serverData encoding:NSASCIIStringEncoding];
-         
-         return resultString;
-    ]-*/;
-
+    private String readStream(InputStream is) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            int i = is.read();
+            while(i != -1) {
+                bo.write(i);
+                i = is.read();
+            }
+            return bo.toString();
+        } catch (IOException e) {
+            return "";
+        }
+    }
+    
+    public String doGetHTTPResponse(String message, NetworkStatusReporter reporter)
+    {
+        try {
+        URL url = new URL(message);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        String response;
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            
+            response = readStream(in);
+            urlConnection.disconnect();
+            return response;
+        }
+        catch(IOException e)
+        {
+            return "";
+        }
+    }
 
     private static HTTPGetter getter;
     public static void setHTTPGetter(HTTPGetter set) {
