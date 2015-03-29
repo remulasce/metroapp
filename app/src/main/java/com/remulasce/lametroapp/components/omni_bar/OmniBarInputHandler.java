@@ -110,6 +110,8 @@ public class OmniBarInputHandler {
             makeServiceRequestFromOmniInput(requestText);
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
+
+            omniField.showDropDown();
         }
     };
 
