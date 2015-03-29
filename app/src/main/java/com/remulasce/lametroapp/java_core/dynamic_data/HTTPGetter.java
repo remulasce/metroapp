@@ -46,6 +46,7 @@ public class HTTPGetter {
         }
     }
 
+
     private static HTTPGetter getter;
     public static void setHTTPGetter(HTTPGetter set) {
         getter = set;
