@@ -111,7 +111,13 @@ public class OmniBarInputHandler {
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
 
-            omniField.showDropDown();
+            Handler h = new Handler(Looper.getMainLooper());
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    omniField.showDropDown();
+                }
+            }, 100);
         }
     };
 

@@ -22,8 +22,6 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
         super(context, attrs);
     }
 
-
-
     private ProgressBar mLoadingIndicator;
 
     public void setLoadingIndicator(ProgressBar view) {
