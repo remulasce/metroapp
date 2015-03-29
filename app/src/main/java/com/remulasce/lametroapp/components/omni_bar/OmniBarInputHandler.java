@@ -79,22 +79,6 @@ public class OmniBarInputHandler {
         omniField.setOnItemClickListener(autocompleteSelectedListener);
 
         omniField.setLoadingIndicator(autocompleteProgress);
-//        omniField.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent event) {
-//                omniField.showDropDown();
-//                return false;
-//            }
-//        });
-
-        Handler h = new Handler(Looper.getMainLooper());
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                omniField.requestFocus();
-            }
-        }, 100);
-
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -111,15 +95,32 @@ public class OmniBarInputHandler {
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
 
-            Handler h = new Handler(Looper.getMainLooper());
-            h.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    omniField.showDropDown();
-                }
-            }, 100);
+
+            keepOpenDropdown();
         }
     };
+
+    private void keepOpenDropdown() {
+        final Handler h = new Handler(Looper.getMainLooper());
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                omniField.requestFocus();
+                InputMethodManager inputMethodManager=(InputMethodManager)c.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(omniField.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                omniField.showDropDown();
+
+                h.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        omniField.clearFocus();
+                        omniField.dismissDropDown();
+                    }
+                }, 2000);
+            }
+        }, 10);
+
+    }
 
     private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
