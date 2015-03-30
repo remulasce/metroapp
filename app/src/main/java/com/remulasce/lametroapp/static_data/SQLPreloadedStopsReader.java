@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -71,8 +73,13 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         // Getting the database should force its creation via onCreate if it has not yet been
         // created.
-        this.getReadableDatabase();
-        Log.d(TAG, "StopName table initialization checked");
+        try {
+            this.getReadableDatabase();
+            Log.d(TAG, "StopName table initialization checked");
+        } catch (SQLiteException e) {
+            // This happens when the premade stopnames.db file isn't included.
+            Log.w(TAG, "Premade stopname database file missing!");
+        }
     }
 
     @Override
@@ -199,19 +206,23 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         String ret = null;
 
         Long t = Tracking.startTime();
-        SQLiteDatabase db = getReadableDatabase();
 
-        Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
-                new String[] {stopID}, db);
+        try {
+            SQLiteDatabase db = getReadableDatabase();
 
-        if (matching.size() > 0) {
-            ret = matching.iterator().next().stopName;
+            Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
+                    new String[]{stopID}, db);
+
+            if (matching.size() > 0) {
+                ret = matching.iterator().next().stopName;
+            }
+            if (trackNumber++ % trackDivider == 0) {
+                Tracking.sendTime("SQL", "StopNames", "getStopName", t);
+            }
+            Log.d(TAG, "Got stopname for " + stopID + ", " + ret);
+        } catch (SQLiteException e) {
+            Log.w(TAG, "SQLiteException. Prebuilt database file may be missing");
         }
-        if (trackNumber++ % trackDivider == 0) {
-            Tracking.sendTime("SQL", "StopNames", "getStopName", t);
-        }
-        Log.d(TAG,"Got stopname for "+stopID+", "+ ret);
-
         return ret;
     }
 
@@ -222,24 +233,29 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         }
 
         Long t = Tracking.startTime();
-        SQLiteDatabase db = getReadableDatabase();
-
         Collection<String> ret = new ArrayList<String>();
-        Collection<SQLEntry> matching;
 
-        matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopIDParameterizedSelection(),
-                new String[] {stopName}, db);
+        try {
+            SQLiteDatabase db = getReadableDatabase();
 
-        for (SQLEntry each : matching) {
-            ret.add(each.stopID);
+            Collection<SQLEntry> matching;
+
+            matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopIDParameterizedSelection(),
+                    new String[]{stopName}, db);
+
+            for (SQLEntry each : matching) {
+                ret.add(each.stopID);
+            }
+
+            cleanStopIDs(ret);
+
+            if (trackNumber++ % trackDivider == 0) {
+                Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+            }
+            Log.d(TAG, "Got stopID for " + stopName + ", " + ret);
+        } catch (SQLiteException e) {
+            Log.w(TAG, "SQLiteException. Prebuilt database file may be missing");
         }
-
-        cleanStopIDs(ret);
-
-        if (trackNumber++ % trackDivider == 0) {
-            Tracking.sendTime("SQL", "StopNames", "getStopID", t);
-        }
-        Log.d(TAG,"Got stopID for "+stopName+", "+ ret);
 
         return ret;
     }
