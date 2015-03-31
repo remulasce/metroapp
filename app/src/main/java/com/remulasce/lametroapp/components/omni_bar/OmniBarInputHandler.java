@@ -84,8 +84,9 @@ public class OmniBarInputHandler {
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
-
+        omniField.addTextChangedListener(textWatcher);
         omniField.setLoadingIndicator(autocompleteProgress);
+        omniField.setOnTouchListener(touchListener);
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -154,6 +155,13 @@ public class OmniBarInputHandler {
         @Override
         public void afterTextChanged(Editable editable) {
 
+        }
+    };
+    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            userInteractedWithDropdown();
+            return false;
         }
     };
 
@@ -280,6 +288,10 @@ public class OmniBarInputHandler {
 
     public void clearFields() {
         omniField.setText("");
+        // Normally textChanged from setText would launch another dropdown
+        // But it's confusing for the big X button to launch the dropdown.
+        // So just squash that right here.
+        omniField.dismissDropDown();
         Tracking.sendEvent("MainScreen", "Clear Fields");
     }
 }
