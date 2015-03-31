@@ -3,6 +3,8 @@ package com.remulasce.lametroapp.components.omni_bar;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -48,6 +50,11 @@ public class OmniBarInputHandler {
     private final StopLocationTranslator stopLocations;
     private final AutoCompleteHistoryFiller autoCompleteHistory;
     private final Tracker t;
+
+    // We keep the dropdown open a little while after something's added to give you a chance
+    //   to quickly add multiple stops.
+    // We use this info to know if we should close it after that time.
+    private long lastInteraction;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
     private final Context c;
@@ -95,16 +102,18 @@ public class OmniBarInputHandler {
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
 
-
             keepOpenDropdown();
         }
     };
 
     private void keepOpenDropdown() {
+        final long dropCloseTime = System.currentTimeMillis();
+
         final Handler h = new Handler(Looper.getMainLooper());
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "Reopening dropdown in case user adds more");
                 omniField.requestFocus();
                 InputMethodManager inputMethodManager=(InputMethodManager)c.getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.toggleSoftInputFromWindow(omniField.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
@@ -113,17 +122,44 @@ public class OmniBarInputHandler {
                 h.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        omniField.clearFocus();
+                        if (! (lastInteraction > dropCloseTime + 100)) {
+                            Log.i(TAG, "Closing dropdown because user didn't use it: "+(lastInteraction-dropCloseTime)+": "+lastInteraction+", "+dropCloseTime);
+                            omniField.clearFocus();
 
-                        InputMethodManager imm = (InputMethodManager)c.getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
-//                        omniField.dismissDropDown();
+                            InputMethodManager imm = (InputMethodManager)c.getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+    //                        omniField.dismissDropDown();
+                        } else {
+                            Log.i(TAG, "Not Closing dropdown because user used it");
+                        }
                     }
-                }, 2000);
+                }, 3000);
             }
         }, 10);
+    }
 
+    // This prevents us from auto-closing recent dropdown if user is using it.
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            userInteractedWithDropdown();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    public void userInteractedWithDropdown() {
+        Log.i(TAG, "User interacted with dropdown");
+        lastInteraction = System.currentTimeMillis();
     }
 
     private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
@@ -196,6 +232,8 @@ public class OmniBarInputHandler {
 
     // Parses the input to figure out if it's a stopid, stopname, etc.
     private void makeServiceRequestFromOmniInput(String requestText) {
+        userInteractedWithDropdown();
+
         if (isOmniInputValid(requestText)) {
             try { // No really, this should never crash the app.
                 // Need to check which way to convert- stopname to stopid, or vice-versa
