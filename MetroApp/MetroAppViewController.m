@@ -1,0 +1,387 @@
+//
+//  MetroAppViewController.m
+//  MetroApp
+//
+//  Created by Nighelles on 3/27/15.
+//  Copyright (c) 2015 Nought. All rights reserved.
+//
+
+#import "MetroAppViewController.h"
+
+#import "StopNameDatabase.h"
+#import "StopNameInfo.h"
+#import "Destination.h"
+#import "Vehicle.h"
+
+@interface MetroAppViewController ()
+
+@end
+
+@implementation MetroAppViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    //TESTING
+    ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter* getter;
+    getter = [[ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter alloc] init];
+    NSLog([getter doGetHTTPResponseWithNSString:@"http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=lametro-rail&stopId=80122" withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:nil]);
+    //END TESTING
+    
+    requestHandler = [[ComRemulasceLametroappJava_coreServiceRequestHandler alloc] init];
+    
+    testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithInt:80122];
+    
+    
+    NSArray *testStops = [[StopNameDatabase database] getStopsByNameFragment:@"Main"];
+    NSLog(@"Search Test: %@",[testStops objectAtIndex:0]);
+    
+    //
+    serviceRequestList = [[NSMutableArray alloc] init];
+    
+    ComRemulasceLametroappJava_coreBasic_typesStop *testStop;
+    testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:@"80122"];
+    
+   //[serviceRequestList addObject:[[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc] initWithComRemulasceLametroappJava_coreBasic_typesStop:testStop withNSString:@"7th Street / Metro Center Station - Metro Blue & Expo Lines"]];
+    
+    // Search Bar Setup
+    searchState = 0;
+    searchResultsAvailable = NO;
+    
+    // Update MultiArrivalView table with timer
+    queue = [NSOperationQueue new];
+    [queue setMaxConcurrentOperationCount:1];
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateMultiArrivalView) userInfo:nil repeats:YES];
+}
+
+#pragma mark - Table View Code
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+    if (tableView == self.serviceRequestView) {
+        return [serviceRequestList count];
+    } else if (tableView == self.multiArrivalTripView){
+        NSLog(@"Should be this many multi arrival trips: %d",[multiArrivalTrips size]);
+        return [multiArrivalTrips size];
+    } else if (tableView == self.searchView) {
+        if (searchState == 0)
+        {
+            return 0;
+        } else {
+            return [searchResults count];
+        }
+    }
+    return 0;
+}
+
+- (NSString*) formatTime:(int) time
+{
+    int seconds = time % 60;
+    int minutes = (time / 60) % 60;
+    int hours = time/3600;
+    return [NSString stringWithFormat:@"%d:%d:%d",hours,minutes,seconds];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.multiArrivalTripView) {
+        int tripIndex = [indexPath indexAtPosition:1];
+        if (tripIndex < [multiArrivalTrips size])
+        {
+            ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
+            multiArrivalTrip = [multiArrivalTrips getWithInt:tripIndex];
+            
+            ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
+            tempSRDA = multiArrivalTrip->parentArrival_;
+            
+            id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
+            
+            int numArrivals = [tempArrivals size];
+            NSLog(@"Number of arrivals %d",numArrivals);
+            return 55+(25*numArrivals)+25;
+        }
+        return 40;
+    } else {
+        return 40;
+    }
+}
+
+- (void)swipeDismissStopServiceRequest:(UIGestureRecognizer*)gestureRecognizer
+{
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+        NSIndexPath* indexPath = [self.serviceRequestView indexPathForCell:cell];
+        
+        int multiArrivalTripIndex = [indexPath indexAtPosition:1];
+        
+        [[serviceRequestList objectAtIndex:multiArrivalTripIndex ] cancelRequest];
+        [serviceRequestList removeObjectAtIndex:multiArrivalTripIndex];
+        
+        JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
+        for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
+        {
+            [tempStopRequestList addWithId:i];
+        }
+        
+        [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
+        
+        [self.serviceRequestView reloadData];
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.serviceRequestView) {
+        static NSString *simpleTableIdentifier = @"SimpleTableItem";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+        }
+        
+        ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *temp =
+        [serviceRequestList objectAtIndex:[indexPath indexAtPosition:1]];
+        
+        cell.textLabel.text = temp->displayName_;
+        
+        // Add code to recognize when we swipe to dismiss a stopServiceRequest
+        
+        UISwipeGestureRecognizer* sgr =
+            [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                      action:@selector(swipeDismissStopServiceRequest:) ];
+        
+        
+        [sgr setDirection:UISwipeGestureRecognizerDirectionRight];
+        [cell addGestureRecognizer:sgr];
+        
+        return cell;
+    } else if (tableView == self.multiArrivalTripView) {
+        static NSString *simpleTableIdentifier = @"MultiArrivalTripViewCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+        
+        UILabel *tripNameLabel;
+        UILabel *timeLabel[5];
+        UILabel *vehicleLabel[5];
+        UILabel *destinationLabel;
+        
+        ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
+        multiArrivalTrip = [multiArrivalTrips getWithInt:[indexPath indexAtPosition:1]];
+        
+        ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
+        tempSRDA = multiArrivalTrip->parentArrival_;
+        
+        id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
+        
+        int numArrivals = [tempArrivals size];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+            CGRect nameLabelFrame = CGRectMake(10,0,220, 25);
+            tripNameLabel = [[UILabel alloc] initWithFrame:nameLabelFrame];
+            tripNameLabel.tag = 1;
+            [cell.contentView addSubview:tripNameLabel];
+            
+            CGRect destinationLabelFrame = CGRectMake(10, 35, 400, 25);
+            destinationLabel = [[UILabel alloc] initWithFrame:destinationLabelFrame];
+            destinationLabel.tag = 2;
+            [cell.contentView addSubview:destinationLabel];
+            
+            for (int i=0; i<numArrivals; i++) {
+                CGRect timeLabelFrame = CGRectMake(10,55+(25*i),220,25);
+                timeLabel[i] = [[UILabel alloc] initWithFrame:timeLabelFrame];
+                timeLabel[i].tag = 3+i;
+                [cell.contentView addSubview:timeLabel[i]];
+                
+                CGRect vehicleLabelFrame = CGRectMake(100,55+(25*i),500,25);
+                vehicleLabel[i] = [[UILabel alloc] initWithFrame:vehicleLabelFrame];
+                vehicleLabel[i].tag = (20+i);
+                [cell.contentView addSubview:vehicleLabel[i]];
+            }
+        } else {
+            tripNameLabel = (UILabel *)[cell.contentView viewWithTag:1];
+            destinationLabel = (UILabel *)[cell.contentView viewWithTag:2];
+            for (int i=0; i<numArrivals; i++) {
+                timeLabel[i]=(UILabel*)[cell.contentView viewWithTag:3+i];
+                vehicleLabel[i]=(UILabel*)[cell.contentView viewWithTag:20+i];
+            }
+        }
+        
+        [tripNameLabel setText: [multiArrivalTrip description]];
+        
+        ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *tempArrival;
+        
+        tempArrival = [tempArrivals getWithInt:0];
+        [destinationLabel setText:[[tempArrival getDirection] getString]];
+        
+        for (int i=0; i<numArrivals; i++) {
+            tempArrival = [tempArrivals getWithInt:i];
+            [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
+            [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
+        }
+        
+        return cell;
+    } else if (tableView == self.searchView && searchResultsAvailable==YES) {
+        static NSString *simpleTableIdentifier = @"SimpleTableItem";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+        }
+        
+        cell.textLabel.text = [[searchResults objectAtIndex:[indexPath indexAtPosition:1]] stopName];
+        NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] stopName]);
+        return cell;
+    }
+    return nil;
+}
+
+-(IBAction)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == self.searchView) {
+        [self exitSearchState:self];
+        [self.searchText setText:@""];
+        
+        NSString *stopName = [[[self.searchView cellForRowAtIndexPath:indexPath] textLabel] text];
+        searchResults = [[StopNameDatabase database] getStopsByName:stopName];
+        
+        JavaUtilArrayList *tempStopList = [[JavaUtilArrayList alloc] init];
+        
+        for (StopNameInfo *stopNameInfo in searchResults)
+        {
+            [tempStopList addWithId:
+                [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[stopNameInfo stopID]]];
+        }
+        
+        ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest;
+        
+        newServiceRequest = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc]
+                             initWithJavaUtilCollection:tempStopList withNSString:stopName];
+        
+        [serviceRequestList addObject:newServiceRequest];
+        
+        JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
+        for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
+        {
+            [tempStopRequestList addWithId:i];
+        }
+        
+        [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
+        
+        [self.serviceRequestView reloadData];
+    } else {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    }
+}
+
+#pragma mark - MultiArrivalView
+
+- (void)updateMultiArrivalView {
+    NSLog(@"Timer ticked!");
+    void (^block)() = ^{
+        multiArrivalTrips = [requestHandler GetSortedTripList];
+        
+    };
+    
+    [queue addOperationWithBlock:block];
+    [self.multiArrivalTripView reloadData];
+}
+
+#pragma mark - Search Bar Code
+
+- (IBAction)enterSearchState:(id)sender
+{
+    searchState = 1;
+    [self.searchView setHidden:false];
+}
+
+- (IBAction)exitSearchState:(id)sender
+{
+    searchState = 0;
+    [self.searchView setHidden:true];
+    [self.searchText resignFirstResponder];
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    NSLog(@"Exiting");
+    if (textField==self.searchText) {
+        [self exitSearchState:self];
+        [textField resignFirstResponder];
+        return YES;
+    }
+    return NO;
+}
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    NSLog(@"Begin search");
+    if (textField==self.searchText) {
+        [self enterSearchState:self];
+        return YES;
+    }
+    return NO;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    NSLog(@"Return");
+    if (textField==self.searchText) {
+        [self exitSearchState:self];
+        [textField resignFirstResponder];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *tempSearchString = [textField text];
+    
+    if (tempSearchString.length >= 3) {
+        // Do SQL Search to populate search bar
+        searchResults = [[StopNameDatabase database] getStopsByNameFragment:tempSearchString];
+
+        if ([searchResults count] > 0)
+        {
+            NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] stopName]);
+            searchResultsAvailable = YES;
+        } else {
+            searchResultsAvailable = NO;
+        }
+        [self.searchView reloadData];
+    }
+    
+    return YES;
+}
+
+#pragma mark - Other program logic
+
+- (IBAction)createServiceRequest:(NSString*)stopName
+{
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest =
+        [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc] initWithNSString:stopName];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end
