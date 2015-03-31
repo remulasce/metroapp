@@ -87,6 +87,13 @@ public class OmniBarInputHandler {
         omniField.addTextChangedListener(textWatcher);
         omniField.setLoadingIndicator(autocompleteProgress);
         omniField.setOnTouchListener(touchListener);
+
+        omniField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userInteractedWithDropdown();
+            }
+        });
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -135,7 +142,7 @@ public class OmniBarInputHandler {
                             Log.i(TAG, "Not Closing dropdown because user used it");
                         }
                     }
-                }, 3000);
+                }, 2000);
             }
         }, 10);
     }

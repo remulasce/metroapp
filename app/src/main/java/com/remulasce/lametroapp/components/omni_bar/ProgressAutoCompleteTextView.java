@@ -56,7 +56,9 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     public void onFilterComplete(int count) {
         // the AutoCompleteTextView has done its job and it's about to show
         // the drop down so close/hide the ProgreeBar
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (!isPerformingCompletion()) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+        }
         super.onFilterComplete(count);
     }
 }
