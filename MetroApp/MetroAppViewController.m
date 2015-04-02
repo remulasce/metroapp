@@ -119,26 +119,52 @@
     }
 }
 
-- (void)swipeDismissStopServiceRequest:(UIGestureRecognizer*)gestureRecognizer
+- (void)swipeDismissStopServiceRequest:(UIPanGestureRecognizer*)gestureRecognizer
 {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
+    {
+        NSLog(@"Began pan");
+    }
+    if (gestureRecognizer.state == UIGestureRecognizerStateChanged)
+    {
+        NSLog(@"%@",gestureRecognizer.view);
+        float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
+        NSLog(@"Dragging %f",translationAmount);
+        
+        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+        if (translationAmount > 75) translationAmount = 75;
+        if (translationAmount <= 0) translationAmount = 0;
+        
+        CGRect frame = cell.frame;
+        frame.origin = CGPointMake(translationAmount, frame.origin.y);
+        cell.frame = frame;
+    }
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
         UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
         NSIndexPath* indexPath = [self.serviceRequestView indexPathForCell:cell];
         
-        int multiArrivalTripIndex = [indexPath indexAtPosition:1];
-        
-        [[serviceRequestList objectAtIndex:multiArrivalTripIndex ] cancelRequest];
-        [serviceRequestList removeObjectAtIndex:multiArrivalTripIndex];
-        
-        JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
-        for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
-        {
-            [tempStopRequestList addWithId:i];
+        float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
+        if (translationAmount > 75) {
+            int multiArrivalTripIndex = [indexPath indexAtPosition:1];
+            
+            [[serviceRequestList objectAtIndex:multiArrivalTripIndex ] cancelRequest];
+            [serviceRequestList removeObjectAtIndex:multiArrivalTripIndex];
+            
+            JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
+            for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
+            {
+                [tempStopRequestList addWithId:i];
+            }
+            
+            [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
+            
+            [self.serviceRequestView reloadData];
+        } else {
+            CGRect frame = cell.frame;
+            frame.origin = CGPointMake(0, frame.origin.y);
+            cell.frame = frame;
         }
         
-        [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
-        
-        [self.serviceRequestView reloadData];
     }
 }
 
@@ -158,14 +184,12 @@
         
         cell.textLabel.text = temp->displayName_;
         
-        // Add code to recognize when we swipe to dismiss a stopServiceRequest
+        // Add code to recognize when we pan to dismiss a stopServiceRequest
         
-        UISwipeGestureRecognizer* sgr =
-            [[UISwipeGestureRecognizer alloc] initWithTarget:self
+        UIPanGestureRecognizer* sgr =
+            [[UIPanGestureRecognizer alloc] initWithTarget:self
                                                       action:@selector(swipeDismissStopServiceRequest:) ];
         
-        
-        [sgr setDirection:UISwipeGestureRecognizerDirectionRight];
         [cell addGestureRecognizer:sgr];
         
         return cell;
