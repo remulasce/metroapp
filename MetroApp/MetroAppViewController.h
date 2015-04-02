@@ -36,11 +36,15 @@
     
     id<JavaUtilList> multiArrivalTrips;
     
+    id<JavaUtilList> arrivalsToDisplay;
+    
 }
 
 @property (nonatomic, weak) IBOutlet UITableView* serviceRequestView;
 @property (nonatomic, weak) IBOutlet UITableView* multiArrivalTripView;
 @property (nonatomic, weak) IBOutlet UITableView* searchView;
+
+@property (nonatomic, weak) IBOutlet UIView* windowView;
 
 @property (nonatomic, strong) IBOutlet UITextField* searchText;
 

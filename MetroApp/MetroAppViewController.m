@@ -89,24 +89,33 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.multiArrivalTripView) {
-        int tripIndex = [indexPath indexAtPosition:1];
+        unsigned long int tripIndex = [indexPath indexAtPosition:1];
+        
+        if (tripIndex == 0)
+        {
+            NSLog(@"#####");
+        }
+        
         if (tripIndex < [multiArrivalTrips size])
         {
+            NSLog(@"Trip Index: %d", tripIndex);
             ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
-            multiArrivalTrip = [multiArrivalTrips getWithInt:tripIndex];
+            multiArrivalTrip = [multiArrivalTrips getWithInt:(int)tripIndex];
             
             ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
             tempSRDA = multiArrivalTrip->parentArrival_;
             
-            id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
+            id<JavaUtilList> tempArrivals = (id<JavaUtilList>)[tempSRDA getArrivals];
             
+            NSLog(@"### HERE %@",[self formatTime:(int)[(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)[tempArrivals getWithInt:0] getEstimatedArrivalSeconds]]);
             int numArrivals = [tempArrivals size];
-            NSLog(@"Number of arrivals %d",numArrivals);
-            return 55+(25*numArrivals)+25;
+            NSLog(@"### Number of arrivals %d", numArrivals);
+        
+            return 55+(25*numArrivals)+25.0;
         }
-        return 40;
+        return 10.0;
     } else {
-        return 40;
+        return 40.0;
     }
 }
 
@@ -187,13 +196,13 @@
             tripNameLabel.tag = 1;
             [cell.contentView addSubview:tripNameLabel];
             
-            CGRect destinationLabelFrame = CGRectMake(10, 35, 400, 25);
+            CGRect destinationLabelFrame = CGRectMake(20, 35, 400, 25);
             destinationLabel = [[UILabel alloc] initWithFrame:destinationLabelFrame];
             destinationLabel.tag = 2;
             [cell.contentView addSubview:destinationLabel];
             
-            for (int i=0; i<numArrivals; i++) {
-                CGRect timeLabelFrame = CGRectMake(10,55+(25*i),220,25);
+            for (int i=0; i<5; i++) {
+                CGRect timeLabelFrame = CGRectMake(30,55+(25*i),220,25);
                 timeLabel[i] = [[UILabel alloc] initWithFrame:timeLabelFrame];
                 timeLabel[i].tag = 3+i;
                 [cell.contentView addSubview:timeLabel[i]];
@@ -206,7 +215,7 @@
         } else {
             tripNameLabel = (UILabel *)[cell.contentView viewWithTag:1];
             destinationLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            for (int i=0; i<numArrivals; i++) {
+            for (int i=0; i<5; i++) {
                 timeLabel[i]=(UILabel*)[cell.contentView viewWithTag:3+i];
                 vehicleLabel[i]=(UILabel*)[cell.contentView viewWithTag:20+i];
             }
@@ -219,10 +228,18 @@
         tempArrival = [tempArrivals getWithInt:0];
         [destinationLabel setText:[[tempArrival getDirection] getString]];
         
-        for (int i=0; i<numArrivals; i++) {
-            tempArrival = [tempArrivals getWithInt:i];
-            [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
-            [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
+        for (int i=0; i<5; i++) {
+            if (i < numArrivals) {
+                tempArrival = [tempArrivals getWithInt:i];
+                [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
+                [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
+            } else {
+                if ([timeLabel[i] isKindOfClass:[UILabel class]])
+                {
+                    [timeLabel[i] setText:@""];
+                    [vehicleLabel[i] setText:@""];
+                }
+            }
         }
         
         return cell;
