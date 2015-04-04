@@ -27,6 +27,7 @@ public class AutocompleteEntry implements Serializable {
         }
 
         this.filterText = filterText;
+        lastUsed = System.currentTimeMillis();
     }
 
     public void incrementUse() {
