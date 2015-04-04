@@ -14,8 +14,10 @@ public class AutocompleteEntry implements Serializable {
 
     private String filterText;
     private OmniAutoCompleteEntry entry;
+
     int timesUsed = 1;
     long lastUsed = 0;
+    int timesKicked = 0;
 
     public AutocompleteEntry(OmniAutoCompleteEntry entry, String filterText) {
         try {
@@ -64,19 +66,32 @@ public class AutocompleteEntry implements Serializable {
         return null;
     }
 
+    // We should slowly lose relevance over time in a way that overrules total selections.
+    // This does that.
+    //
+    // Algorithm maintains your rank if you're selected 1% of the time.
+    public void decayEntry() {
+        timesKicked++;
+    }
+
     // Priority is how many times we've ever used it, minus how long it's been since our last use.
+    // Priority [-.3, .25f]
+    // Negative priorities suggest the entry should be dropped.
     public float getPriority() {
 
         float freqPriority = Math.min(.25f, timesUsed / 100.0f);
-        float recPriority = Math.max(-.25f, getRecencyPriorityAdjustment());
-        return Math.max(0, freqPriority + recPriority);
+
+        // 100 kicks gets you 1 frequency use
+        float kickPriority = Math.max(-.2f, -timesKicked / 100.0f / 100.0f);
+        float recPriority = Math.max(-.1f, getRecencyPriorityAdjustment());
+
+        return freqPriority + recPriority + kickPriority;
     }
 
     // Don't show suggestions that haven't been used in a while.
     // Returns a negative, so add it to total priority.
     public float getRecencyPriorityAdjustment() {
         long millisSinceUse = System.currentTimeMillis() - lastUsed;
-
 
         return (float)(-millisSinceUse * RECENCY_DECAY_PER_MILLIS);
     }

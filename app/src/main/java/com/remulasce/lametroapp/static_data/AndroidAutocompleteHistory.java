@@ -131,6 +131,8 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         return savedHistory;
     }
 
+    // Assume that we've previously loaded the entries from file.
+    // This currently is on UI thread.
     @Override
     public void autocompleteSaveSelection(OmniAutoCompleteEntry selected) {
         if (selected == null) {
@@ -140,8 +142,15 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
         Log.d(TAG, "Writing autocomplete entry to file: " + selected.toString());
 
+        // Over time entries should naturally decay.
+        // We don't actually want to deal with time
+        // So actually, every time an entry is selected, decay everyone.
+        // Try not to decay the one that was selected by more than what it gains from being selected.
+        decayExistingEntries();
+
         // Don't let us hold onto too many entries.
         // Drop the lowest priority ones when we get too full.
+        // Also drop really low priorities occasionally.
         // We need to do this occasionall. Not necessarily here.
         // We do it ahead of the rest of this fxn to guarantee new entries always get added.
         cullLowestPriorityEntries();
@@ -155,9 +164,9 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             historyEntries.add(autocompleteEntry);
         }
 
-        // This currently is on UI thread.
+        // Every time the dropdown is shown, entries are loaded back from file.
+        // So you have to make sure to save to disk after you modify the list ever.
         saveEntriesToDisk();
-
     }
 
     private AutocompleteEntry getLowestPriorityEntry() {
@@ -176,13 +185,35 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
         return lowest;
     }
 
+    private void decayExistingEntries() {
+        for (AutocompleteEntry entry : historyEntries) {
+            entry.decayEntry();
+        }
+    }
+
     private void cullLowestPriorityEntries() {
         boolean tooManyEntries = historyEntries.size() > MAX_HISTORY_ENTRIES;
 
+        // Remove the worst offender if we have more entries than we should hold
         if (tooManyEntries) {
             Log.d(TAG, "Over max history entries, culling lowest priority entry");
             historyEntries.remove(getLowestPriorityEntry());
         }
+
+        // Also, drop really low entries anyway.
+        dropReallyLowPriorityEntries();
+    }
+
+    private void dropReallyLowPriorityEntries() {
+        List<AutocompleteEntry> rem = new ArrayList<AutocompleteEntry>();
+        for (AutocompleteEntry entry : historyEntries) {
+            if (entry.getPriority() < 0) {
+                Log.d(TAG, "Kicking low-priority ("+entry.getPriority()+") autocomplete entry: "+entry.toString());
+                rem.add(entry);
+            }
+        }
+
+        historyEntries.removeAll(rem);
     }
 
     private boolean updateIfAlreadyTracked(OmniAutoCompleteEntry selected) {
