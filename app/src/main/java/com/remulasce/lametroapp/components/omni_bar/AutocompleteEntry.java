@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 public class AutocompleteEntry implements Serializable {
     private static final String TAG = "AutocompleteEntry";
-    // Decay .25 priority in 2 weeks.
-    private static final double RECENCY_DECAY_PER_MILLIS = .25 / (1000 * 60 * 60 * 24 * 14);
+    // Decay .1 priority in  weeks.
+    private static final double RECENCY_DECAY_PER_MILLIS = .1 / (1000 * 60 * 60 * 24 * 7);
 
     private String filterText;
     private OmniAutoCompleteEntry entry;
@@ -79,20 +79,20 @@ public class AutocompleteEntry implements Serializable {
     // Negative priorities suggest the entry should be dropped.
     public float getPriority() {
 
-        float freqPriority = Math.min(.25f, timesUsed / 100.0f);
+        float freqPriority = Math.min(.25f, timesUsed / 10.0f);
 
         // 100 kicks gets you 1 frequency use
-        float kickPriority = Math.max(-.2f, -timesKicked / 100.0f / 100.0f);
+        float kickPriority = Math.max(-.2f, -timesKicked / 10.0f / 100.0f);
         float recPriority = Math.max(-.1f, getRecencyPriorityAdjustment());
 
         return freqPriority + recPriority + kickPriority;
     }
 
-    // Don't show suggestions that haven't been used in a while.
-    // Returns a negative, so add it to total priority.
+    // Show recently-used predictions more, and less-recent less.
+    // Range [-.1, .1]
     public float getRecencyPriorityAdjustment() {
         long millisSinceUse = System.currentTimeMillis() - lastUsed;
 
-        return (float)(-millisSinceUse * RECENCY_DECAY_PER_MILLIS);
+        return (float)(0.1f - millisSinceUse * RECENCY_DECAY_PER_MILLIS);
     }
 }
