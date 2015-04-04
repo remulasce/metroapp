@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
+import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
+import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
@@ -58,6 +60,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private OmniBarInputHandler omniHandler;
     private ServiceRequestListFragment requestFragment;
+    private AndroidTutorialManager tutorialManager;
 
     private ListView tripList;
     private TextView tripListHint;
@@ -95,6 +98,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupOmniBar();
         setupNetworkStatus();
         setupAboutPage();
+        setupTutorials();
 
         setupDefaults( getIntent() );
     }
@@ -116,6 +120,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupLocation() {
         locationService = new MetroLocationRetriever(this, staticsProvider);
         GlobalLocationProvider.setRetriever(locationService);
+    }
+
+    private void setupTutorials() {
+        tutorialManager = new AndroidTutorialManager(this);
+        TutorialManager.setTutorialManager(tutorialManager);
     }
 
     private void setupOmniBar() {
@@ -251,6 +260,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onStart();
         requestHandler.StartPopulating();
         tripPopulator.StartPopulating();
+        tutorialManager.appStarted();
         PredictionManager.getInstance().resumeTracking();
     }
 
@@ -265,6 +275,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
         requestHandler.StopPopulating();
+        tutorialManager.appStopped();
         tripPopulator.StopPopulating();
     }
 

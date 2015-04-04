@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
@@ -80,6 +81,7 @@ public class TripPopulator {
                                         adapter.remove(item);
 
                                         dismissLock = false;
+                                        TutorialManager.getInstance().tripDismissed();
 
                                         if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
                                             Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
@@ -257,22 +259,7 @@ public class TripPopulator {
                         if ( hint.getVisibility() == View.VISIBLE ) {
                             hint.setVisibility(View.INVISIBLE);
 
-                            uiHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (TripPopulator.this.running) {
-                                        Toast.makeText(c, "Tap an arrival to set a notification for it", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }, 3000);
-                            uiHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (TripPopulator.this.running) {
-                                        Toast.makeText(c, "Swipe an arrival to dismiss it", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }, 5000);
+                            TutorialManager.getInstance().tripsNewlyShown();
                         }
 
                         progress.setVisibility(View.INVISIBLE);

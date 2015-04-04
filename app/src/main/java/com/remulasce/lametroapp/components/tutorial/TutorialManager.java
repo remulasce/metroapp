@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.components.tutorial;
 
+import com.remulasce.lametroapp.java_core.analytics.Log;
+
 /**
  * Created by Remulasce on 4/3/2015.
  *
@@ -22,13 +24,15 @@ package com.remulasce.lametroapp.components.tutorial;
  *
  */
 public class TutorialManager {
-
+    private static final String TAG = "TutorialManager";
 
     private static TutorialManager tutorialManager;
-    public static void getInstance() {
+    public static TutorialManager getInstance() {
         if (tutorialManager == null) {
             tutorialManager = new TutorialManager();
         }
+
+        return tutorialManager;
     }
 
     // Presumably you'd give an extended, platform-specific TutorialManager that can actually
@@ -37,6 +41,24 @@ public class TutorialManager {
         tutorialManager = customManager;
     }
 
-    
+    /* Tutorial text options:
+      "Tap arrival to start notification"
+      "Swipe to dismiss"
+
+      For each of 2, don't show if each's action has been performed.
+
+      So once user has dismissed any trip, you shouldn't show the tutorial any more.
+      */
+    public void tripsNewlyShown() {
+        Log.w(TAG, "tripsNewlyShown not implemented");
+    }
+
+    public void tripDismissed() {
+        Log.w(TAG, "tripDismissed not implemented");
+    }
+
+    public void notifyServiceSet() {
+        Log.w(TAG, "notifyServiceSet not implemented");
+    }
 
 }
