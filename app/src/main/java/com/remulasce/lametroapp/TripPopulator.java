@@ -47,7 +47,6 @@ public class TripPopulator {
     private Thread updateThread;
     private boolean running = false;
 
-    private long lastDismissTutorialShow = 0;
     private final SwipeDismissListViewTouchListener dismissListener;
     private final AbsListView.OnScrollListener scrollListener;
     private final AdapterView.OnItemClickListener itemClickListener;
@@ -83,10 +82,6 @@ public class TripPopulator {
                                         dismissLock = false;
                                         TutorialManager.getInstance().tripDismissed();
 
-                                        if (System.currentTimeMillis() > lastDismissTutorialShow + 60000) {
-                                            Toast.makeText(context, "Trip Dismissed.\nTap the stop name in the top window to restore trips", Toast.LENGTH_LONG).show();
-                                            lastDismissTutorialShow = System.currentTimeMillis();
-                                        }
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
                                         Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Index out of bounds");

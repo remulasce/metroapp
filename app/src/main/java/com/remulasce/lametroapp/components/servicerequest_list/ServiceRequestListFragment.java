@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
@@ -175,6 +176,8 @@ public class ServiceRequestListFragment extends Fragment {
             ServiceRequest s = (ServiceRequest) adapterView.getItemAtPosition(pos);
 
             raiseRequestClickedDialog(s);
+
+            TutorialManager.getInstance().tripDismissalUndone();
         }
     };
 
