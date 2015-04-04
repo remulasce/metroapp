@@ -109,43 +109,8 @@ public class OmniBarInputHandler {
             makeServiceRequestFromOmniInput(requestText);
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
-
-            keepOpenDropdown();
         }
     };
-
-    private void keepOpenDropdown() {
-        final long dropCloseTime = System.currentTimeMillis();
-
-        final Handler h = new Handler(Looper.getMainLooper());
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "Reopening dropdown in case user adds more");
-                omniField.requestFocus();
-                InputMethodManager inputMethodManager=(InputMethodManager)c.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.toggleSoftInputFromWindow(omniField.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
-                omniField.showDropDown();
-
-                h.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (! (lastInteraction > dropCloseTime + 100)) {
-                            Log.i(TAG, "Closing dropdown because user didn't use it: "+(lastInteraction-dropCloseTime)+": "+lastInteraction+", "+dropCloseTime);
-                            omniField.clearFocus();
-
-                            InputMethodManager imm = (InputMethodManager)c.getSystemService(
-                                    Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
-    //                        omniField.dismissDropDown();
-                        } else {
-                            Log.i(TAG, "Not Closing dropdown because user used it");
-                        }
-                    }
-                }, 2000);
-            }
-        }, 10);
-    }
 
     // This prevents us from auto-closing recent dropdown if user is using it.
     private final TextWatcher textWatcher = new TextWatcher() {
