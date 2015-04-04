@@ -44,10 +44,11 @@ public class TutorialManager {
     /* Tutorial text options:
       "Tap arrival to start notification"
       "Swipe to dismiss"
+      "Undo dismissal"
 
-      For each of 2, don't show if each's action has been performed.
+      For each of 3, don't show if each's action has been performed.
 
-      So once user has dismissed any trip, you shouldn't show the tutorial any more.
+      So once user has dismissed any trip, you shouldn't show the swipe-dismiss tutorial any more.
       */
     public void tripsNewlyShown() {
         Log.w(TAG, "tripsNewlyShown not implemented");
@@ -61,4 +62,7 @@ public class TutorialManager {
         Log.w(TAG, "notifyServiceSet not implemented");
     }
 
+    public void tripDismissalUndone() {
+        Log.w(TAG, "tripDismissalUndone");
+    }
 }
