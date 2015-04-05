@@ -123,7 +123,7 @@ public class CachedLocationRetriever implements LocationRetriever {
     }
 
     private void updateCachedDistances() {
-        Log.w(TAG, "Updating cached proximities");
+        Log.d(TAG, "Updating cached proximities");
         lastCacheUpdate = System.currentTimeMillis();
         
         for (Map.Entry<BasicLocation, CachedProximity> entry : cache.entrySet()) {
