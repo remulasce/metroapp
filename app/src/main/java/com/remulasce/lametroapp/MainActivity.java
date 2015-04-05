@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
+import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
@@ -71,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private HTTPGetter network;
     private MetroStaticsProvider staticsProvider;
     private OmniAutoCompleteAdapter autoCompleteAdapter;
-    private MetroLocationRetriever locationService;
+    private CachedLocationRetriever locationService;
     private RouteColorer routeColorer;
     private SerializedFileFieldSaver fieldSaver;
     private NetworkStatusReporter networkStatusReporter;
@@ -118,7 +119,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupLocation() {
-        locationService = new MetroLocationRetriever(this, staticsProvider);
+        locationService = new CachedLocationRetriever(this);
         GlobalLocationProvider.setRetriever(locationService);
     }
 
