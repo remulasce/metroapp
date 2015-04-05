@@ -14,7 +14,6 @@ import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
-import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,7 +49,8 @@ public class CachedLocationRetriever implements LocationRetriever {
 
 
     private class CachedProximity {
-        private double proximity; // meters
+        private CachedProximity(double distance) { this.distance = distance; }
+        private double distance; // meters
     }
 
     public CachedLocationRetriever(Context c) {
@@ -152,7 +152,7 @@ public class CachedLocationRetriever implements LocationRetriever {
         }
 
         BasicLocation stopRawLoc = stop.getLocation();
-        double distance = getDistanceTo(stopRawLoc);
+        double distance = getCachedDistanceTo(stopRawLoc);
 
         Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+distance);
         Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
@@ -160,22 +160,39 @@ public class CachedLocationRetriever implements LocationRetriever {
         return distance;
     }
 
-    private double getDistanceTo(BasicLocation stopRawLoc) {
+    private boolean cacheHasLocation(BasicLocation location) {
+        return cache.containsKey(location);
+    }
+
+    private double getCachedDistance(BasicLocation location) {
+        return cache.get(location).distance;
+    }
+
+    private void addToCache(BasicLocation location, double distance) {
+        cache.put(location, new CachedProximity(distance));
+    }
+
+    private double getCachedDistanceTo(BasicLocation stopRawLoc) {
         if (stopRawLoc == null) {
             Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
             return -1;
         }
 
-        /*
+
         if (cacheHasLocation(stopRawLoc)) {
             return getCachedDistance(stopRawLoc);
         }
         else {
-            ... calculate
-            Add to cache()
-        }
-        */
+            float distance = getRawCurrentDistance(stopRawLoc);
 
+            addToCache(stopRawLoc, distance);
+
+            return distance;
+        }
+
+    }
+
+    private float getRawCurrentDistance(BasicLocation stopRawLoc) {
         Location currentLoc = getBestLocation();
         if (currentLoc == null) {
             Log.d(TAG, "Current location unavailable");
@@ -189,11 +206,11 @@ public class CachedLocationRetriever implements LocationRetriever {
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
-        return (double) results[0];
+        return results[0];
     }
 
     @Override
     public double getCurrentDistanceToLocation(BasicLocation location) {
-        return getDistanceTo(location);
+        return getCachedDistanceTo(location);
     }
 }
