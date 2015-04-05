@@ -19,11 +19,13 @@ public class AndroidTutorialManager extends TutorialManager{
 
     private Context c;
     private Handler uiHandler;
+    private long lastDismissalPlay;
 
     private static final String TUTORIAL_PREFERENCES_NAME = "Tutorial";
     private static final String TUTORIAL_USER_KNOWS_DISMISSAL = "knows_notify_dismissal";
     private static final String TUTORIAL_USER_KNOWS_NOTIFY_SERVICE = "knows_notify_service";
     private static final String TUTORIAL_USER_KNOWS_UNDO_DISMISS = "knows_undo_dismiss";
+
 
     private boolean appRunning = false;
 
@@ -68,8 +70,9 @@ public class AndroidTutorialManager extends TutorialManager{
     public void tripDismissed() {
         setUserHasDone(TUTORIAL_USER_KNOWS_DISMISSAL);
 
-        if (!userKnows(TUTORIAL_USER_KNOWS_UNDO_DISMISS)) {
+        if (!userKnows(TUTORIAL_USER_KNOWS_UNDO_DISMISS) && System.currentTimeMillis() > lastDismissalPlay + 30000) {
             showTutorial("Trip dismissed. Tap the stop name to show this trip again", 0);
+            lastDismissalPlay = System.currentTimeMillis();
         }
     }
 
