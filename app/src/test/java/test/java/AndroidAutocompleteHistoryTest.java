@@ -12,4 +12,8 @@ public class AndroidAutocompleteHistoryTest extends TestCase {
     public void tearDown() throws Exception {
 
     }
+
+    public void testSanity() throws Exception {
+
+    }
 }
