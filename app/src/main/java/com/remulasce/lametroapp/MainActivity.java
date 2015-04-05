@@ -313,6 +313,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                 Handler h = new Handler(Looper.getMainLooper());
                 h.postDelayed(showDropdownOnStart, 100);
             }
+
+            throw new RuntimeException("Test ACRA exception handler");
         }
     };
 
