@@ -166,6 +166,16 @@ public class CachedLocationRetriever implements LocationRetriever {
             return -1;
         }
 
+        /*
+        if (cacheHasLocation(stopRawLoc)) {
+            return getCachedDistance(stopRawLoc);
+        }
+        else {
+            ... calculate
+            Add to cache()
+        }
+        */
+
         Location currentLoc = getBestLocation();
         if (currentLoc == null) {
             Log.d(TAG, "Current location unavailable");
