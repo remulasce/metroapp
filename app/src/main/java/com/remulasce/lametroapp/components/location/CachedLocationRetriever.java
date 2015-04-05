@@ -15,6 +15,7 @@ import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -117,7 +118,16 @@ public class CachedLocationRetriever implements LocationRetriever {
         if (System.currentTimeMillis() > lastCacheUpdate + CACHE_UPDATE_INTERVAL) {
             lastRetrievedLocation = location;
 
-            //TODO update all the cached distances
+            updateCachedDistances();
+        }
+    }
+
+    private void updateCachedDistances() {
+        Log.w(TAG, "Updating cached proximities");
+        lastCacheUpdate = System.currentTimeMillis();
+        
+        for (Map.Entry<BasicLocation, CachedProximity> entry : cache.entrySet()) {
+            entry.getValue().distance = getRawCurrentDistance(entry.getKey());
         }
     }
 
