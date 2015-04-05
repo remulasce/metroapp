@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp.components.location;
 
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 
@@ -25,6 +26,11 @@ import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 public class CachedLocationRetriever implements LocationRetriever {
     @Override
     public double getCurrentDistanceToStop(Stop stop) {
+        return 0;
+    }
+
+    @Override
+    public double getCurrentDistanceToLocation(BasicLocation location) {
         return 0;
     }
 }
