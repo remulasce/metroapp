@@ -7,33 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		310448DB1AD6FADF00DCA091 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 310448DA1AD6FADF00DCA091 /* NotificationCenter.framework */; };
+		310448E11AD6FADF00DCA091 /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 310448E01AD6FADF00DCA091 /* TodayViewController.m */; };
+		310448E31AD6FADF00DCA091 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 310448E21AD6FADF00DCA091 /* MainInterface.storyboard */; };
+		310448E61AD6FADF00DCA091 /* MetroAppWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 310A04971ACB323C000E1B8E /* StopNameDatabase.m */; };
-		310A05161ACB3858000E1B8E /* Log.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04C91ACB3858000E1B8E /* Log.java */; };
-		310A05171ACB3858000E1B8E /* Tracking.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04CA1ACB3858000E1B8E /* Tracking.java */; };
-		310A05181ACB3858000E1B8E /* BasicLocation.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04CC1ACB3858000E1B8E /* BasicLocation.java */; };
-		310A05191ACB3858000E1B8E /* Destination.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04CD1ACB3858000E1B8E /* Destination.java */; };
-		310A051A1ACB3858000E1B8E /* Route.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04CE1ACB3858000E1B8E /* Route.java */; };
-		310A051B1ACB3858000E1B8E /* ServiceRequest.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04CF1ACB3858000E1B8E /* ServiceRequest.java */; };
-		310A051C1ACB3858000E1B8E /* Stop.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D01ACB3858000E1B8E /* Stop.java */; };
-		310A051D1ACB3858000E1B8E /* StopServiceRequest.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D11ACB3858000E1B8E /* StopServiceRequest.java */; };
-		310A051E1ACB3858000E1B8E /* Vehicle.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D21ACB3858000E1B8E /* Vehicle.java */; };
-		310A051F1ACB3858000E1B8E /* HTTPGetter.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D41ACB3858000E1B8E /* HTTPGetter.java */; };
-		310A05201ACB3858000E1B8E /* PredictionManager.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D51ACB3858000E1B8E /* PredictionManager.java */; };
-		310A05211ACB3858000E1B8E /* Arrival.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D71ACB3858000E1B8E /* Arrival.java */; };
-		310A05221ACB3858000E1B8E /* MultiArrivalTrip.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D81ACB3858000E1B8E /* MultiArrivalTrip.java */; };
-		310A05231ACB3858000E1B8E /* Prediction.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04D91ACB3858000E1B8E /* Prediction.java */; };
-		310A05241ACB3858000E1B8E /* StopRouteDestinationArrival.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04DA1ACB3858000E1B8E /* StopRouteDestinationArrival.java */; };
-		310A05251ACB3858000E1B8E /* StopRouteDestinationPrediction.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04DB1ACB3858000E1B8E /* StopRouteDestinationPrediction.java */; };
-		310A05261ACB3858000E1B8E /* Trip.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04DC1ACB3858000E1B8E /* Trip.java */; };
-		310A05271ACB3858000E1B8E /* LaMetroUtil.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04DD1ACB3858000E1B8E /* LaMetroUtil.java */; };
-		310A05281ACB3858000E1B8E /* GlobalLocationProvider.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04DF1ACB3858000E1B8E /* GlobalLocationProvider.java */; };
-		310A05291ACB3858000E1B8E /* LocationRetriever.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E01ACB3858000E1B8E /* LocationRetriever.java */; };
-		310A052A1ACB3858000E1B8E /* NetworkStatusReporter.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E21ACB3858000E1B8E /* NetworkStatusReporter.java */; };
-		310A052B1ACB3858000E1B8E /* ServiceRequestHandler.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E31ACB3858000E1B8E /* ServiceRequestHandler.java */; };
-		310A052C1ACB3858000E1B8E /* RouteColorer.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E51ACB3858000E1B8E /* RouteColorer.java */; };
-		310A052D1ACB3858000E1B8E /* StopLocationTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E61ACB3858000E1B8E /* StopLocationTranslator.java */; };
-		310A052E1ACB3858000E1B8E /* StopNameTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E71ACB3858000E1B8E /* StopNameTranslator.java */; };
-		310A052F1ACB3858000E1B8E /* RouteColor.java in Sources */ = {isa = PBXBuildFile; fileRef = 310A04E91ACB3858000E1B8E /* RouteColor.java */; };
+		312CC5011AD70D3A00DD21FA /* Log.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C61AD709E000DD21FA /* Log.java */; };
+		312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C71AD709E000DD21FA /* Tracking.java */; };
+		312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C91AD709E000DD21FA /* BasicLocation.java */; };
+		312CC5041AD70D3A00DD21FA /* Destination.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CA1AD709E000DD21FA /* Destination.java */; };
+		312CC5051AD70D3A00DD21FA /* Route.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CB1AD709E000DD21FA /* Route.java */; };
+		312CC5061AD70D3A00DD21FA /* ServiceRequest.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CC1AD709E000DD21FA /* ServiceRequest.java */; };
+		312CC5071AD70D3A00DD21FA /* Stop.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CD1AD709E000DD21FA /* Stop.java */; };
+		312CC5081AD70D3A00DD21FA /* StopServiceRequest.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CE1AD709E000DD21FA /* StopServiceRequest.java */; };
+		312CC5091AD70D3A00DD21FA /* Vehicle.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CF1AD709E000DD21FA /* Vehicle.java */; };
+		312CC50A1AD70D3A00DD21FA /* HTTPGetter.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D11AD709E000DD21FA /* HTTPGetter.java */; };
+		312CC50B1AD70D3A00DD21FA /* PredictionManager.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D21AD709E000DD21FA /* PredictionManager.java */; };
+		312CC50C1AD70D3A00DD21FA /* Arrival.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D41AD709E000DD21FA /* Arrival.java */; };
+		312CC50D1AD70D3A00DD21FA /* MultiArrivalTrip.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D51AD709E000DD21FA /* MultiArrivalTrip.java */; };
+		312CC50E1AD70D3A00DD21FA /* Prediction.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D61AD709E000DD21FA /* Prediction.java */; };
+		312CC50F1AD70D3A00DD21FA /* StopRouteDestinationArrival.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D71AD709E000DD21FA /* StopRouteDestinationArrival.java */; };
+		312CC5101AD70D3A00DD21FA /* StopRouteDestinationPrediction.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D81AD709E000DD21FA /* StopRouteDestinationPrediction.java */; };
+		312CC5111AD70D3A00DD21FA /* Trip.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4D91AD709E000DD21FA /* Trip.java */; };
+		312CC5121AD70D3A00DD21FA /* LaMetroUtil.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4DA1AD709E000DD21FA /* LaMetroUtil.java */; };
+		312CC5131AD70D3A00DD21FA /* GlobalLocationProvider.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4DC1AD709E000DD21FA /* GlobalLocationProvider.java */; };
+		312CC5141AD70D3A00DD21FA /* LocationRetriever.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4DD1AD709E000DD21FA /* LocationRetriever.java */; };
+		312CC5151AD70D3A00DD21FA /* NetworkStatusReporter.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4DF1AD709E000DD21FA /* NetworkStatusReporter.java */; };
+		312CC5161AD70D3A00DD21FA /* ServiceRequestHandler.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E01AD709E000DD21FA /* ServiceRequestHandler.java */; };
+		312CC5171AD70D3A00DD21FA /* RouteColorer.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E21AD709E000DD21FA /* RouteColorer.java */; };
+		312CC5181AD70D3A00DD21FA /* StopLocationTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E31AD709E000DD21FA /* StopLocationTranslator.java */; };
+		312CC5191AD70D3A00DD21FA /* StopNameTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E41AD709E000DD21FA /* StopNameTranslator.java */; };
+		312CC51A1AD70D3A00DD21FA /* RouteColor.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E61AD709E000DD21FA /* RouteColor.java */; };
 		312FFE281AA7E89C005D5477 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE271AA7E89C005D5477 /* main.m */; };
 		312FFE2B1AA7E89C005D5477 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE2A1AA7E89C005D5477 /* AppDelegate.m */; };
 		312FFE2E1AA7E89C005D5477 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE2D1AA7E89C005D5477 /* ViewController.m */; };
@@ -69,6 +73,13 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		310448E41AD6FADF00DCA091 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 312FFE1A1AA7E89C005D5477 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 310448D71AD6FADF00DCA091;
+			remoteInfo = MetroAppWidget;
+		};
 		312FFE3C1AA7E89D005D5477 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 312FFE1A1AA7E89C005D5477 /* Project object */;
@@ -78,35 +89,67 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		310448EA1AD6FADF00DCA091 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				310448E61AD6FADF00DCA091 /* MetroAppWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC4A01AD7060500DD21FA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MetroAppWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		310448DA1AD6FADF00DCA091 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		310448DE1AD6FADF00DCA091 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		310448DF1AD6FADF00DCA091 /* TodayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TodayViewController.h; sourceTree = "<group>"; };
+		310448E01AD6FADF00DCA091 /* TodayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TodayViewController.m; sourceTree = "<group>"; };
+		310448E21AD6FADF00DCA091 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		310A04961ACB323C000E1B8E /* StopNameDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameDatabase.h; sourceTree = "<group>"; };
 		310A04971ACB323C000E1B8E /* StopNameDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameDatabase.m; sourceTree = "<group>"; };
-		310A04C91ACB3858000E1B8E /* Log.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Log.java; sourceTree = "<group>"; };
-		310A04CA1ACB3858000E1B8E /* Tracking.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Tracking.java; sourceTree = "<group>"; };
-		310A04CC1ACB3858000E1B8E /* BasicLocation.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BasicLocation.java; sourceTree = "<group>"; };
-		310A04CD1ACB3858000E1B8E /* Destination.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Destination.java; sourceTree = "<group>"; };
-		310A04CE1ACB3858000E1B8E /* Route.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Route.java; sourceTree = "<group>"; };
-		310A04CF1ACB3858000E1B8E /* ServiceRequest.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ServiceRequest.java; sourceTree = "<group>"; };
-		310A04D01ACB3858000E1B8E /* Stop.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Stop.java; sourceTree = "<group>"; };
-		310A04D11ACB3858000E1B8E /* StopServiceRequest.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopServiceRequest.java; sourceTree = "<group>"; };
-		310A04D21ACB3858000E1B8E /* Vehicle.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Vehicle.java; sourceTree = "<group>"; };
-		310A04D41ACB3858000E1B8E /* HTTPGetter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = HTTPGetter.java; sourceTree = "<group>"; };
-		310A04D51ACB3858000E1B8E /* PredictionManager.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PredictionManager.java; sourceTree = "<group>"; };
-		310A04D71ACB3858000E1B8E /* Arrival.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Arrival.java; sourceTree = "<group>"; };
-		310A04D81ACB3858000E1B8E /* MultiArrivalTrip.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = MultiArrivalTrip.java; sourceTree = "<group>"; };
-		310A04D91ACB3858000E1B8E /* Prediction.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Prediction.java; sourceTree = "<group>"; };
-		310A04DA1ACB3858000E1B8E /* StopRouteDestinationArrival.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopRouteDestinationArrival.java; sourceTree = "<group>"; };
-		310A04DB1ACB3858000E1B8E /* StopRouteDestinationPrediction.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopRouteDestinationPrediction.java; sourceTree = "<group>"; };
-		310A04DC1ACB3858000E1B8E /* Trip.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Trip.java; sourceTree = "<group>"; };
-		310A04DD1ACB3858000E1B8E /* LaMetroUtil.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = LaMetroUtil.java; sourceTree = "<group>"; };
-		310A04DF1ACB3858000E1B8E /* GlobalLocationProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = GlobalLocationProvider.java; sourceTree = "<group>"; };
-		310A04E01ACB3858000E1B8E /* LocationRetriever.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = LocationRetriever.java; sourceTree = "<group>"; };
-		310A04E21ACB3858000E1B8E /* NetworkStatusReporter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = NetworkStatusReporter.java; sourceTree = "<group>"; };
-		310A04E31ACB3858000E1B8E /* ServiceRequestHandler.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ServiceRequestHandler.java; sourceTree = "<group>"; };
-		310A04E51ACB3858000E1B8E /* RouteColorer.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColorer.java; sourceTree = "<group>"; };
-		310A04E61ACB3858000E1B8E /* StopLocationTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopLocationTranslator.java; sourceTree = "<group>"; };
-		310A04E71ACB3858000E1B8E /* StopNameTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopNameTranslator.java; sourceTree = "<group>"; };
-		310A04E91ACB3858000E1B8E /* RouteColor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColor.java; sourceTree = "<group>"; };
+		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
+		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
+		312CC4C61AD709E000DD21FA /* Log.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Log.java; sourceTree = "<group>"; };
+		312CC4C71AD709E000DD21FA /* Tracking.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Tracking.java; sourceTree = "<group>"; };
+		312CC4C91AD709E000DD21FA /* BasicLocation.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BasicLocation.java; sourceTree = "<group>"; };
+		312CC4CA1AD709E000DD21FA /* Destination.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Destination.java; sourceTree = "<group>"; };
+		312CC4CB1AD709E000DD21FA /* Route.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Route.java; sourceTree = "<group>"; };
+		312CC4CC1AD709E000DD21FA /* ServiceRequest.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ServiceRequest.java; sourceTree = "<group>"; };
+		312CC4CD1AD709E000DD21FA /* Stop.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Stop.java; sourceTree = "<group>"; };
+		312CC4CE1AD709E000DD21FA /* StopServiceRequest.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopServiceRequest.java; sourceTree = "<group>"; };
+		312CC4CF1AD709E000DD21FA /* Vehicle.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Vehicle.java; sourceTree = "<group>"; };
+		312CC4D11AD709E000DD21FA /* HTTPGetter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = HTTPGetter.java; sourceTree = "<group>"; };
+		312CC4D21AD709E000DD21FA /* PredictionManager.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PredictionManager.java; sourceTree = "<group>"; };
+		312CC4D41AD709E000DD21FA /* Arrival.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Arrival.java; sourceTree = "<group>"; };
+		312CC4D51AD709E000DD21FA /* MultiArrivalTrip.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = MultiArrivalTrip.java; sourceTree = "<group>"; };
+		312CC4D61AD709E000DD21FA /* Prediction.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Prediction.java; sourceTree = "<group>"; };
+		312CC4D71AD709E000DD21FA /* StopRouteDestinationArrival.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopRouteDestinationArrival.java; sourceTree = "<group>"; };
+		312CC4D81AD709E000DD21FA /* StopRouteDestinationPrediction.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopRouteDestinationPrediction.java; sourceTree = "<group>"; };
+		312CC4D91AD709E000DD21FA /* Trip.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Trip.java; sourceTree = "<group>"; };
+		312CC4DA1AD709E000DD21FA /* LaMetroUtil.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = LaMetroUtil.java; sourceTree = "<group>"; };
+		312CC4DC1AD709E000DD21FA /* GlobalLocationProvider.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = GlobalLocationProvider.java; sourceTree = "<group>"; };
+		312CC4DD1AD709E000DD21FA /* LocationRetriever.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = LocationRetriever.java; sourceTree = "<group>"; };
+		312CC4DF1AD709E000DD21FA /* NetworkStatusReporter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = NetworkStatusReporter.java; sourceTree = "<group>"; };
+		312CC4E01AD709E000DD21FA /* ServiceRequestHandler.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = ServiceRequestHandler.java; sourceTree = "<group>"; };
+		312CC4E21AD709E000DD21FA /* RouteColorer.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColorer.java; sourceTree = "<group>"; };
+		312CC4E31AD709E000DD21FA /* StopLocationTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopLocationTranslator.java; sourceTree = "<group>"; };
+		312CC4E41AD709E000DD21FA /* StopNameTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopNameTranslator.java; sourceTree = "<group>"; };
+		312CC4E61AD709E000DD21FA /* RouteColor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColor.java; sourceTree = "<group>"; };
 		312FFE221AA7E89C005D5477 /* MetroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		312FFE261AA7E89C005D5477 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		312FFE271AA7E89C005D5477 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -137,6 +180,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		310448D51AD6FADF00DCA091 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				310448DB1AD6FADF00DCA091 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		312FFE1F1AA7E89C005D5477 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -159,108 +210,128 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		310A049B1ACB3857000E1B8E /* lametroapp */ = {
+		310448D91AD6FADF00DCA091 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				310A04C71ACB3858000E1B8E /* java_core */,
+				310448DA1AD6FADF00DCA091 /* NotificationCenter.framework */,
 			);
-			name = lametroapp;
-			path = metroapp/app/src/main/java/com/remulasce/lametroapp;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		310A04C71ACB3858000E1B8E /* java_core */ = {
+		310448DC1AD6FADF00DCA091 /* MetroAppWidget */ = {
 			isa = PBXGroup;
 			children = (
-				310A04C81ACB3858000E1B8E /* analytics */,
-				310A04CB1ACB3858000E1B8E /* basic_types */,
-				310A04D31ACB3858000E1B8E /* dynamic_data */,
-				310A04DD1ACB3858000E1B8E /* LaMetroUtil.java */,
-				310A04DE1ACB3858000E1B8E /* location */,
-				310A04E11ACB3858000E1B8E /* network_status */,
-				310A04E31ACB3858000E1B8E /* ServiceRequestHandler.java */,
-				310A04E41ACB3858000E1B8E /* static_data */,
+				312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */,
+				310448DF1AD6FADF00DCA091 /* TodayViewController.h */,
+				310448E01AD6FADF00DCA091 /* TodayViewController.m */,
+				310448E21AD6FADF00DCA091 /* MainInterface.storyboard */,
+				310448DD1AD6FADF00DCA091 /* Supporting Files */,
 			);
-			path = java_core;
+			path = MetroAppWidget;
 			sourceTree = "<group>";
 		};
-		310A04C81ACB3858000E1B8E /* analytics */ = {
+		310448DD1AD6FADF00DCA091 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				310A04C91ACB3858000E1B8E /* Log.java */,
-				310A04CA1ACB3858000E1B8E /* Tracking.java */,
+				310448DE1AD6FADF00DCA091 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		312CC4C41AD709E000DD21FA /* java_core */ = {
+			isa = PBXGroup;
+			children = (
+				312CC4C51AD709E000DD21FA /* analytics */,
+				312CC4C81AD709E000DD21FA /* basic_types */,
+				312CC4D01AD709E000DD21FA /* dynamic_data */,
+				312CC4DA1AD709E000DD21FA /* LaMetroUtil.java */,
+				312CC4DB1AD709E000DD21FA /* location */,
+				312CC4DE1AD709E000DD21FA /* network_status */,
+				312CC4E01AD709E000DD21FA /* ServiceRequestHandler.java */,
+				312CC4E11AD709E000DD21FA /* static_data */,
+			);
+			name = java_core;
+			path = MetroApp/metroapp/app/src/main/java/com/remulasce/lametroapp/java_core;
+			sourceTree = SOURCE_ROOT;
+		};
+		312CC4C51AD709E000DD21FA /* analytics */ = {
+			isa = PBXGroup;
+			children = (
+				312CC4C61AD709E000DD21FA /* Log.java */,
+				312CC4C71AD709E000DD21FA /* Tracking.java */,
 			);
 			path = analytics;
 			sourceTree = "<group>";
 		};
-		310A04CB1ACB3858000E1B8E /* basic_types */ = {
+		312CC4C81AD709E000DD21FA /* basic_types */ = {
 			isa = PBXGroup;
 			children = (
-				310A04CC1ACB3858000E1B8E /* BasicLocation.java */,
-				310A04CD1ACB3858000E1B8E /* Destination.java */,
-				310A04CE1ACB3858000E1B8E /* Route.java */,
-				310A04CF1ACB3858000E1B8E /* ServiceRequest.java */,
-				310A04D01ACB3858000E1B8E /* Stop.java */,
-				310A04D11ACB3858000E1B8E /* StopServiceRequest.java */,
-				310A04D21ACB3858000E1B8E /* Vehicle.java */,
+				312CC4C91AD709E000DD21FA /* BasicLocation.java */,
+				312CC4CA1AD709E000DD21FA /* Destination.java */,
+				312CC4CB1AD709E000DD21FA /* Route.java */,
+				312CC4CC1AD709E000DD21FA /* ServiceRequest.java */,
+				312CC4CD1AD709E000DD21FA /* Stop.java */,
+				312CC4CE1AD709E000DD21FA /* StopServiceRequest.java */,
+				312CC4CF1AD709E000DD21FA /* Vehicle.java */,
 			);
 			path = basic_types;
 			sourceTree = "<group>";
 		};
-		310A04D31ACB3858000E1B8E /* dynamic_data */ = {
+		312CC4D01AD709E000DD21FA /* dynamic_data */ = {
 			isa = PBXGroup;
 			children = (
-				310A04D41ACB3858000E1B8E /* HTTPGetter.java */,
-				310A04D51ACB3858000E1B8E /* PredictionManager.java */,
-				310A04D61ACB3858000E1B8E /* types */,
+				312CC4D11AD709E000DD21FA /* HTTPGetter.java */,
+				312CC4D21AD709E000DD21FA /* PredictionManager.java */,
+				312CC4D31AD709E000DD21FA /* types */,
 			);
 			path = dynamic_data;
 			sourceTree = "<group>";
 		};
-		310A04D61ACB3858000E1B8E /* types */ = {
+		312CC4D31AD709E000DD21FA /* types */ = {
 			isa = PBXGroup;
 			children = (
-				310A04D71ACB3858000E1B8E /* Arrival.java */,
-				310A04D81ACB3858000E1B8E /* MultiArrivalTrip.java */,
-				310A04D91ACB3858000E1B8E /* Prediction.java */,
-				310A04DA1ACB3858000E1B8E /* StopRouteDestinationArrival.java */,
-				310A04DB1ACB3858000E1B8E /* StopRouteDestinationPrediction.java */,
-				310A04DC1ACB3858000E1B8E /* Trip.java */,
+				312CC4D41AD709E000DD21FA /* Arrival.java */,
+				312CC4D51AD709E000DD21FA /* MultiArrivalTrip.java */,
+				312CC4D61AD709E000DD21FA /* Prediction.java */,
+				312CC4D71AD709E000DD21FA /* StopRouteDestinationArrival.java */,
+				312CC4D81AD709E000DD21FA /* StopRouteDestinationPrediction.java */,
+				312CC4D91AD709E000DD21FA /* Trip.java */,
 			);
 			path = types;
 			sourceTree = "<group>";
 		};
-		310A04DE1ACB3858000E1B8E /* location */ = {
+		312CC4DB1AD709E000DD21FA /* location */ = {
 			isa = PBXGroup;
 			children = (
-				310A04DF1ACB3858000E1B8E /* GlobalLocationProvider.java */,
-				310A04E01ACB3858000E1B8E /* LocationRetriever.java */,
+				312CC4DC1AD709E000DD21FA /* GlobalLocationProvider.java */,
+				312CC4DD1AD709E000DD21FA /* LocationRetriever.java */,
 			);
 			path = location;
 			sourceTree = "<group>";
 		};
-		310A04E11ACB3858000E1B8E /* network_status */ = {
+		312CC4DE1AD709E000DD21FA /* network_status */ = {
 			isa = PBXGroup;
 			children = (
-				310A04E21ACB3858000E1B8E /* NetworkStatusReporter.java */,
+				312CC4DF1AD709E000DD21FA /* NetworkStatusReporter.java */,
 			);
 			path = network_status;
 			sourceTree = "<group>";
 		};
-		310A04E41ACB3858000E1B8E /* static_data */ = {
+		312CC4E11AD709E000DD21FA /* static_data */ = {
 			isa = PBXGroup;
 			children = (
-				310A04E51ACB3858000E1B8E /* RouteColorer.java */,
-				310A04E61ACB3858000E1B8E /* StopLocationTranslator.java */,
-				310A04E71ACB3858000E1B8E /* StopNameTranslator.java */,
-				310A04E81ACB3858000E1B8E /* types */,
+				312CC4E21AD709E000DD21FA /* RouteColorer.java */,
+				312CC4E31AD709E000DD21FA /* StopLocationTranslator.java */,
+				312CC4E41AD709E000DD21FA /* StopNameTranslator.java */,
+				312CC4E51AD709E000DD21FA /* types */,
 			);
 			path = static_data;
 			sourceTree = "<group>";
 		};
-		310A04E81ACB3858000E1B8E /* types */ = {
+		312CC4E51AD709E000DD21FA /* types */ = {
 			isa = PBXGroup;
 			children = (
-				310A04E91ACB3858000E1B8E /* RouteColor.java */,
+				312CC4E61AD709E000DD21FA /* RouteColor.java */,
 			);
 			path = types;
 			sourceTree = "<group>";
@@ -275,6 +346,8 @@
 				312FFF371AA7EA4C005D5477 /* libz.dylib */,
 				312FFE241AA7E89C005D5477 /* MetroApp */,
 				312FFE3E1AA7E89D005D5477 /* MetroAppTests */,
+				310448DC1AD6FADF00DCA091 /* MetroAppWidget */,
+				310448D91AD6FADF00DCA091 /* Frameworks */,
 				312FFE231AA7E89C005D5477 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -284,6 +357,7 @@
 			children = (
 				312FFE221AA7E89C005D5477 /* MetroApp.app */,
 				312FFE3B1AA7E89D005D5477 /* MetroAppTests.xctest */,
+				310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -291,7 +365,8 @@
 		312FFE241AA7E89C005D5477 /* MetroApp */ = {
 			isa = PBXGroup;
 			children = (
-				310A049B1ACB3857000E1B8E /* lametroapp */,
+				312CC4C41AD709E000DD21FA /* java_core */,
+				312CC4741AD7011E00DD21FA /* MetroApp.entitlements */,
 				31865C8D1AC7EA97007421BE /* Database */,
 				31865C781AC61EAE007421BE /* Controllers */,
 				31865C741AC61E77007421BE /* Views */,
@@ -368,6 +443,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		310448D71AD6FADF00DCA091 /* MetroAppWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 310448E91AD6FADF00DCA091 /* Build configuration list for PBXNativeTarget "MetroAppWidget" */;
+			buildPhases = (
+				310448D41AD6FADF00DCA091 /* Sources */,
+				310448D51AD6FADF00DCA091 /* Frameworks */,
+				310448D61AD6FADF00DCA091 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MetroAppWidget;
+			productName = MetroAppWidget;
+			productReference = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		312FFE211AA7E89C005D5477 /* MetroApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 312FFE451AA7E89D005D5477 /* Build configuration list for PBXNativeTarget "MetroApp" */;
@@ -376,11 +468,14 @@
 				312FFE1F1AA7E89C005D5477 /* Frameworks */,
 				312FFE201AA7E89C005D5477 /* Resources */,
 				31865C821AC75736007421BE /* ShellScript */,
+				310448EA1AD6FADF00DCA091 /* Embed App Extensions */,
+				312CC4A01AD7060500DD21FA /* Embed Frameworks */,
 			);
 			buildRules = (
 				312FFF361AA7E92B005D5477 /* PBXBuildRule */,
 			);
 			dependencies = (
+				310448E51AD6FADF00DCA091 /* PBXTargetDependency */,
 			);
 			name = MetroApp;
 			productName = MetroApp;
@@ -414,9 +509,23 @@
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Nought;
 				TargetAttributes = {
+					310448D71AD6FADF00DCA091 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 3TK448NYTK;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
 					312FFE211AA7E89C005D5477 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 3TK448NYTK;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					312FFE3A1AA7E89D005D5477 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -439,11 +548,20 @@
 			targets = (
 				312FFE211AA7E89C005D5477 /* MetroApp */,
 				312FFE3A1AA7E89D005D5477 /* MetroAppTests */,
+				310448D71AD6FADF00DCA091 /* MetroAppWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		310448D61AD6FADF00DCA091 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				310448E31AD6FADF00DCA091 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		312FFE201AA7E89C005D5477 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -482,44 +600,52 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		310448D41AD6FADF00DCA091 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				310448E11AD6FADF00DCA091 /* TodayViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		312FFE1E1AA7E89C005D5477 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				310A05221ACB3858000E1B8E /* MultiArrivalTrip.java in Sources */,
-				310A051B1ACB3858000E1B8E /* ServiceRequest.java in Sources */,
-				310A051E1ACB3858000E1B8E /* Vehicle.java in Sources */,
-				310A05181ACB3858000E1B8E /* BasicLocation.java in Sources */,
+				312CC5011AD70D3A00DD21FA /* Log.java in Sources */,
+				312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */,
+				312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */,
+				312CC5041AD70D3A00DD21FA /* Destination.java in Sources */,
+				312CC5051AD70D3A00DD21FA /* Route.java in Sources */,
+				312CC5061AD70D3A00DD21FA /* ServiceRequest.java in Sources */,
+				312CC5071AD70D3A00DD21FA /* Stop.java in Sources */,
+				312CC5081AD70D3A00DD21FA /* StopServiceRequest.java in Sources */,
+				312CC5091AD70D3A00DD21FA /* Vehicle.java in Sources */,
+				312CC50A1AD70D3A00DD21FA /* HTTPGetter.java in Sources */,
+				312CC50B1AD70D3A00DD21FA /* PredictionManager.java in Sources */,
+				312CC50C1AD70D3A00DD21FA /* Arrival.java in Sources */,
+				312CC50D1AD70D3A00DD21FA /* MultiArrivalTrip.java in Sources */,
+				312CC50E1AD70D3A00DD21FA /* Prediction.java in Sources */,
+				312CC50F1AD70D3A00DD21FA /* StopRouteDestinationArrival.java in Sources */,
+				312CC5101AD70D3A00DD21FA /* StopRouteDestinationPrediction.java in Sources */,
+				312CC5111AD70D3A00DD21FA /* Trip.java in Sources */,
+				312CC5121AD70D3A00DD21FA /* LaMetroUtil.java in Sources */,
+				312CC5131AD70D3A00DD21FA /* GlobalLocationProvider.java in Sources */,
+				312CC5141AD70D3A00DD21FA /* LocationRetriever.java in Sources */,
+				312CC5151AD70D3A00DD21FA /* NetworkStatusReporter.java in Sources */,
+				312CC5161AD70D3A00DD21FA /* ServiceRequestHandler.java in Sources */,
+				312CC5171AD70D3A00DD21FA /* RouteColorer.java in Sources */,
+				312CC5181AD70D3A00DD21FA /* StopLocationTranslator.java in Sources */,
+				312CC5191AD70D3A00DD21FA /* StopNameTranslator.java in Sources */,
+				312CC51A1AD70D3A00DD21FA /* RouteColor.java in Sources */,
 				312FFE2E1AA7E89C005D5477 /* ViewController.m in Sources */,
-				310A05191ACB3858000E1B8E /* Destination.java in Sources */,
-				310A052C1ACB3858000E1B8E /* RouteColorer.java in Sources */,
-				310A05271ACB3858000E1B8E /* LaMetroUtil.java in Sources */,
-				310A05231ACB3858000E1B8E /* Prediction.java in Sources */,
-				310A052B1ACB3858000E1B8E /* ServiceRequestHandler.java in Sources */,
-				310A052A1ACB3858000E1B8E /* NetworkStatusReporter.java in Sources */,
 				312FFE2B1AA7E89C005D5477 /* AppDelegate.m in Sources */,
-				310A052E1ACB3858000E1B8E /* StopNameTranslator.java in Sources */,
-				310A05291ACB3858000E1B8E /* LocationRetriever.java in Sources */,
-				310A05201ACB3858000E1B8E /* PredictionManager.java in Sources */,
 				31865C901AC7EAAC007421BE /* StopNameInfo.m in Sources */,
-				310A05281ACB3858000E1B8E /* GlobalLocationProvider.java in Sources */,
-				310A051F1ACB3858000E1B8E /* HTTPGetter.java in Sources */,
-				310A05261ACB3858000E1B8E /* Trip.java in Sources */,
-				310A05171ACB3858000E1B8E /* Tracking.java in Sources */,
-				310A052D1ACB3858000E1B8E /* StopLocationTranslator.java in Sources */,
-				310A05211ACB3858000E1B8E /* Arrival.java in Sources */,
-				310A051A1ACB3858000E1B8E /* Route.java in Sources */,
-				310A052F1ACB3858000E1B8E /* RouteColor.java in Sources */,
-				310A05241ACB3858000E1B8E /* StopRouteDestinationArrival.java in Sources */,
 				312FFE281AA7E89C005D5477 /* main.m in Sources */,
 				31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */,
 				31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */,
 				31A87BB31AAAA63B00013DEC /* PredictionManager.m in Sources */,
-				310A05161ACB3858000E1B8E /* Log.java in Sources */,
 				310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */,
-				310A051D1ACB3858000E1B8E /* StopServiceRequest.java in Sources */,
-				310A05251ACB3858000E1B8E /* StopRouteDestinationPrediction.java in Sources */,
-				310A051C1ACB3858000E1B8E /* Stop.java in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,6 +660,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		310448E51AD6FADF00DCA091 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 310448D71AD6FADF00DCA091 /* MetroAppWidget */;
+			targetProxy = 310448E41AD6FADF00DCA091 /* PBXContainerItemProxy */;
+		};
 		312FFE3D1AA7E89D005D5477 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 312FFE211AA7E89C005D5477 /* MetroApp */;
@@ -561,6 +692,41 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		310448E71AD6FADF00DCA091 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MetroAppWidget/MetroAppWidget.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MetroAppWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		310448E81AD6FADF00DCA091 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MetroAppWidget/MetroAppWidget.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = MetroAppWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		312FFE431AA7E89D005D5477 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -644,6 +810,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = (
@@ -668,6 +835,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = (
@@ -724,6 +892,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		310448E91AD6FADF00DCA091 /* Build configuration list for PBXNativeTarget "MetroAppWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				310448E71AD6FADF00DCA091 /* Debug */,
+				310448E81AD6FADF00DCA091 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		312FFE1D1AA7E89C005D5477 /* Build configuration list for PBXProject "MetroApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

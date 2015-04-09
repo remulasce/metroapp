@@ -38,8 +38,6 @@
     
     id<JavaUtilList> arrivalsToDisplay;
     
-    NSUserDefaults* sharedMetroAppDefaults;
-    NSMutableArray* metroAppWidgetArrivals;
 }
 
 @property (nonatomic, weak) IBOutlet UITableView* serviceRequestView;

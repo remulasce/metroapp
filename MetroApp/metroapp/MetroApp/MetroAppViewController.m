@@ -51,10 +51,6 @@
     queue = [NSOperationQueue new];
     [queue setMaxConcurrentOperationCount:1];
     [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateMultiArrivalView) userInfo:nil repeats:YES];
-    
-    // Setup Shared Defaults
-    sharedMetroAppDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.fornought.metroapp"];
-    metroAppWidgetArrivals = [[NSMutableArray alloc] init];
 }
 
 #pragma mark - Table View Code
@@ -139,9 +135,9 @@
         if (translationAmount > 75) translationAmount = 75;
         if (translationAmount <= 0) translationAmount = 0;
         
-        CGRect frame = cell.contentView.frame;
+        CGRect frame = cell.frame;
         frame.origin = CGPointMake(translationAmount, frame.origin.y);
-        cell.contentView.frame = frame;
+        cell.frame = frame;
     }
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
         UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
@@ -320,18 +316,6 @@
         [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
         
         [self.serviceRequestView reloadData];
-    } else if (tableView == self.multiArrivalTripView){
-        // Code for setting a reminder
-        
-        // Just add reminder for first one at the moment
-        ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
-        multiArrivalTrip = [multiArrivalTrips getWithInt:[indexPath indexAtPosition:1]];
-        ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
-        tempSRDA = multiArrivalTrip->parentArrival_;
-        
-        id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
-        
-        [self createReminderForArrival:[tempArrivals getWithInt:0]];
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
@@ -420,25 +404,11 @@
 
 #pragma mark - Other program logic
 
-- (void)createReminderForArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival
-{
-    NSString* name = [[arrival getDirection] getString];
-    NSString* time = [self formatTime:[arrival getEstimatedArrivalSeconds]];
-    
-    NSLog(@"Creating reminder for %@, %@",name,time);
-    
-    metroAppWidgetArrivals = [[NSMutableArray alloc] init];
-    [metroAppWidgetArrivals addObject:name];
-    [metroAppWidgetArrivals addObject:time];
-    
-    [sharedMetroAppDefaults setObject:metroAppWidgetArrivals forKey:@"widgetarrivals"];
-}
-
-/*- (IBAction)createServiceRequest:(NSString*)stopName
+- (IBAction)createServiceRequest:(NSString*)stopName
 {
     ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest =
         [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc] initWithNSString:stopName];
-}*/
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
