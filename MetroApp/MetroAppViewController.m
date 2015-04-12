@@ -265,7 +265,14 @@
         for (int i=0; i<5; i++) {
             if (i < numArrivals) {
                 tempArrival = [tempArrivals getWithInt:i];
-                [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
+                int arrivalSeconds = (int)[tempArrival getEstimatedArrivalSeconds];
+                if (arrivalSeconds > 5) {
+                    [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
+                } else if (arrivalSeconds > 0) {
+                    [timeLabel[i] setText:@"Arriving"];
+                } else {
+                    ;; // Fixed in SRDA, should never happen
+                }
                 [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
             } else {
                 if ([timeLabel[i] isKindOfClass:[UILabel class]])
@@ -428,21 +435,34 @@
 
 - (void)createReminderForArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival
 {
+    // Create a reminder item for the widget
+    
     NSArray* newItem;
     
-    NSString* name = [[arrival getDirection] getString];
-    NSString* time = [self formatTime:[arrival getEstimatedArrivalSeconds]];
+    NSString* displayText = [NSString stringWithFormat:@"%@ %@",[[arrival getStop] getString],[[arrival getDirection] getString]];
     
     NSNumber *endTime;
     endTime = [[NSNumber alloc] initWithDouble:([[NSDate date] timeIntervalSince1970] + [arrival getEstimatedArrivalSeconds])];
     
-    NSLog(@"Creating reminder for %@, %@",name,endTime);
+    NSLog(@"Creating reminder for %@, %@",displayText,endTime);
 
-    newItem = [[NSArray alloc] initWithObjects:name, endTime, nil];
+    newItem = [[NSArray alloc] initWithObjects:displayText, endTime, nil];
     
     [metroAppWidgetArrivals addObject:newItem];
     
     [sharedMetroAppDefaults setObject:metroAppWidgetArrivals forKey:@"widgetarrivals"];
+    
+    //Create Local Notification for the bus as well
+    
+    UILocalNotification *newBusArrivalNotification = [[UILocalNotification alloc] init];
+    
+    double arrivalLeadSeconds = 120;
+    
+    newBusArrivalNotification.fireDate = [NSDate dateWithTimeIntervalSince1970:((NSTimeInterval)[endTime doubleValue]-arrivalLeadSeconds)];
+    newBusArrivalNotification.alertBody = [NSString stringWithFormat:@"%@ arriving in 2 minutes.",displayText];
+    newBusArrivalNotification.soundName = UILocalNotificationDefaultSoundName;
+    newBusArrivalNotification.applicationIconBadgeNumber = 1;
+    [[UIApplication sharedApplication] scheduleLocalNotification:newBusArrivalNotification];
 }
 
 /*- (IBAction)createServiceRequest:(NSString*)stopName
