@@ -237,10 +237,14 @@
                 timeLabel[i].tag = 3+i;
                 [cell.contentView addSubview:timeLabel[i]];
                 
+                [timeLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS-Bold" size:16]];
+                
                 CGRect vehicleLabelFrame = CGRectMake(100,55+(25*i),500,25);
                 vehicleLabel[i] = [[UILabel alloc] initWithFrame:vehicleLabelFrame];
                 vehicleLabel[i].tag = (20+i);
                 [cell.contentView addSubview:vehicleLabel[i]];
+                
+                [vehicleLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS" size:12]];
             }
         } else {
             tripNameLabel = (UILabel *)[cell.contentView viewWithTag:1];
