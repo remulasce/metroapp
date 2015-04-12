@@ -19,6 +19,8 @@
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
 
+#import "MetroAppShared.h"
+
 @interface MetroAppViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
     ComRemulasceLametroappJava_coreServiceRequestHandler *requestHandler;
@@ -50,7 +52,7 @@
 
 @property (nonatomic, strong) IBOutlet UITextField* searchText;
 
-- (IBAction)createServiceRequest:(NSString*)stopName;
+//- (IBAction)createServiceRequest:(NSString*)stopName;
 - (IBAction)enterSearchState:(id)sender;
 - (IBAction)exitSearchState:(id)sender;
 

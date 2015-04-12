@@ -38,6 +38,13 @@
 		312CC5181AD70D3A00DD21FA /* StopLocationTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E31AD709E000DD21FA /* StopLocationTranslator.java */; };
 		312CC5191AD70D3A00DD21FA /* StopNameTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E41AD709E000DD21FA /* StopNameTranslator.java */; };
 		312CC51A1AD70D3A00DD21FA /* RouteColor.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4E61AD709E000DD21FA /* RouteColor.java */; };
+		312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC5241AD75D3800DD21FA /* MetroAppShared.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
+		312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */; };
+		312CC5371AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
+		312CC5381AD75D3800DD21FA /* MetroAppShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		312CC5411AD75D6200DD21FA /* MetroWidgetItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC53F1AD75D6200DD21FA /* MetroWidgetItem.h */; };
+		312CC5431AD75DF800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
 		312FFE281AA7E89C005D5477 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE271AA7E89C005D5477 /* main.m */; };
 		312FFE2B1AA7E89C005D5477 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE2A1AA7E89C005D5477 /* AppDelegate.m */; };
 		312FFE2E1AA7E89C005D5477 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 312FFE2D1AA7E89C005D5477 /* ViewController.m */; };
@@ -54,8 +61,10 @@
 		31865C891AC7EA04007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
 		31865C901AC7EAAC007421BE /* StopNameInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C8F1AC7EAAC007421BE /* StopNameInfo.m */; };
 		31865C921AC7F546007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
-		31865C941AC7FAAA007421BE /* StopNames.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 31865C931AC7FAAA007421BE /* StopNames.sqlite3 */; };
+		31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */; };
 		31A87BB31AAAA63B00013DEC /* PredictionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A87BB21AAAA63B00013DEC /* PredictionManager.m */; };
+		31BADC7D1ADADCC3004961EA /* actransit.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 31BADC7C1ADADC51004961EA /* actransit.sqlite3 */; };
+		31BADC7F1ADAE011004961EA /* regionalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 31BADC7E1ADAE011004961EA /* regionalization.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -79,6 +88,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 310448D71AD6FADF00DCA091;
 			remoteInfo = MetroAppWidget;
+		};
+		312CC52C1AD75D3800DD21FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 312FFE1A1AA7E89C005D5477 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 312CC51F1AD75D3800DD21FA;
+			remoteInfo = MetroAppShared;
+		};
+		312CC52E1AD75D3800DD21FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 312FFE1A1AA7E89C005D5477 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 312FFE211AA7E89C005D5477;
+			remoteInfo = MetroApp;
+		};
+		312CC5351AD75D3800DD21FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 312FFE1A1AA7E89C005D5477 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 312CC51F1AD75D3800DD21FA;
+			remoteInfo = MetroAppShared;
 		};
 		312FFE3C1AA7E89D005D5477 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -107,6 +137,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				312CC5381AD75D3800DD21FA /* MetroAppShared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,6 +181,13 @@
 		312CC4E31AD709E000DD21FA /* StopLocationTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopLocationTranslator.java; sourceTree = "<group>"; };
 		312CC4E41AD709E000DD21FA /* StopNameTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopNameTranslator.java; sourceTree = "<group>"; };
 		312CC4E61AD709E000DD21FA /* RouteColor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColor.java; sourceTree = "<group>"; };
+		312CC5201AD75D3800DD21FA /* MetroAppShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetroAppShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		312CC5231AD75D3800DD21FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		312CC5241AD75D3800DD21FA /* MetroAppShared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MetroAppShared.h; sourceTree = "<group>"; };
+		312CC52A1AD75D3800DD21FA /* MetroAppSharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetroAppSharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		312CC5321AD75D3800DD21FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MetroAppSharedTests.m; sourceTree = "<group>"; };
+		312CC53F1AD75D6200DD21FA /* MetroWidgetItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroWidgetItem.h; sourceTree = "<group>"; };
 		312FFE221AA7E89C005D5477 /* MetroApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetroApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		312FFE261AA7E89C005D5477 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		312FFE271AA7E89C005D5477 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -173,10 +211,12 @@
 		31865C881AC7EA04007421BE /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		31865C8E1AC7EAAC007421BE /* StopNameInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameInfo.h; sourceTree = "<group>"; };
 		31865C8F1AC7EAAC007421BE /* StopNameInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameInfo.m; sourceTree = "<group>"; };
-		31865C931AC7FAAA007421BE /* StopNames.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = StopNames.sqlite3; path = metroapp/app/src/main/assets/databases/StopNames.sqlite3; sourceTree = "<group>"; };
+		31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = StopNamesLA.sqlite3; path = metroapp/app/src/main/assets/databases/StopNamesLA.sqlite3; sourceTree = "<group>"; };
 		31865C981AC897F9007421BE /* Examples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Examples.m; sourceTree = "<group>"; };
 		31A87BB11AAAA63B00013DEC /* PredictionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PredictionManager.h; sourceTree = "<group>"; };
 		31A87BB21AAAA63B00013DEC /* PredictionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PredictionManager.m; sourceTree = "<group>"; };
+		31BADC7C1ADADC51004961EA /* actransit.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = actransit.sqlite3; path = metroapp/app/src/main/assets/databases/actransit.sqlite3; sourceTree = "<group>"; };
+		31BADC7E1ADAE011004961EA /* regionalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = regionalization.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +225,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				310448DB1AD6FADF00DCA091 /* NotificationCenter.framework in Frameworks */,
+				312CC5431AD75DF800DD21FA /* MetroAppShared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC51C1AD75D3800DD21FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC5271AD75D3800DD21FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +252,7 @@
 				312FFF3C1AA7EA63005D5477 /* libicucore.dylib in Frameworks */,
 				312FFF3A1AA7EA55005D5477 /* Security.framework in Frameworks */,
 				312FFF381AA7EA4C005D5477 /* libz.dylib in Frameworks */,
+				312CC5371AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +393,42 @@
 			path = types;
 			sourceTree = "<group>";
 		};
+		312CC5211AD75D3800DD21FA /* MetroAppShared */ = {
+			isa = PBXGroup;
+			children = (
+				312CC5241AD75D3800DD21FA /* MetroAppShared.h */,
+				31BADC7E1ADAE011004961EA /* regionalization.h */,
+				312CC5221AD75D3800DD21FA /* Supporting Files */,
+				312CC53F1AD75D6200DD21FA /* MetroWidgetItem.h */,
+			);
+			path = MetroAppShared;
+			sourceTree = "<group>";
+		};
+		312CC5221AD75D3800DD21FA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				312CC5231AD75D3800DD21FA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		312CC5301AD75D3800DD21FA /* MetroAppSharedTests */ = {
+			isa = PBXGroup;
+			children = (
+				312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */,
+				312CC5311AD75D3800DD21FA /* Supporting Files */,
+			);
+			path = MetroAppSharedTests;
+			sourceTree = "<group>";
+		};
+		312CC5311AD75D3800DD21FA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				312CC5321AD75D3800DD21FA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		312FFE191AA7E89C005D5477 = {
 			isa = PBXGroup;
 			children = (
@@ -347,6 +440,8 @@
 				312FFE241AA7E89C005D5477 /* MetroApp */,
 				312FFE3E1AA7E89D005D5477 /* MetroAppTests */,
 				310448DC1AD6FADF00DCA091 /* MetroAppWidget */,
+				312CC5211AD75D3800DD21FA /* MetroAppShared */,
+				312CC5301AD75D3800DD21FA /* MetroAppSharedTests */,
 				310448D91AD6FADF00DCA091 /* Frameworks */,
 				312FFE231AA7E89C005D5477 /* Products */,
 			);
@@ -358,6 +453,8 @@
 				312FFE221AA7E89C005D5477 /* MetroApp.app */,
 				312FFE3B1AA7E89D005D5477 /* MetroAppTests.xctest */,
 				310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */,
+				312CC5201AD75D3800DD21FA /* MetroAppShared.framework */,
+				312CC52A1AD75D3800DD21FA /* MetroAppSharedTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -431,9 +528,10 @@
 		31865C8D1AC7EA97007421BE /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				31BADC7C1ADADC51004961EA /* actransit.sqlite3 */,
 				310A04961ACB323C000E1B8E /* StopNameDatabase.h */,
 				310A04971ACB323C000E1B8E /* StopNameDatabase.m */,
-				31865C931AC7FAAA007421BE /* StopNames.sqlite3 */,
+				31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */,
 				31865C8E1AC7EAAC007421BE /* StopNameInfo.h */,
 				31865C8F1AC7EAAC007421BE /* StopNameInfo.m */,
 			);
@@ -441,6 +539,19 @@
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		312CC51D1AD75D3800DD21FA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31BADC7F1ADAE011004961EA /* regionalization.h in Headers */,
+				312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */,
+				312CC5411AD75D6200DD21FA /* MetroWidgetItem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		310448D71AD6FADF00DCA091 /* MetroAppWidget */ = {
@@ -460,6 +571,43 @@
 			productReference = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		312CC51F1AD75D3800DD21FA /* MetroAppShared */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 312CC5391AD75D3800DD21FA /* Build configuration list for PBXNativeTarget "MetroAppShared" */;
+			buildPhases = (
+				312CC51B1AD75D3800DD21FA /* Sources */,
+				312CC51C1AD75D3800DD21FA /* Frameworks */,
+				312CC51D1AD75D3800DD21FA /* Headers */,
+				312CC51E1AD75D3800DD21FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MetroAppShared;
+			productName = MetroAppShared;
+			productReference = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		312CC5291AD75D3800DD21FA /* MetroAppSharedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 312CC53C1AD75D3800DD21FA /* Build configuration list for PBXNativeTarget "MetroAppSharedTests" */;
+			buildPhases = (
+				312CC5261AD75D3800DD21FA /* Sources */,
+				312CC5271AD75D3800DD21FA /* Frameworks */,
+				312CC5281AD75D3800DD21FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				312CC52D1AD75D3800DD21FA /* PBXTargetDependency */,
+				312CC52F1AD75D3800DD21FA /* PBXTargetDependency */,
+			);
+			name = MetroAppSharedTests;
+			productName = MetroAppSharedTests;
+			productReference = 312CC52A1AD75D3800DD21FA /* MetroAppSharedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		312FFE211AA7E89C005D5477 /* MetroApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 312FFE451AA7E89D005D5477 /* Build configuration list for PBXNativeTarget "MetroApp" */;
@@ -476,6 +624,7 @@
 			);
 			dependencies = (
 				310448E51AD6FADF00DCA091 /* PBXTargetDependency */,
+				312CC5361AD75D3800DD21FA /* PBXTargetDependency */,
 			);
 			name = MetroApp;
 			productName = MetroApp;
@@ -518,6 +667,14 @@
 							};
 						};
 					};
+					312CC51F1AD75D3800DD21FA = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 3TK448NYTK;
+					};
+					312CC5291AD75D3800DD21FA = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 312FFE211AA7E89C005D5477;
+					};
 					312FFE211AA7E89C005D5477 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 3TK448NYTK;
@@ -549,6 +706,8 @@
 				312FFE211AA7E89C005D5477 /* MetroApp */,
 				312FFE3A1AA7E89D005D5477 /* MetroAppTests */,
 				310448D71AD6FADF00DCA091 /* MetroAppWidget */,
+				312CC51F1AD75D3800DD21FA /* MetroAppShared */,
+				312CC5291AD75D3800DD21FA /* MetroAppSharedTests */,
 			);
 		};
 /* End PBXProject section */
@@ -562,14 +721,29 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		312CC51E1AD75D3800DD21FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC5281AD75D3800DD21FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		312FFE201AA7E89C005D5477 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31BADC7D1ADADCC3004961EA /* actransit.sqlite3 in Resources */,
 				312FFE311AA7E89D005D5477 /* Main.storyboard in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
-				31865C941AC7FAAA007421BE /* StopNames.sqlite3 in Resources */,
+				31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -605,6 +779,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				310448E11AD6FADF00DCA091 /* TodayViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC51B1AD75D3800DD21FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		312CC5261AD75D3800DD21FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,6 +854,21 @@
 			target = 310448D71AD6FADF00DCA091 /* MetroAppWidget */;
 			targetProxy = 310448E41AD6FADF00DCA091 /* PBXContainerItemProxy */;
 		};
+		312CC52D1AD75D3800DD21FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 312CC51F1AD75D3800DD21FA /* MetroAppShared */;
+			targetProxy = 312CC52C1AD75D3800DD21FA /* PBXContainerItemProxy */;
+		};
+		312CC52F1AD75D3800DD21FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 312FFE211AA7E89C005D5477 /* MetroApp */;
+			targetProxy = 312CC52E1AD75D3800DD21FA /* PBXContainerItemProxy */;
+		};
+		312CC5361AD75D3800DD21FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 312CC51F1AD75D3800DD21FA /* MetroAppShared */;
+			targetProxy = 312CC5351AD75D3800DD21FA /* PBXContainerItemProxy */;
+		};
 		312FFE3D1AA7E89D005D5477 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 312FFE211AA7E89C005D5477 /* MetroApp */;
@@ -695,6 +899,7 @@
 		310448E71AD6FADF00DCA091 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroAppWidget/MetroAppWidget.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -714,6 +919,7 @@
 		310448E81AD6FADF00DCA091 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroAppWidget/MetroAppWidget.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -724,6 +930,92 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		312CC53A1AD75D3800DD21FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MetroAppShared/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		312CC53B1AD75D3800DD21FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = MetroAppShared/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		312CC53D1AD75D3800DD21FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MetroAppSharedTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetroApp.app/MetroApp";
+			};
+			name = Debug;
+		};
+		312CC53E1AD75D3800DD21FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = MetroAppSharedTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MetroApp.app/MetroApp";
 			};
 			name = Release;
 		};
@@ -810,6 +1102,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -835,6 +1128,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -897,6 +1191,24 @@
 			buildConfigurations = (
 				310448E71AD6FADF00DCA091 /* Debug */,
 				310448E81AD6FADF00DCA091 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		312CC5391AD75D3800DD21FA /* Build configuration list for PBXNativeTarget "MetroAppShared" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				312CC53A1AD75D3800DD21FA /* Debug */,
+				312CC53B1AD75D3800DD21FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		312CC53C1AD75D3800DD21FA /* Build configuration list for PBXNativeTarget "MetroAppSharedTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				312CC53D1AD75D3800DD21FA /* Debug */,
+				312CC53E1AD75D3800DD21FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

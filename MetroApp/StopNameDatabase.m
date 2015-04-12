@@ -7,6 +7,7 @@
 //
 
 #import "StopNameDatabase.h"
+#import "regionalization.h"
 
 @implementation StopNameDatabase
 
@@ -21,8 +22,14 @@ static StopNameDatabase *m_database;
 
 - (id)init {
     if ((self = [super init])) {
-        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"StopNames"
+#if REGIONLOSANGELES
+        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"StopNamesLA"
                                                              ofType:@"sqlite3"];
+#endif
+#if REGIONSANFRANCISCO
+        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"actransit"
+                                                             ofType:@"sqlite3"];
+#endif
         
         if (sqlite3_open([sqLiteDb UTF8String], &_database) != SQLITE_OK) {
             NSLog(@"Could not load stop name database.");

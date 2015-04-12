@@ -87,7 +87,7 @@ public class LaMetroUtil {
     public static List< Arrival > parseAllArrivals( String response ) {
         List< Arrival > ret = new ArrayList< Arrival >();
 
-//        parseWithAndroidLibs(response, ret);
+//      parseWithAndroidLibs(response, ret);
         parseWithJavaLibs(response, ret);
 
         return ret;
@@ -295,7 +295,8 @@ public class LaMetroUtil {
     public static String getAgencyFromRoute( Route route, Stop stop )
             throws IllegalArgumentException {
         try {
-            if ( route == null || !route.isValid() ) {
+            return "actransit";
+            /*if ( route == null || !route.isValid() ) {
                 if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
                     return "lametro-rail";
                 }
@@ -312,9 +313,9 @@ public class LaMetroUtil {
             else {
                 return "lametro";
             }
+             */
         } catch ( Exception e ) {
             throw new IllegalArgumentException( e.getLocalizedMessage() );
         }
-
     }
 }

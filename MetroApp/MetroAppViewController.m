@@ -13,6 +13,8 @@
 #import "Destination.h"
 #import "Vehicle.h"
 
+#import "MetroWidgetItem.h"
+
 @interface MetroAppViewController ()
 
 @end
@@ -32,7 +34,7 @@
     testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithInt:80122];
     
     
-    NSArray *testStops = [[StopNameDatabase database] getStopsByNameFragment:@"Main"];
+    NSArray *testStops = [[StopNameDatabase database] getStopsByNameFragment:@"Market"];
     NSLog(@"Search Test: %@",[testStops objectAtIndex:0]);
     
     //
@@ -422,14 +424,19 @@
 
 - (void)createReminderForArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival
 {
+    NSArray* newItem;
+    
     NSString* name = [[arrival getDirection] getString];
     NSString* time = [self formatTime:[arrival getEstimatedArrivalSeconds]];
     
-    NSLog(@"Creating reminder for %@, %@",name,time);
+    NSNumber *endTime;
+    endTime = [[NSNumber alloc] initWithDouble:([[NSDate date] timeIntervalSince1970] + [arrival getEstimatedArrivalSeconds])];
     
-    metroAppWidgetArrivals = [[NSMutableArray alloc] init];
-    [metroAppWidgetArrivals addObject:name];
-    [metroAppWidgetArrivals addObject:time];
+    NSLog(@"Creating reminder for %@, %@",name,endTime);
+
+    newItem = [[NSArray alloc] initWithObjects:name, endTime, nil];
+    
+    [metroAppWidgetArrivals addObject:newItem];
     
     [sharedMetroAppDefaults setObject:metroAppWidgetArrivals forKey:@"widgetarrivals"];
 }
