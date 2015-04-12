@@ -12,6 +12,7 @@
 #import "StopNameInfo.h"
 #import "Destination.h"
 #import "Vehicle.h"
+#import "Stop.h"
 
 #import "MetroWidgetItem.h"
 
@@ -57,6 +58,10 @@
     // Setup Shared Defaults
     sharedMetroAppDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.fornought.metroapp"];
     metroAppWidgetArrivals = [[NSMutableArray alloc] init];
+    
+    // Reminder Dialog
+    
+    reminderViewController = [[ReminderViewController alloc] initWithDelegate:self];
 }
 
 #pragma mark - Table View Code
@@ -168,7 +173,7 @@
         } else {
             CGRect frame = cell.frame;
             frame.origin = CGPointMake(0, frame.origin.y);
-            cell.frame = frame;
+            cell.contentView.frame = frame;
         }
         
     }
@@ -336,6 +341,7 @@
     } else if (tableView == self.multiArrivalTripView){
         // Code for setting a reminder
         
+        
         // Just add reminder for first one at the moment
         ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
         multiArrivalTrip = [multiArrivalTrips getWithInt:[indexPath indexAtPosition:1]];
@@ -344,7 +350,9 @@
         
         id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
         
-        [self createReminderForArrival:[tempArrivals getWithInt:0]];
+        //[self createReminderForArrival:[tempArrivals getWithInt:0]];
+        
+        [reminderViewController displayReminderDialogWithArrivals:multiArrivalTrip inView:self.view];
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
@@ -433,13 +441,13 @@
 
 #pragma mark - Other program logic
 
-- (void)createReminderForArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival
+- (void)createReminderWithName:(NSString*)name forArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival
 {
     // Create a reminder item for the widget
     
     NSArray* newItem;
     
-    NSString* displayText = [NSString stringWithFormat:@"%@ %@",[[arrival getStop] getString],[[arrival getDirection] getString]];
+    NSString* displayText = [NSString stringWithFormat:@"%@ %@", name ,[[arrival getDirection] getString]];
     
     NSNumber *endTime;
     endTime = [[NSNumber alloc] initWithDouble:([[NSDate date] timeIntervalSince1970] + [arrival getEstimatedArrivalSeconds])];
