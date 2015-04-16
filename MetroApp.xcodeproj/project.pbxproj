@@ -56,6 +56,7 @@
 		312FFF3A1AA7EA55005D5477 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312FFF391AA7EA55005D5477 /* Security.framework */; };
 		312FFF3C1AA7EA63005D5477 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 312FFF3B1AA7EA63005D5477 /* libicucore.dylib */; };
 		312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = 312FFF3D1AA830BF005D5477 /* ic_launcher.png */; };
+		315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 315242161ADEDD7B00643039 /* MetroAppLocationManager.m */; };
 		31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C7D1AC61EFF007421BE /* MetroAppViewController.m */; };
 		31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 31865C831AC7E693007421BE /* Stops.xcdatamodeld */; };
 		31865C891AC7EA04007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
@@ -207,6 +208,8 @@
 		312FFF391AA7EA55005D5477 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		312FFF3B1AA7EA63005D5477 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		312FFF3D1AA830BF005D5477 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
+		315242151ADEDD7B00643039 /* MetroAppLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppLocationManager.h; sourceTree = "<group>"; };
+		315242161ADEDD7B00643039 /* MetroAppLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppLocationManager.m; sourceTree = "<group>"; };
 		31865C7C1AC61EFF007421BE /* MetroAppViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppViewController.h; sourceTree = "<group>"; };
 		31865C7D1AC61EFF007421BE /* MetroAppViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppViewController.m; sourceTree = "<group>"; };
 		31865C841AC7E693007421BE /* Stops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Stops.xcdatamodel; sourceTree = "<group>"; };
@@ -529,6 +532,8 @@
 				31865C831AC7E693007421BE /* Stops.xcdatamodeld */,
 				318B6A6D1ADB0AFC001F24FD /* ReminderViewController.h */,
 				318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */,
+				315242151ADEDD7B00643039 /* MetroAppLocationManager.h */,
+				315242161ADEDD7B00643039 /* MetroAppLocationManager.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -814,6 +819,7 @@
 				312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */,
 				312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */,
 				312CC5041AD70D3A00DD21FA /* Destination.java in Sources */,
+				315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */,
 				318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */,
 				312CC5051AD70D3A00DD21FA /* Route.java in Sources */,
 				312CC5061AD70D3A00DD21FA /* ServiceRequest.java in Sources */,

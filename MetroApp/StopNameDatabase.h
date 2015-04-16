@@ -18,5 +18,7 @@
 + (StopNameDatabase*)database;
 - (NSArray *)getStopsByName:(NSString*)stopNameFragment;
 - (NSArray *)getStopsByNameFragment:(NSString*)stopNameFragment;
+-(NSArray*)getStopsByLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
+-(StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
 
 @end

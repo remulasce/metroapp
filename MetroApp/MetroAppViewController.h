@@ -23,6 +23,8 @@
 
 #import "ReminderViewController.h"
 
+#import "MetroAppLocationManager.h"
+
 @interface MetroAppViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
     ComRemulasceLametroappJava_coreServiceRequestHandler *requestHandler;
@@ -46,6 +48,8 @@
     NSMutableArray* metroAppWidgetArrivals;
     
     ReminderViewController* reminderViewController;
+    
+    MetroAppLocationManager* metroAppLocationManager;
 }
 
 @property (nonatomic, weak) IBOutlet UITableView* serviceRequestView;
@@ -57,6 +61,8 @@
 @property (nonatomic, strong) IBOutlet UITextField* searchText;
 
 - (void)createReminderWithName:(NSString*)name forArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival;
+- (void)createServiceRequestWithName:(NSString*)stopName;
+- (void)addClosestStop;
 - (IBAction)enterSearchState:(id)sender;
 - (IBAction)exitSearchState:(id)sender;
 

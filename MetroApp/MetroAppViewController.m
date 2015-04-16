@@ -15,6 +15,7 @@
 #import "Stop.h"
 
 #import "MetroWidgetItem.h"
+#import <CoreLocation/CoreLocation.h>
 
 @interface MetroAppViewController ()
 
@@ -24,21 +25,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //TESTING
+    //NETWORK TESTING
     ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter* getter;
     getter = [[ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter alloc] init];
     NSLog([getter doGetHTTPResponseWithNSString:@"http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=lametro-rail&stopId=80122" withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:nil]);
     //END TESTING
+    
+    // Setup Location
+    
+    metroAppLocationManager = [[MetroAppLocationManager alloc] init];
+    [metroAppLocationManager startStandardUpdates];
+    
+    // HAVE TO WAIT FOR UPDATES HERE
+    CLLocation *currentLocation = [[metroAppLocationManager getLocationManager] location];
+    
+    // TEST geo search
     
     requestHandler = [[ComRemulasceLametroappJava_coreServiceRequestHandler alloc] init];
     
     testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithInt:80122];
     
     
-    NSArray *testStops = [[StopNameDatabase database] getStopsByNameFragment:@"Market"];
-    NSLog(@"Search Test: %@",[testStops objectAtIndex:0]);
+    StopNameInfo *testStops = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
+                                                                        Long:currentLocation.coordinate.longitude
+                                                                         Tol:.01];
+    NSLog(@"Search Test: %@",[testStops stopName]);
+
     
-    //
+    // TEST THE DATABASE
     serviceRequestList = [[NSMutableArray alloc] init];
     
     ComRemulasceLametroappJava_coreBasic_typesStop *testStop;
@@ -74,7 +88,8 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     if (tableView == self.serviceRequestView) {
-        return [serviceRequestList count];
+        // Add one for the closest stop display
+        return [serviceRequestList count]+1;
     } else if (tableView == self.multiArrivalTripView){
         NSLog(@"Should be this many multi arrival trips: %d",[multiArrivalTrips size]);
         return [multiArrivalTrips size];
@@ -190,18 +205,22 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
         }
         
-        ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *temp =
-        [serviceRequestList objectAtIndex:[indexPath indexAtPosition:1]];
-        
-        cell.textLabel.text = temp->displayName_;
-        
-        // Add code to recognize when we pan to dismiss a stopServiceRequest
-        
-        UIPanGestureRecognizer* sgr =
-            [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                      action:@selector(swipeDismissStopServiceRequest:) ];
-        
-        [cell addGestureRecognizer:sgr];
+        if ([indexPath indexAtPosition:1] == [serviceRequestList count]) {
+            cell.textLabel.text = @"Add Closest Stop";
+        } else {
+            ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *temp =
+            [serviceRequestList objectAtIndex:[indexPath indexAtPosition:1]];
+            
+            cell.textLabel.text = temp->displayName_;
+            
+            // Add code to recognize when we pan to dismiss a stopServiceRequest
+            
+            UIPanGestureRecognizer* sgr =
+                [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                          action:@selector(swipeDismissStopServiceRequest:) ];
+            
+            [cell addGestureRecognizer:sgr];
+        }
         
         return cell;
     } else if (tableView == self.multiArrivalTripView) {
@@ -276,6 +295,7 @@
                 } else if (arrivalSeconds > 0) {
                     [timeLabel[i] setText:@"Arriving"];
                 } else {
+                    NSLog(@"Arrival with < 0 sec exists! FOR SHAME!");
                     ;; // Fixed in SRDA, should never happen
                 }
                 [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
@@ -312,32 +332,8 @@
         [self.searchText setText:@""];
         
         NSString *stopName = [[[self.searchView cellForRowAtIndexPath:indexPath] textLabel] text];
-        searchResults = [[StopNameDatabase database] getStopsByName:stopName];
         
-        JavaUtilArrayList *tempStopList = [[JavaUtilArrayList alloc] init];
-        
-        for (StopNameInfo *stopNameInfo in searchResults)
-        {
-            [tempStopList addWithId:
-                [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[stopNameInfo stopID]]];
-        }
-        
-        ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest;
-        
-        newServiceRequest = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc]
-                             initWithJavaUtilCollection:tempStopList withNSString:stopName];
-        
-        [serviceRequestList addObject:newServiceRequest];
-        
-        JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
-        for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
-        {
-            [tempStopRequestList addWithId:i];
-        }
-        
-        [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
-        
-        [self.serviceRequestView reloadData];
+        [self createServiceRequestWithName:stopName];
     } else if (tableView == self.multiArrivalTripView){
         // Code for setting a reminder
         
@@ -353,6 +349,11 @@
         //[self createReminderForArrival:[tempArrivals getWithInt:0]];
         
         [reminderViewController displayReminderDialogWithArrivals:multiArrivalTrip inView:self.view];
+    } else if (tableView == self.serviceRequestView){
+        // Use case for adding closest stop
+        if ([indexPath indexAtPosition:1] == [serviceRequestList count]) {
+            [self addClosestStop];
+        }
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
@@ -447,7 +448,7 @@
     
     NSArray* newItem;
     
-    NSString* displayText = [NSString stringWithFormat:@"%@ %@", name ,[[arrival getDirection] getString]];
+    NSString* displayText = [NSString stringWithFormat:@"%@", name ]; //,[[arrival getDirection] getString]
     
     NSNumber *endTime;
     endTime = [[NSNumber alloc] initWithDouble:([[NSDate date] timeIntervalSince1970] + [arrival getEstimatedArrivalSeconds])];
@@ -473,11 +474,50 @@
     [[UIApplication sharedApplication] scheduleLocalNotification:newBusArrivalNotification];
 }
 
-/*- (IBAction)createServiceRequest:(NSString*)stopName
+- (void)createServiceRequestWithName:(NSString*)stopName
 {
-    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest =
-        [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc] initWithNSString:stopName];
-}*/
+    searchResults = [[StopNameDatabase database] getStopsByName:stopName];
+    
+    JavaUtilArrayList *tempStopList = [[JavaUtilArrayList alloc] init];
+    
+    for (StopNameInfo *stopNameInfo in searchResults)
+    {
+        [tempStopList addWithId:
+         [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[stopNameInfo stopID]]];
+    }
+    
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest;
+    
+    newServiceRequest = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc]
+                         initWithJavaUtilCollection:tempStopList withNSString:stopName];
+    
+    [serviceRequestList addObject:newServiceRequest];
+    
+    JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
+    for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
+    {
+        [tempStopRequestList addWithId:i];
+    }
+    
+    [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
+    
+    [self.serviceRequestView reloadData];
+}
+
+- (void)addClosestStop
+{
+    CLLocation *currentLocation = [[metroAppLocationManager getLocationManager] location];
+
+    StopNameInfo *closestStop = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
+                                                                        Long:currentLocation.coordinate.longitude
+                                                                         Tol:.01];
+    
+    if (closestStop != nil) {
+        [self createServiceRequestWithName:[closestStop stopName]];
+    }
+    
+    return;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
