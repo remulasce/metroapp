@@ -207,11 +207,13 @@
         
         if ([indexPath indexAtPosition:1] == [serviceRequestList count]) {
             cell.textLabel.text = @"Add Closest Stop";
+            cell.textLabel.alpha = 0.5;
         } else {
             ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *temp =
             [serviceRequestList objectAtIndex:[indexPath indexAtPosition:1]];
             
             cell.textLabel.text = temp->displayName_;
+            cell.textLabel.alpha = 1.0;
             
             // Add code to recognize when we pan to dismiss a stopServiceRequest
             
