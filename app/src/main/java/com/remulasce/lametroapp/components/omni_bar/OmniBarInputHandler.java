@@ -1,8 +1,13 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -21,6 +26,7 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.static_data.AutoCompleteHistoryFiller;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +49,13 @@ public class OmniBarInputHandler {
     private final ProgressBar autocompleteProgress;
     private final StopNameTranslator stopNames;
     private final StopLocationTranslator stopLocations;
+    private final AutoCompleteHistoryFiller autoCompleteHistory;
     private final Tracker t;
+
+    // We keep the dropdown open a little while after something's added to give you a chance
+    //   to quickly add multiple stops.
+    // We use this info to know if we should close it after that time.
+    private long lastInteraction;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
     private final Context c;
@@ -51,7 +63,7 @@ public class OmniBarInputHandler {
     public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
                                ProgressBar autocompleteProgress,
                                ServiceRequestListFragment requestList, StopNameTranslator stopNames,
-                               StopLocationTranslator locations,
+                               StopLocationTranslator locations, AutoCompleteHistoryFiller autoCompleteHistory,
                                Tracker t, Context c) {
         this.omniField = textView;
         this.addButton = addButton;
@@ -60,6 +72,7 @@ public class OmniBarInputHandler {
         this.requestList = requestList;
         this.stopNames = stopNames;
         this.stopLocations = locations;
+        this.autoCompleteHistory = autoCompleteHistory;
 
         this.t = t;
         this.c = c;
@@ -72,8 +85,16 @@ public class OmniBarInputHandler {
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
-
+        omniField.addTextChangedListener(textWatcher);
         omniField.setLoadingIndicator(autocompleteProgress);
+        omniField.setOnTouchListener(touchListener);
+
+        omniField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userInteractedWithDropdown();
+            }
+        });
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -82,12 +103,45 @@ public class OmniBarInputHandler {
             Tracking.sendEvent("AutoComplete", "AutoComplete Selected");
             long t = Tracking.startTime();
 
+            OmniAutoCompleteEntry entry = (OmniAutoCompleteEntry) adapterView.getItemAtPosition(i);
+            autoCompleteHistory.autocompleteSaveSelection(entry);
+
             String requestText = omniField.getText().toString();
             makeServiceRequestFromOmniInput(requestText);
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
         }
     };
+
+    // This prevents us from auto-closing recent dropdown if user is using it.
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            userInteractedWithDropdown();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            userInteractedWithDropdown();
+            return false;
+        }
+    };
+
+    public void userInteractedWithDropdown() {
+        Log.i(TAG, "User interacted with dropdown");
+        lastInteraction = System.currentTimeMillis();
+    }
 
     private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
@@ -138,7 +192,7 @@ public class OmniBarInputHandler {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
         }
     }
-    private void makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
+    private ServiceRequest makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
         Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
 
         Collection<Stop> stops = new ArrayList<Stop>();
@@ -150,14 +204,17 @@ public class OmniBarInputHandler {
         ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
 
         if (serviceRequest.isValid()) {
-            requestList.AddServiceRequest(serviceRequest);
+            return serviceRequest;
         } else {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
+            return null;
         }
     }
 
     // Parses the input to figure out if it's a stopid, stopname, etc.
     private void makeServiceRequestFromOmniInput(String requestText) {
+        userInteractedWithDropdown();
+
         if (isOmniInputValid(requestText)) {
             try { // No really, this should never crash the app.
                 // Need to check which way to convert- stopname to stopid, or vice-versa
@@ -174,7 +231,11 @@ public class OmniBarInputHandler {
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
-                    makeMultiStopServiceRequest(convertedID, requestText);
+                    ServiceRequest request = makeMultiStopServiceRequest(convertedID, requestText);
+
+                    if (request != null) {
+                        requestList.AddServiceRequest(request);
+                    }
 
                     omniField.getEditableText().clear();
                     omniField.clearFocus();
@@ -200,6 +261,10 @@ public class OmniBarInputHandler {
 
     public void clearFields() {
         omniField.setText("");
+        // Normally textChanged from setText would launch another dropdown
+        // But it's confusing for the big X button to launch the dropdown.
+        // So just squash that right here.
+        omniField.dismissDropDown();
         Tracking.sendEvent("MainScreen", "Clear Fields");
     }
 }

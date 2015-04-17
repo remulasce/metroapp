@@ -43,4 +43,21 @@ public class AndroidNetworkStatusReporter implements NetworkStatusReporter {
             }
         }, 3000);
     }
+
+    @Override
+    public void reportGettingUpdate() {
+        uiHandler.post( new Runnable() {
+            @Override
+            public void run() {
+                statusBar.setVisibility(View.VISIBLE);
+                textView.setText("Getting update...");
+            }
+        });
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                statusBar.setVisibility(View.INVISIBLE);
+            }
+        }, 3000);
+    }
 }
