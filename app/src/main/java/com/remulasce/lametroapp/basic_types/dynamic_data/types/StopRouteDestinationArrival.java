@@ -1,9 +1,10 @@
-package com.remulasce.lametroapp.java_core.dynamic_data.types;
+package com.remulasce.lametroapp.dynamic_data.types;
 
-import com.remulasce.lametroapp.java_core.basic_types.Destination;
-import com.remulasce.lametroapp.java_core.basic_types.Route;
-import com.remulasce.lametroapp.java_core.basic_types.Stop;
-import com.remulasce.lametroapp.java_core.analytics.Log;
+import android.util.Log;
+
+import com.remulasce.lametroapp.basic_types.Destination;
+import com.remulasce.lametroapp.basic_types.Route;
+import com.remulasce.lametroapp.basic_types.Stop;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class StopRouteDestinationArrival implements Serializable {
 
     private final Collection<Arrival> arrivals;
 
-    private final Trip trip;
+//    private final Trip trip;
 
     private boolean isInScope = false;
 
@@ -42,9 +43,9 @@ public class StopRouteDestinationArrival implements Serializable {
         this.destination = d;
 
         arrivals = new CopyOnWriteArrayList<Arrival>();
-        trip = new MultiArrivalTrip(this);
+//        trip = new MultiArrivalTrip(this);
 
-        Log.d(TAG, "New StopRouteDestinationArrival: " + s + " " + r + " " + d);
+        Log.d(TAG, "New StopRouteDestinationArrival: "+s+" "+r+" "+d);
     }
 
     // In seconds
@@ -79,13 +80,10 @@ public class StopRouteDestinationArrival implements Serializable {
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
         Log.d(TAG, "Updating SRDArrival times from "+updatedArrivals.size()+" arrivals");
 
-        
-        List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
-        
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
-                    update.getStop().equals(stop)){
+                    update.getStop().equals(stop) ){
 
 
                 Arrival a = null;
@@ -98,35 +96,22 @@ public class StopRouteDestinationArrival implements Serializable {
                         break;
                     }
                 }
-                // Saving Remulasce From himself - Nighelles
-                if (a != null && update.getEstimatedArrivalSeconds() <= 0)
-                {
-                    arrivalsToDelete.add(a);
-                } else {
 
-                    // If there was none, then make one.
-                    if (a == null) {
-                        a = new Arrival();
-                        a.setRoute(route);
-                        a.setStop(stop);
-                        a.setDestination(destination);
-                        a.setVehicle(update.getVehicleNum());
-                        a.setScope(isInScope);
+                // If there was none, then make one.
+                if (a == null) {
+                    a = new Arrival();
+                    a.setRoute(route);
+                    a.setStop(stop);
+                    a.setDestination(destination);
+                    a.setVehicle(update.getVehicleNum());
+                    a.setScope(isInScope);
 
-                        arrivals.add(a);
-                    }
-                    
-                    a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
+                    arrivals.add(a);
                 }
+
+                a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
             }
         }
-        for (Arrival arrival : arrivals) {
-            if (arrival.getEstimatedArrivalSeconds() <= 0)
-            {
-                arrivalsToDelete.add(arrival);
-            }
-        }
-        arrivals.removeAll(arrivalsToDelete);
     }
 
     private Collection<Arrival> sortedArrivals() {
@@ -168,9 +153,9 @@ public class StopRouteDestinationArrival implements Serializable {
         return destination;
     }
 
-    public Trip getTrip() {
-        return trip;
-    }
+//    public Trip getTrip() {
+//        return trip;
+//    }
 
     public void setScope(boolean inScope) {
         this.isInScope = inScope;
