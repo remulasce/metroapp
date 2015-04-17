@@ -8,6 +8,7 @@
 
 #import "StopNameDatabase.h"
 #import "regionalization.h"
+#import <math.h>
 
 @implementation StopNameDatabase
 
@@ -145,32 +146,58 @@ static StopNameDatabase *m_database;
     }
     return result;
 }
+
+-(double)GeoDistLat1:(double)lat1 Lat2:(double)lat2 Lon1:(double)lon1 Lon2:(double)lon2
+{
+    lat1 = 3.1415/180.0*lat1;
+    lon1 = 3.1415/180.0*lon1;
+    lat2 = 3.1415/180.0*lat2;
+    lon2 = 3.1415/180.0*lon2;
+    
+    double dlon = lon2 - lon1;
+    double dlat = lat2 - lat1;
+    
+    double R = 6373000.0;
+    
+    double a = pow(sin(dlat/2.0),2)+cos(lat1)*cos(lat2)*pow(sin(dlon/2.0),2);
+    double c = 2.0*atan2(sqrt(a),sqrt(1.0-a));
+    
+    return R*c;
+}
+
 -(StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance
 {
     NSArray *stopsWithinTolerance = [self getStopsByLat:latitude Long:longitude Tol:tolerance];
     
     StopNameInfo* closestStop = nil;
+    StopNameInfo* testStop = nil;
     double closestDist = 0;
     double newDist = 0;
     
-    for (StopNameInfo *testStop in stopsWithinTolerance) {
+    for (int i = 0; i<[stopsWithinTolerance count]; i++) {
+        testStop = [stopsWithinTolerance objectAtIndex:i];
         if (closestStop == nil)
         {
-            closestStop = testStop;
+            closestStop = [stopsWithinTolerance objectAtIndex:i];
             // This is not actually a distance, but we don't care, because we're just comparing
             // No need for an expensive square root
-            closestDist = (closestStop.latitude-latitude)*(closestStop.latitude-latitude) +
-                    (closestStop.longitude-longitude)*(closestStop.longitude-longitude);
-        } else {
-            newDist = (testStop.latitude-latitude)*(testStop.latitude-latitude) +
-                    (testStop.longitude-longitude)*(testStop.longitude-longitude);
+            closestDist = [self GeoDistLat1:closestStop.latitude Lat2:latitude Lon1:closestStop.longitude Lon2:longitude];
             
+            NSLog(@"Setting initial stop to: %@, %f",closestStop.stopName,closestDist);
+        } else {
+            newDist = [self GeoDistLat1:testStop.latitude Lat2:latitude Lon1:testStop.longitude Lon2:longitude];
+            
+            NSLog(@"Checking stop: %@, %f",testStop.stopName,newDist);
             if (newDist < closestDist)
             {
-                closestStop = testStop;
+                NSLog(@"Set as new closest");
+                closestStop = [stopsWithinTolerance objectAtIndex:i];
+                closestDist = newDist;
             }
         }
+        NSLog(@"Current selection is: %@", closestStop.stopName);
     }
+    NSLog(@"Search Chose: %@, %f",closestStop.stopName,closestDist);
     return closestStop;
 }
 

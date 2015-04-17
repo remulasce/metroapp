@@ -29,4 +29,6 @@
               latitude:(double)latitude
              longitude:(double)longitude;
 
+-(id) initWithStopNameInfo:(StopNameInfo*)info;
+
 @end

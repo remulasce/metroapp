@@ -16,6 +16,8 @@
 
 #import "MetroWidgetItem.h"
 #import <CoreLocation/CoreLocation.h>
+#import "LaMetroUtil.h"
+#import "RegionalizationHelper.h"
 
 @interface MetroAppViewController ()
 
@@ -76,6 +78,12 @@
     // Reminder Dialog
     
     reminderViewController = [[ReminderViewController alloc] initWithDelegate:self];
+    
+    // Set regionalization
+    
+    ComRemulasceLametroappJava_coreRegionalizationHelper *regionalizationHelper;
+    regionalizationHelper = [ComRemulasceLametroappJava_coreRegionalizationHelper getInstance];
+    regionalizationHelper->agencyName_ = @"actransit";
 }
 
 #pragma mark - Table View Code
@@ -512,7 +520,7 @@
 
     StopNameInfo *closestStop = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
-                                                                         Tol:.01];
+                                                                         Tol:.005];
     
     if (closestStop != nil) {
         [self createServiceRequestWithName:[closestStop stopName]];

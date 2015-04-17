@@ -57,6 +57,10 @@
 		312FFF3C1AA7EA63005D5477 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 312FFF3B1AA7EA63005D5477 /* libicucore.dylib */; };
 		312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = 312FFF3D1AA830BF005D5477 /* ic_launcher.png */; };
 		315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 315242161ADEDD7B00643039 /* MetroAppLocationManager.m */; };
+		3178F97C1AE086D000922A49 /* icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F9791AE086D000922A49 /* icon-76.png */; };
+		3178F97D1AE086D000922A49 /* icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F97A1AE086D000922A49 /* icon-120.png */; };
+		3178F97E1AE086D000922A49 /* icon-152.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F97B1AE086D000922A49 /* icon-152.png */; };
+		3178F9821AE1C7D300922A49 /* RegionalizationHelper.java in Sources */ = {isa = PBXBuildFile; fileRef = 3178F9811AE1C7D300922A49 /* RegionalizationHelper.java */; };
 		31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C7D1AC61EFF007421BE /* MetroAppViewController.m */; };
 		31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 31865C831AC7E693007421BE /* Stops.xcdatamodeld */; };
 		31865C891AC7EA04007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
@@ -210,6 +214,10 @@
 		312FFF3D1AA830BF005D5477 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
 		315242151ADEDD7B00643039 /* MetroAppLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppLocationManager.h; sourceTree = "<group>"; };
 		315242161ADEDD7B00643039 /* MetroAppLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppLocationManager.m; sourceTree = "<group>"; };
+		3178F9791AE086D000922A49 /* icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-76.png"; sourceTree = "<group>"; };
+		3178F97A1AE086D000922A49 /* icon-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-120.png"; sourceTree = "<group>"; };
+		3178F97B1AE086D000922A49 /* icon-152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-152.png"; sourceTree = "<group>"; };
+		3178F9811AE1C7D300922A49 /* RegionalizationHelper.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RegionalizationHelper.java; sourceTree = "<group>"; };
 		31865C7C1AC61EFF007421BE /* MetroAppViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppViewController.h; sourceTree = "<group>"; };
 		31865C7D1AC61EFF007421BE /* MetroAppViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppViewController.m; sourceTree = "<group>"; };
 		31865C841AC7E693007421BE /* Stops.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Stops.xcdatamodel; sourceTree = "<group>"; };
@@ -310,6 +318,7 @@
 				312CC4C81AD709E000DD21FA /* basic_types */,
 				312CC4D01AD709E000DD21FA /* dynamic_data */,
 				312CC4DA1AD709E000DD21FA /* LaMetroUtil.java */,
+				3178F9811AE1C7D300922A49 /* RegionalizationHelper.java */,
 				312CC4DB1AD709E000DD21FA /* location */,
 				312CC4DE1AD709E000DD21FA /* network_status */,
 				312CC4E01AD709E000DD21FA /* ServiceRequestHandler.java */,
@@ -490,6 +499,9 @@
 		312FFE251AA7E89C005D5477 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3178F9791AE086D000922A49 /* icon-76.png */,
+				3178F97A1AE086D000922A49 /* icon-120.png */,
+				3178F97B1AE086D000922A49 /* icon-152.png */,
 				312FFE261AA7E89C005D5477 /* Info.plist */,
 				312FFE271AA7E89C005D5477 /* main.m */,
 			);
@@ -753,12 +765,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				31BADC7D1ADADCC3004961EA /* actransit.sqlite3 in Resources */,
+				3178F97C1AE086D000922A49 /* icon-76.png in Resources */,
+				3178F97D1AE086D000922A49 /* icon-120.png in Resources */,
 				312FFE311AA7E89D005D5477 /* Main.storyboard in Resources */,
 				318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
 				31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
+				3178F97E1AE086D000922A49 /* icon-152.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -816,6 +831,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				312CC5011AD70D3A00DD21FA /* Log.java in Sources */,
+				3178F9821AE1C7D300922A49 /* RegionalizationHelper.java in Sources */,
 				312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */,
 				312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */,
 				312CC5041AD70D3A00DD21FA /* Destination.java in Sources */,
@@ -1117,7 +1133,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1135,6 +1152,7 @@
 				OTHER_LDFLAGS = "-ljre_emul";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "/Users/nighelles/Desktop/j2objc-master/dist/include ${DERIVED_FILES_DIR}";
 			};
 			name = Debug;
@@ -1143,7 +1161,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetroApp/MetroApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1161,6 +1180,7 @@
 				OTHER_LDFLAGS = "-ljre_emul";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "/Users/nighelles/Desktop/j2objc-master/dist/include ${DERIVED_FILES_DIR}";
 			};
 			name = Release;

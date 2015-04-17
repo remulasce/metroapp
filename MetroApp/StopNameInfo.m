@@ -33,6 +33,19 @@
     return self;
 }
 
+-(id) initWithStopNameInfo:(StopNameInfo*)info
+{
+    self = [super init];
+    
+    uniqueID = info.uniqueID;
+    stopID = [NSString stringWithString: info.stopID];
+    stopName = [NSString stringWithString:info.stopName];
+    latitude = info.latitude;
+    longitude = info.longitude;
+    
+    return self;
+}
+
 - (void) dealloc
 {
     stopName = nil;
