@@ -159,46 +159,51 @@
     {
         NSLog(@"Began pan");
     }
-    if (gestureRecognizer.state == UIGestureRecognizerStateChanged)
+    UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+    NSIndexPath* indexPath = [self.serviceRequestView indexPathForCell:cell];
+    if ([indexPath indexAtPosition:1] < [serviceRequestList count])
     {
-        NSLog(@"%@",gestureRecognizer.view);
-        float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
-        NSLog(@"Dragging %f",translationAmount);
-        
-        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
-        if (translationAmount > 75) translationAmount = 75;
-        if (translationAmount <= 0) translationAmount = 0;
-        
-        CGRect frame = cell.contentView.frame;
-        frame.origin = CGPointMake(translationAmount, frame.origin.y);
-        cell.contentView.frame = frame;
-    }
-    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
-        NSIndexPath* indexPath = [self.serviceRequestView indexPathForCell:cell];
-        
-        float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
-        if (translationAmount > 75) {
-            int multiArrivalTripIndex = [indexPath indexAtPosition:1];
+        if (gestureRecognizer.state == UIGestureRecognizerStateChanged)
+        {
+            NSLog(@"%@",gestureRecognizer.view);
+            float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
+            NSLog(@"Dragging %f",translationAmount);
             
-            [[serviceRequestList objectAtIndex:multiArrivalTripIndex ] cancelRequest];
-            [serviceRequestList removeObjectAtIndex:multiArrivalTripIndex];
+            UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+            if (translationAmount > 75) translationAmount = 75;
+            if (translationAmount <= 0) translationAmount = 0;
             
-            JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
-            for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
-            {
-                [tempStopRequestList addWithId:i];
-            }
-            
-            [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
-            
-            [self.serviceRequestView reloadData];
-        } else {
-            CGRect frame = cell.frame;
-            frame.origin = CGPointMake(0, frame.origin.y);
+            CGRect frame = cell.contentView.frame;
+            frame.origin = CGPointMake(translationAmount, frame.origin.y);
             cell.contentView.frame = frame;
         }
-        
+        if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+            UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+            NSIndexPath* indexPath = [self.serviceRequestView indexPathForCell:cell];
+            
+            float translationAmount = [gestureRecognizer translationInView:gestureRecognizer.view].x;
+            if (translationAmount > 75) {
+                int multiArrivalTripIndex = [indexPath indexAtPosition:1];
+                
+                [[serviceRequestList objectAtIndex:multiArrivalTripIndex ] cancelRequest];
+                [serviceRequestList removeObjectAtIndex:multiArrivalTripIndex];
+                
+                JavaUtilArrayList *tempStopRequestList = [[JavaUtilArrayList alloc] init];
+                for (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *i in serviceRequestList)
+                {
+                    [tempStopRequestList addWithId:i];
+                }
+                
+                [requestHandler SetServiceRequestsWithJavaUtilCollection:tempStopRequestList];
+                
+                [self.serviceRequestView reloadData];
+            } else {
+                CGRect frame = cell.frame;
+                frame.origin = CGPointMake(0, frame.origin.y);
+                cell.contentView.frame = frame;
+            }
+            
+        }
     }
 }
 
