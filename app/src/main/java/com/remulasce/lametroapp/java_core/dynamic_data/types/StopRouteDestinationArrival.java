@@ -81,6 +81,8 @@ public class StopRouteDestinationArrival implements Serializable {
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
         Log.d(TAG, "Updating SRDArrival times from " + updatedArrivals.size() + " arrivals");
 
+        List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
+
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
@@ -101,7 +103,7 @@ public class StopRouteDestinationArrival implements Serializable {
                 // Saving Remulasce From himself - Nighelles
                 if (a != null && update.getEstimatedArrivalSeconds() <= 0)
                 {
-                    arrivals.remove(a);
+                    arrivalsToDelete.add(a);
                 } else {
 
                     // If there was none, then make one.
@@ -120,6 +122,12 @@ public class StopRouteDestinationArrival implements Serializable {
                 }
             }
         }
+        for (Arrival arrival : arrivals) {
+            if (arrival.getEstimatedArrivalSeconds() <= 0) {
+                arrivalsToDelete.add(arrival);
+            }
+        }
+        arrivals.removeAll(arrivalsToDelete);
     }
 
     private Collection<Arrival> sortedArrivals() {
