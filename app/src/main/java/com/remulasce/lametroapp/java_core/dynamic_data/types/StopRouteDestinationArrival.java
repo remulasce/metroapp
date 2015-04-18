@@ -79,10 +79,13 @@ public class StopRouteDestinationArrival implements Serializable {
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
         Log.d(TAG, "Updating SRDArrival times from "+updatedArrivals.size()+" arrivals");
 
+        
+        List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
+        
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
-                    update.getStop().equals(stop) ){
+                    update.getStop().equals(stop)){
 
 
                 Arrival a = null;
@@ -95,22 +98,35 @@ public class StopRouteDestinationArrival implements Serializable {
                         break;
                     }
                 }
+                // Saving Remulasce From himself - Nighelles
+                if (a != null && update.getEstimatedArrivalSeconds() <= 0)
+                {
+                    arrivalsToDelete.add(a);
+                } else {
 
-                // If there was none, then make one.
-                if (a == null) {
-                    a = new Arrival();
-                    a.setRoute(route);
-                    a.setStop(stop);
-                    a.setDestination(destination);
-                    a.setVehicle(update.getVehicleNum());
-                    a.setScope(isInScope);
+                    // If there was none, then make one.
+                    if (a == null) {
+                        a = new Arrival();
+                        a.setRoute(route);
+                        a.setStop(stop);
+                        a.setDestination(destination);
+                        a.setVehicle(update.getVehicleNum());
+                        a.setScope(isInScope);
 
-                    arrivals.add(a);
+                        arrivals.add(a);
+                    }
+                    
+                    a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
                 }
-
-                a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
             }
         }
+        for (Arrival arrival : arrivals) {
+            if (arrival.getEstimatedArrivalSeconds() <= 0)
+            {
+                arrivalsToDelete.add(arrival);
+            }
+        }
+        arrivals.removeAll(arrivalsToDelete);
     }
 
     private Collection<Arrival> sortedArrivals() {
