@@ -79,7 +79,7 @@ public class StopRouteDestinationArrival implements Serializable {
     }
 
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
-        Log.d(TAG, "Updating SRDArrival times from "+updatedArrivals.size()+" arrivals");
+        Log.d(TAG, "Updating SRDArrival times from " + updatedArrivals.size() + " arrivals");
 
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
@@ -98,19 +98,26 @@ public class StopRouteDestinationArrival implements Serializable {
                     }
                 }
 
-                // If there was none, then make one.
-                if (a == null) {
-                    a = new Arrival();
-                    a.setRoute(route);
-                    a.setStop(stop);
-                    a.setDestination(destination);
-                    a.setVehicle(update.getVehicleNum());
-                    a.setScope(isInScope);
+                // Saving Remulasce From himself - Nighelles
+                if (a != null && update.getEstimatedArrivalSeconds() <= 0)
+                {
+                    arrivals.remove(a);
+                } else {
 
-                    arrivals.add(a);
+                    // If there was none, then make one.
+                    if (a == null) {
+                        a = new Arrival();
+                        a.setRoute(route);
+                        a.setStop(stop);
+                        a.setDestination(destination);
+                        a.setVehicle(update.getVehicleNum());
+                        a.setScope(isInScope);
+
+                        arrivals.add(a);
+                    }
+
+                    a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
                 }
-
-                a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
             }
         }
     }
