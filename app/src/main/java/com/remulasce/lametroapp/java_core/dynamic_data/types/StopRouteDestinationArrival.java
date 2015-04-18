@@ -99,6 +99,10 @@ public class StopRouteDestinationArrival implements Serializable {
                 }
 
                 // Saving Remulasce From himself - Nighelles
+                //
+                // But this code totally doesn't do anything
+                // Since the update arrival comes in from NexTrip, which will never
+                //  report <= 0.
                 if (a != null && update.getEstimatedArrivalSeconds() <= 0)
                 {
                     arrivals.remove(a);
