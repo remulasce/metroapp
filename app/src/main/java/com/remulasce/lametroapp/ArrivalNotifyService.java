@@ -159,18 +159,27 @@ public class ArrivalNotifyService extends Service {
             PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.addAction(R.drawable.ic_action_remove, "Cancel", cancelPendingIntent);
 
-
-            while (run) {
+			while (run) {
+				Log.d(TAG, "Notification update thread loop...");
 				updateNotificationText(mBuilder);
 				try {
-					Thread.sleep(5000);
+                    if (netTask != null && netTask.isValid) {
+                        Thread.sleep(5000);
+                    } else {
+                        Thread.sleep(100);
+                    }
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
 
 
         public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
-	        Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());     
+	        if (netTask == null) {
+				Log.w(TAG, "Notification thread waiting on null netTask");
+				return;
+			}
+
+			Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
 	        
 	        String msg1;
 	        String msg2;

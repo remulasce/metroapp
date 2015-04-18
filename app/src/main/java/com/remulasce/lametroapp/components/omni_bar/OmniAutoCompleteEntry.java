@@ -2,7 +2,9 @@ package com.remulasce.lametroapp.components.omni_bar;
 
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
-public class OmniAutoCompleteEntry {
+import java.io.Serializable;
+
+public class OmniAutoCompleteEntry implements Cloneable, Serializable, Comparable {
 
     private String text = "Unassigned";
     private float priority = 1;
@@ -24,6 +26,7 @@ public class OmniAutoCompleteEntry {
     public void addPriority(float diff) {
         priority += diff;
     }
+    public void setPriority(float p) { priority = p; }
     @Override
     public String toString() {
         return text;
@@ -37,4 +40,22 @@ public class OmniAutoCompleteEntry {
         return this.stop;
     }
 
+    // This helps with autocomplete history.
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        OmniAutoCompleteEntry other = (OmniAutoCompleteEntry) o;
+
+        if (other.getPriority() > this.getPriority()) {
+            return 1;
+        } else if (other.getPriority() < this.getPriority()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }

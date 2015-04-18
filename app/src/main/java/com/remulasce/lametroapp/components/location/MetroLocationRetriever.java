@@ -116,15 +116,24 @@ public class MetroLocationRetriever implements LocationRetriever {
             return -1;
         }
 
-        Location currentLoc = getBestLocation();
-        if (currentLoc == null) {
-            Log.d(TAG, "Current location unavailable");
+        BasicLocation stopRawLoc = stop.getLocation();
+        double distance = getDistanceTo(stopRawLoc);
+
+        Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+distance);
+        Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
+
+        return distance;
+    }
+
+    private double getDistanceTo(BasicLocation stopRawLoc) {
+        if (stopRawLoc == null) {
+            Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
             return -1;
         }
 
-        BasicLocation stopRawLoc = stop.getLocation();
-        if (stopRawLoc == null) {
-            Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
+        Location currentLoc = getBestLocation();
+        if (currentLoc == null) {
+            Log.d(TAG, "Current location unavailable");
             return -1;
         }
 
@@ -135,9 +144,11 @@ public class MetroLocationRetriever implements LocationRetriever {
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
-        Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+results[0]);
-        Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
+        return (double) results[0];
+    }
 
-        return results[0];
+    @Override
+    public double getCurrentDistanceToLocation(BasicLocation location) {
+        return getDistanceTo(location);
     }
 }

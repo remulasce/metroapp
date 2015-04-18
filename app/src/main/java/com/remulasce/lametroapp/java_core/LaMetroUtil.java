@@ -9,8 +9,6 @@ import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 
-import com.remulasce.lametroapp.java_core.RegionalizationHelper;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,6 +33,7 @@ public class LaMetroUtil {
 
     public static StopLocationTranslator locationTranslator;
     public static RouteColorer routeColorer;
+
 
     public static boolean isValidStop( String stop ) {
         if ( stop == null ) {
@@ -88,7 +87,7 @@ public class LaMetroUtil {
     public static List< Arrival > parseAllArrivals( String response ) {
         List< Arrival > ret = new ArrayList< Arrival >();
 
-//      parseWithAndroidLibs(response, ret);
+//        parseWithAndroidLibs(response, ret);
         parseWithJavaLibs(response, ret);
 
         return ret;
@@ -140,8 +139,6 @@ public class LaMetroUtil {
                             s.setStopName(stopTitleAttribute);
 
                             addNewArrival(ret, seconds, d, r, s, v);
-
-                            Log.d(TAG, arrival.toString());
                         }
                     }
                 }
@@ -296,28 +293,19 @@ public class LaMetroUtil {
     public static String getAgencyFromRoute( Route route, Stop stop )
             throws IllegalArgumentException {
         try {
-            if  (RegionalizationHelper.getInstance().agencyName.equals("actransit"))
-            {
-                return "actransit";
-            } else if (RegionalizationHelper.getInstance().agencyName.equals("lametro"))
-            {
-                if ( route == null || !route.isValid() ) {
-                    if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
-                        return "lametro-rail";
-                    }
-
-                    return "lametro";
-                }
-                int routeN = Integer.valueOf( route.getString() );
-                if ( routeN / 100 == 8 ) {
+            if ( route == null || !route.isValid() ) {
+                if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
                     return "lametro-rail";
                 }
-                else if ( routeN > 0 && routeN < 1000 ) {
-                    return "lametro";
-                }
-                else {
-                    return "lametro";
-                }
+
+                return "lametro";
+            }
+            int routeN = Integer.valueOf( route.getString() );
+            if ( routeN / 100 == 8 ) {
+                return "lametro-rail";
+            }
+            else if ( routeN > 0 && routeN < 1000 ) {
+                return "lametro";
             }
             else {
                 return "lametro";
@@ -325,5 +313,6 @@ public class LaMetroUtil {
         } catch ( Exception e ) {
             throw new IllegalArgumentException( e.getLocalizedMessage() );
         }
+
     }
 }
