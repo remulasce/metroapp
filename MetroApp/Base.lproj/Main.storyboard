@@ -105,6 +105,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ic_launcher.png" width="144" height="144"/>
+        <image name="ic_launcher.png" width="76" height="76"/>
     </resources>
 </document>

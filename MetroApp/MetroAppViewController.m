@@ -340,7 +340,7 @@
     return nil;
 }
 
--(IBAction)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(NSIndexPath*)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.searchView) {
         [self exitSearchState:self];
@@ -369,9 +369,9 @@
         if ([indexPath indexAtPosition:1] == [serviceRequestList count]) {
             [self addClosestStop];
         }
-    } else {
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
+    
+    return nil;
 }
 
 #pragma mark - MultiArrivalView
@@ -495,11 +495,9 @@
     
     JavaUtilArrayList *tempStopList = [[JavaUtilArrayList alloc] init];
     
-    for (StopNameInfo *stopNameInfo in searchResults)
-    {
-        [tempStopList addWithId:
-         [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[stopNameInfo stopID]]];
-    }
+    [tempStopList addWithId:
+         [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[[searchResults objectAtIndex:0] stopID]]];
+
     
     ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest;
     
