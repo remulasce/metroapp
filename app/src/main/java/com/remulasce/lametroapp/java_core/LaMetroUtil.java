@@ -84,16 +84,15 @@ public class LaMetroUtil {
         return URI;
     }
 
+    // Returns null if there's errors.
     public static List< Arrival > parseAllArrivals( String response ) {
-        List< Arrival > ret = new ArrayList< Arrival >();
-
-//        parseWithAndroidLibs(response, ret);
-        parseWithJavaLibs(response, ret);
+        List< Arrival > ret = parseWithJavaLibs(response);
 
         return ret;
     }
 
-    private static void parseWithJavaLibs(String response, List<Arrival> ret) {
+    private static List < Arrival > parseWithJavaLibs(String response) {
+        List<Arrival> ret = new ArrayList<Arrival>();
         //get the factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -147,11 +146,19 @@ public class LaMetroUtil {
 
         }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
+            return null;
         }catch(SAXException se) {
             se.printStackTrace();
+            return null;
         }catch(IOException ioe) {
             ioe.printStackTrace();
+            return null;
+        }catch (Exception e) {
+            Log.w(TAG, "Unaddressed exception!");
+            return null;
         }
+
+        return ret;
     }
 
     // Metro adds _etc to the end of stops sometimes. It's related to multiple entrances per station

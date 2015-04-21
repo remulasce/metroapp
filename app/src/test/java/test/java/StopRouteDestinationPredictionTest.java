@@ -46,7 +46,7 @@ public class StopRouteDestinationPredictionTest extends TestCase {
                 p.getPredictionState(), Prediction.PredictionState.FETCHING);
     }
 
-    public void testNArrivals() {
+    public void testStartNArrivals() {
         // Should be 1 for all arrivals to Norwalk, and another for all Red Sta arrivals.
         p.handleResponse(TestConstants.GREEN_REDONDO_BEACH_RESPONSE_0);
 
@@ -54,5 +54,31 @@ public class StopRouteDestinationPredictionTest extends TestCase {
                 p.getArrivals().size(), 2);
         assertEquals("P should know its arrivals are correct",
                 p.getPredictionState(), Prediction.PredictionState.GOOD);
+    }
+
+    public void testStartNoNetwork() {
+        p.handleResponse("");
+
+        assertEquals("P should know it encountered an error",
+                p.getPredictionState(), Prediction.PredictionState.BAD);
+    }
+
+    // We already have some arrivals, but then get a valid network update with 0 arrivals.
+    // Strategy is to continue with the existing arrivals as 'good'
+    public void testExist0Arrivals() {
+        p.handleResponse(TestConstants.GREEN_REDONDO_BEACH_RESPONSE_0);
+//        p.ha we don't have the proper test case yet
+    }
+
+    // We have some arrivals, then receive error.
+    // Continue as 'cached', since the arrivals we received are still probably valid.
+    // This happens when going underground, etc.
+    public void testCached() {
+        p.handleResponse(TestConstants.GREEN_REDONDO_BEACH_RESPONSE_0);
+        assertTrue(p.getPredictionState() == Prediction.PredictionState.GOOD);
+
+        p.handleResponse("");
+        assertEquals("p should know it has only cached predictions now",
+                p.getPredictionState(), Prediction.PredictionState.CACHED);
     }
 }

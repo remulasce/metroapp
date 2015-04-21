@@ -117,6 +117,20 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
 
+        // We have a problem!
+        if (arrivals == null) {
+            if (this.trackedArrivals.size() > 0) {
+                // If we had arrivals before, just carry on using the cached times.
+                // This isn't a failure state. We just went underground (probably).
+                predictionState = PredictionState.CACHED;
+                return;
+            } else {
+                // But if this is the first run, let user know there's a problem.
+                predictionState = PredictionState.BAD;
+                return;
+            }
+        }
+
         // First, add new destinations if we find any.
         for (Arrival newA : arrivals) {
             newA.setScope(inScope);

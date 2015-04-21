@@ -19,7 +19,11 @@ public abstract class Prediction implements Serializable{
 		PAUSED, // Not tracking, because we shouldn't be.
 		FETCHING, // No arrivals, but going to network for first time to find some.
 		GOOD, // The arrivals we show is what actually existed at some point.
-		BAD // Our state is no good, probably from not ever contacting the server.
+		CACHED, // Our arrivals are still good, but our last network pull failed.
+		// This is for going down into 7th/Metro on the Blue Line- 100% network status is not
+		// expected, so cached is not a failure case.
+		// The user probably understands what's happening.
+		BAD // We have no data and can't contact network.
 	}
 	PredictionState predictionState = PredictionState.PAUSED;
 
