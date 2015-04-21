@@ -74,4 +74,9 @@ public abstract class Prediction implements Serializable{
     // PredictionManager uses these.
 	public abstract String getRequestString();
 	public abstract void handleResponse(String response);
+
+	// Replaces StartPredicting, without trying to actually get the manager singleton.
+	public void setTestMode() {
+		inScope = true;
+	}
 }
