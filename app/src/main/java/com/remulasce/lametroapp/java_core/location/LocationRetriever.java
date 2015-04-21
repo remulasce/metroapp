@@ -1,6 +1,5 @@
 package com.remulasce.lametroapp.java_core.location;
 
-import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 /**
@@ -12,5 +11,4 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
  */
 public interface LocationRetriever {
     public double getCurrentDistanceToStop(Stop stop);
-    public double getCurrentDistanceToLocation(BasicLocation location);
 }

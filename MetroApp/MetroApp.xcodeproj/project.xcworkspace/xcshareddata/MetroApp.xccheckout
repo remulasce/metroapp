@@ -11,25 +11,21 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>CE48BC157BBCBB5EFE09DF7A2C8FD8B653D64B9B</key>
-		<string>https://github.com/remulasce/metroapp.git</string>
-		<key>E30F7CB8D19F7877183B7D8C816738D75CF2ABFB</key>
 		<string>https://github.com/remulasce/metroapp</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>MetroApp.xcodeproj</string>
+	<string>MetroApp/MetroApp.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>CE48BC157BBCBB5EFE09DF7A2C8FD8B653D64B9B</key>
-		<string>../..metroapp/metroapp</string>
-		<key>E30F7CB8D19F7877183B7D8C816738D75CF2ABFB</key>
-		<string>../..</string>
+		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/remulasce/metroapp</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>E30F7CB8D19F7877183B7D8C816738D75CF2ABFB</string>
+	<string>CE48BC157BBCBB5EFE09DF7A2C8FD8B653D64B9B</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -38,15 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>CE48BC157BBCBB5EFE09DF7A2C8FD8B653D64B9B</string>
 			<key>IDESourceControlWCCName</key>
-			<string>metroapp</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>E30F7CB8D19F7877183B7D8C816738D75CF2ABFB</string>
-			<key>IDESourceControlWCCName</key>
-			<string>MetroApp</string>
+			<string>MetroAppIOS</string>
 		</dict>
 	</array>
 </dict>

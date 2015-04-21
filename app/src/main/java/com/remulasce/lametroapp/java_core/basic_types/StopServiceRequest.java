@@ -11,7 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by Remulasce on 1/26/2015.
@@ -169,24 +168,5 @@ public class StopServiceRequest extends ServiceRequest {
             predictions = new ArrayList<Prediction>();
             e.printStackTrace();
         }
-    }
-
-    // For testing purposes, manually set what predictions we have.
-    public void testRawSetPredictions(List<Prediction> overridePredictions) {
-        this.predictions = overridePredictions;
-    }
-
-    public enum NetworkStatusState {
-        NOTHING,
-        SPINNER,
-        ERROR
-    }
-    // Figure out if we should show an error message, progress bar, or nothing.
-    NetworkStatusState determineNetworkStatusState() {
-        return NetworkStatusState.NOTHING;
-    }
-
-    public NetworkStatusState getTestStatusState() {
-        return determineNetworkStatusState();
     }
 }
