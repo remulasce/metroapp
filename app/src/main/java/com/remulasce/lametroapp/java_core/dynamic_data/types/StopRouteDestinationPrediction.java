@@ -25,14 +25,8 @@ public class StopRouteDestinationPrediction extends Prediction {
     private Stop stop;
     private Route route;
 
-    private boolean inScope = false;
-
-    private boolean needsQuickUpdate = false;
 
     private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
-
-    private long lastUpdate;
-    private boolean inUpdate = false;
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
@@ -55,11 +49,6 @@ public class StopRouteDestinationPrediction extends Prediction {
             e.setScope( false );
         }
         stopPredicting();
-    }
-
-    @Override
-    public boolean isInScope() {
-        return inScope;
     }
 
     @Override
@@ -161,15 +150,6 @@ public class StopRouteDestinationPrediction extends Prediction {
             a.updateArrivalTimes(arrivals);
         }
     }
-    @Override
-    public void setUpdated() {
-        synchronized ( this ) {
-            inUpdate = false;
-            needsQuickUpdate = false;
-
-            this.lastUpdate = System.currentTimeMillis();
-        }
-    }
 
     public Route getRoute() {
         return route;
@@ -210,14 +190,6 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         Log.v(TAG, "GetRequestedUpdateInterval SRDArrival "+interval);
         return (int) Math.max( MINIMUM_UPDATE_INTERVAL, interval );
-    }
-
-    @Override
-    public void setGettingUpdate() {
-        synchronized ( this ) {
-            inUpdate = true;
-        }
-
     }
 
     public int hashCode() {
