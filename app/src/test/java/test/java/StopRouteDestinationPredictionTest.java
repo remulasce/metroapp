@@ -81,4 +81,13 @@ public class StopRouteDestinationPredictionTest extends TestCase {
         assertEquals("p should know it has only cached predictions now",
                 p.getPredictionState(), Prediction.PredictionState.CACHED);
     }
+
+    // Make sure we can exit cache
+    public void testUnCache() {
+        testCached();
+
+        p.handleResponse(TestConstants.GREEN_REDONDO_BEACH_RESPONSE_0);
+        assertEquals("p should know it has the most recent arrivals now",
+                p.getPredictionState(), Prediction.PredictionState.GOOD);
+    }
 }
