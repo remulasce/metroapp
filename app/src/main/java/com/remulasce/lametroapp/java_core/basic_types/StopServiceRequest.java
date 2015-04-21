@@ -169,4 +169,20 @@ public class StopServiceRequest extends ServiceRequest {
             e.printStackTrace();
         }
     }
+
+
+
+    public enum NetworkStatusState {
+        NOTHING,
+        SPINNER,
+        ERROR
+    }
+    // Figure out if we should show an error message, progress bar, or nothing.
+    NetworkStatusState determineNetworkStatusState() {
+        return NetworkStatusState.NOTHING;
+    }
+
+    public NetworkStatusState getTestStatusState() {
+        return determineNetworkStatusState();
+    }
 }
