@@ -71,7 +71,9 @@ public abstract class Prediction implements Serializable{
 	}
 	public void setGettingUpdate() {
 		synchronized ( this ) {
-			predictionState = PredictionState.FETCHING;
+			if (predictionState == PredictionState.PAUSED) {
+				predictionState = PredictionState.FETCHING;
+			}
 			inUpdate = true;
 		}
 	}
