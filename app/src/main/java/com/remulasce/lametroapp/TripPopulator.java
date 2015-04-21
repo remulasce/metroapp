@@ -232,8 +232,10 @@ public class TripPopulator {
 
                     adapter.clear();
                     for (Trip t : sorted) {
-                        if (t.isValid()) {
-                            adapter.add(new AndroidMultiArrivalDisplay( (MultiArrivalTrip) t) );
+                        if (t != null && t.isValid()) {
+                            if (t instanceof MultiArrivalTrip) {
+                                adapter.add(new AndroidMultiArrivalDisplay((MultiArrivalTrip) t));
+                            }
                         }
                     }
 

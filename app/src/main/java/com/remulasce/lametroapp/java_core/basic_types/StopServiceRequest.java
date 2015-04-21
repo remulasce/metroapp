@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.RequestStatusTrip;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
@@ -26,16 +27,21 @@ public class StopServiceRequest extends ServiceRequest {
     private Collection<Prediction> predictions = new ArrayList<Prediction>();
 
     private boolean updateAvailable = true;
+    private Trip statusTrip;
 
     public StopServiceRequest(Collection<Stop> stops, String displayName) {
         this.stops = stops;
         this.displayName = displayName;
+
+        this.statusTrip = new RequestStatusTrip(this);
     }
     public StopServiceRequest(Stop stop, String displayName) {
         stops = new ArrayList<Stop>();
         stops.add(stop);
 
         this.displayName = displayName;
+
+        this.statusTrip = new RequestStatusTrip(this);
     }
 
     //Returns if the service request makes any sense to fulfill
@@ -48,6 +54,10 @@ public class StopServiceRequest extends ServiceRequest {
     @Override
     public Collection<Trip> getTrips() {
         Collection<Trip> trips = new ArrayList<Trip>();
+
+        if (statusTrip != null) {
+            trips.add(statusTrip);
+        }
 
         for (Prediction p : this.predictions) {
             if (p instanceof StopRouteDestinationPrediction) {
@@ -156,6 +166,7 @@ public class StopServiceRequest extends ServiceRequest {
 
         oos.writeObject(stops);
         oos.writeObject(predictions);
+        oos.writeObject(statusTrip);
     }
 
     private void readObject(ObjectInputStream ois)
@@ -164,9 +175,11 @@ public class StopServiceRequest extends ServiceRequest {
         try {
             stops = (Collection<Stop>) ois.readObject();
             predictions = (Collection<Prediction>) ois.readObject();
+            statusTrip = (Trip) ois.readObject();
         } catch (Exception e) {
             stops = new ArrayList<Stop>();
             predictions = new ArrayList<Prediction>();
+            statusTrip = new RequestStatusTrip(this);
             e.printStackTrace();
         }
     }
