@@ -25,8 +25,14 @@ public class StopRouteDestinationPrediction extends Prediction {
     private Stop stop;
     private Route route;
 
+    private boolean inScope = false;
+
+    private boolean needsQuickUpdate = false;
 
     private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+
+    private long lastUpdate;
+    private boolean inUpdate = false;
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
@@ -49,6 +55,11 @@ public class StopRouteDestinationPrediction extends Prediction {
             e.setScope( false );
         }
         stopPredicting();
+    }
+
+    @Override
+    public boolean isInScope() {
+        return inScope;
     }
 
     @Override
@@ -113,23 +124,9 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void handleResponse( String response ) {
-        super.handleResponse(response);
+        lastUpdate = System.currentTimeMillis();
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
-
-        // We have a problem!
-        if (arrivals == null) {
-            if (this.trackedArrivals.size() > 0) {
-                // If we had arrivals before, just carry on using the cached times.
-                // This isn't a failure state. We just went underground (probably).
-                predictionState = PredictionState.CACHED;
-                return;
-            } else {
-                // But if this is the first run, let user know there's a problem.
-                predictionState = PredictionState.BAD;
-                return;
-            }
-        }
 
         // First, add new destinations if we find any.
         for (Arrival newA : arrivals) {
@@ -162,6 +159,15 @@ public class StopRouteDestinationPrediction extends Prediction {
         //Then update all the destinations we have
         for (StopRouteDestinationArrival a : trackedArrivals) {
             a.updateArrivalTimes(arrivals);
+        }
+    }
+    @Override
+    public void setUpdated() {
+        synchronized ( this ) {
+            inUpdate = false;
+            needsQuickUpdate = false;
+
+            this.lastUpdate = System.currentTimeMillis();
         }
     }
 
@@ -204,6 +210,14 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         Log.v(TAG, "GetRequestedUpdateInterval SRDArrival "+interval);
         return (int) Math.max( MINIMUM_UPDATE_INTERVAL, interval );
+    }
+
+    @Override
+    public void setGettingUpdate() {
+        synchronized ( this ) {
+            inUpdate = true;
+        }
+
     }
 
     public int hashCode() {

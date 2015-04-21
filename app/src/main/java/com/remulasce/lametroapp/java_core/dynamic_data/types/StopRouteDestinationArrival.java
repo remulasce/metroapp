@@ -22,9 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *  require two of these.
  */
 public class StopRouteDestinationArrival implements Serializable {
-    private final int MINIMUM_UPDATE_INTERVAL = 10000;
-    private final int MAXIMUM_UPDATE_INTERVAL = 60000;
-    private final int INTERVAL_INCREASE_PER_SECOND = 400;
+    private final int MINIMUM_UPDATE_INTERVAL = 5000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 50;
 
     private static final String TAG = "SRDArrival";
     final Stop stop;
@@ -60,7 +59,7 @@ public class StopRouteDestinationArrival implements Serializable {
             if ( first == null
                     || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
             {
-                if ( a.getEstimatedArrivalSeconds() >= 0 ) {
+                if ( a.getEstimatedArrivalSeconds() != -1 ) {
                     first = a;
                 }
             }
@@ -69,24 +68,24 @@ public class StopRouteDestinationArrival implements Serializable {
         if ( first == null ) {
             firstTime = 15;
         } else {
-            firstTime = first.getEstimatedArrivalSeconds();
+            firstTime = (int) first.getEstimatedArrivalSeconds();
         }
 
         interval = Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
-        interval = Math.min (MAXIMUM_UPDATE_INTERVAL, interval);
 
         return interval;
     }
 
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
-        Log.d(TAG, "Updating SRDArrival times from " + updatedArrivals.size() + " arrivals");
+        Log.d(TAG, "Updating SRDArrival times from "+updatedArrivals.size()+" arrivals");
 
+        
         List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
-
+        
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
-                    update.getStop().equals(stop) ){
+                    update.getStop().equals(stop)){
 
 
                 Arrival a = null;
@@ -99,12 +98,7 @@ public class StopRouteDestinationArrival implements Serializable {
                         break;
                     }
                 }
-
                 // Saving Remulasce From himself - Nighelles
-                //
-                // But this code totally doesn't do anything
-                // Since the update arrival comes in from NexTrip, which will never
-                //  report <= 0.
                 if (a != null && update.getEstimatedArrivalSeconds() <= 0)
                 {
                     arrivalsToDelete.add(a);
@@ -121,13 +115,14 @@ public class StopRouteDestinationArrival implements Serializable {
 
                         arrivals.add(a);
                     }
-
+                    
                     a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
                 }
             }
         }
         for (Arrival arrival : arrivals) {
-            if (arrival.getEstimatedArrivalSeconds() <= 0) {
+            if (arrival.getEstimatedArrivalSeconds() <= 0)
+            {
                 arrivalsToDelete.add(arrival);
             }
         }
