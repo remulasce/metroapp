@@ -29,6 +29,7 @@ import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
@@ -85,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_main );
+        setContentView(R.layout.activity_main);
 
         startAnalytics();
         initializeStaticData();
@@ -98,10 +99,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupActionListeners();
         setupOmniBar();
         setupNetworkStatus();
+        setupRegionalization();
         setupAboutPage();
         setupTutorials();
 
         setupDefaults( getIntent() );
+    }
+
+    private void setupRegionalization() {
+        RegionalizationHelper.getInstance().agencyName = "lametro";
     }
 
     private void initializeDynamicData() {

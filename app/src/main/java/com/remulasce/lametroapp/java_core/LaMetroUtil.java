@@ -26,6 +26,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
@@ -300,19 +301,28 @@ public class LaMetroUtil {
     public static String getAgencyFromRoute( Route route, Stop stop )
             throws IllegalArgumentException {
         try {
-            if ( route == null || !route.isValid() ) {
-                if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+            if  (RegionalizationHelper.getInstance().agencyName.equals("actransit"))
+            {
+                return "actransit";
+            } else if (RegionalizationHelper.getInstance().agencyName.equals("lametro"))
+            {
+                if ( route == null || !route.isValid() ) {
+                    if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+                        return "lametro-rail";
+                    }
+
+                    return "lametro";
+                }
+                int routeN = Integer.valueOf( route.getString() );
+                if ( routeN / 100 == 8 ) {
                     return "lametro-rail";
                 }
-
-                return "lametro";
-            }
-            int routeN = Integer.valueOf( route.getString() );
-            if ( routeN / 100 == 8 ) {
-                return "lametro-rail";
-            }
-            else if ( routeN > 0 && routeN < 1000 ) {
-                return "lametro";
+                else if ( routeN > 0 && routeN < 1000 ) {
+                    return "lametro";
+                }
+                else {
+                    return "lametro";
+                }
             }
             else {
                 return "lametro";
