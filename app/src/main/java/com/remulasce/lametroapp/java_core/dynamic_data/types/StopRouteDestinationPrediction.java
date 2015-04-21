@@ -113,7 +113,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void handleResponse( String response ) {
-        lastUpdate = System.currentTimeMillis();
+        super.handleResponse(response);
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
 

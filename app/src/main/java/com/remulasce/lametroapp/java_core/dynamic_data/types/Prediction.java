@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 public abstract class Prediction implements Serializable{
 
-	enum PredictionState {
+	public enum PredictionState {
 		PAUSED, // Not tracking, because we shouldn't be.
 		FETCHING, // No arrivals, but going to network for first time to find some.
 		GOOD, // The arrivals we show is what actually existed at some point.
@@ -67,13 +67,17 @@ public abstract class Prediction implements Serializable{
 	}
 	public void setGettingUpdate() {
 		synchronized ( this ) {
+			predictionState = PredictionState.FETCHING;
 			inUpdate = true;
 		}
 	}
 
     // PredictionManager uses these.
 	public abstract String getRequestString();
-	public abstract void handleResponse(String response);
+	public void handleResponse(String response) {
+		predictionState = PredictionState.GOOD;
+		lastUpdate = System.currentTimeMillis();
+	}
 
 	// Replaces StartPredicting, without trying to actually get the manager singleton.
 	public void setTestMode() {

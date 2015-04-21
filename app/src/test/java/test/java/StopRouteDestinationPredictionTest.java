@@ -2,6 +2,7 @@ package test.java;
 
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationPrediction;
 
 import junit.framework.TestCase;
@@ -33,11 +34,25 @@ public class StopRouteDestinationPredictionTest extends TestCase {
     }
 
     public void testStartupState() {
-        
+        assertEquals("Prediction should be paused on startup", p.getPredictionState(), Prediction.PredictionState.PAUSED);
     }
 
+    public void testFetchingState() {
+        assert(p.getPredictionState() == Prediction.PredictionState.PAUSED);
 
-    public void testHandleResponse() throws Exception {
+        p.setGettingUpdate();
 
+        assertEquals("Prediction should think it's going to network to get a state",
+                p.getPredictionState(), Prediction.PredictionState.FETCHING);
+    }
+
+    public void testNArrivals() {
+        // Should be 1 for all arrivals to Norwalk, and another for all Red Sta arrivals.
+        p.handleResponse(TestConstants.GREEN_REDONDO_BEACH_RESPONSE_0);
+
+        assertEquals("P should have 2 arrivals, one for all Norwalk and 1 for all Redondo Beach",
+                p.getArrivals().size(), 2);
+        assertEquals("P should know its arrivals are correct",
+                p.getPredictionState(), Prediction.PredictionState.GOOD);
     }
 }
