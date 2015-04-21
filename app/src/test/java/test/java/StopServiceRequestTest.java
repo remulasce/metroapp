@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by Remulasce on 4/20/2015.
@@ -33,7 +32,7 @@ public class StopServiceRequestTest extends TestCase {
     // Using the dummy s stop, make sure we're not trying to show anything
     public void testEmptyPrediction() {
         assertEquals("s shouldn't be displaying any status",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.NOTHING);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.NOTHING);
     }
 
     private void setPrediction(Prediction p) {
@@ -50,7 +49,7 @@ public class StopServiceRequestTest extends TestCase {
         setPrediction(new P(Prediction.PredictionState.FETCHING));
 
         assertEquals("Request should show status as fetching",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.SPINNER);
     }
 
     // If anything is fetching, we should show the spinner.
@@ -63,7 +62,7 @@ public class StopServiceRequestTest extends TestCase {
         });
 
         assertEquals("Request should show status as fetching",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.SPINNER);
     }
 
     public void testNothingOnFullHouse() {
@@ -74,7 +73,7 @@ public class StopServiceRequestTest extends TestCase {
         });
 
         assertEquals("Request should show no status",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.NOTHING);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.NOTHING);
     }
 
     public void testError() {
@@ -83,7 +82,7 @@ public class StopServiceRequestTest extends TestCase {
         });
 
         assertEquals("Request should show status as error",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.ERROR);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.ERROR);
     }
 
     // Wait until everything has finished fetching before setting error.
@@ -94,7 +93,7 @@ public class StopServiceRequestTest extends TestCase {
         });
 
         assertEquals("Request should show status as fetching",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.SPINNER);
     }
 
     public void testCacheNotError() {
@@ -104,7 +103,7 @@ public class StopServiceRequestTest extends TestCase {
         });
 
         assertEquals("Request should show no status, since a cached value is fine.",
-                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.NOTHING);
+                s.getNetworkStatus(), StopServiceRequest.NetworkStatusState.NOTHING);
     }
 
     private class P extends Prediction {

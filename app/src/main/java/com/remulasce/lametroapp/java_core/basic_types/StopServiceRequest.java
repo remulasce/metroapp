@@ -222,7 +222,7 @@ public class StopServiceRequest extends ServiceRequest {
         return NetworkStatusState.NOTHING;
     }
 
-    public NetworkStatusState getTestStatusState() {
+    public NetworkStatusState getNetworkStatus() {
         return determineNetworkStatusState();
     }
 }
