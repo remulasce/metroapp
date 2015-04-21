@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Remulasce on 1/26/2015.
@@ -169,6 +170,19 @@ public class StopServiceRequest extends ServiceRequest {
             e.printStackTrace();
         }
     }
+
+    // For testing purposes, manually set what predictions we have.
+    public void testRawSetPredictions(List<Prediction> overridePredictions) {
+        this.predictions = overridePredictions;
+    }
+
+    public enum NetworkStatusState {
+        NOTHING,
+        SPINNER,
+        ERROR
+    }
+    // Figure out if we should show an error message, progress bar, or nothing.
+    NetworkStatusState determineNetworkStatusState() {
         boolean anyFetching = false;
         boolean anyGood = false;
         boolean anyCached = false;
@@ -205,4 +219,10 @@ public class StopServiceRequest extends ServiceRequest {
         }
 
         // Otherwise don't display anything special.
+        return NetworkStatusState.NOTHING;
+    }
+
+    public NetworkStatusState getTestStatusState() {
+        return determineNetworkStatusState();
+    }
 }
