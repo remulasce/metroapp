@@ -183,6 +183,42 @@ public class StopServiceRequest extends ServiceRequest {
     }
     // Figure out if we should show an error message, progress bar, or nothing.
     NetworkStatusState determineNetworkStatusState() {
+        boolean anyFetching = false;
+        boolean anyGood = false;
+        boolean anyCached = false;
+        boolean anyBad = false;
+
+        for (Prediction p : predictions) {
+            switch (p.getPredictionState()) {
+                case GOOD:
+                    anyGood = true;
+                    break;
+                case CACHED:
+                    anyCached = true;
+                    break;
+                case FETCHING:
+                    anyFetching = true;
+                    break;
+                case BAD:
+                    anyBad = true;
+                    break;
+                default:
+                    Log.w(TAG, "Unknown prediction state");
+                    break;
+            }
+        }
+
+        // If any part is fetching, we should show spinner, even if we have an error.
+        if (anyFetching) {
+            return NetworkStatusState.SPINNER;
+        }
+
+        // Only if we have full on bad should we display an error.
+        if (anyBad && !anyGood && !anyCached) {
+            return NetworkStatusState.ERROR;
+        }
+
+        // Otherwise don't display anything special.
         return NetworkStatusState.NOTHING;
     }
 

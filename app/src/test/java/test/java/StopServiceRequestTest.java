@@ -53,7 +53,59 @@ public class StopServiceRequestTest extends TestCase {
                 s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
     }
 
+    // If anything is fetching, we should show the spinner.
+    public void testGoodBadFetchingSpinner() {
+        setPredictions(new Prediction[]{
+                new P(Prediction.PredictionState.GOOD),
+                new P(Prediction.PredictionState.BAD),
+                new P(Prediction.PredictionState.FETCHING),
+                new P(Prediction.PredictionState.CACHED),
+        });
 
+        assertEquals("Request should show status as fetching",
+                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
+    }
+
+    public void testNothingOnFullHouse() {
+        setPredictions(new Prediction[] {
+                new P(Prediction.PredictionState.GOOD),
+                new P(Prediction.PredictionState.BAD),
+                new P(Prediction.PredictionState.CACHED),
+        });
+
+        assertEquals("Request should show no status",
+                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.NOTHING);
+    }
+
+    public void testError() {
+        setPredictions(new Prediction[] {
+                new P(Prediction.PredictionState.BAD),
+        });
+
+        assertEquals("Request should show status as error",
+                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.ERROR);
+    }
+
+    // Wait until everything has finished fetching before setting error.
+    public void testFetchOverError() {
+        setPredictions(new Prediction[] {
+                new P(Prediction.PredictionState.BAD),
+                new P(Prediction.PredictionState.FETCHING),
+        });
+
+        assertEquals("Request should show status as fetching",
+                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.SPINNER);
+    }
+
+    public void testCacheNotError() {
+        setPredictions(new Prediction[] {
+                new P(Prediction.PredictionState.BAD),
+                new P(Prediction.PredictionState.CACHED),
+        });
+
+        assertEquals("Request should show no status, since a cached value is fine.",
+                s.getTestStatusState(), StopServiceRequest.NetworkStatusState.NOTHING);
+    }
 
     private class P extends Prediction {
         private PredictionState state;
