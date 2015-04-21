@@ -1,5 +1,7 @@
 package test.java;
 
+import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
+
 import junit.framework.TestCase;
 
 /**
@@ -7,9 +9,12 @@ import junit.framework.TestCase;
  */
 public class StopServiceRequestTest extends TestCase {
 
+    StopServiceRequest s;
+
     public void setUp() throws Exception {
         super.setUp();
 
+        s = new StopServiceRequest();
     }
 
     public void tearDown() throws Exception {
