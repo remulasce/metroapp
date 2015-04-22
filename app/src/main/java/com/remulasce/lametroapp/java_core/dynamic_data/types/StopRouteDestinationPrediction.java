@@ -67,6 +67,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         Log.d(TAG, "StartPredicting SRDP");
         synchronized ( trackedArrivals ) {
             inScope = true;
+            inUpdate = false;
             PredictionManager.getInstance().startTracking( this );
         }
     }

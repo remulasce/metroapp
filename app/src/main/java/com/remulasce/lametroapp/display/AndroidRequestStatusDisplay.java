@@ -36,7 +36,11 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
 
         View rowView;
 
-        rowView = (RelativeLayout) inflater.inflate(R.layout.request_status_item, parent, false);
+        if (recycleView != null && recycleView.getId() == R.id.request_status_item) {
+            rowView = (RelativeLayout)recycleView;
+        } else {
+            rowView = (RelativeLayout) inflater.inflate(R.layout.request_status_item, parent, false);
+        }
 
         TextView title_text = (TextView) rowView.findViewById(R.id.status_title_text);
         TextView status_text = (TextView) rowView.findViewById(R.id.request_status_text);
