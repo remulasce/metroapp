@@ -56,8 +56,8 @@ public class StopServiceRequest extends ServiceRequest {
         Collection<Trip> trips = new ArrayList<Trip>();
 
         if (statusTrip != null && statusTrip.isValid() // TripPopulator can't handle empty / null Trips
-                //&& determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
-                ) { // Testing, keep the status up.
+                && determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
+//                ) { // Testing, keep the status up.
             trips.add(statusTrip);
         }
 
