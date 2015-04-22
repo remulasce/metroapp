@@ -20,9 +20,11 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
  * It is specific to the StopServiceRequest for now.
  *
  * Pass-through method to the platform-specific display:
- *   getRequestStatus() returns either NOTHING, SPINNER, or ERROR
+ * - getRequestStatus() returns either NOTHING, SPINNER, or ERROR
  *   That denotes whether to display an error message, a progress spinner, or that
  *   actually this trip shouldn't be displayed at all.
+ * - getTitleText() returns a string to display up top.
+ *   eg. "Redondo Beach Station"
  *
  * This kind of trip should probably not be added at all in the NOTHING case. But that's up
  *   to ServiceRequests to ensure.
@@ -48,6 +50,10 @@ public class RequestStatusTrip extends Trip{
 
     public RequestStatusTrip(StopServiceRequest parent) {
         this.parentRequest = parent;
+    }
+
+    public String getTitleText() {
+        return parentRequest.getDisplayName();
     }
 
     public RequestDisplayType getRequestStatus() {
