@@ -78,18 +78,24 @@ public class TripPopulator {
                                         AndroidDisplay item = adapter.getItem(position);
                                         Trip t = item.getTrip();
 
-                                        t.dismiss();
-                                        adapter.remove(item);
+                                        if (t != null) {
+                                            t.dismiss();
+                                            adapter.remove(item);
 
-                                        dismissLock = false;
-                                        TutorialManager.getInstance().tripDismissed();
+                                            TutorialManager.getInstance().tripDismissed();
+                                        }
 
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
                                         Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Index out of bounds");
+                                    } catch (Exception e) {
+                                        // Weird exceptions probably mean we haven't implemented something from Java_Core
+                                        Log.w(TAG, "Exception in Trip Dismissal- Is everything in java_core implemented correctly?");
+                                        Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Weird Exception");
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
+                                dismissLock = false;
                             }
 
                             @Override

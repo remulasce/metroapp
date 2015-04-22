@@ -41,6 +41,7 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
 public class RequestStatusTrip extends Trip{
 
     private StopServiceRequest parentRequest;
+    private boolean hidden = false;
 
     public enum RequestDisplayType {
         NOTHING,
@@ -68,5 +69,19 @@ public class RequestStatusTrip extends Trip{
                 Log.w("RequestStatusTrip", "Unknown parent request status");
                 return RequestDisplayType.NOTHING;
         }
+    }
+
+    @Override
+    public void dismiss() {
+        this.hidden = true;
+    }
+
+    @Override
+    public boolean isValid() {
+        return !this.hidden;
+    }
+
+    public void restore() {
+        this.hidden = false;
     }
 }

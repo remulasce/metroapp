@@ -27,7 +27,7 @@ public class StopServiceRequest extends ServiceRequest {
     private Collection<Prediction> predictions = new ArrayList<Prediction>();
 
     private boolean updateAvailable = true;
-    private Trip statusTrip;
+    private RequestStatusTrip statusTrip;
 
     public StopServiceRequest(Collection<Stop> stops, String displayName) {
         this.stops = stops;
@@ -55,8 +55,9 @@ public class StopServiceRequest extends ServiceRequest {
     public Collection<Trip> getTrips() {
         Collection<Trip> trips = new ArrayList<Trip>();
 
-        if (statusTrip != null // TripPopulator can't handle empty / null Trips
-                && determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
+        if (statusTrip != null && statusTrip.isValid() // TripPopulator can't handle empty / null Trips
+                //&& determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
+                ) { // Testing, keep the status up.
             trips.add(statusTrip);
         }
 
@@ -113,6 +114,7 @@ public class StopServiceRequest extends ServiceRequest {
         for (Prediction p : predictions) {
             p.restoreTrips();
         }
+        statusTrip.restore();
     }
 
     @Override
@@ -176,7 +178,7 @@ public class StopServiceRequest extends ServiceRequest {
         try {
             stops = (Collection<Stop>) ois.readObject();
             predictions = (Collection<Prediction>) ois.readObject();
-            statusTrip = (Trip) ois.readObject();
+            statusTrip = (RequestStatusTrip) ois.readObject();
         } catch (Exception e) {
             stops = new ArrayList<Stop>();
             predictions = new ArrayList<Prediction>();

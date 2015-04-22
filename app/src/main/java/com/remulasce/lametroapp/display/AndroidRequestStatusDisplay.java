@@ -81,7 +81,7 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
 
     @Override
     public Trip getTrip() {
-        return null;
+        return parentTrip;
     }
 
     @Override
