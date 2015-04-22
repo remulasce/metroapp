@@ -251,7 +251,7 @@ public class PredictionManager {
 
 			Log.v(TAG, "Response received: "+response);
 
-            prediction.handleResponse(response);
+			prediction.handleResponse(response);
 
 			prediction.setUpdated();
 
