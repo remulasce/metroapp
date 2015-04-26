@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "MultiArrivalTrip.h"
+#import "RequestStatusTrip.h"
 #import "StopRouteDestinationArrival.h"
+
 #import "HTTPGetter.h"
 #import "ServiceRequestHandler.h"
 #import "StopServiceRequest.h"

@@ -64,4 +64,4 @@
         android:layout_toRightOf="@+id/color_box"
         android:layout_toEndOf="@+id/color_box" />
 
-</RelativeLayout><!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/multi_trip_item.xml -->
+</RelativeLayout><!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/multi_trip_item.xml -->

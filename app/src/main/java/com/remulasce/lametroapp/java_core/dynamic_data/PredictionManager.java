@@ -259,6 +259,7 @@ public class PredictionManager {
 		}
 
 		public String sendRequest( String request ) {
+            Log.v(TAG, "Trying request: "+request);
             return network.doGetHTTPResponse(request, statusReporter);
 		}
 	}

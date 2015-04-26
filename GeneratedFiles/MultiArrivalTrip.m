@@ -59,7 +59,7 @@
 
 - (jdouble)getCurrentDistanceToStop {
   id<ComRemulasceLametroappJava_coreLocationLocationRetriever> retriever = ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever();
-  jdouble currentDistanceToStop = [((id<ComRemulasceLametroappJava_coreLocationLocationRetriever>) nil_chk(retriever)) getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
+  jdouble currentDistanceToStop = 1;
   if (currentDistanceToStop > 0) {
     lastDistanceToStop_ = currentDistanceToStop;
   }
@@ -68,7 +68,7 @@
 
 - (jfloat)getPriority {
   jfloat proximity = 0;
-  jdouble distance = [self getCurrentDistanceToStop];
+  jdouble distance = 1;
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .2f * (jfloat) (1 - (distance / 32000)));
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .8f * (jfloat) (1 - (distance / 3200)));
   proximity = JavaLangMath_maxWithFloat_withFloat_(proximity, 0);

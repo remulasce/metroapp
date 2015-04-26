@@ -367,6 +367,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComRemulasceLametroappJava_coreDynamic_dataPred
 }
 
 - (NSString *)sendRequestWithNSString:(NSString *)request {
+  ComRemulasceLametroappJava_coreAnalyticsLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_get_TAG_(), JreStrcat("$$", @"Trying request: ", request));
   return [((ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter *) nil_chk(this$0_->network_)) doGetHTTPResponseWithNSString:request withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_get_statusReporter_()];
 }
 

@@ -1,14 +1,17 @@
 package com.remulasce.lametroapp.java_core.dynamic_data;
 
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 import java.lang.StringBuilder;
 import java.net.*;
 import java.io.*;
+
 
 /*
  * Created by Remulasce on 3/7/2015.
  */
 public class HTTPGetter {
+    private static final String TAG = "HTTPGetter";
 
     public static String getHTTPResponse(String message, NetworkStatusReporter reporter) {
         return getHTTPGetter().doGetHTTPResponse(message, reporter);
@@ -31,13 +34,14 @@ public class HTTPGetter {
     public String doGetHTTPResponse(String message, NetworkStatusReporter reporter)
     {
         try {
-        URL url = new URL(message);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        String response;
+            URL url = new URL(message);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            String response;
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             
             response = readStream(in);
             urlConnection.disconnect();
+            Log.v(TAG, "HTTP Response: " + response );
             return response;
         }
         catch(IOException e)

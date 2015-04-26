@@ -136,16 +136,21 @@
             ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
             multiArrivalTrip = [multiArrivalTrips getWithInt:(int)tripIndex];
             
-            ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
-            tempSRDA = multiArrivalTrip->parentArrival_;
-            
-            id<JavaUtilList> tempArrivals = (id<JavaUtilList>)[tempSRDA getArrivals];
-            
-            NSLog(@"### HERE %@",[self formatTime:(int)[(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)[tempArrivals getWithInt:0] getEstimatedArrivalSeconds]]);
-            int numArrivals = [tempArrivals size];
-            NSLog(@"### Number of arrivals %d", numArrivals);
-        
-            return 55+(25*numArrivals)+25.0;
+            if ([multiArrivalTrip isKindOfClass:[ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip class]]) {
+                // Scale based on number of arrivals in trip
+                ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
+                tempSRDA = multiArrivalTrip->parentArrival_;
+                
+                id<JavaUtilList> tempArrivals = (id<JavaUtilList>)[tempSRDA getArrivals];
+                
+                NSLog(@"### HERE %@",[self formatTime:(int)[(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)[tempArrivals getWithInt:0] getEstimatedArrivalSeconds]]);
+                int numArrivals = [tempArrivals size];
+                NSLog(@"### Number of arrivals %d", numArrivals);
+                
+                return 55+(25*numArrivals)+25.0;
+            } else if ([multiArrivalTrip isKindOfClass:[ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip class]]) {
+                return 40.0;
+            }
         }
         return 10.0;
     } else {
@@ -248,82 +253,118 @@
         UILabel *vehicleLabel[5];
         UILabel *destinationLabel;
         
-        ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip;
-        multiArrivalTrip = [multiArrivalTrips getWithInt:[indexPath indexAtPosition:1]];
+        ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *tripToDisplay;
+        tripToDisplay = [multiArrivalTrips getWithInt:[indexPath indexAtPosition:1]];
         
-        ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
-        tempSRDA = multiArrivalTrip->parentArrival_;
         
-        id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
-        
-        int numArrivals = [tempArrivals size];
-        
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
-            CGRect nameLabelFrame = CGRectMake(10,0,220, 25);
-            tripNameLabel = [[UILabel alloc] initWithFrame:nameLabelFrame];
-            tripNameLabel.tag = 1;
-            [cell.contentView addSubview:tripNameLabel];
+        NSLog(@"##### multiArrivalTrip is this kind of Arrival: %@",[tripToDisplay class]);
+        if ([tripToDisplay isKindOfClass:[ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip class]]) {
+            ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip *multiArrivalTrip = (ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip*)tripToDisplay;
+            // It's a multiArrivalTrip
+            ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *tempSRDA;
+            tempSRDA = multiArrivalTrip->parentArrival_;
             
-            CGRect destinationLabelFrame = CGRectMake(20, 35, 400, 25);
-            destinationLabel = [[UILabel alloc] initWithFrame:destinationLabelFrame];
-            destinationLabel.tag = 2;
-            [cell.contentView addSubview:destinationLabel];
+            id<JavaUtilList> tempArrivals = [tempSRDA getArrivals];
             
-            for (int i=0; i<5; i++) {
-                CGRect timeLabelFrame = CGRectMake(30,55+(25*i),220,25);
-                timeLabel[i] = [[UILabel alloc] initWithFrame:timeLabelFrame];
-                timeLabel[i].tag = 3+i;
-                [cell.contentView addSubview:timeLabel[i]];
+            int numArrivals = [tempArrivals size];
+            
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+                CGRect nameLabelFrame = CGRectMake(10,0,220, 25);
+                tripNameLabel = [[UILabel alloc] initWithFrame:nameLabelFrame];
+                tripNameLabel.tag = 1;
+                [cell.contentView addSubview:tripNameLabel];
                 
-                [timeLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS-Bold" size:16]];
+                CGRect destinationLabelFrame = CGRectMake(20, 35, 400, 25);
+                destinationLabel = [[UILabel alloc] initWithFrame:destinationLabelFrame];
+                destinationLabel.tag = 2;
+                [cell.contentView addSubview:destinationLabel];
                 
-                CGRect vehicleLabelFrame = CGRectMake(100,55+(25*i),500,25);
-                vehicleLabel[i] = [[UILabel alloc] initWithFrame:vehicleLabelFrame];
-                vehicleLabel[i].tag = (20+i);
-                [cell.contentView addSubview:vehicleLabel[i]];
-                
-                [vehicleLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS" size:12]];
-            }
-        } else {
-            tripNameLabel = (UILabel *)[cell.contentView viewWithTag:1];
-            destinationLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            for (int i=0; i<5; i++) {
-                timeLabel[i]=(UILabel*)[cell.contentView viewWithTag:3+i];
-                vehicleLabel[i]=(UILabel*)[cell.contentView viewWithTag:20+i];
-            }
-        }
-        
-        [tripNameLabel setText: [multiArrivalTrip description]];
-        
-        ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *tempArrival;
-        
-        tempArrival = [tempArrivals getWithInt:0];
-        [destinationLabel setText:[[tempArrival getDirection] getString]];
-        
-        for (int i=0; i<5; i++) {
-            if (i < numArrivals) {
-                tempArrival = [tempArrivals getWithInt:i];
-                int arrivalSeconds = (int)[tempArrival getEstimatedArrivalSeconds];
-                if (arrivalSeconds > 5) {
-                    [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
-                } else if (arrivalSeconds > 0) {
-                    [timeLabel[i] setText:@"Arriving"];
-                } else {
-                    NSLog(@"Arrival with < 0 sec exists! FOR SHAME!");
-                    ;; // Fixed in SRDA, should never happen
+                for (int i=0; i<5; i++) {
+                    CGRect timeLabelFrame = CGRectMake(30,55+(25*i),220,25);
+                    timeLabel[i] = [[UILabel alloc] initWithFrame:timeLabelFrame];
+                    timeLabel[i].tag = 3+i;
+                    [cell.contentView addSubview:timeLabel[i]];
+                    
+                    [timeLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS-Bold" size:16]];
+                    
+                    CGRect vehicleLabelFrame = CGRectMake(100,55+(25*i),500,25);
+                    vehicleLabel[i] = [[UILabel alloc] initWithFrame:vehicleLabelFrame];
+                    vehicleLabel[i].tag = (20+i);
+                    [cell.contentView addSubview:vehicleLabel[i]];
+                    
+                    [vehicleLabel[i] setFont:[UIFont fontWithName:@"TrebuchetMS" size:12]];
                 }
-                [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
             } else {
-                if ([timeLabel[i] isKindOfClass:[UILabel class]])
-                {
-                    [timeLabel[i] setText:@""];
-                    [vehicleLabel[i] setText:@""];
+                tripNameLabel = (UILabel *)[cell.contentView viewWithTag:1];
+                destinationLabel = (UILabel *)[cell.contentView viewWithTag:2];
+                for (int i=0; i<5; i++) {
+                    timeLabel[i]=(UILabel*)[cell.contentView viewWithTag:3+i];
+                    vehicleLabel[i]=(UILabel*)[cell.contentView viewWithTag:20+i];
                 }
             }
+            
+            [tripNameLabel setText: [multiArrivalTrip description]];
+            
+            ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *tempArrival;
+            
+            tempArrival = [tempArrivals getWithInt:0];
+            [destinationLabel setText:[[tempArrival getDirection] getString]];
+            
+            for (int i=0; i<5; i++) {
+                if (i < numArrivals) {
+                    tempArrival = [tempArrivals getWithInt:i];
+                    int arrivalSeconds = (int)[tempArrival getEstimatedArrivalSeconds];
+                    if (arrivalSeconds > 5) {
+                        [timeLabel[i] setText:[self formatTime:(int)[tempArrival getEstimatedArrivalSeconds] ]];
+                    } else if (arrivalSeconds > 0) {
+                        [timeLabel[i] setText:@"Arriving"];
+                    } else {
+                        NSLog(@"Arrival with < 0 sec exists! FOR SHAME!");
+                        ;; // Fixed in SRDA, should never happen
+                    }
+                    [vehicleLabel[i] setText:[NSString stringWithFormat:@"Veh %@",[[tempArrival getVehicleNum] getString]]];
+                } else {
+                    if ([timeLabel[i] isKindOfClass:[UILabel class]])
+                    {
+                        [timeLabel[i] setText:@""];
+                        [vehicleLabel[i] setText:@""];
+                    }
+                }
+            }
+            
+            return cell;
+        } else if ([tripToDisplay isKindOfClass:[ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip class]]) {
+            // It's a RequestStatusTrip
+            ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip *requestStatusTrip = (ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip*)tripToDisplay;
+            static NSString *simpleTableIdentifier = @"SimpleTableItem";
+            
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+            
+            UIActivityIndicatorView *spinner;
+            
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+                
+                CGRect spinnerFrame = CGRectMake(40,10,20,20);
+                spinner = [[UIActivityIndicatorView alloc] initWithFrame:spinnerFrame];
+                [spinner startAnimating];
+                spinner.tag = 1;
+                [cell.contentView addSubview: spinner];
+            } else {
+                spinner = (UIActivityIndicatorView*)[[cell contentView] viewWithTag:1];
+                [spinner startAnimating];
+            }
+            
+            //cell.textLabel.text = @"Testing Status";
+            spinner.color = [UIColor grayColor];
+            return cell;
+        } else {
+            // This should never happen
+            NSLog(@"Unknown Arrival type while building cell");
+            return cell;
         }
         
-        return cell;
     } else if (tableView == self.searchView && searchResultsAvailable==YES) {
         static NSString *simpleTableIdentifier = @"SimpleTableItem";
         

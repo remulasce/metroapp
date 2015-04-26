@@ -5,6 +5,7 @@
 
 #include "HTTPGetter.h"
 #include "J2ObjC_source.h"
+#include "Log.h"
 #include "NetworkStatusReporter.h"
 #include "java/io/BufferedInputStream.h"
 #include "java/io/ByteArrayOutputStream.h"
@@ -24,6 +25,7 @@ __attribute__((unused)) static NSString *ComRemulasceLametroappJava_coreDynamic_
 
 @implementation ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter
 
+NSString * ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_TAG_ = @"HTTPGetter";
 ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter * ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_getter_;
 
 + (NSString *)getHTTPResponseWithNSString:(NSString *)message
@@ -44,6 +46,7 @@ withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:(id<ComRe
     JavaIoInputStream *in = [[JavaIoBufferedInputStream alloc] initWithJavaIoInputStream:[((JavaNetHttpURLConnection *) nil_chk(urlConnection)) getInputStream]];
     response = ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_readStreamWithJavaIoInputStream_(self, in);
     [urlConnection disconnect];
+    ComRemulasceLametroappJava_coreAnalyticsLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_TAG_, JreStrcat("$$", @"HTTP Response: ", response));
     return response;
   }
   @catch (JavaIoIOException *e) {
@@ -73,9 +76,10 @@ withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:(id<ComRe
     { "init", NULL, NULL, 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
+    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_TAG_,  },
     { "getter_", NULL, 0xa, "Lcom.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;", &ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter_getter_,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter = { 2, "HTTPGetter", "com.remulasce.lametroapp.java_core.dynamic_data", NULL, 0x1, 6, methods, 1, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter = { 2, "HTTPGetter", "com.remulasce.lametroapp.java_core.dynamic_data", NULL, 0x1, 6, methods, 2, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreDynamic_dataHTTPGetter;
 }
 

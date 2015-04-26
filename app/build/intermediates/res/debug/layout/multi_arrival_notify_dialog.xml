@@ -93,4 +93,4 @@
             android:layout_alignStart="@+id/textView" />
 
     </RelativeLayout>
-</ScrollView><!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/multi_arrival_notify_dialog.xml -->
+</ScrollView><!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/multi_arrival_notify_dialog.xml -->
