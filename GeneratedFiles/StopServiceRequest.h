@@ -7,12 +7,16 @@
 #define _ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_H_
 
 @class ComRemulasceLametroappJava_coreBasic_typesStop;
+@class ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum;
+@class ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip;
 @class JavaIoObjectInputStream;
 @class JavaIoObjectOutputStream;
 @protocol JavaUtilCollection;
+@protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
 #include "ServiceRequest.h"
+#include "java/lang/Enum.h"
 
 @interface ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest : ComRemulasceLametroappJava_coreBasic_typesServiceRequest {
 }
@@ -26,6 +30,8 @@
                                                           withNSString:(NSString *)displayName;
 
 - (void)cancelRequest;
+
+- (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)getNetworkStatus;
 
 - (id<JavaUtilCollection>)getRaw;
 
@@ -43,9 +49,15 @@
 
 - (void)startRequest;
 
+- (void)testRawSetPredictionsWithJavaUtilList:(id<JavaUtilList>)overridePredictions;
+
 - (jboolean)updateAvailable;
 
 - (void)updateTaken;
+
+#pragma mark Package-Private
+
+- (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)determineNetworkStatusState;
 
 @end
 
@@ -55,5 +67,45 @@ FOUNDATION_EXPORT NSString *ComRemulasceLametroappJava_coreBasic_typesStopServic
 J2OBJC_STATIC_FIELD_GETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest, TAG_, NSString *)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest)
+
+typedef NS_ENUM(NSUInteger, ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState) {
+  ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_NOTHING = 0,
+  ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_SPINNER = 1,
+  ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_ERROR = 2,
+};
+
+@interface ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum : JavaLangEnum < NSCopying > {
+}
+
+#pragma mark Public
+
+- (instancetype)initWithNSString:(NSString *)__name
+                         withInt:(jint)__ordinal;
+
++ (IOSObjectArray *)values;
+FOUNDATION_EXPORT IOSObjectArray *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values();
+
++ (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)valueOfWithNSString:(NSString *)name;
+
+FOUNDATION_EXPORT ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_valueOfWithNSString_(NSString *name);
+- (id)copyWithZone:(NSZone *)zone;
+
+@end
+
+FOUNDATION_EXPORT BOOL ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_initialized;
+J2OBJC_STATIC_INIT(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum)
+
+FOUNDATION_EXPORT ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[];
+
+#define ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_NOTHING ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_NOTHING]
+J2OBJC_ENUM_CONSTANT_GETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum, NOTHING)
+
+#define ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_SPINNER ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_SPINNER]
+J2OBJC_ENUM_CONSTANT_GETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum, SPINNER)
+
+#define ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_ERROR ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusState_ERROR]
+J2OBJC_ENUM_CONSTANT_GETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum, ERROR)
+
+J2OBJC_TYPE_LITERAL_HEADER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum)
 
 #endif // _ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_H_

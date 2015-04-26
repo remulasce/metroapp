@@ -357,6 +357,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComRemulasceLametroappJava_coreDynamic_dataPred
   jlong t = ComRemulasceLametroappJava_coreAnalyticsTracking_startTime();
   NSString *request = [((ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction *) nil_chk(prediction_)) getRequestString];
   ComRemulasceLametroappJava_coreAnalyticsLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_get_TAG_(), JreStrcat("$$", @"Handling request ", request));
+  if (ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_get_statusReporter_() != nil) {
+  }
   NSString *response = [self sendRequestWithNSString:request];
   ComRemulasceLametroappJava_coreAnalyticsLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_get_TAG_(), JreStrcat("$$", @"Response received: ", response));
   [prediction_ handleResponseWithNSString:response];

@@ -14,8 +14,9 @@
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "reportFailure", NULL, "V", 0x401, NULL },
+    { "reportGettingUpdate", NULL, "V", 0x401, NULL },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter = { 2, "NetworkStatusReporter", "com.remulasce.lametroapp.java_core.network_status", NULL, 0x609, 1, methods, 0, NULL, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter = { 2, "NetworkStatusReporter", "com.remulasce.lametroapp.java_core.network_status", NULL, 0x609, 2, methods, 0, NULL, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter;
 }
 

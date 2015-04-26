@@ -20,6 +20,10 @@
 - (instancetype)initWithDouble:(jdouble)latitude
                     withDouble:(jdouble)longitude;
 
+- (jboolean)isEqual:(id)o;
+
+- (NSUInteger)hash;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComRemulasceLametroappJava_coreBasic_typesBasicLocation)

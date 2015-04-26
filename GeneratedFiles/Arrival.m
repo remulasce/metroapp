@@ -10,7 +10,6 @@
 #include "Route.h"
 #include "Stop.h"
 #include "Vehicle.h"
-#include "java/lang/Math.h"
 #include "java/lang/System.h"
 
 @interface ComRemulasceLametroappJava_coreDynamic_dataTypesArrival () {
@@ -35,7 +34,11 @@
 }
 
 - (jfloat)getEstimatedArrivalSeconds {
-  return JavaLangMath_maxWithFloat_withFloat_(0, (lastPrediction_ - JavaLangSystem_currentTimeMillis()) / 1000.0f);
+  jfloat time_delta = (lastPrediction_ - JavaLangSystem_currentTimeMillis()) / 1000.0f;
+  if (time_delta < 0) {
+    time_delta = -1;
+  }
+  return time_delta;
 }
 
 - (void)setEstimatedArrivalSecondsWithFloat:(jfloat)secondsTillArrival {

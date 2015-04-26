@@ -25,6 +25,7 @@ __attribute__((unused)) static id<JavaUtilCollection> ComRemulasceLametroappJava
 @interface ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival () {
  @public
   jint MINIMUM_UPDATE_INTERVAL_;
+  jint MAXIMUM_UPDATE_INTERVAL_;
   jint INTERVAL_INCREASE_PER_SECOND_;
   id<JavaUtilCollection> arrivals_;
   ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *trip_;
@@ -45,8 +46,9 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationA
                    withComRemulasceLametroappJava_coreBasic_typesRoute:(ComRemulasceLametroappJava_coreBasic_typesRoute *)r
              withComRemulasceLametroappJava_coreBasic_typesDestination:(ComRemulasceLametroappJava_coreBasic_typesDestination *)d {
   if (self = [super init]) {
-    MINIMUM_UPDATE_INTERVAL_ = 5000;
-    INTERVAL_INCREASE_PER_SECOND_ = 50;
+    MINIMUM_UPDATE_INTERVAL_ = 10000;
+    MAXIMUM_UPDATE_INTERVAL_ = 60000;
+    INTERVAL_INCREASE_PER_SECOND_ = 400;
     isInScope__ = NO;
     self->stop_ = s;
     self->route_ = r;
@@ -64,7 +66,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationA
   jfloat interval;
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesArrival * __strong a in nil_chk(arrivals_)) {
     if (first == nil || [((ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *) nil_chk(a)) getEstimatedArrivalSeconds] < [first getEstimatedArrivalSeconds]) {
-      if ([((ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *) nil_chk(a)) getEstimatedArrivalSeconds] != -1) {
+      if ([((ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *) nil_chk(a)) getEstimatedArrivalSeconds] >= 0) {
         first = a;
       }
     }
@@ -73,9 +75,10 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationA
     firstTime = 15;
   }
   else {
-    firstTime = J2ObjCFpToInt([first getEstimatedArrivalSeconds]);
+    firstTime = [first getEstimatedArrivalSeconds];
   }
   interval = JavaLangMath_maxWithFloat_withFloat_(MINIMUM_UPDATE_INTERVAL_, firstTime * INTERVAL_INCREASE_PER_SECOND_);
+  interval = JavaLangMath_minWithFloat_withFloat_(MAXIMUM_UPDATE_INTERVAL_, interval);
   return interval;
 }
 
@@ -168,6 +171,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationA
   };
   static const J2ObjcFieldInfo fields[] = {
     { "MINIMUM_UPDATE_INTERVAL_", NULL, 0x12, "I", NULL,  },
+    { "MAXIMUM_UPDATE_INTERVAL_", NULL, 0x12, "I", NULL,  },
     { "INTERVAL_INCREASE_PER_SECOND_", NULL, 0x12, "I", NULL,  },
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival_TAG_,  },
     { "stop_", NULL, 0x10, "Lcom.remulasce.lametroapp.java_core.basic_types.Stop;", NULL,  },
@@ -177,7 +181,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationA
     { "trip_", NULL, 0x12, "Lcom.remulasce.lametroapp.java_core.dynamic_data.types.Trip;", NULL,  },
     { "isInScope__", "isInScope", 0x2, "Z", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival = { 2, "StopRouteDestinationArrival", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 11, methods, 9, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival = { 2, "StopRouteDestinationArrival", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 11, methods, 10, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival;
 }
 

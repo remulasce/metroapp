@@ -44,13 +44,7 @@
 
 - (NSUInteger)hash;
 
-- (jboolean)isInScope;
-
 - (void)restoreTrips;
-
-- (void)setGettingUpdate;
-
-- (void)setUpdated;
 
 - (void)startPredicting;
 

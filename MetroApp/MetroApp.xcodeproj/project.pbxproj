@@ -30,6 +30,8 @@
 		312FFF3A1AA7EA55005D5477 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312FFF391AA7EA55005D5477 /* Security.framework */; };
 		312FFF3C1AA7EA63005D5477 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 312FFF3B1AA7EA63005D5477 /* libicucore.dylib */; };
 		312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */ = {isa = PBXBuildFile; fileRef = 312FFF3D1AA830BF005D5477 /* ic_launcher.png */; };
+		314674881AEDA12E00409D9E /* actransit.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 314674871AEDA12E00409D9E /* actransit.sqlite3 */; };
+		3146748A1AEDA15900409D9E /* RequestStatusTrip.java in Sources */ = {isa = PBXBuildFile; fileRef = 314674891AEDA15900409D9E /* RequestStatusTrip.java */; };
 		315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 315242161ADEDD7B00643039 /* MetroAppLocationManager.m */; };
 		3178F97C1AE086D000922A49 /* icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F9791AE086D000922A49 /* icon-76.png */; };
 		3178F97D1AE086D000922A49 /* icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F97A1AE086D000922A49 /* icon-120.png */; };
@@ -61,7 +63,6 @@
 		3178F9BF1AE3060E00922A49 /* StopLocationTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 3178F9A31AE3060E00922A49 /* StopLocationTranslator.java */; };
 		3178F9C01AE3060E00922A49 /* StopNameTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 3178F9A41AE3060E00922A49 /* StopNameTranslator.java */; };
 		3178F9C11AE3060E00922A49 /* RouteColor.java in Sources */ = {isa = PBXBuildFile; fileRef = 3178F9A61AE3060E00922A49 /* RouteColor.java */; };
-		3178F9C31AE3068700922A49 /* actransit.db in Resources */ = {isa = PBXBuildFile; fileRef = 3178F9C21AE3068700922A49 /* actransit.db */; };
 		3178F9C51AE306BB00922A49 /* StopNamesLA.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 3178F9C41AE306BB00922A49 /* StopNamesLA.sqlite3 */; };
 		31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C7D1AC61EFF007421BE /* MetroAppViewController.m */; };
 		31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 31865C831AC7E693007421BE /* Stops.xcdatamodeld */; };
@@ -186,6 +187,8 @@
 		312FFF391AA7EA55005D5477 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		312FFF3B1AA7EA63005D5477 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		312FFF3D1AA830BF005D5477 /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
+		314674871AEDA12E00409D9E /* actransit.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = actransit.sqlite3; path = ../../scraper/actransit.sqlite3; sourceTree = "<group>"; };
+		314674891AEDA15900409D9E /* RequestStatusTrip.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RequestStatusTrip.java; sourceTree = "<group>"; };
 		315242151ADEDD7B00643039 /* MetroAppLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppLocationManager.h; sourceTree = "<group>"; };
 		315242161ADEDD7B00643039 /* MetroAppLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppLocationManager.m; sourceTree = "<group>"; };
 		3178F9791AE086D000922A49 /* icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-76.png"; sourceTree = "<group>"; };
@@ -218,7 +221,6 @@
 		3178F9A31AE3060E00922A49 /* StopLocationTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopLocationTranslator.java; sourceTree = "<group>"; };
 		3178F9A41AE3060E00922A49 /* StopNameTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopNameTranslator.java; sourceTree = "<group>"; };
 		3178F9A61AE3060E00922A49 /* RouteColor.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RouteColor.java; sourceTree = "<group>"; };
-		3178F9C21AE3068700922A49 /* actransit.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = actransit.db; path = ../../scraper/actransit.db; sourceTree = "<group>"; };
 		3178F9C41AE306BB00922A49 /* StopNamesLA.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = StopNamesLA.sqlite3; path = ../../scraper/StopNamesLA.sqlite3; sourceTree = "<group>"; };
 		31865C7C1AC61EFF007421BE /* MetroAppViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppViewController.h; sourceTree = "<group>"; };
 		31865C7D1AC61EFF007421BE /* MetroAppViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppViewController.m; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 		3178F9921AE3060E00922A49 /* types */ = {
 			isa = PBXGroup;
 			children = (
+				314674891AEDA15900409D9E /* RequestStatusTrip.java */,
 				3178F9931AE3060E00922A49 /* Arrival.java */,
 				3178F9941AE3060E00922A49 /* MultiArrivalTrip.java */,
 				3178F9951AE3060E00922A49 /* Prediction.java */,
@@ -553,8 +556,8 @@
 		31865C8D1AC7EA97007421BE /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				314674871AEDA12E00409D9E /* actransit.sqlite3 */,
 				3178F9C41AE306BB00922A49 /* StopNamesLA.sqlite3 */,
-				3178F9C21AE3068700922A49 /* actransit.db */,
 				310A04961ACB323C000E1B8E /* StopNameDatabase.h */,
 				310A04971ACB323C000E1B8E /* StopNameDatabase.m */,
 				31865C8E1AC7EAAC007421BE /* StopNameInfo.h */,
@@ -767,13 +770,13 @@
 				3178F97C1AE086D000922A49 /* icon-76.png in Resources */,
 				3178F97D1AE086D000922A49 /* icon-120.png in Resources */,
 				312FFE311AA7E89D005D5477 /* Main.storyboard in Resources */,
+				314674881AEDA12E00409D9E /* actransit.sqlite3 in Resources */,
 				318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
 				3178F9C51AE306BB00922A49 /* StopNamesLA.sqlite3 in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
 				3178F97E1AE086D000922A49 /* icon-152.png in Resources */,
-				3178F9C31AE3068700922A49 /* actransit.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,6 +835,7 @@
 			files = (
 				3178F9B41AE3060E00922A49 /* Prediction.java in Sources */,
 				3178F9AA1AE3060E00922A49 /* Destination.java in Sources */,
+				3146748A1AEDA15900409D9E /* RequestStatusTrip.java in Sources */,
 				3178F9AD1AE3060E00922A49 /* Stop.java in Sources */,
 				315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */,
 				3178F9BD1AE3060E00922A49 /* ServiceRequestHandler.java in Sources */,
