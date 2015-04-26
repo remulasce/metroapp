@@ -85,24 +85,26 @@ public class SerializedFileFieldSaver implements FieldSaver {
         }
         catch(IOException e)
         {
-            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
+            // This is a normal case- user has no saved requests.
+            // Not an error.
+//            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
             Log.i(TAG, "No persistent requests found");
             return emptyRequests;
         }
         catch(ClassNotFoundException c)
         {
-            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Class Not Found Exception in loadServiceRequests");
             c.printStackTrace();
             return emptyRequests;
         }
         catch(ClassCastException c)
         {
-            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "ClassCast Exception in loadServiceRequests");
             c.printStackTrace();
             return emptyRequests;
         }
         catch (Exception e) {
-            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in loadServiceRequests");
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "General Exception in loadServiceRequests");
             e.printStackTrace();
             return emptyRequests;
         }
