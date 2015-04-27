@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
 /**
@@ -15,12 +16,18 @@ import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
  */
 public class AndroidNetworkStatusReporter implements NetworkStatusReporter {
 
-    private final View statusBar;
-    private final TextView textView;
+    private View statusBar;
+    private TextView textView;
 
-    private final Handler uiHandler;
+    private Handler uiHandler;
 
     public AndroidNetworkStatusReporter(View statusBar) {
+        if (statusBar == null) {
+            Log.w("AndroidStatusReporter", "Null statusBar sent to report to");
+
+            return;
+        }
+
         this.statusBar = statusBar;
         this.textView = (TextView) statusBar.findViewById(R.id.network_status_text);
 
@@ -29,6 +36,11 @@ public class AndroidNetworkStatusReporter implements NetworkStatusReporter {
 
     @Override
     public void reportFailure() {
+        if (uiHandler == null || textView == null || statusBar == null) {
+            Log.w("AndroidStatusReporter", "No statusBar sent to report to");
+            return;
+        }
+
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -46,6 +58,11 @@ public class AndroidNetworkStatusReporter implements NetworkStatusReporter {
 
     @Override
     public void reportGettingUpdate() {
+        if (uiHandler == null || textView == null || statusBar == null) {
+            Log.w("AndroidStatusReporter", "No statusBar sent to report to");
+            return;
+        }
+
         uiHandler.post( new Runnable() {
             @Override
             public void run() {
