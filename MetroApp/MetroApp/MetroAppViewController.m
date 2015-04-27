@@ -84,6 +84,11 @@
     ComRemulasceLametroappJava_coreRegionalizationHelper *regionalizationHelper;
     regionalizationHelper = [ComRemulasceLametroappJava_coreRegionalizationHelper getInstance];
     regionalizationHelper->agencyName_ = @"actransit";
+    
+    // Final UI tweaks
+    
+    self.serviceRequestView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.multiArrivalTripView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 #pragma mark - Table View Code
