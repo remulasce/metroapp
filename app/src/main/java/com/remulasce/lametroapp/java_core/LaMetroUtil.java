@@ -279,7 +279,7 @@ public class LaMetroUtil {
         if ( seconds > 60 ) {
             return String.valueOf( seconds / 60 ) + " min";
         }
-        if ( seconds > 1 ) {
+        if ( seconds >= 1 ) {
             return String.valueOf( seconds ) + "s";
         }
         if ( seconds == 0 ) {
