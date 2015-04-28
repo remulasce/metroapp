@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
@@ -185,6 +186,22 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
                 startActivity(browserIntent);
+
+                Toast.makeText(MainActivity.this, "Thanks! I'm linking you to paypal now.", Toast.LENGTH_LONG).show();
+
+                Handler uiHandler = new Handler( MainActivity.this.getMainLooper() );
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "I do this as a hobby, and donations really encourage me to keep working.", Toast.LENGTH_LONG).show();
+                    }
+                }, 3000);
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "If you have any specific annoyance with the app, email me and I'll get right on it.", Toast.LENGTH_LONG).show();
+                    }
+                }, 5000);
             }
         });
 
