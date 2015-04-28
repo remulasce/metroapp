@@ -35,12 +35,12 @@ public class Arrival implements Serializable {
         vehicle = new Vehicle();
     }
 
-    /** In seconds from now */
+    /** In seconds from now.
+     * Can be negative if the vehicle has already arrived.
+       May be cullled at <= -30 seconds.
+     */
     public float getEstimatedArrivalSeconds() {
         float time_delta = (lastPrediction - System.currentTimeMillis()) / 1000f;
-        if (time_delta < 0) {
-            time_delta = -1;
-        }
 
         return time_delta;
     }

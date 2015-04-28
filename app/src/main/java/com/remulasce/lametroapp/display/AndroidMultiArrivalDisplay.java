@@ -119,8 +119,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
 
-            // If the bus already arrived, don't add the display
-            if (seconds <= 0) {
+            // If the bus is long gone, don't add it.
+            // But keep displaying the "arrived" text for a little while, so you can
+            // see the bus # once you've boarded.
+            if (seconds <= -10) {
                 continue;
             }
             // If there's recycled views to use
