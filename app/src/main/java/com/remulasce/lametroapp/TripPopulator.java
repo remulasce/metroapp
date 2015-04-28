@@ -238,6 +238,8 @@ public class TripPopulator {
                 public void run() {
                     long start = Tracking.startTime();
 
+                    int oldTripsNum = adapter.getCount();
+
                     adapter.clear();
                     for (Trip t : sorted) {
                         if (t != null && t.isValid()) {
@@ -265,7 +267,9 @@ public class TripPopulator {
                     } else {
                         if ( hint.getVisibility() == View.VISIBLE ) {
                             hint.setVisibility(View.INVISIBLE);
+                        }
 
+                        if (oldTripsNum == 0) {
                             TutorialManager.getInstance().tripsNewlyShown();
                         }
 

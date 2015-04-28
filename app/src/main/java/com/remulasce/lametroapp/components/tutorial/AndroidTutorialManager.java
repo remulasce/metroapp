@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
@@ -21,6 +23,8 @@ public class AndroidTutorialManager extends TutorialManager{
     private Handler uiHandler;
     private long lastDismissalPlay;
 
+    private TextView aboutPaneHint;
+
     private static final String TUTORIAL_PREFERENCES_NAME = "Tutorial";
     private static final String TUTORIAL_USER_KNOWS_DISMISSAL = "knows_notify_dismissal";
     private static final String TUTORIAL_USER_KNOWS_NOTIFY_SERVICE = "knows_notify_service";
@@ -29,9 +33,11 @@ public class AndroidTutorialManager extends TutorialManager{
 
     private boolean appRunning = false;
 
-    public AndroidTutorialManager(Context c) {
+    public AndroidTutorialManager(Context c, TextView aboutPaneHint) {
         this.c = c;
         this.uiHandler = new Handler( Looper.getMainLooper() );
+
+        this.aboutPaneHint = aboutPaneHint;
     }
 
     public void appStarted() { appRunning = true; }
@@ -47,6 +53,12 @@ public class AndroidTutorialManager extends TutorialManager{
         if (!userKnows( TUTORIAL_USER_KNOWS_DISMISSAL)) {
             showTutorial("Swipe an arrival to dismiss it", 5000);
         }
+
+        hideAboutHint();
+    }
+
+    private void hideAboutHint() {
+        aboutPaneHint.setVisibility(View.INVISIBLE);
     }
 
     private void showTutorial(final String message, int delayMillis) {
@@ -83,6 +95,12 @@ public class AndroidTutorialManager extends TutorialManager{
         editor.putBoolean(actionName, true);
         editor.apply();
     }
+
+    @Override
+    public void aboutPaneOpened() {
+        aboutPaneHint.setVisibility(View.INVISIBLE);
+    }
+
 
     @Override
     public void notifyServiceSet() {

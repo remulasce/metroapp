@@ -65,4 +65,8 @@ public class TutorialManager {
     public void tripDismissalUndone() {
         Log.w(TAG, "tripDismissalUndone");
     }
+
+    public void aboutPaneOpened() {
+        Log.w(TAG, "aboutPaneOpened");
+    }
 }

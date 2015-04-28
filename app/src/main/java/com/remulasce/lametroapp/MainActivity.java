@@ -13,6 +13,8 @@ import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -58,6 +60,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private Button clearButton;
     private Button donateButton;
     private Button legalButton;
+    private TextView aboutPaneHint;
+    private TextView donateButtonPresses;
     private ProgressBar autocompleteProgress;
 
     private OmniBarInputHandler omniHandler;
@@ -130,7 +134,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupTutorials() {
-        tutorialManager = new AndroidTutorialManager(this);
+        tutorialManager = new AndroidTutorialManager(this, aboutPaneHint);
         TutorialManager.setTutorialManager(tutorialManager);
     }
 
@@ -162,6 +166,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                tutorialManager.aboutPaneOpened();
+
                 Tracking.setScreenName("About Page");
                 Tracking.sendEvent("About Page", "Pane Opened");
             }
@@ -180,6 +187,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                 startActivity(browserIntent);
             }
         });
+
+        final SpannableStringBuilder str = new SpannableStringBuilder("1 person has donated");
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        donateButtonPresses.setText(str);
     }
 
     void linkViewReferences() {
@@ -188,6 +200,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
         autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
+        aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
+        donateButtonPresses = (TextView) findViewById(R.id.donate_button_press_count_text);
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
