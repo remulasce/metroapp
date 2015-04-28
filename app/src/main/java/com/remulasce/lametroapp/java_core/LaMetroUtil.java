@@ -282,9 +282,6 @@ public class LaMetroUtil {
         if ( seconds >= 1 ) {
             return String.valueOf( seconds ) + "s";
         }
-        if ( seconds == 0 ) {
-            return "1s";
-        }
         return "arrived";
     }
 
