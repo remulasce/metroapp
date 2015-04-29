@@ -252,7 +252,11 @@ public class TripPopulator {
                     }
 
                     if (sorted.size() == 0 ) {
-                        hint.setVisibility(View.VISIBLE);
+                        if ( TutorialManager.getInstance().tripListNeedsHint() ) {
+                            hint.setVisibility(View.VISIBLE);
+                        } else {
+                            hint.setVisibility(View.INVISIBLE);
+                        }
 
 
                         if (requests.getRequests().size() != 0) {// && couldServiceRequestsHavePending()) {
@@ -265,7 +269,7 @@ public class TripPopulator {
 
 
                     } else {
-                        if ( hint.getVisibility() == View.VISIBLE ) {
+                        if ( hint.getVisibility() == View.VISIBLE) {
                             hint.setVisibility(View.INVISIBLE);
                         }
 

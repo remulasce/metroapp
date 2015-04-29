@@ -300,6 +300,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tripPopulator.StartPopulating();
         tutorialManager.appStarted();
         PredictionManager.getInstance().resumeTracking();
+
+        tutorialManager.userOpenedApp();
     }
 
     @Override

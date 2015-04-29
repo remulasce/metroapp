@@ -29,6 +29,7 @@ public class AndroidTutorialManager extends TutorialManager{
     private static final String TUTORIAL_USER_KNOWS_DISMISSAL = "knows_notify_dismissal";
     private static final String TUTORIAL_USER_KNOWS_NOTIFY_SERVICE = "knows_notify_service";
     private static final String TUTORIAL_USER_KNOWS_UNDO_DISMISS = "knows_undo_dismiss";
+    private static final String USER_EXPERIENCE_COUNT = "user_experience_count";
 
 
     private boolean appRunning = false;
@@ -38,6 +39,12 @@ public class AndroidTutorialManager extends TutorialManager{
         this.uiHandler = new Handler( Looper.getMainLooper() );
 
         this.aboutPaneHint = aboutPaneHint;
+        if (aboutPaneNeedsHint()) {
+            aboutPaneHint.setVisibility(View.VISIBLE);
+        } else {
+            aboutPaneHint.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     public void appStarted() { appRunning = true; }
@@ -94,6 +101,44 @@ public class AndroidTutorialManager extends TutorialManager{
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(actionName, true);
         editor.apply();
+    }
+
+    @Override
+    public boolean requestListNeedsHint() {
+//        return true;
+        return getUserExperienceCount() < 10;
+    }
+
+    @Override
+    public boolean tripListNeedsHint() {
+//        return true;
+        return getUserExperienceCount() < 10;
+    }
+
+    @Override
+    public boolean aboutPaneNeedsHint() {
+//        return true;
+        return getUserExperienceCount() >= 10;
+    }
+
+    @Override
+    public void userOpenedApp() {
+        SharedPreferences preferences = c.getSharedPreferences(TUTORIAL_PREFERENCES_NAME, 0);
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        int timesOpened = preferences.getInt(USER_EXPERIENCE_COUNT, 0);
+        timesOpened++;
+        editor.putInt(USER_EXPERIENCE_COUNT, timesOpened);
+
+        editor.apply();
+    }
+
+    public int getUserExperienceCount() {
+        SharedPreferences preferences = c.getSharedPreferences(TUTORIAL_PREFERENCES_NAME, 0);
+        int timesOpened = preferences.getInt(USER_EXPERIENCE_COUNT, 0);
+
+        return timesOpened;
     }
 
     @Override

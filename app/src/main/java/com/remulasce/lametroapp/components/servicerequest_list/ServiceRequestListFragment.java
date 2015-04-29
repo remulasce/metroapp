@@ -70,10 +70,18 @@ public class ServiceRequestListFragment extends Fragment {
             saveServiceRequests(requests);
         }
 
+        updateHintVisibility();
+    }
+
+    private void updateHintVisibility() {
         if (requests.size() > 0) {
             hintText.setVisibility(View.INVISIBLE);
         } else {
-            hintText.setVisibility(View.VISIBLE);
+            if (TutorialManager.getInstance().requestListNeedsHint()) {
+                hintText.setVisibility(View.VISIBLE);
+            } else {
+                hintText.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -95,6 +103,8 @@ public class ServiceRequestListFragment extends Fragment {
         hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
 
         requestList.setOnItemClickListener(onItemClickListener);
+        updateHintVisibility();
+
         return view;
     }
 
