@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Tell me how to improve the app"
+                android:text="Email me with suggestions"
                 android:id="@+id/feedback_call_action"
                 android:layout_below="@+id/about_author"
                 android:layout_alignParentLeft="true"

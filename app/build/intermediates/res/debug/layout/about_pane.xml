@@ -81,7 +81,7 @@
                 android:text="@string/donate_pitch"
                 android:id="@+id/donate_text"
                 android:layout_marginTop="50dp"
-                android:layout_below="@+id/about_author"
+                android:layout_below="@+id/feedback_call_action"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
@@ -106,6 +106,16 @@
                 android:layout_below="@id/donate_button"
                 android:layout_centerHorizontal="true"
                 android:textSize="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Email me with suggestions"
+                android:id="@+id/feedback_call_action"
+                android:layout_below="@+id/about_author"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
 
         </RelativeLayout>
