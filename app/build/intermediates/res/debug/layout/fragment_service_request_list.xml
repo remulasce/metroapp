@@ -23,5 +23,13 @@
         android:id="@+id/service_request_hint_text"
         android:layout_gravity="center" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Stops to Track"
+        android:id="@+id/request_list_secondary_hint"
+        android:layout_gravity="center_horizontal|bottom" />
+
 </FrameLayout>
 <!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/fragment_service_request_list.xml -->

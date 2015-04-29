@@ -41,6 +41,7 @@ public class TripPopulator {
 
     private final ListView list;
     private final TextView hint;
+    private final TextView secondaryHint;
     private final ProgressBar progress;
     private final ArrayAdapter< AndroidDisplay > adapter;
 
@@ -55,11 +56,12 @@ public class TripPopulator {
 
     private final Context c;
 
-    public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, ProgressBar progress, Context c ) {
+    public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, TextView secondaryHint, ProgressBar progress, Context c ) {
         this.requests = requests;
         this.list = list;
         this.progress = progress;
         this.hint = hint;
+        this.secondaryHint = secondaryHint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
         this.c = c;
 
@@ -254,8 +256,10 @@ public class TripPopulator {
                     if (sorted.size() == 0 ) {
                         if ( TutorialManager.getInstance().tripListNeedsHint() ) {
                             hint.setVisibility(View.VISIBLE);
+                            secondaryHint.setVisibility(View.INVISIBLE);
                         } else {
                             hint.setVisibility(View.INVISIBLE);
+                            secondaryHint.setVisibility(View.VISIBLE);
                         }
 
 
@@ -269,8 +273,9 @@ public class TripPopulator {
 
 
                     } else {
-                        if ( hint.getVisibility() == View.VISIBLE) {
+                        if ( hint.getVisibility() == View.VISIBLE || secondaryHint.getVisibility() == View.VISIBLE) {
                             hint.setVisibility(View.INVISIBLE);
+                            secondaryHint.setVisibility(View.INVISIBLE);
                         }
 
                         if (oldTripsNum == 0) {

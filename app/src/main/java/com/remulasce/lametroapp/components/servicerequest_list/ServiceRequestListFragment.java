@@ -34,6 +34,7 @@ public class ServiceRequestListFragment extends Fragment {
     private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
     private TextView hintText;
+    private TextView secondaryHintText;
 
     private final List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
@@ -76,10 +77,13 @@ public class ServiceRequestListFragment extends Fragment {
     private void updateHintVisibility() {
         if (requests.size() > 0) {
             hintText.setVisibility(View.INVISIBLE);
+            secondaryHintText.setVisibility(View.INVISIBLE);
         } else {
             if (TutorialManager.getInstance().requestListNeedsHint()) {
                 hintText.setVisibility(View.VISIBLE);
+                secondaryHintText.setVisibility(View.INVISIBLE);
             } else {
+                secondaryHintText.setVisibility(View.VISIBLE);
                 hintText.setVisibility(View.INVISIBLE);
             }
         }
@@ -101,6 +105,7 @@ public class ServiceRequestListFragment extends Fragment {
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
         hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
+        secondaryHintText = (TextView) view.findViewById(R.id.request_list_secondary_hint);
 
         requestList.setOnItemClickListener(onItemClickListener);
         updateHintVisibility();

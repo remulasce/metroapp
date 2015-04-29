@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private ListView tripList;
     private TextView tripListHint;
+    private TextView tripListSecondaryHint;
     private View networkStatusView;
     private ProgressBar tripListProgress;
 
@@ -222,6 +223,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
+        tripListSecondaryHint = (TextView) findViewById( R.id.trip_list_secondary_hint );
         tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
         networkStatusView = findViewById(R.id.network_status_bar);
 
@@ -231,7 +233,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     void setupActionListeners() {
         requestHandler = new ServiceRequestHandler();
-        tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListProgress, this );
+        tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListSecondaryHint, tripListProgress, this );
 
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override

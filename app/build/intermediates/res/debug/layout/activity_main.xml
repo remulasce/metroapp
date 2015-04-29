@@ -92,6 +92,15 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/network_status_bar" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Predicted Arrivals"
+            android:id="@+id/trip_list_secondary_hint"
+            android:layout_below="@+id/separator"
+            android:layout_centerHorizontal="true"/>
+
     </RelativeLayout>
 
     <!-- The navigation drawer -->
