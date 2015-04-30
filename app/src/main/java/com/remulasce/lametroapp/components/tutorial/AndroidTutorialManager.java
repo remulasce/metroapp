@@ -29,6 +29,7 @@ public class AndroidTutorialManager extends TutorialManager{
     private static final String TUTORIAL_USER_KNOWS_DISMISSAL = "knows_notify_dismissal";
     private static final String TUTORIAL_USER_KNOWS_NOTIFY_SERVICE = "knows_notify_service";
     private static final String TUTORIAL_USER_KNOWS_UNDO_DISMISS = "knows_undo_dismiss";
+    private static final String TUTORIAL_USER_KNOWS_ABOUT_PANE = "knows_about_pane";
     private static final String USER_EXPERIENCE_COUNT = "user_experience_count";
 
 
@@ -118,7 +119,7 @@ public class AndroidTutorialManager extends TutorialManager{
     @Override
     public boolean aboutPaneNeedsHint() {
 //        return true;
-        return getUserExperienceCount() >= 10;
+        return getUserExperienceCount() >= 10 && !userKnows(TUTORIAL_USER_KNOWS_ABOUT_PANE);
     }
 
     @Override
@@ -144,6 +145,8 @@ public class AndroidTutorialManager extends TutorialManager{
     @Override
     public void aboutPaneOpened() {
         aboutPaneHint.setVisibility(View.INVISIBLE);
+
+        setUserHasDone(TUTORIAL_USER_KNOWS_ABOUT_PANE);
     }
 
 
