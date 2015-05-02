@@ -34,6 +34,7 @@ for agencyName in agencyList:
 	databaselist = []
 
 	i=0.0
+	uniquetag = 1
 	print len(routeList)
 	for route in routeList:
 		i = i + 1
@@ -50,18 +51,19 @@ for agencyName in agencyList:
 					if child.tag == "stop":
 						if "stopId" in child.attrib.keys():
 							#print child.attrib
-							uniquetag = child.attrib["tag"]
+							#uniquetag = child.attrib["tag"]
 							stopid = child.attrib["stopId"]
 							stopname = child.attrib["title"]
 							lat = child.attrib["lat"]
 							lon = child.attrib["lon"]
 							newstop = 1
 							for el in databaselist:
-								if el[0] == stopid:
+								if el[1] == stopid:
 									newstop = 0
 								#print "Match: " + str(el[0]) + ", " + str(stopid)
 							if newstop==1:
 								databaselist.append( (uniquetag,stopid,stopname,lat,lon) )
+								uniquetag = uniquetag + 1
 								#print databaselist
 		
 	conn = sqlite3.connect(agencyName + '.db')
