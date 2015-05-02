@@ -1,5 +1,6 @@
 # Los Angeles Metro Companion App
 Realtime arrival notification utility for LA Metro on Android
+Also, port in progress for AC Transit on iOS with automatic region detection planned.
 
 ![Promo Banner](/promotional_images/promo_banner.png?raw=true "Promo Banner")
 

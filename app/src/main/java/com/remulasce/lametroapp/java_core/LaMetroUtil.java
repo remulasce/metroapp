@@ -140,8 +140,6 @@ public class LaMetroUtil {
                             s.setStopName(stopTitleAttribute);
 
                             addNewArrival(ret, seconds, d, r, s, v);
-
-                            Log.d(TAG, arrival.toString());
                         }
                     }
                 }

@@ -12,7 +12,8 @@
         android:layout_alignParentStart="true"
         android:hint="@string/omni_autocomplete_hint"
         android:dropDownWidth="match_parent"
-        android:dropDownHorizontalOffset="-40dp"/>
+        android:dropDownHorizontalOffset="-40dp">
+    </com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView>
 
     <Button
         android:id="@+id/omni_clear_button"

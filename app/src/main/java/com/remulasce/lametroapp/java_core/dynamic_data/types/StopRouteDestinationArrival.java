@@ -22,8 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *  require two of these.
  */
 public class StopRouteDestinationArrival implements Serializable {
-    private final int MINIMUM_UPDATE_INTERVAL = 5000;
-    private final int INTERVAL_INCREASE_PER_SECOND = 50;
+    private final int MINIMUM_UPDATE_INTERVAL = 10000;
+    private final int MAXIMUM_UPDATE_INTERVAL = 60000;
+    private final int INTERVAL_INCREASE_PER_SECOND = 400;
 
     private static final String TAG = "SRDArrival";
     final Stop stop;
@@ -59,7 +60,7 @@ public class StopRouteDestinationArrival implements Serializable {
             if ( first == null
                     || a.getEstimatedArrivalSeconds() < first.getEstimatedArrivalSeconds() )
             {
-                if ( a.getEstimatedArrivalSeconds() != -1 ) {
+                if ( a.getEstimatedArrivalSeconds() >= 0 ) {
                     first = a;
                 }
             }
@@ -68,16 +69,19 @@ public class StopRouteDestinationArrival implements Serializable {
         if ( first == null ) {
             firstTime = 15;
         } else {
-            firstTime = (int) first.getEstimatedArrivalSeconds();
+            firstTime = first.getEstimatedArrivalSeconds();
         }
 
         interval = Math.max( MINIMUM_UPDATE_INTERVAL, firstTime * INTERVAL_INCREASE_PER_SECOND );
+        interval = Math.min (MAXIMUM_UPDATE_INTERVAL, interval);
 
         return interval;
     }
 
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
-        Log.d(TAG, "Updating SRDArrival times from "+updatedArrivals.size()+" arrivals");
+        Log.d(TAG, "Updating SRDArrival times from " + updatedArrivals.size() + " arrivals");
+
+        List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
 
         
         List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
@@ -98,7 +102,12 @@ public class StopRouteDestinationArrival implements Serializable {
                         break;
                     }
                 }
-                // Saving Remulasce From himself - Nighelles
+		// Ok, legit commentary
+		// We should never get an update with \lte 0 seconds, but that's only true as long as
+		// We're still using this just as a pass through to network updates, which it seems like
+		// might not always be true. There's another loop before that actually removes arrivals that
+		// have expired.
+		
                 if (a != null && update.getEstimatedArrivalSeconds() <= 0)
                 {
                     arrivalsToDelete.add(a);
@@ -115,14 +124,13 @@ public class StopRouteDestinationArrival implements Serializable {
 
                         arrivals.add(a);
                     }
-                    
+
                     a.setEstimatedArrivalSeconds(update.getEstimatedArrivalSeconds());
                 }
             }
         }
         for (Arrival arrival : arrivals) {
-            if (arrival.getEstimatedArrivalSeconds() <= 0)
-            {
+            if (arrival.getEstimatedArrivalSeconds() <= 0) {
                 arrivalsToDelete.add(arrival);
             }
         }

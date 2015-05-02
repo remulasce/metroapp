@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.NotifyServiceManager;
 import com.remulasce.lametroapp.R;
@@ -288,5 +289,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                     }
                 })
                 .show();
+
+        TutorialManager.getInstance().notifyServiceSet();
     }
 }

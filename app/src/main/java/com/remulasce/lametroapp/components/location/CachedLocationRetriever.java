@@ -14,19 +14,47 @@ import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
-import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Gets location from Play Services.
+ * Created by Remulasce on 4/4/2015.
+ *
+ * CachedLocationRetriever solves the problem of Trips using different current locations for
+ *   their priorities, due to them checking in for updated locations indepentently.
+ *
+ * This was due to performance concerns of the previous location retriever, which would
+ *   lag the system if every trip checked in at once every refresh.
+ *
+ * Here we cache distances to various locations, allowing trips to checkin from us every update.
+ *
+ * When we receive new locations from the system, we will update all of the cached distances ourselves.
+ * That makes actual access faster and also ensures every distance is based off proximity to the
+ *   same location.
+ *
+ * In-between app runs we persist our most recent location. This will probably be wrong between loads,
+ *   but makes it more predictable what will appear first on load.
+ *
  */
-public class MetroLocationRetriever implements LocationRetriever {
+public class CachedLocationRetriever implements LocationRetriever {
     private static final String TAG = "LocationRetriever";
+    public static final int CACHE_UPDATE_INTERVAL = 5000;
 
     private GoogleApiClient mGoogleApiClient;
-
     private Location lastRetrievedLocation;
 
-    public MetroLocationRetriever(Context c, StopLocationTranslator locations) {
+    private BasicLocation curLocation;
+    private long lastCacheUpdate;
+    ConcurrentHashMap<BasicLocation, CachedProximity> cache = new ConcurrentHashMap<BasicLocation, CachedProximity>();
+
+
+    private class CachedProximity {
+        private CachedProximity(double distance) { this.distance = distance; }
+        private double distance; // meters
+    }
+
+    public CachedLocationRetriever(Context c) {
         setupLocation(c);
     }
 
@@ -62,7 +90,7 @@ public class MetroLocationRetriever implements LocationRetriever {
                 Log.i(TAG, "Location service connected");
                 Tracking.sendEvent("Location Service", "OnConnected", "Location Available");
 
-                lastRetrievedLocation = lastLocation;
+                newLocationAvailable(lastLocation);
             } else {
                 Tracking.sendEvent("Location Service", "OnConnected", "No Last Location");
                 Log.i(TAG, "location service connected, but no location available");
@@ -86,11 +114,28 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
     };
 
+    private void newLocationAvailable(Location location) {
+        if (System.currentTimeMillis() > lastCacheUpdate + CACHE_UPDATE_INTERVAL) {
+            lastRetrievedLocation = location;
+
+            updateCachedDistances();
+        }
+    }
+
+    private void updateCachedDistances() {
+        Log.d(TAG, "Updating cached proximities");
+        lastCacheUpdate = System.currentTimeMillis();
+        
+        for (Map.Entry<BasicLocation, CachedProximity> entry : cache.entrySet()) {
+            entry.getValue().distance = getRawCurrentDistance(entry.getKey());
+        }
+    }
+
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.d(TAG, "Received new location "+location);
-            lastRetrievedLocation = location;
+            newLocationAvailable(location);
         }
     };
 
@@ -117,7 +162,7 @@ public class MetroLocationRetriever implements LocationRetriever {
         }
 
         BasicLocation stopRawLoc = stop.getLocation();
-        double distance = getDistanceTo(stopRawLoc);
+        double distance = getCachedDistanceTo(stopRawLoc);
 
         Log.v(TAG, "____stop took "+Tracking.timeSpent(t) + "ms, Returned distance: "+distance);
         Tracking.averageUITime("MetroLocationRetriever", "getCurrentDistanceToStop", t);
@@ -125,12 +170,39 @@ public class MetroLocationRetriever implements LocationRetriever {
         return distance;
     }
 
-    private double getDistanceTo(BasicLocation stopRawLoc) {
+    private boolean cacheHasLocation(BasicLocation location) {
+        return cache.containsKey(location);
+    }
+
+    private double getCachedDistance(BasicLocation location) {
+        return cache.get(location).distance;
+    }
+
+    private void addToCache(BasicLocation location, double distance) {
+        cache.put(location, new CachedProximity(distance));
+    }
+
+    private double getCachedDistanceTo(BasicLocation stopRawLoc) {
         if (stopRawLoc == null) {
             Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
             return -1;
         }
 
+
+        if (cacheHasLocation(stopRawLoc)) {
+            return getCachedDistance(stopRawLoc);
+        }
+        else {
+            float distance = getRawCurrentDistance(stopRawLoc);
+
+            addToCache(stopRawLoc, distance);
+
+            return distance;
+        }
+
+    }
+
+    private float getRawCurrentDistance(BasicLocation stopRawLoc) {
         Location currentLoc = getBestLocation();
         if (currentLoc == null) {
             Log.d(TAG, "Current location unavailable");
@@ -144,11 +216,11 @@ public class MetroLocationRetriever implements LocationRetriever {
         Location.distanceBetween(currentLoc.getLatitude(), currentLoc.getLongitude(),
                 stopLatitude, stopLongitude, results);
 
-        return (double) results[0];
+        return results[0];
     }
 
     @Override
     public double getCurrentDistanceToLocation(BasicLocation location) {
-        return getDistanceTo(location);
+        return getCachedDistanceTo(location);
     }
 }

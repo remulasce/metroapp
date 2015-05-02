@@ -1,17 +1,23 @@
 package com.remulasce.lametroapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -19,6 +25,9 @@ import android.widget.TextView;
 
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
+import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
+import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
+import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
@@ -52,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private OmniBarInputHandler omniHandler;
     private ServiceRequestListFragment requestFragment;
+    private AndroidTutorialManager tutorialManager;
 
     private ListView tripList;
     private TextView tripListHint;
@@ -62,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private HTTPGetter network;
     private MetroStaticsProvider staticsProvider;
     private OmniAutoCompleteAdapter autoCompleteAdapter;
-    private MetroLocationRetriever locationService;
+    private CachedLocationRetriever locationService;
     private RouteColorer routeColorer;
     private SerializedFileFieldSaver fieldSaver;
     private NetworkStatusReporter networkStatusReporter;
@@ -89,6 +99,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupOmniBar();
         setupNetworkStatus();
         setupAboutPage();
+        setupTutorials();
 
         setupDefaults( getIntent() );
     }
@@ -108,16 +119,21 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupLocation() {
-        locationService = new MetroLocationRetriever(this, staticsProvider);
+        locationService = new CachedLocationRetriever(this);
         GlobalLocationProvider.setRetriever(locationService);
+    }
+
+    private void setupTutorials() {
+        tutorialManager = new AndroidTutorialManager(this);
+        TutorialManager.setTutorialManager(tutorialManager);
     }
 
     private void setupOmniBar() {
         autoCompleteAdapter = new OmniAutoCompleteAdapter(this, R.layout.omnibar_dropdown_item, R.id.item, staticsProvider, locationService);
         omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(3);
+        omniField.setThreshold(0);
 
-        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, null, this);
+        omniHandler = new OmniBarInputHandler(omniField, null, clearButton, autocompleteProgress, requestFragment, staticsProvider, staticsProvider, staticsProvider, null, this);
     }
 
     private void setupActionBar() {
@@ -245,6 +261,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onStart();
         requestHandler.StartPopulating();
         tripPopulator.StartPopulating();
+        tutorialManager.appStarted();
         PredictionManager.getInstance().resumeTracking();
     }
 
@@ -259,6 +276,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onStop();
         PredictionManager.getInstance().pauseTracking();
         requestHandler.StopPopulating();
+        tutorialManager.appStopped();
         tripPopulator.StopPopulating();
     }
 
@@ -267,8 +285,54 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         super.onResume();
 
         Tracking.setScreenName("Main Screen");
-
         locationService.startLocating(this);
+
+    }
+
+    // Ugly hack to show history suggestions as soon as ap loads
+    // Except, Android won't actually tell you when it's ok with dialogs showing
+    // So instead we check every xms until we actually have a window.
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus && requestHandler.getRequests().size() == 0) {
+            Handler h = new Handler(Looper.getMainLooper());
+            h.postDelayed(showDropdownOnStart, 100);
+        }
+    }
+
+    Runnable showDropdownOnStart = new Runnable() {
+        @Override
+        public void run() {
+            if (omniField.getWindowVisibility() != View.GONE) {// && omniField.isFocused()) {
+                Log.i(TAG, "Showing omni dropdown after startup");
+                omniField.requestFocus();
+                InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(omniField.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+//                omniField.showDropDown();
+            } else {
+                Handler h = new Handler(Looper.getMainLooper());
+                h.postDelayed(showDropdownOnStart, 100);
+            }
+        }
+    };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (omniField.isFocused()) {
+                Rect outRect = new Rect();
+                omniField.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    omniField.clearFocus();
+                    //
+                    // Hide keyboard
+                    //
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     @Override

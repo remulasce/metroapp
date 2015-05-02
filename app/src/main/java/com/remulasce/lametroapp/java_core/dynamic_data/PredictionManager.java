@@ -241,12 +241,17 @@ public class PredictionManager {
 
 			String request = prediction.getRequestString();
 			Log.v(TAG, "Handling request "+request);
-			
+
+            if (statusReporter != null) {
+                // Testing purposes for now.
+//                statusReporter.reportGettingUpdate();
+            }
+
 			String response = sendRequest( request );
 
 			Log.v(TAG, "Response received: "+response);
 			prediction.handleResponse(response);
-			
+
 			prediction.setUpdated();
 
 			Tracking.sendTime("PredictionManager", "UpdateRunner", "Total Run", t);
