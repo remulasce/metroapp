@@ -197,12 +197,18 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             }
         }
 
+        Boolean hasTrips = !trip.parentArrival.getArrivals().isEmpty();
+        if (!hasTrips) {
+            RadioButton consistencyButton = new RadioButton(context);
+            consistencyButton.setText("No Vehicles Are Running");
+        }
+
         RadioButton first = (RadioButton)radios.getChildAt(0);
         if (first != null) {
             radios.check(first.getId());
         }
 
-        launchNotificationConfirmation(context, dialogView);
+        launchNotificationConfirmation(context, dialogView, hasTrips);
     }
 
     private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio) {
@@ -247,7 +253,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         return vehicle;
     }
 
-    private void launchNotificationConfirmation(final Context context, final View dialogView) {
+    private void launchNotificationConfirmation(final Context context, final View dialogView, Boolean allowOk) {
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
@@ -263,7 +269,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
 
         setTrackingEventListeners(time, vehicleRadio);
 
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
                 .setView( dialogView )
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -289,6 +295,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                     }
                 })
                 .show();
+
+        if (allowOk!=Boolean.TRUE) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        }
 
         TutorialManager.getInstance().notifyServiceSet();
     }
