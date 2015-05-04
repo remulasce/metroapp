@@ -11,4 +11,13 @@ package com.remulasce.lametroapp.java_core.basic_types;
  */
 public class Agency {
     public String raw = "";
+
+    public Agency(String raw) {
+        this.raw = raw;
+    }
+
+    // Quick and dirty check if we've ever actually been set.
+    public boolean isValid() {
+        return raw != null && !raw.isEmpty();
+    }
 }

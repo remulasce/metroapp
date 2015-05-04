@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.java_core;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -65,7 +66,7 @@ public class LaMetroUtil {
         if ( route == null || !route.isValid() )
             return false;
         try {
-            int routeNum = Integer.valueOf( route.getString() );
+            int routeNum = Integer.valueOf(route.getString());
             return routeNum > 0 && routeNum < 1000;
         } catch ( Exception e ) {
             return false;
@@ -73,12 +74,18 @@ public class LaMetroUtil {
     }
 
     public static String makePredictionsRequest( Stop stop, Route route ) {
-        String agency = getAgencyFromRoute( route, stop );
+        Agency agency = stop.getAgency();
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId="
+        if (agency == null || !agency.isValid()) {
+            Log.d(TAG, "No agency attached to stop, determining from region");
+
+            agency = new Agency(getAgencyFromRoute( route, stop ) );
+        }
+
+        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                 + stop.getString();
 
-        if ( isValidRoute( route ) ) {
+        if ( isValidRoute(route) ) {
             URI += "&routeTag=" + route.getString();
         }
 
