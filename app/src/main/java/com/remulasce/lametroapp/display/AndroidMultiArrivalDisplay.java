@@ -198,9 +198,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         Boolean hasTrips = !trip.parentArrival.getArrivals().isEmpty();
-        if (!hasTrips) {
+        if (hasTrips == false) {
             RadioButton consistencyButton = new RadioButton(context);
-            consistencyButton.setText("No Vehicles Are Running");
+            consistencyButton.setText("No vehicles available");
+            radios.addView(consistencyButton);
         }
 
         RadioButton first = (RadioButton)radios.getChildAt(0);
