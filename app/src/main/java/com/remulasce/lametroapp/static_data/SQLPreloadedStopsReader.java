@@ -162,6 +162,10 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
+
+            // This shouldn't need to happen since we started using the new database.
+            // - Nighelles
+
             for (SQLEntry entry : matchingEntries) {
                 // Each station entrance in Metro has its own stopID.
                 // Duplicates have letters at the end; originals are straight digits.
