@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /** Old stops.txt sql handler
@@ -176,7 +177,9 @@ public class GTFSStopsReader extends SQLiteOpenHelper
                         OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
                         Stop newStop = new Stop(entry.stopID);
                         newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
-                        newEntry.setStop(newStop);
+                        List<Stop> stops = new ArrayList<Stop>();
+                        stops.add(newStop);
+                        newEntry.setStops(stops);
                         tmp.put(entry.stopName, newEntry);
                     }
                 }
