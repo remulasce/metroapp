@@ -1,8 +1,6 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -106,8 +103,25 @@ public class OmniBarInputHandler {
             OmniAutoCompleteEntry entry = (OmniAutoCompleteEntry) adapterView.getItemAtPosition(i);
             autoCompleteHistory.autocompleteSaveSelection(entry);
 
-            String requestText = omniField.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
+
+            ServiceRequest request = makeMultiStopServiceRequest(entry.getStops(), entry.toString());
+
+            if (request != null) {
+                requestList.AddServiceRequest(request);
+            }
+
+            omniField.getEditableText().clear();
+            omniField.clearFocus();
+
+            InputMethodManager imm = (InputMethodManager)c.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+
+            Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Omni Selection");
+
+
+//            String requestText = omniField.getText().toString();
+//            makeServiceRequestFromOmniInput(requestText);
 
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
         }
@@ -192,7 +206,7 @@ public class OmniBarInputHandler {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
         }
     }
-    private ServiceRequest makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
+    private ServiceRequest makeMultiStopServiceRequestFromStrings(Collection<String> stopIDs, String displayName) {
         Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
 
         Collection<Stop> stops = new ArrayList<Stop>();
@@ -200,6 +214,18 @@ public class OmniBarInputHandler {
         for (String stop : stopIDs) {
             stops.add(new Stop(stop));
         }
+
+        ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
+
+        if (serviceRequest.isValid()) {
+            return serviceRequest;
+        } else {
+            Log.w(TAG, "Created invalid servicerequest, not adding to list");
+            return null;
+        }
+    }
+    private ServiceRequest makeMultiStopServiceRequest( Collection<Stop> stops, String displayName ) {
+        Log.d(TAG, "Making service request from stops: "+stops+", display: "+displayName);
 
         ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
 
@@ -231,7 +257,7 @@ public class OmniBarInputHandler {
                 }
                 // It was a valid stop name
                 else if (convertedID != null && !convertedID.isEmpty()) {
-                    ServiceRequest request = makeMultiStopServiceRequest(convertedID, requestText);
+                    ServiceRequest request = makeMultiStopServiceRequestFromStrings(convertedID, requestText);
 
                     if (request != null) {
                         requestList.AddServiceRequest(request);
