@@ -77,7 +77,7 @@ public class LaMetroUtil {
         Agency agency = stop.getAgency();
 
         if (agency == null || !agency.isValid()) {
-            Log.d(TAG, "No agency attached to stop, determining from region");
+            Log.w(TAG, "No agency attached to stop, determining from region. Deprecated.");
 
             agency = new Agency(getAgencyFromRoute( route, stop ) );
         }
