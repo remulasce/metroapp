@@ -27,7 +27,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     private static final String TAG = "MetroStaticsProvider";
 
 
-    private final SQLPreloadedStopsReader stopsReader;
+    private SQLPreloadedStopsReader stopsReader;
     private final AutoCompleteHistoryFiller autoCompleteHistoryFiller;
 
     private HashMap<String, String> stopNameCache;
@@ -35,9 +35,24 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     private HashMap<String, Collection<String>> stopIDCache;
 
 
+
     public MetroStaticsProvider(Context context) {
-        stopsReader = new SQLPreloadedStopsReader(context, "StopNames.db");
+        setupRegion(context);
+
         autoCompleteHistoryFiller = new AndroidAutocompleteHistory(context);
+    }
+
+    private void setupRegion(Context context) {
+        Agency curAgency = new Agency("actransit");
+
+        Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
+        if (activeAgencies != null && activeAgencies.size() > 0) {
+            curAgency = activeAgencies.iterator().next();
+        } else {
+            Log.w(TAG, "No regions set!");
+        }
+
+        stopsReader = new SQLPreloadedStopsReader(context, curAgency.raw+".db", curAgency);
     }
 
     private void addToCache(Object k, Object v, Map cache, int maxCacheEntries, int numRemoveFull) {
