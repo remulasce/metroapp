@@ -176,6 +176,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                 if (!tmp.containsKey(entry.stopName)) {
                     OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
                     Stop newStop = new Stop(entry.stopID);
+                    newStop.setStopName(entry.stopName);
                     newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
                     ArrayList<Stop> s1 = new ArrayList<Stop>();
                     s1.add(newStop);
@@ -187,6 +188,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                     OmniAutoCompleteEntry existingEntry = tmp.get(entry.stopName);
                     Stop newStop = new Stop(entry.stopID);
                     newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    newStop.setStopName(entry.stopName);
                     List<Stop> s1 = existingEntry.getStops();
                     s1.add(newStop);
                     existingEntry.setStops(s1);
