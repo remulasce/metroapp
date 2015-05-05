@@ -19,7 +19,7 @@ import java.util.Random;
 /**
  * Created by Remulasce on 1/16/2015.
  *
- * Just routes everything through the preloded sql provider.
+ * Just routes everything through the preloaded sql provider.
  */
 public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteCombinedFiller {
     private static final String TAG = "MetroStaticsProvider";
