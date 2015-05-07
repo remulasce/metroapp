@@ -98,9 +98,15 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
+        Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
+
+        if (input == null || input.length() < 3) {
+            Log.d(TAG, "Returning empty autocomplete list because input was too short");
+            return ret;
+        }
+
         long t = Tracking.startTime();
 
-        Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
         // Duplicate station names across databases should be treated as the same stop.
         // Eg. Vermont / Athens has both lametr and lametro-rail components
