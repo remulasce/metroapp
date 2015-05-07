@@ -28,6 +28,9 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
 
     private SQLPreloadedStopsReader stopsReader;
+
+    private Map<Agency, SQLPreloadedStopsReader> regionalStopsReaders = new HashMap<Agency, SQLPreloadedStopsReader>();
+
     private final AutoCompleteHistoryFiller autoCompleteHistoryFiller;
 
     private HashMap<String, String> stopNameCache;
@@ -43,16 +46,30 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     }
 
     private void setupRegion(Context context) {
-        Agency curAgency = new Agency("actransit");
+        Agency curAgency = new Agency("");
 
         Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
-        if (activeAgencies != null && activeAgencies.size() > 0) {
-            curAgency = activeAgencies.iterator().next();
+        if (activeAgencies != null) {
+            for (Agency agency : activeAgencies) {
+                if (!regionalStopsReaders.containsKey(agency)) {
+                    // add agency
+                    SQLPreloadedStopsReader reader = new SQLPreloadedStopsReader(context, getFileName(agency), agency);
+
+                    regionalStopsReaders.put(agency, reader);
+                    Log.i(TAG, "Made autocomplete filler for agency "+agency.raw);
+                } else {
+                    Log.w(TAG, "Tried to add duplicate agency to statics");
+                }
+            }
         } else {
             Log.w(TAG, "No regions set!");
         }
 
-        stopsReader = new SQLPreloadedStopsReader(context, curAgency.raw+".db", curAgency);
+        stopsReader = new SQLPreloadedStopsReader(context, getFileName(curAgency), curAgency);
+    }
+
+    private String getFileName(Agency agency) {
+        return agency.raw+".db";
     }
 
     private void addToCache(Object k, Object v, Map cache, int maxCacheEntries, int numRemoveFull) {
@@ -80,8 +97,9 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
-        Collection<OmniAutoCompleteEntry> sqlReturns = stopsReader.autocompleteStopName(input);
-        ret.addAll(sqlReturns);
+        for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
+            ret.addAll(reader.autocompleteStopName(input));
+        }
 
         return ret;
     }
@@ -115,6 +133,8 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public BasicLocation getStopLocation(Stop stop) {
+        Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
+
         if (stopLocationCache == null) {
             Log.d(TAG, "Initializing stoplocation cache");
             stopLocationCache = new HashMap<String, BasicLocation>();
@@ -134,6 +154,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public String getStopName(String stopID) {
+        Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
 
         if (stopNameCache == null) {
             Log.d(TAG, "Initializing stopname cache");
@@ -154,6 +175,8 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public Collection<String> getStopID(String stopName) {
+        Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
+
         if (stopIDCache == null) {
             Log.d(TAG, "Initializing stopID cache");
             stopIDCache = new HashMap<String, Collection<String>>();
