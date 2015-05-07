@@ -22,4 +22,20 @@ public class Agency implements Serializable{
     public boolean isValid() {
         return raw != null && !raw.isEmpty();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Agency agency = (Agency) o;
+
+        return !(raw != null ? !raw.equals(agency.raw) : agency.raw != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return raw != null ? raw.hashCode() : 0;
+    }
 }

@@ -47,8 +47,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     }
 
     private void setupRegion(Context context) {
-        Agency curAgency = new Agency("");
-
         Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
         if (activeAgencies != null) {
             for (Agency agency : activeAgencies) {
@@ -66,7 +64,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
             Log.w(TAG, "No regions set!");
         }
 
-        stopsReader = new SQLPreloadedStopsReader(context, getFileName(curAgency), curAgency);
+        stopsReader = new SQLPreloadedStopsReader(context, "StopNames.db", null);
     }
 
     private String getFileName(Agency agency) {
@@ -104,9 +102,28 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
+        // Duplicate station names across databases should be treated as the same stop.
+        // Eg. Vermont / Athens has both lametr and lametro-rail components
+        // So we need a quick way to get existing entries to add additional stops to them.
+        Map<String, OmniAutoCompleteEntry> usedStops = new HashMap<String, OmniAutoCompleteEntry>();
+
         for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
-            ret.addAll(reader.autocompleteStopName(input));
+            Collection<OmniAutoCompleteEntry> entries = reader.autocompleteStopName(input);
+
+            for (OmniAutoCompleteEntry newEntry : entries) {
+                if (usedStops.containsKey(newEntry.toString())) {
+                    OmniAutoCompleteEntry exstEntry = usedStops.get(newEntry.toString());
+                    List<Stop> exstStops = exstEntry.getStops();
+                    exstStops.addAll(newEntry.getStops());
+
+                    exstEntry.setStops(exstStops);
+                } else {
+                    usedStops.put(newEntry.toString(), newEntry);
+                }
+            }
         }
+
+        ret.addAll(usedStops.values());
 
         long time = Tracking.timeSpent(t);
         Log.v(TAG, "Total regionalized autocomplete for "+input+" took "+time);
