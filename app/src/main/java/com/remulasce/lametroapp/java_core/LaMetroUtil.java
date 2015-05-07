@@ -101,6 +101,13 @@ public class LaMetroUtil {
     // We should probably make a new data type that only can contain what the xml feed has,
     //    but for now reusing Arrival / Stop is just too convenient.
     public static List< Arrival > parseAllArrivals( String response ) {
+        if (response == null || response.isEmpty()) {
+            Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
+            return null;
+        }
+
+
+
         List< Arrival > ret = parseWithJavaLibs(response);
 
         return ret;
@@ -121,6 +128,12 @@ public class LaMetroUtil {
 
             //get the root element
             Element docEle = dom.getDocumentElement();
+
+            NodeList errors = docEle.getElementsByTagName("Error");
+            if (errors != null && errors.getLength() != 0) {
+                Log.d(TAG, "NexTrip returned an error");
+                return null;
+            }
 
             NodeList predictions = docEle.getElementsByTagName("predictions");
             if(predictions != null && predictions.getLength() > 0) {

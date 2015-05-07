@@ -63,6 +63,13 @@ public class StopRouteDestinationPredictionTest extends TestCase {
                 p.getPredictionState(), Prediction.PredictionState.BAD);
     }
 
+    public void testBadQuery() {
+        p.handleResponse(TestConstants.PREDICTIONS_NO_SUCH_STOPID_ERROR);
+
+        assertEquals("P should know it received an error message",
+                p.getPredictionState(), Prediction.PredictionState.BAD);
+    }
+
     // We already have some arrivals, but then get a valid network update with 0 arrivals.
     // Strategy is to continue with the existing arrivals as 'good'
     public void testExist0Arrivals() {

@@ -91,6 +91,10 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     public void initialize() {
         stopsReader.initialize();
+
+        for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
+            reader.initialize();
+        }
     }
 
     @Override
@@ -125,7 +129,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public void autocompleteSaveSelection(OmniAutoCompleteEntry selected) {
-        Log.d(TAG, "Saving autocomplete entry: "+selected.toString());
+        Log.d(TAG, "Saving autocomplete entry: " + selected.toString());
         autoCompleteHistoryFiller.autocompleteSaveSelection(selected);
 
     }
