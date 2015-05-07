@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.remulasce.lametroapp.java_core.RegionalizationHelper;
+import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -99,11 +100,18 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
     @Override
     public Collection<OmniAutoCompleteEntry> autocompleteStopName(String input) {
+        long t = Tracking.startTime();
+
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
         for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
             ret.addAll(reader.autocompleteStopName(input));
         }
+
+        long time = Tracking.timeSpent(t);
+        Log.v(TAG, "Total regionalized autocomplete for "+input+" took "+time);
+
+        Tracking.sendTime("SQL", "StopNames", "Combined regionalized autocompleteStopName", t);
 
         return ret;
     }

@@ -210,7 +210,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         }
 
         if (trackNumber++ % trackDivider == 0) {
-            Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+            Tracking.sendTime("SQL", "StopNames", "individual getAutocomplete", t);
         }
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 
