@@ -112,19 +112,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     public Collection<OmniAutoCompleteEntry> autocompleteHistorySuggestions(String input) {
         Log.d(TAG, "Getting autocomplete history entries for "+input);
         return autoCompleteHistoryFiller.autocompleteHistorySuggestions(input);
-//
-//        Collection<OmniAutoCompleteEntry> historyReturns = new ArrayList<OmniAutoCompleteEntry>();
-//
-//        OmniAutoCompleteEntry e1 = new OmniAutoCompleteEntry("Patsaouras Transit Plaza", 1.5f);
-//        OmniAutoCompleteEntry e2 = new OmniAutoCompleteEntry("Redondo Beach Station", 1.5f);
-//
-//        e1.setStop(new Stop("Redondo Beach Station"));
-//        e2.setStop(new Stop("Patsaouras Transit Plaza"));
-//
-//        historyReturns.add(e1);
-//        historyReturns.add(e2);
-//
-//        return historyReturns;
     }
 
     @Override
