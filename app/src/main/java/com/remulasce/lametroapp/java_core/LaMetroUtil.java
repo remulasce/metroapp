@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.java_core;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -65,7 +66,7 @@ public class LaMetroUtil {
         if ( route == null || !route.isValid() )
             return false;
         try {
-            int routeNum = Integer.valueOf( route.getString() );
+            int routeNum = Integer.valueOf(route.getString());
             return routeNum > 0 && routeNum < 1000;
         } catch ( Exception e ) {
             return false;
@@ -73,12 +74,18 @@ public class LaMetroUtil {
     }
 
     public static String makePredictionsRequest( Stop stop, Route route ) {
-        String agency = getAgencyFromRoute( route, stop );
+        Agency agency = stop.getAgency();
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId="
+        if (agency == null || !agency.isValid()) {
+            Log.w(TAG, "No agency attached to stop, determining from region. Deprecated.");
+
+            agency = new Agency(getAgencyFromRoute( route, stop ) );
+        }
+
+        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                 + stop.getString();
 
-        if ( isValidRoute( route ) ) {
+        if ( isValidRoute(route) ) {
             URI += "&routeTag=" + route.getString();
         }
 
@@ -86,7 +93,21 @@ public class LaMetroUtil {
     }
 
     // Returns null if there's errors.
+    // Change: No longer fills in locations to the stops!
+    // This avoids having to regionalize in here.
+    // Instead, we are aiming to only produce the information that is actually contained in
+    //    the xml feed.
+    //
+    // We should probably make a new data type that only can contain what the xml feed has,
+    //    but for now reusing Arrival / Stop is just too convenient.
     public static List< Arrival > parseAllArrivals( String response ) {
+        if (response == null || response.isEmpty()) {
+            Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
+            return null;
+        }
+
+
+
         List< Arrival > ret = parseWithJavaLibs(response);
 
         return ret;
@@ -107,6 +128,12 @@ public class LaMetroUtil {
 
             //get the root element
             Element docEle = dom.getDocumentElement();
+
+            NodeList errors = docEle.getElementsByTagName("Error");
+            if (errors != null && errors.getLength() != 0) {
+                Log.d(TAG, "NexTrip returned an error");
+                return null;
+            }
 
             NodeList predictions = docEle.getElementsByTagName("predictions");
             if(predictions != null && predictions.getLength() > 0) {
@@ -244,7 +271,15 @@ public class LaMetroUtil {
         Log.v(TAG, "Adding new arrival "+seconds+" "+d+" "+r+" "+s+" "+v);
 
         if (locationTranslator != null) {
-            s.setLocation(locationTranslator.getStopLocation(s));
+            // This has been changed!
+            // MetroUtil shouldn't have to deal with regionalization or state of the rest of the app.
+            // It should just be convenience methods.
+            // To get the stop locations from here, MetroUtil would need to know what region the stop is.
+            // But, this is called only from parseArrivals from the xml stream, which doesn't include
+            // the agency.
+            // We could provide it, but again, we shouldn't be requesting info in Util.
+            // We should just parse the xml conveniently, and let the rest of the app deal with it.
+//            s.setLocation(locationTranslator.getStopLocation(s));
         }
 
         if (routeColorer != null) {

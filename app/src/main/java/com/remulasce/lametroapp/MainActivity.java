@@ -36,9 +36,9 @@ import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
-import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
@@ -53,6 +53,9 @@ import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
 import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
@@ -91,10 +94,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
-        super.onCreate( savedInstanceState );
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         startAnalytics();
+        setupRegionalization();
         initializeStaticData();
         initializeDynamicData();
         setupLocation();
@@ -105,7 +109,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupActionListeners();
         setupOmniBar();
         setupNetworkStatus();
-        setupRegionalization();
         setupAboutPage();
         setupTutorials();
 
@@ -114,6 +117,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private void setupRegionalization() {
         RegionalizationHelper.getInstance().agencyName = "lametro";
+
+        Collection<Agency> agencies = new ArrayList<Agency>();
+        agencies.add(new Agency("lametro-rail"));
+        agencies.add(new Agency("lametro"));
+
+        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
     }
 
     private void initializeDynamicData() {

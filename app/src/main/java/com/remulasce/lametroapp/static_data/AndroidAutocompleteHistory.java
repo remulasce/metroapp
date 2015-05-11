@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
@@ -242,6 +243,9 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
             Log.d(TAG, "Saved "+historyEntries.size()+" autocomplete history entries to disk");
         } catch (FileNotFoundException e) {
             Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "FileNotFound on write");
+            e.printStackTrace();
+        } catch (NotSerializableException e) {
+            Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "Object not serializable");
             e.printStackTrace();
         } catch (IOException e) {
             Tracking.sendEvent("Errors", "AndroidAutocompleteHistory", "IOException on write");

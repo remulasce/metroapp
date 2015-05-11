@@ -8,6 +8,22 @@ package test.java;
 public class TestConstants {
 
 
+    public static final String PREDICTIONS_NO_SUCH_STOPID_ERROR =
+            "<?xml version=\"1.0\" encoding=\"utf-8\" ?> \n" +
+            "<body copyright=\"All data copyright Los Angeles Rail 2015.\">\n" +
+            "<Error shouldRetry=\"false\">\n" +
+            "  stopId=803011 is not valid for agency=lametro-rail\n" +
+            "</Error>\n" +
+            "</body>\n";
+
+    public static final String ROUTECONFIG_NO_SUCH_ROUTE_ERROR = "<?xml version=\"1.0\" encoding=\"utf-8\" ?> \n" +
+            "<body copyright=\"All data copyright Los Angeles Rail 2015.\">\n" +
+            "<Error shouldRetry=\"false\">\n" +
+            "  Could not get route \"8031\" for agency tag \"lametro-rail\". \n" +
+            "One of the tags could be bad.\n" +
+            "</Error>\n" +
+            "</body>";
+
     public static final String GREEN_REDONDO_BEACH_STOPID = "80301";
     public static final String GREEN_REDONDO_BEACH_REQUEST = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=lametro-rail&stopId=80301";
     // 2 arrivals to Norwalk, 1 arrival to Redondo Beach

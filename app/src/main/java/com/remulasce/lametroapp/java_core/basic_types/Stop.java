@@ -11,6 +11,7 @@ public class Stop implements Serializable {
 
     private String raw = "";
     private String stopName = "";
+    private Agency agency = null;
 
     private BasicLocation location;
 
@@ -34,6 +35,11 @@ public class Stop implements Serializable {
     public String getStopID() {
         return raw;
     }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
+    public Agency getAgency() { return agency; }
 
     public String getString() {
         return raw;

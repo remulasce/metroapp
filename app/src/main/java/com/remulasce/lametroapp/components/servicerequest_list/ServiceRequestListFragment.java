@@ -21,6 +21,7 @@ import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -154,7 +155,12 @@ public class ServiceRequestListFragment extends Fragment {
         Log.d(TAG, "Loading saved requests");
 
         clearAllRequests(false);
-        this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
+        Collection<ServiceRequest> serviceRequests = mListener.getFieldSaver().loadServiceRequests();
+        if (serviceRequests != null && !serviceRequests.contains(null)) {
+            this.requests.addAll(serviceRequests);
+        } else {
+            Log.w(TAG, "Saved requests loaded something it shouldn't have!");
+        }
 
         requestsChanged(false);
     }
