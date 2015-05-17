@@ -12,7 +12,7 @@
 		310448E31AD6FADF00DCA091 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 310448E21AD6FADF00DCA091 /* MainInterface.storyboard */; };
 		310448E61AD6FADF00DCA091 /* MetroAppWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 310A04971ACB323C000E1B8E /* StopNameDatabase.m */; };
-		312CC5011AD70D3A00DD21FA /* Log.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C61AD709E000DD21FA /* Log.java */; };
+		31241C761B0921F1009F319F /* Log.java in Sources */ = {isa = PBXBuildFile; fileRef = 31241C751B0921F1009F319F /* Log.java */; };
 		312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C71AD709E000DD21FA /* Tracking.java */; };
 		312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4C91AD709E000DD21FA /* BasicLocation.java */; };
 		312CC5041AD70D3A00DD21FA /* Destination.java in Sources */ = {isa = PBXBuildFile; fileRef = 312CC4CA1AD709E000DD21FA /* Destination.java */; };
@@ -62,7 +62,6 @@
 		31865C891AC7EA04007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
 		31865C901AC7EAAC007421BE /* StopNameInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C8F1AC7EAAC007421BE /* StopNameInfo.m */; };
 		31865C921AC7F546007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
-		31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */; };
 		318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */; };
 		318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318B6A6F1ADB0AFC001F24FD /* ReminderViewController.xib */; };
 		31A87BB31AAAA63B00013DEC /* PredictionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A87BB21AAAA63B00013DEC /* PredictionManager.m */; };
@@ -80,7 +79,7 @@
 				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.h",
 				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.m",
 			);
-			script = "/Users/nighelles/Desktop/j2objc-master/dist/j2objc -use-arc -d ${DERIVED_FILES_DIR} -sourcepath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/MetroApp/metroapp/app/src/main/java -classpath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/javadeps/ --no-package-directories ${INPUT_FILE_PATH};";
+			script = "/Users/nighelles/Desktop/j2objc-master/dist/j2objc -use-arc -d ${DERIVED_FILES_DIR} -sourcepath /Users/nighelles/Desktop/MetroAppIOS/app/src/main/java -classpath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/javadeps/ --no-package-directories ${INPUT_FILE_PATH};";
 		};
 /* End PBXBuildRule section */
 
@@ -156,9 +155,9 @@
 		310448E21AD6FADF00DCA091 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		310A04961ACB323C000E1B8E /* StopNameDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameDatabase.h; sourceTree = "<group>"; };
 		310A04971ACB323C000E1B8E /* StopNameDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameDatabase.m; sourceTree = "<group>"; };
+		31241C751B0921F1009F319F /* Log.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Log.java; path = MetroApp/MetroApp/app/src/main/java/com/remulasce/lametroapp/java_core/analytics/Log.java; sourceTree = SOURCE_ROOT; };
 		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
 		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
-		312CC4C61AD709E000DD21FA /* Log.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Log.java; sourceTree = "<group>"; };
 		312CC4C71AD709E000DD21FA /* Tracking.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Tracking.java; sourceTree = "<group>"; };
 		312CC4C91AD709E000DD21FA /* BasicLocation.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = BasicLocation.java; sourceTree = "<group>"; };
 		312CC4CA1AD709E000DD21FA /* Destination.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Destination.java; sourceTree = "<group>"; };
@@ -216,7 +215,6 @@
 		31865C881AC7EA04007421BE /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		31865C8E1AC7EAAC007421BE /* StopNameInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameInfo.h; sourceTree = "<group>"; };
 		31865C8F1AC7EAAC007421BE /* StopNameInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameInfo.m; sourceTree = "<group>"; };
-		31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = StopNamesLA.sqlite3; path = metroapp/app/src/main/assets/databases/StopNamesLA.sqlite3; sourceTree = "<group>"; };
 		31865C981AC897F9007421BE /* Examples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Examples.m; sourceTree = "<group>"; };
 		318B6A6D1ADB0AFC001F24FD /* ReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderViewController.h; sourceTree = "<group>"; };
 		318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderViewController.m; sourceTree = "<group>"; };
@@ -322,7 +320,7 @@
 		312CC4C51AD709E000DD21FA /* analytics */ = {
 			isa = PBXGroup;
 			children = (
-				312CC4C61AD709E000DD21FA /* Log.java */,
+				31241C751B0921F1009F319F /* Log.java */,
 				312CC4C71AD709E000DD21FA /* Tracking.java */,
 			);
 			path = analytics;
@@ -544,7 +542,6 @@
 				31BADC7C1ADADC51004961EA /* actransit.sqlite3 */,
 				310A04961ACB323C000E1B8E /* StopNameDatabase.h */,
 				310A04971ACB323C000E1B8E /* StopNameDatabase.m */,
-				31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */,
 				31865C8E1AC7EAAC007421BE /* StopNameInfo.h */,
 				31865C8F1AC7EAAC007421BE /* StopNameInfo.m */,
 			);
@@ -757,7 +754,6 @@
 				318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
-				31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -815,9 +811,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				312CC5011AD70D3A00DD21FA /* Log.java in Sources */,
 				312CC5021AD70D3A00DD21FA /* Tracking.java in Sources */,
 				312CC5031AD70D3A00DD21FA /* BasicLocation.java in Sources */,
+				31241C761B0921F1009F319F /* Log.java in Sources */,
 				312CC5041AD70D3A00DD21FA /* Destination.java in Sources */,
 				315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */,
 				318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */,
