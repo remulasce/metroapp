@@ -21,6 +21,7 @@ import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -34,6 +35,7 @@ public class ServiceRequestListFragment extends Fragment {
     private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
     private TextView hintText;
+    private TextView secondaryHintText;
 
     private final List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
 
@@ -70,10 +72,21 @@ public class ServiceRequestListFragment extends Fragment {
             saveServiceRequests(requests);
         }
 
+        updateHintVisibility();
+    }
+
+    private void updateHintVisibility() {
         if (requests.size() > 0) {
             hintText.setVisibility(View.INVISIBLE);
+            secondaryHintText.setVisibility(View.INVISIBLE);
         } else {
-            hintText.setVisibility(View.VISIBLE);
+            if (TutorialManager.getInstance().requestListNeedsHint()) {
+                hintText.setVisibility(View.VISIBLE);
+                secondaryHintText.setVisibility(View.INVISIBLE);
+            } else {
+                secondaryHintText.setVisibility(View.VISIBLE);
+                hintText.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -93,8 +106,11 @@ public class ServiceRequestListFragment extends Fragment {
 
         requestList = (ListView) view.findViewById(R.id.service_request_list);
         hintText = (TextView) view.findViewById(R.id.service_request_hint_text);
+        secondaryHintText = (TextView) view.findViewById(R.id.request_list_secondary_hint);
 
         requestList.setOnItemClickListener(onItemClickListener);
+        updateHintVisibility();
+
         return view;
     }
 
@@ -139,7 +155,12 @@ public class ServiceRequestListFragment extends Fragment {
         Log.d(TAG, "Loading saved requests");
 
         clearAllRequests(false);
-        this.requests.addAll(mListener.getFieldSaver().loadServiceRequests());
+        Collection<ServiceRequest> serviceRequests = mListener.getFieldSaver().loadServiceRequests();
+        if (serviceRequests != null && !serviceRequests.contains(null)) {
+            this.requests.addAll(serviceRequests);
+        } else {
+            Log.w(TAG, "Saved requests loaded something it shouldn't have!");
+        }
 
         requestsChanged(false);
     }

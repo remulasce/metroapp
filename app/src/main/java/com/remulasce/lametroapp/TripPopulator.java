@@ -14,12 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
+import com.remulasce.lametroapp.display.AndroidRequestStatusDisplay;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.components.trip_list.TripListAdapter;
 import com.remulasce.lametroapp.display.AndroidDisplay;
 import com.remulasce.lametroapp.display.AndroidMultiArrivalDisplay;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.MultiArrivalTrip;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.RequestStatusTrip;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 import com.remulasce.lametroapp.libraries.SwipeDismissListViewTouchListener;
 
@@ -39,6 +41,7 @@ public class TripPopulator {
 
     private final ListView list;
     private final TextView hint;
+    private final TextView secondaryHint;
     private final ProgressBar progress;
     private final ArrayAdapter< AndroidDisplay > adapter;
 
@@ -53,11 +56,12 @@ public class TripPopulator {
 
     private final Context c;
 
-    public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, ProgressBar progress, Context c ) {
+    public TripPopulator( ServiceRequestHandler requests, ListView list, TextView hint, TextView secondaryHint, ProgressBar progress, Context c ) {
         this.requests = requests;
         this.list = list;
         this.progress = progress;
         this.hint = hint;
+        this.secondaryHint = secondaryHint;
         this.uiHandler = new Handler( Looper.getMainLooper() );
         this.c = c;
 
@@ -76,18 +80,24 @@ public class TripPopulator {
                                         AndroidDisplay item = adapter.getItem(position);
                                         Trip t = item.getTrip();
 
-                                        t.dismiss();
-                                        adapter.remove(item);
+                                        if (t != null) {
+                                            t.dismiss();
+                                            adapter.remove(item);
 
-                                        dismissLock = false;
-                                        TutorialManager.getInstance().tripDismissed();
+                                            TutorialManager.getInstance().tripDismissed();
+                                        }
 
                                     } catch (IndexOutOfBoundsException e) {
                                         Log.w(TAG, "Tried to dismiss out-of-bounds trip");
                                         Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Index out of bounds");
+                                    } catch (Exception e) {
+                                        // Weird exceptions probably mean we haven't implemented something from Java_Core
+                                        Log.w(TAG, "Exception in Trip Dismissal- Is everything in java_core implemented correctly?");
+                                        Tracking.sendEvent("TripPopulator", "Dismiss Trip", "Weird Exception");
                                     }
                                 }
                                 adapter.notifyDataSetChanged();
+                                dismissLock = false;
                             }
 
                             @Override
@@ -230,15 +240,27 @@ public class TripPopulator {
                 public void run() {
                     long start = Tracking.startTime();
 
+                    int oldTripsNum = adapter.getCount();
+
                     adapter.clear();
                     for (Trip t : sorted) {
-                        if (t.isValid()) {
-                            adapter.add(new AndroidMultiArrivalDisplay( (MultiArrivalTrip) t) );
+                        if (t != null && t.isValid()) {
+                            if (t instanceof MultiArrivalTrip) {
+                                adapter.add(new AndroidMultiArrivalDisplay((MultiArrivalTrip) t));
+                            } else if (t instanceof RequestStatusTrip) {
+                                adapter.add(new AndroidRequestStatusDisplay((RequestStatusTrip)t));
+                            }
                         }
                     }
 
                     if (sorted.size() == 0 ) {
-                        hint.setVisibility(View.VISIBLE);
+                        if ( TutorialManager.getInstance().tripListNeedsHint() ) {
+                            hint.setVisibility(View.VISIBLE);
+                            secondaryHint.setVisibility(View.INVISIBLE);
+                        } else {
+                            hint.setVisibility(View.INVISIBLE);
+                            secondaryHint.setVisibility(View.VISIBLE);
+                        }
 
 
                         if (requests.getRequests().size() != 0) {// && couldServiceRequestsHavePending()) {
@@ -251,9 +273,12 @@ public class TripPopulator {
 
 
                     } else {
-                        if ( hint.getVisibility() == View.VISIBLE ) {
+                        if ( hint.getVisibility() == View.VISIBLE || secondaryHint.getVisibility() == View.VISIBLE) {
                             hint.setVisibility(View.INVISIBLE);
+                            secondaryHint.setVisibility(View.INVISIBLE);
+                        }
 
+                        if (oldTripsNum == 0) {
                             TutorialManager.getInstance().tripsNewlyShown();
                         }
 

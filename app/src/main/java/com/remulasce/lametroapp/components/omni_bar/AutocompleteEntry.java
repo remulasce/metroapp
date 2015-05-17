@@ -47,7 +47,7 @@ public class AutocompleteEntry implements Serializable {
 
     public boolean matches(OmniAutoCompleteEntry other) {
         if (other.hasStop() && entry.hasStop()) {
-            return entry.getStop().equals(other.getStop());
+            return entry.getStops().equals(other.getStops());
         } else {
             // We can't handle this.
             Log.w(TAG, "Tried to save an autocomplete entry with no stop- can't handle");

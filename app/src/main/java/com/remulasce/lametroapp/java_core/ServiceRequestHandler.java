@@ -30,7 +30,16 @@ public class ServiceRequestHandler {
     final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
         @Override
         public int compare(Trip lhs, Trip rhs) {
-            return (lhs.getPriority() < rhs.getPriority()) ? 1 : -1;
+            float lhsPriority = lhs.getPriority();
+            float rhsPriority = rhs.getPriority();
+
+            if (lhsPriority < rhsPriority) {
+                return 1;
+            } else if (lhsPriority == rhsPriority) {
+                return 0;
+            } else {
+                return -1;
+            }
         }
     };
 

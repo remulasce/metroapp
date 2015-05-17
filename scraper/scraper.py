@@ -53,6 +53,7 @@ for agencyName in agencyList:
 							#print child.attrib
 							#uniquetag = child.attrib["tag"]
 							stopid = child.attrib["stopId"]
+							stopid = stopid.lstrip("0");
 							stopname = child.attrib["title"]
 							lat = child.attrib["lat"]
 							lon = child.attrib["lon"]

@@ -111,7 +111,7 @@ public class PauseResumeTest extends TestCase {
         Thread.sleep(10);
 
         assertTrue("PredictionManager should be tracking 1 prediction", predictionManager.numPredictions() == 1);
-        assertTrue("Request should have received 3 trips: 7th * 2, Culver, Long Beach", r.getTrips().size() == 4);
+        assertEquals("Request should have received 4 trips: 7th * 2, Culver, Long Beach", r.getTrips().size(), 4);
     }
 
     // We add a request, check it's running. Then we shutdown the entire system as though the activity was ending.

@@ -1,7 +1,9 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -32,7 +34,8 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     protected void onFocusChanged(boolean focused, int direction,
                                   Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
-        if (focused && getWindowVisibility() != View.GONE) {
+
+        if (focused && getWindowVisibility() != View.GONE && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             performFiltering(getText(), 0);
             showDropDown();
         } else {

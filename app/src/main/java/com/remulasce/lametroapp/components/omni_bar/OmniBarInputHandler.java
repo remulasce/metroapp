@@ -1,8 +1,6 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.Tracker;
-import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -81,7 +78,6 @@ public class OmniBarInputHandler {
     }
 
     private void linkViewHandlers() {
-        if (addButton != null) addButton.setOnClickListener(omniButtonListener);
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
@@ -106,9 +102,21 @@ public class OmniBarInputHandler {
             OmniAutoCompleteEntry entry = (OmniAutoCompleteEntry) adapterView.getItemAtPosition(i);
             autoCompleteHistory.autocompleteSaveSelection(entry);
 
-            String requestText = omniField.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
 
+            ServiceRequest request = makeMultiStopServiceRequest(entry.getStops(), entry.toString());
+
+            if (request != null) {
+                requestList.AddServiceRequest(request);
+            }
+
+            omniField.getEditableText().clear();
+            omniField.clearFocus();
+
+            InputMethodManager imm = (InputMethodManager)c.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
+
+            Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Omni Selection");
             Tracking.sendUITime("OmniBarInputHandler", "omniSelectedListener", t);
         }
     };
@@ -148,23 +156,17 @@ public class OmniBarInputHandler {
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             long t = Tracking.startTime();
 
-            String requestText = textView.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
+//            String requestText = textView.getText().toString();
+//            makeServiceRequestFromOmniInput(requestText);
+            // TODO
+            // Something with the "done" button
+            // I don't even know how this should work.
 
             Tracking.sendUITime("OmniBarInputHandler", "omniDoneListener", t);
             return true;
         }
     };
-    private final View.OnClickListener omniButtonListener = new View.OnClickListener() {
-        public void onClick( View v ) {
-            long t = Tracking.startTime();
 
-            String requestText = omniField.getText().toString();
-            makeServiceRequestFromOmniInput(requestText);
-
-            Tracking.sendUITime("OmniBarInputHandler", "omniButtonListener", t);
-        }
-    };
     private final View.OnClickListener clearButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -172,34 +174,8 @@ public class OmniBarInputHandler {
         }
     };
 
-    // This is an extremely low level check. The ServiceRequest itself will have a better
-    // idea whether it can actually track anything.
-    private boolean isOmniInputValid(String input) {
-        return input != null && !input.isEmpty();
-    }
-
-    private void makeServiceRequest( String stopID, String displayName ) {
-        Log.d(TAG, "Making service request from stopID: "+stopID+", display: "+displayName);
-
-        Stop add = new Stop(stopID);
-        add.setLocation(stopLocations.getStopLocation(add));
-
-        ServiceRequest serviceRequest = new StopServiceRequest(add, displayName);
-
-        if (serviceRequest.isValid()) {
-            requestList.AddServiceRequest(serviceRequest);
-        } else {
-            Log.w(TAG, "Created invalid servicerequest, not adding to list");
-        }
-    }
-    private ServiceRequest makeMultiStopServiceRequest( Collection<String> stopIDs, String displayName ) {
-        Log.d(TAG, "Making service request from stopID: "+stopIDs+", display: "+displayName);
-
-        Collection<Stop> stops = new ArrayList<Stop>();
-
-        for (String stop : stopIDs) {
-            stops.add(new Stop(stop));
-        }
+    private ServiceRequest makeMultiStopServiceRequest( Collection<Stop> stops, String displayName ) {
+        Log.d(TAG, "Making service request from stops: "+stops+", display: "+displayName);
 
         ServiceRequest serviceRequest = new StopServiceRequest(stops, displayName);
 
@@ -208,54 +184,6 @@ public class OmniBarInputHandler {
         } else {
             Log.w(TAG, "Created invalid servicerequest, not adding to list");
             return null;
-        }
-    }
-
-    // Parses the input to figure out if it's a stopid, stopname, etc.
-    private void makeServiceRequestFromOmniInput(String requestText) {
-        userInteractedWithDropdown();
-
-        if (isOmniInputValid(requestText)) {
-            try { // No really, this should never crash the app.
-                // Need to check which way to convert- stopname to stopid, or vice-versa
-                String convertedName = stopNames.getStopName(requestText);
-                Collection<String> convertedID = stopNames.getStopID(requestText);
-
-                // It was a valid StopID
-                if (convertedName != null) {
-                    makeServiceRequest(requestText, convertedName);
-                    omniField.getEditableText().clear();
-                    omniField.clearFocus();
-
-                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "StopID");
-                }
-                // It was a valid stop name
-                else if (convertedID != null && !convertedID.isEmpty()) {
-                    ServiceRequest request = makeMultiStopServiceRequest(convertedID, requestText);
-
-                    if (request != null) {
-                        requestList.AddServiceRequest(request);
-                    }
-
-                    omniField.getEditableText().clear();
-                    omniField.clearFocus();
-
-                    InputMethodManager imm = (InputMethodManager)c.getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
-
-                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "StopName");
-                }
-                // Not valid.
-                else {
-                    Log.i(TAG, "Couldn't parse omnibox input into id or stopname, ignoring");
-                    Toast.makeText(c, "Invalid stop name", Toast.LENGTH_SHORT).show();
-
-                    Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Invalid");
-                }
-            } catch (Exception e) {
-                Tracking.sendEvent("AutoComplete", "AutoComplete Add", "Exception");
-            }
         }
     }
 

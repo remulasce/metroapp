@@ -65,4 +65,27 @@ public class TutorialManager {
     public void tripDismissalUndone() {
         Log.w(TAG, "tripDismissalUndone");
     }
+
+    public void aboutPaneOpened() {
+        Log.w(TAG, "aboutPaneOpened");
+    }
+
+    public boolean requestListNeedsHint() {
+        Log.w(TAG, "requestListNeedsHint");
+        return true;
+    }
+
+    public boolean tripListNeedsHint() {
+        Log.w(TAG, "tripListNeedsHint");
+        return true;
+    }
+
+    public boolean aboutPaneNeedsHint() {
+        Log.w(TAG, "aboutPaneNeedsHint");
+        return true;
+    }
+
+    public void userOpenedApp() {
+        Log.w(TAG, "userOpenedApp");
+    }
 }

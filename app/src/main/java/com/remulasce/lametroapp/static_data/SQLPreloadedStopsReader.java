@@ -11,7 +11,9 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
@@ -23,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,8 +39,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
-    private static final String DATABASE_NAME = "StopNames.db";
-    private static final int DATABASE_VERSION = 8;
+    private String DATABASE_NAME;
+    private Agency agency;
+    private static final int DATABASE_VERSION = 10;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
@@ -63,9 +67,15 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private final Context context;
 
-    public SQLPreloadedStopsReader(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public SQLPreloadedStopsReader(Context context, String fileName, Agency agency) {
+        super(context, fileName, null, DATABASE_VERSION);
+
+        this.DATABASE_NAME = fileName;
         this.context = context;
+        this.agency = agency;
+
+        // Just rewrite the db when upgrading.
+        setForcedUpgrade();
     }
 
     public void initialize() {
@@ -91,7 +101,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         BasicLocation ret = null;
         Long t = Tracking.startTime();
 
-        Log.d(TAG, "StopLocation searching for "+stop);
+        Log.d(TAG, "StopLocation searching for " + stop);
         Collection<SQLEntry> entries = getMatchingEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
         Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
 
@@ -112,7 +122,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Tracking.sendTime("SQL", "StopNames", "getLocation", t);
         }
 
-        Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
+        Log.d(TAG, "Got location for " + stop + ", " + ret.latitude + ", " + ret.longitude);
 
         return ret;
     }
@@ -162,23 +172,28 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
-
-            // This shouldn't need to happen since we started using the new database.
-            // - Nighelles
-
             for (SQLEntry entry : matchingEntries) {
-                // Each station entrance in Metro has its own stopID.
-                // Duplicates have letters at the end; originals are straight digits.
-                // Only add the originals
-                if (entry.stopID.matches("\\d+$")) {
-                    // Try to only put stuff in once
-                    if (!tmp.containsKey(entry.stopName)) {
-                        OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
-                        Stop newStop = new Stop(entry.stopID);
-                        newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
-                        newEntry.setStop(newStop);
-                        tmp.put(entry.stopName, newEntry);
-                    }
+                // Try to only put stuff in once
+                if (!tmp.containsKey(entry.stopName)) {
+                    OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
+                    Stop newStop = new Stop(entry.stopID);
+                    newStop.setStopName(entry.stopName);
+                    newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    ArrayList<Stop> s1 = new ArrayList<Stop>();
+                    s1.add(newStop);
+                    newEntry.setStops(s1);
+                    newStop.setAgency(agency);
+                    tmp.put(entry.stopName, newEntry);
+                } else {
+                    // Actually, let's put all matching stops in now.
+                    OmniAutoCompleteEntry existingEntry = tmp.get(entry.stopName);
+                    Stop newStop = new Stop(entry.stopID);
+                    newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    newStop.setStopName(entry.stopName);
+                    List<Stop> s1 = existingEntry.getStops();
+                    s1.add(newStop);
+                    existingEntry.setStops(s1);
+                    newStop.setAgency(agency);
                 }
             }
 
@@ -194,7 +209,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         }
 
         if (trackNumber++ % trackDivider == 0) {
-            Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+            Tracking.sendTime("SQL", "StopNames", "individual getAutocomplete", t);
         }
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 
