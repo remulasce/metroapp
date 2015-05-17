@@ -344,7 +344,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     // So instead we check every xms until we actually have a window.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus && requestHandler.getRequests().size() == 0) {
+        // The whole thing doesn't really work on Gingerbread.
+        // Not that anyone actually still uses Gingerbread.
+        if (hasFocus && requestHandler.getRequests().size() == 0 && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             Handler h = new Handler(Looper.getMainLooper());
             h.postDelayed(showDropdownOnStart, 100);
         }
