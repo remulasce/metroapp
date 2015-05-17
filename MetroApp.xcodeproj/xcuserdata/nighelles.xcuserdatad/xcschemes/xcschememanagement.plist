@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>MetroApp.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+		<key>MetroAppShared.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>MetroAppWidget.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>310448D71AD6FADF00DCA091</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>312CC51F1AD75D3800DD21FA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>312CC5291AD75D3800DD21FA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>312FFE211AA7E89C005D5477</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>312FFE3A1AA7E89D005D5477</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>

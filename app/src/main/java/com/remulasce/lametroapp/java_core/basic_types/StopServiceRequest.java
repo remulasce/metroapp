@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.RequestStatusTrip;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationPrediction;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
@@ -11,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Remulasce on 1/26/2015.
@@ -25,16 +27,21 @@ public class StopServiceRequest extends ServiceRequest {
     private Collection<Prediction> predictions = new ArrayList<Prediction>();
 
     private boolean updateAvailable = true;
+    private RequestStatusTrip statusTrip;
 
     public StopServiceRequest(Collection<Stop> stops, String displayName) {
         this.stops = stops;
         this.displayName = displayName;
+
+        this.statusTrip = new RequestStatusTrip(this);
     }
     public StopServiceRequest(Stop stop, String displayName) {
         stops = new ArrayList<Stop>();
         stops.add(stop);
 
         this.displayName = displayName;
+
+        this.statusTrip = new RequestStatusTrip(this);
     }
 
     //Returns if the service request makes any sense to fulfill
@@ -47,6 +54,12 @@ public class StopServiceRequest extends ServiceRequest {
     @Override
     public Collection<Trip> getTrips() {
         Collection<Trip> trips = new ArrayList<Trip>();
+
+        if (statusTrip != null && statusTrip.isValid() // TripPopulator can't handle empty / null Trips
+                && determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
+//                ) { // Testing, keep the status up.
+            trips.add(statusTrip);
+        }
 
         for (Prediction p : this.predictions) {
             if (p instanceof StopRouteDestinationPrediction) {
@@ -101,6 +114,7 @@ public class StopServiceRequest extends ServiceRequest {
         for (Prediction p : predictions) {
             p.restoreTrips();
         }
+        statusTrip.restore();
     }
 
     @Override
@@ -155,6 +169,7 @@ public class StopServiceRequest extends ServiceRequest {
 
         oos.writeObject(stops);
         oos.writeObject(predictions);
+        oos.writeObject(statusTrip);
     }
 
     private void readObject(ObjectInputStream ois)
@@ -163,10 +178,67 @@ public class StopServiceRequest extends ServiceRequest {
         try {
             stops = (Collection<Stop>) ois.readObject();
             predictions = (Collection<Prediction>) ois.readObject();
+            statusTrip = (RequestStatusTrip) ois.readObject();
         } catch (Exception e) {
             stops = new ArrayList<Stop>();
             predictions = new ArrayList<Prediction>();
+            statusTrip = new RequestStatusTrip(this);
             e.printStackTrace();
         }
+    }
+
+    // For testing purposes, manually set what predictions we have.
+    public void testRawSetPredictions(List<Prediction> overridePredictions) {
+        this.predictions = overridePredictions;
+    }
+
+    public enum NetworkStatusState {
+        NOTHING,
+        SPINNER,
+        ERROR
+    }
+    // Figure out if we should show an error message, progress bar, or nothing.
+    NetworkStatusState determineNetworkStatusState() {
+        boolean anyFetching = false;
+        boolean anyGood = false;
+        boolean anyCached = false;
+        boolean anyBad = false;
+
+        for (Prediction p : predictions) {
+            switch (p.getPredictionState()) {
+                case GOOD:
+                    anyGood = true;
+                    break;
+                case CACHED:
+                    anyCached = true;
+                    break;
+                case FETCHING:
+                    anyFetching = true;
+                    break;
+                case BAD:
+                    anyBad = true;
+                    break;
+                default:
+                    Log.w(TAG, "Unknown prediction state");
+                    break;
+            }
+        }
+
+        // If any part is fetching, we should show spinner, even if we have an error.
+        if (anyFetching) {
+            return NetworkStatusState.SPINNER;
+        }
+
+        // Only if we have full on bad should we display an error.
+        if (anyBad && !anyGood && !anyCached) {
+            return NetworkStatusState.ERROR;
+        }
+
+        // Otherwise don't display anything special.
+        return NetworkStatusState.NOTHING;
+    }
+
+    public NetworkStatusState getNetworkStatus() {
+        return determineNetworkStatusState();
     }
 }

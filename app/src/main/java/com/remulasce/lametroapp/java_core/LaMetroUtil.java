@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp.java_core;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
@@ -26,6 +27,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
@@ -64,7 +66,7 @@ public class LaMetroUtil {
         if ( route == null || !route.isValid() )
             return false;
         try {
-            int routeNum = Integer.valueOf( route.getString() );
+            int routeNum = Integer.valueOf(route.getString());
             return routeNum > 0 && routeNum < 1000;
         } catch ( Exception e ) {
             return false;
@@ -72,28 +74,47 @@ public class LaMetroUtil {
     }
 
     public static String makePredictionsRequest( Stop stop, Route route ) {
-        String agency = getAgencyFromRoute( route, stop );
+        Agency agency = stop.getAgency();
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency + "&stopId="
+        if (agency == null || !agency.isValid()) {
+            Log.w(TAG, "No agency attached to stop, determining from region. Deprecated.");
+
+            agency = new Agency(getAgencyFromRoute( route, stop ) );
+        }
+
+        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                 + stop.getString();
 
-        if ( isValidRoute( route ) ) {
+        if ( isValidRoute(route) ) {
             URI += "&routeTag=" + route.getString();
         }
 
         return URI;
     }
 
+    // Returns null if there's errors.
+    // Change: No longer fills in locations to the stops!
+    // This avoids having to regionalize in here.
+    // Instead, we are aiming to only produce the information that is actually contained in
+    //    the xml feed.
+    //
+    // We should probably make a new data type that only can contain what the xml feed has,
+    //    but for now reusing Arrival / Stop is just too convenient.
     public static List< Arrival > parseAllArrivals( String response ) {
-        List< Arrival > ret = new ArrayList< Arrival >();
+        if (response == null || response.isEmpty()) {
+            Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
+            return null;
+        }
 
-//        parseWithAndroidLibs(response, ret);
-        parseWithJavaLibs(response, ret);
+
+
+        List< Arrival > ret = parseWithJavaLibs(response);
 
         return ret;
     }
 
-    private static void parseWithJavaLibs(String response, List<Arrival> ret) {
+    private static List < Arrival > parseWithJavaLibs(String response) {
+        List<Arrival> ret = new ArrayList<Arrival>();
         //get the factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -107,6 +128,12 @@ public class LaMetroUtil {
 
             //get the root element
             Element docEle = dom.getDocumentElement();
+
+            NodeList errors = docEle.getElementsByTagName("Error");
+            if (errors != null && errors.getLength() != 0) {
+                Log.d(TAG, "NexTrip returned an error");
+                return null;
+            }
 
             NodeList predictions = docEle.getElementsByTagName("predictions");
             if(predictions != null && predictions.getLength() > 0) {
@@ -147,11 +174,19 @@ public class LaMetroUtil {
 
         }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
+            return null;
         }catch(SAXException se) {
             se.printStackTrace();
+            return null;
         }catch(IOException ioe) {
             ioe.printStackTrace();
+            return null;
+        }catch (Exception e) {
+            Log.w(TAG, "Unaddressed exception!");
+            return null;
         }
+
+        return ret;
     }
 
     // Metro adds _etc to the end of stops sometimes. It's related to multiple entrances per station
@@ -236,7 +271,15 @@ public class LaMetroUtil {
         Log.v(TAG, "Adding new arrival "+seconds+" "+d+" "+r+" "+s+" "+v);
 
         if (locationTranslator != null) {
-            s.setLocation(locationTranslator.getStopLocation(s));
+            // This has been changed!
+            // MetroUtil shouldn't have to deal with regionalization or state of the rest of the app.
+            // It should just be convenience methods.
+            // To get the stop locations from here, MetroUtil would need to know what region the stop is.
+            // But, this is called only from parseArrivals from the xml stream, which doesn't include
+            // the agency.
+            // We could provide it, but again, we shouldn't be requesting info in Util.
+            // We should just parse the xml conveniently, and let the rest of the app deal with it.
+//            s.setLocation(locationTranslator.getStopLocation(s));
         }
 
         if (routeColorer != null) {
@@ -271,11 +314,8 @@ public class LaMetroUtil {
         if ( seconds > 60 ) {
             return String.valueOf( seconds / 60 ) + " min";
         }
-        if ( seconds > 1 ) {
+        if ( seconds >= 1 ) {
             return String.valueOf( seconds ) + "s";
-        }
-        if ( seconds == 0 ) {
-            return "1s";
         }
         return "arrived";
     }
@@ -293,19 +333,28 @@ public class LaMetroUtil {
     public static String getAgencyFromRoute( Route route, Stop stop )
             throws IllegalArgumentException {
         try {
-            if ( route == null || !route.isValid() ) {
-                if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+            if  (RegionalizationHelper.getInstance().agencyName.equals("actransit"))
+            {
+                return "actransit";
+            } else if (RegionalizationHelper.getInstance().agencyName.equals("lametro"))
+            {
+                if ( route == null || !route.isValid() ) {
+                    if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
+                        return "lametro-rail";
+                    }
+
+                    return "lametro";
+                }
+                int routeN = Integer.valueOf( route.getString() );
+                if ( routeN / 100 == 8 ) {
                     return "lametro-rail";
                 }
-
-                return "lametro";
-            }
-            int routeN = Integer.valueOf( route.getString() );
-            if ( routeN / 100 == 8 ) {
-                return "lametro-rail";
-            }
-            else if ( routeN > 0 && routeN < 1000 ) {
-                return "lametro";
+                else if ( routeN > 0 && routeN < 1000 ) {
+                    return "lametro";
+                }
+                else {
+                    return "lametro";
+                }
             }
             else {
                 return "lametro";

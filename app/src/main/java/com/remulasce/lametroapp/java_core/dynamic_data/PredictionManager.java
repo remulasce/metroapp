@@ -250,6 +250,7 @@ public class PredictionManager {
 			String response = sendRequest( request );
 
 			Log.v(TAG, "Response received: "+response);
+
 			prediction.handleResponse(response);
 
 			prediction.setUpdated();

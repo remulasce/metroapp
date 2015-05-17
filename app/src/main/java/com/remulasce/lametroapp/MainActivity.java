@@ -13,6 +13,8 @@ import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
@@ -29,12 +32,13 @@ import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
-import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
@@ -50,6 +54,9 @@ import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
@@ -57,6 +64,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private Button clearButton;
     private Button donateButton;
     private Button legalButton;
+    private TextView aboutPaneHint;
+    private TextView donateButtonPresses;
     private ProgressBar autocompleteProgress;
 
     private OmniBarInputHandler omniHandler;
@@ -65,6 +74,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private ListView tripList;
     private TextView tripListHint;
+    private TextView tripListSecondaryHint;
     private View networkStatusView;
     private ProgressBar tripListProgress;
 
@@ -84,10 +94,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
-        super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_main );
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         startAnalytics();
+        setupRegionalization();
         initializeStaticData();
         initializeDynamicData();
         setupLocation();
@@ -102,6 +113,16 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupTutorials();
 
         setupDefaults( getIntent() );
+    }
+
+    private void setupRegionalization() {
+        RegionalizationHelper.getInstance().agencyName = "lametro";
+
+        Collection<Agency> agencies = new ArrayList<Agency>();
+        agencies.add(new Agency("lametro-rail"));
+        agencies.add(new Agency("lametro"));
+
+        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
     }
 
     private void initializeDynamicData() {
@@ -124,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupTutorials() {
-        tutorialManager = new AndroidTutorialManager(this);
+        tutorialManager = new AndroidTutorialManager(this, aboutPaneHint);
         TutorialManager.setTutorialManager(tutorialManager);
     }
 
@@ -156,6 +177,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                tutorialManager.aboutPaneOpened();
+
                 Tracking.setScreenName("About Page");
                 Tracking.sendEvent("About Page", "Pane Opened");
             }
@@ -172,8 +196,29 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
                 startActivity(browserIntent);
+
+                Toast.makeText(MainActivity.this, "Thanks! I'm linking you to paypal now.", Toast.LENGTH_LONG).show();
+
+                Handler uiHandler = new Handler( MainActivity.this.getMainLooper() );
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "I do this as a hobby, and donations really encourage me to keep working.", Toast.LENGTH_LONG).show();
+                    }
+                }, 3000);
+                uiHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "If you have any specific annoyance with the app, email me and I'll get right on it.", Toast.LENGTH_LONG).show();
+                    }
+                }, 5000);
             }
         });
+
+        final SpannableStringBuilder str = new SpannableStringBuilder("1 person has donated");
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        donateButtonPresses.setText(str);
     }
 
     void linkViewReferences() {
@@ -182,9 +227,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
         autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
+        aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
+        donateButtonPresses = (TextView) findViewById(R.id.donate_button_press_count_text);
 
         tripList = (ListView) findViewById( R.id.tripList );
         tripListHint = (TextView) findViewById( R.id.trip_list_hint );
+        tripListSecondaryHint = (TextView) findViewById( R.id.trip_list_secondary_hint );
         tripListProgress = (ProgressBar) findViewById(R.id.trip_list_progress);
         networkStatusView = findViewById(R.id.network_status_bar);
 
@@ -194,7 +242,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     void setupActionListeners() {
         requestHandler = new ServiceRequestHandler();
-        tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListProgress, this );
+        tripPopulator = new TripPopulator( requestHandler, tripList, tripListHint, tripListSecondaryHint, tripListProgress, this );
 
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,6 +311,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tripPopulator.StartPopulating();
         tutorialManager.appStarted();
         PredictionManager.getInstance().resumeTracking();
+
+        tutorialManager.userOpenedApp();
     }
 
     @Override
@@ -294,7 +344,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     // So instead we check every xms until we actually have a window.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus && requestHandler.getRequests().size() == 0) {
+        // The whole thing doesn't really work on Gingerbread.
+        // Not that anyone actually still uses Gingerbread.
+        if (hasFocus && requestHandler.getRequests().size() == 0 && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             Handler h = new Handler(Looper.getMainLooper());
             h.postDelayed(showDropdownOnStart, 100);
         }

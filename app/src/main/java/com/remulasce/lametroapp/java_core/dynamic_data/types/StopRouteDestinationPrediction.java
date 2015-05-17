@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /* This thing makes all the StopRouteDestinationArrivals each stop could need.
 That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
@@ -25,14 +26,8 @@ public class StopRouteDestinationPrediction extends Prediction {
     private Stop stop;
     private Route route;
 
-    private boolean inScope = false;
 
-    private boolean needsQuickUpdate = false;
-
-    private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
-
-    private long lastUpdate;
-    private boolean inUpdate = false;
+    private Collection<StopRouteDestinationArrival> trackedArrivals = new CopyOnWriteArrayList<StopRouteDestinationArrival>();
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;
@@ -58,11 +53,6 @@ public class StopRouteDestinationPrediction extends Prediction {
     }
 
     @Override
-    public boolean isInScope() {
-        return inScope;
-    }
-
-    @Override
     public boolean hasAnyPredictions() {
         for (StopRouteDestinationArrival arrival : trackedArrivals) {
             if (arrival.isInScope()) {
@@ -78,6 +68,7 @@ public class StopRouteDestinationPrediction extends Prediction {
         Log.d(TAG, "StartPredicting SRDP");
         synchronized ( trackedArrivals ) {
             inScope = true;
+            inUpdate = false;
             PredictionManager.getInstance().startTracking( this );
         }
     }
@@ -124,9 +115,23 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void handleResponse( String response ) {
-        lastUpdate = System.currentTimeMillis();
+        super.handleResponse(response);
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
+
+        // We have a problem!
+        if (arrivals == null) {
+            if (this.trackedArrivals.size() > 0) {
+                // If we had arrivals before, just carry on using the cached times.
+                // This isn't a failure state. We just went underground (probably).
+                predictionState = PredictionState.CACHED;
+                return;
+            } else {
+                // But if this is the first run, let user know there's a problem.
+                predictionState = PredictionState.BAD;
+                return;
+            }
+        }
 
         // First, add new destinations if we find any.
         for (Arrival newA : arrivals) {
@@ -148,7 +153,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                 if (a == null) {
                     synchronized (trackedArrivals) {
                         StopRouteDestinationArrival newSRDA = new StopRouteDestinationArrival(
-                                newA.getStop(), newA.getRoute(), newA.getDirection());
+                                stop, newA.getRoute(), newA.getDirection());
                         newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
                     }
@@ -159,15 +164,6 @@ public class StopRouteDestinationPrediction extends Prediction {
         //Then update all the destinations we have
         for (StopRouteDestinationArrival a : trackedArrivals) {
             a.updateArrivalTimes(arrivals);
-        }
-    }
-    @Override
-    public void setUpdated() {
-        synchronized ( this ) {
-            inUpdate = false;
-            needsQuickUpdate = false;
-
-            this.lastUpdate = System.currentTimeMillis();
         }
     }
 
@@ -210,14 +206,6 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         Log.v(TAG, "GetRequestedUpdateInterval SRDArrival "+interval);
         return (int) Math.max( MINIMUM_UPDATE_INTERVAL, interval );
-    }
-
-    @Override
-    public void setGettingUpdate() {
-        synchronized ( this ) {
-            inUpdate = true;
-        }
-
     }
 
     public int hashCode() {

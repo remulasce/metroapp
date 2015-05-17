@@ -44,6 +44,9 @@ public class HTTPGetter {
         {
             return "";
         }
+        catch (Exception e) {
+            return null;
+        }
     }
 
 

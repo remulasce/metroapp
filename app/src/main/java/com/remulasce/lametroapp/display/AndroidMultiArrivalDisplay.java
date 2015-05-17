@@ -88,7 +88,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
 
         double distance = trip.getCurrentDistanceToStop();
 
-        distance_text.setText((int)(distance * 0.000621371 * 10) / 10.0 + "mi");
+        distance_text.setText(convertMeteresToDistanceDisplay(distance));
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
@@ -119,8 +119,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             int seconds = (int) a.getEstimatedArrivalSeconds();
             String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
 
-            // If the bus already arrived, don't add the display
-            if (seconds <= 0) {
+            // If the bus is long gone, don't add it.
+            // But keep displaying the "arrived" text for a little while, so you can
+            // see the bus # once you've boarded.
+            if (seconds <= -10) {
                 continue;
             }
             // If there's recycled views to use
@@ -173,6 +175,24 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         return rowView;
     }
 
+    private String convertMeteresToDistanceDisplay(double distance) {
+        double yards = distance * 1.09361;
+
+        if (yards > 100) {
+            double miles = distance * 0.000621371;
+
+            if (miles < 10) {
+                return (int) (miles * 10) / 10.0 + "mi";
+            } else if (miles < 100){
+                return (int) (miles + 0.5) + "mi";
+            } else {
+                return "really far!";
+            }
+        } else {
+            return (int) yards + "yd";
+        }
+    }
+
     @Override
     public Trip getTrip() {
         return trip;
@@ -197,12 +217,19 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             }
         }
 
+        Boolean hasTrips = !trip.parentArrival.getArrivals().isEmpty();
+        if (hasTrips == false) {
+            RadioButton consistencyButton = new RadioButton(context);
+            consistencyButton.setText("No vehicles available");
+            radios.addView(consistencyButton);
+        }
+
         RadioButton first = (RadioButton)radios.getChildAt(0);
         if (first != null) {
             radios.check(first.getId());
         }
 
-        launchNotificationConfirmation(context, dialogView);
+        launchNotificationConfirmation(context, dialogView, hasTrips);
     }
 
     private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio) {
@@ -247,7 +274,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         return vehicle;
     }
 
-    private void launchNotificationConfirmation(final Context context, final View dialogView) {
+    private void launchNotificationConfirmation(final Context context, final View dialogView, Boolean allowOk) {
         final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
@@ -263,7 +290,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
 
         setTrackingEventListeners(time, vehicleRadio);
 
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.notify_confirmation_title))
                 .setView( dialogView )
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -289,6 +316,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
                     }
                 })
                 .show();
+
+        if (allowOk!=Boolean.TRUE) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        }
 
         TutorialManager.getInstance().notifyServiceSet();
     }

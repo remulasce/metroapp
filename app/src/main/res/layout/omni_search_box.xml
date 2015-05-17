@@ -5,7 +5,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:id="@+id/omni_text"
-        android:inputType="text"
+        android:inputType="textFilter|textNoSuggestions"
         android:imeOptions="actionDone"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
