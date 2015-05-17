@@ -80,7 +80,7 @@
 				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.h",
 				"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.m",
 			);
-			script = "/Users/nighelles/Desktop/j2objc-master/dist/j2objc -use-arc -d ${DERIVED_FILES_DIR} -sourcepath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/MetroApp/metroapp/app/src/main/java -classpath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/javadeps/ --no-package-directories ${INPUT_FILE_PATH};";
+			script = "/Users/nighelles/Desktop/j2objc-master/dist/j2objc -use-arc -d ${DERIVED_FILES_DIR} -sourcepath /Users/nighelles/Desktop/MetroAppIOS/app/src/main/java -classpath /Users/nighelles/Desktop/MetroAppIOS/MetroApp/javadeps/ --no-package-directories ${INPUT_FILE_PATH};";
 		};
 /* End PBXBuildRule section */
 
