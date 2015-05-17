@@ -62,7 +62,6 @@
 		31865C891AC7EA04007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
 		31865C901AC7EAAC007421BE /* StopNameInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 31865C8F1AC7EAAC007421BE /* StopNameInfo.m */; };
 		31865C921AC7F546007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
-		31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */; };
 		318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */; };
 		318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318B6A6F1ADB0AFC001F24FD /* ReminderViewController.xib */; };
 		31A87BB31AAAA63B00013DEC /* PredictionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A87BB21AAAA63B00013DEC /* PredictionManager.m */; };
@@ -216,7 +215,6 @@
 		31865C881AC7EA04007421BE /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		31865C8E1AC7EAAC007421BE /* StopNameInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameInfo.h; sourceTree = "<group>"; };
 		31865C8F1AC7EAAC007421BE /* StopNameInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameInfo.m; sourceTree = "<group>"; };
-		31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = StopNamesLA.sqlite3; path = metroapp/app/src/main/assets/databases/StopNamesLA.sqlite3; sourceTree = "<group>"; };
 		31865C981AC897F9007421BE /* Examples.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Examples.m; sourceTree = "<group>"; };
 		318B6A6D1ADB0AFC001F24FD /* ReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReminderViewController.h; sourceTree = "<group>"; };
 		318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReminderViewController.m; sourceTree = "<group>"; };
@@ -544,7 +542,6 @@
 				31BADC7C1ADADC51004961EA /* actransit.sqlite3 */,
 				310A04961ACB323C000E1B8E /* StopNameDatabase.h */,
 				310A04971ACB323C000E1B8E /* StopNameDatabase.m */,
-				31865C931AC7FAAA007421BE /* StopNamesLA.sqlite3 */,
 				31865C8E1AC7EAAC007421BE /* StopNameInfo.h */,
 				31865C8F1AC7EAAC007421BE /* StopNameInfo.m */,
 			);
@@ -757,7 +754,6 @@
 				318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
-				31865C941AC7FAAA007421BE /* StopNamesLA.sqlite3 in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
