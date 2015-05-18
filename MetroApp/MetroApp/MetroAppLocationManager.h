@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Stop.h"
+#import "BasicLocation.h"
 
 @interface MetroAppLocationManager : NSObject <CLLocationManagerDelegate>
 {
@@ -17,5 +19,7 @@
 - (CLLocationManager*)getLocationManager;
 - (void)startStandardUpdates;
 - (void)stopStandardUpdates;
+
+- (double)getCurrentDistanceToStop:(ComRemulasceLametroappJava_coreBasic_typesStop*)stop;
 
 @end

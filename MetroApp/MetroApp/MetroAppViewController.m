@@ -18,6 +18,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "LaMetroUtil.h"
 #import "RegionalizationHelper.h"
+#import "GlobalLocationProvider.h"
 
 @interface MetroAppViewController ()
 
@@ -53,6 +54,16 @@
                                                                          Tol:.01];
     NSLog(@"Search Test: %@",[testStops stopName]);
 
+    
+    // Set up globallocation thing
+    
+    ComRemulasceLametroappJava_coreLocationGlobalLocationProvider* globalLocationProvider;
+    globalLocationProvider = [[ComRemulasceLametroappJava_coreLocationGlobalLocationProvider alloc] init];
+    
+    
+    // I really hope this works, it declares the interface fine so...
+    [ComRemulasceLametroappJava_coreLocationGlobalLocationProvider
+     setRetrieverWithComRemulasceLametroappJava_coreLocationLocationRetriever: metroAppLocationManager];
     
     // TEST THE DATABASE
     serviceRequestList = [[NSMutableArray alloc] init];
