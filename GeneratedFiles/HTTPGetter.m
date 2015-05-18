@@ -10,6 +10,7 @@
 #include "java/io/ByteArrayOutputStream.h"
 #include "java/io/IOException.h"
 #include "java/io/InputStream.h"
+#include "java/lang/Exception.h"
 #include "java/net/HttpURLConnection.h"
 #include "java/net/URL.h"
 #include "java/net/URLConnection.h"
@@ -48,6 +49,9 @@ withComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter:(id<ComRe
   }
   @catch (JavaIoIOException *e) {
     return @"";
+  }
+  @catch (JavaLangException *e) {
+    return nil;
   }
 }
 

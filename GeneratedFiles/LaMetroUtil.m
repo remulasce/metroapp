@@ -3,8 +3,8 @@
 //  source: /Users/nighelles/Desktop/MetroAppIOS/app/src/main/java/com/remulasce/lametroapp/java_core/LaMetroUtil.java
 //
 
+#include "Agency.h"
 #include "Arrival.h"
-#include "BasicLocation.h"
 #include "Destination.h"
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
@@ -37,7 +37,7 @@
 #include "org/xmlpull/v1/XmlPullParserException.h"
 #include "org/xmlpull/v1/XmlPullParserFactory.h"
 
-__attribute__((unused)) static void ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_withJavaUtilList_(NSString *response, id<JavaUtilList> ret);
+__attribute__((unused)) static id<JavaUtilList> ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_(NSString *response);
 __attribute__((unused)) static NSString *ComRemulasceLametroappJava_coreLaMetroUtil_cleanupStopIDWithNSString_(NSString *stopIDAttribute);
 __attribute__((unused)) static void ComRemulasceLametroappJava_coreLaMetroUtil_parseWithAndroidLibsWithNSString_withJavaUtilList_(NSString *response, id<JavaUtilList> ret);
 __attribute__((unused)) static void ComRemulasceLametroappJava_coreLaMetroUtil_addNewArrivalWithJavaUtilList_withInt_withComRemulasceLametroappJava_coreBasic_typesDestination_withComRemulasceLametroappJava_coreBasic_typesRoute_withComRemulasceLametroappJava_coreBasic_typesStop_withComRemulasceLametroappJava_coreBasic_typesVehicle_(id<JavaUtilList> ret, jint seconds, ComRemulasceLametroappJava_coreBasic_typesDestination *d, ComRemulasceLametroappJava_coreBasic_typesRoute *r, ComRemulasceLametroappJava_coreBasic_typesStop *s, ComRemulasceLametroappJava_coreBasic_typesVehicle *v);
@@ -45,8 +45,7 @@ __attribute__((unused)) static void ComRemulasceLametroappJava_coreLaMetroUtil_a
 @interface ComRemulasceLametroappJava_coreLaMetroUtil () {
 }
 
-+ (void)parseWithJavaLibsWithNSString:(NSString *)response
-                     withJavaUtilList:(id<JavaUtilList>)ret;
++ (id<JavaUtilList>)parseWithJavaLibsWithNSString:(NSString *)response;
 
 + (NSString *)cleanupStopIDWithNSString:(NSString *)stopIDAttribute;
 
@@ -85,9 +84,8 @@ id<ComRemulasceLametroappJava_coreStatic_dataRouteColorer> ComRemulasceLametroap
   return ComRemulasceLametroappJava_coreLaMetroUtil_parseAllArrivalsWithNSString_(response);
 }
 
-+ (void)parseWithJavaLibsWithNSString:(NSString *)response
-                     withJavaUtilList:(id<JavaUtilList>)ret {
-  ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_withJavaUtilList_(response, ret);
++ (id<JavaUtilList>)parseWithJavaLibsWithNSString:(NSString *)response {
+  return ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_(response);
 }
 
 + (NSString *)cleanupStopIDWithNSString:(NSString *)stopIDAttribute {
@@ -135,7 +133,7 @@ withComRemulasceLametroappJava_coreBasic_typesVehicle:(ComRemulasceLametroappJav
     { "isValidRouteWithComRemulasceLametroappJava_coreBasic_typesRoute:", "isValidRoute", "Z", 0x9, NULL },
     { "makePredictionsRequestWithComRemulasceLametroappJava_coreBasic_typesStop:withComRemulasceLametroappJava_coreBasic_typesRoute:", "makePredictionsRequest", "Ljava.lang.String;", 0x9, NULL },
     { "parseAllArrivalsWithNSString:", "parseAllArrivals", "Ljava.util.List;", 0x9, NULL },
-    { "parseWithJavaLibsWithNSString:withJavaUtilList:", "parseWithJavaLibs", "V", 0xa, NULL },
+    { "parseWithJavaLibsWithNSString:", "parseWithJavaLibs", "Ljava.util.List;", 0xa, NULL },
     { "cleanupStopIDWithNSString:", "cleanupStopID", "Ljava.lang.String;", 0xa, NULL },
     { "parseWithAndroidLibsWithNSString:withJavaUtilList:", "parseWithAndroidLibs", "V", 0xa, NULL },
     { "addNewArrivalWithJavaUtilList:withInt:withComRemulasceLametroappJava_coreBasic_typesDestination:withComRemulasceLametroappJava_coreBasic_typesRoute:withComRemulasceLametroappJava_coreBasic_typesStop:withComRemulasceLametroappJava_coreBasic_typesVehicle:", "addNewArrival", "V", 0xa, NULL },
@@ -191,8 +189,12 @@ jboolean ComRemulasceLametroappJava_coreLaMetroUtil_isValidRouteWithComRemulasce
 
 NSString *ComRemulasceLametroappJava_coreLaMetroUtil_makePredictionsRequestWithComRemulasceLametroappJava_coreBasic_typesStop_withComRemulasceLametroappJava_coreBasic_typesRoute_(ComRemulasceLametroappJava_coreBasic_typesStop *stop, ComRemulasceLametroappJava_coreBasic_typesRoute *route) {
   ComRemulasceLametroappJava_coreLaMetroUtil_init();
-  NSString *agency = ComRemulasceLametroappJava_coreLaMetroUtil_getAgencyFromRouteWithComRemulasceLametroappJava_coreBasic_typesRoute_withComRemulasceLametroappJava_coreBasic_typesStop_(route, stop);
-  NSString *URI = JreStrcat("$$$$$", ComRemulasceLametroappJava_coreLaMetroUtil_NEXTBUS_FEED_URL_, @"?command=predictions&a=", agency, @"&stopId=", [((ComRemulasceLametroappJava_coreBasic_typesStop *) nil_chk(stop)) getString]);
+  ComRemulasceLametroappJava_coreBasic_typesAgency *agency = [((ComRemulasceLametroappJava_coreBasic_typesStop *) nil_chk(stop)) getAgency];
+  if (agency == nil || ![agency isValid]) {
+    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, @"No agency attached to stop, determining from region. Deprecated.");
+    agency = [[ComRemulasceLametroappJava_coreBasic_typesAgency alloc] initWithNSString:ComRemulasceLametroappJava_coreLaMetroUtil_getAgencyFromRouteWithComRemulasceLametroappJava_coreBasic_typesRoute_withComRemulasceLametroappJava_coreBasic_typesStop_(route, stop)];
+  }
+  NSString *URI = JreStrcat("$$$$$", ComRemulasceLametroappJava_coreLaMetroUtil_NEXTBUS_FEED_URL_, @"?command=predictions&a=", ((ComRemulasceLametroappJava_coreBasic_typesAgency *) nil_chk(agency))->raw_, @"&stopId=", [stop getString]);
   if (ComRemulasceLametroappJava_coreLaMetroUtil_isValidRouteWithComRemulasceLametroappJava_coreBasic_typesRoute_(route)) {
     URI = JreStrcat("$$", URI, JreStrcat("$$", @"&routeTag=", [((ComRemulasceLametroappJava_coreBasic_typesRoute *) nil_chk(route)) getString]));
   }
@@ -201,19 +203,28 @@ NSString *ComRemulasceLametroappJava_coreLaMetroUtil_makePredictionsRequestWithC
 
 id<JavaUtilList> ComRemulasceLametroappJava_coreLaMetroUtil_parseAllArrivalsWithNSString_(NSString *response) {
   ComRemulasceLametroappJava_coreLaMetroUtil_init();
-  id<JavaUtilList> ret = [[JavaUtilArrayList alloc] init];
-  ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_withJavaUtilList_(response, ret);
+  if (response == nil || [response isEmpty]) {
+    ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, @"Error in input given to parseAllArrivals, possible network failure");
+    return nil;
+  }
+  id<JavaUtilList> ret = ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_(response);
   return ret;
 }
 
-void ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_withJavaUtilList_(NSString *response, id<JavaUtilList> ret) {
+id<JavaUtilList> ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_(NSString *response) {
   ComRemulasceLametroappJava_coreLaMetroUtil_init();
+  id<JavaUtilList> ret = [[JavaUtilArrayList alloc] init];
   JavaxXmlParsersDocumentBuilderFactory *dbf = JavaxXmlParsersDocumentBuilderFactory_newInstance();
   @try {
     JavaxXmlParsersDocumentBuilder *db = [((JavaxXmlParsersDocumentBuilderFactory *) nil_chk(dbf)) newDocumentBuilder];
     id<OrgW3cDomDocument> dom = [((JavaxXmlParsersDocumentBuilder *) nil_chk(db)) parseWithOrgXmlSaxInputSource:[[OrgXmlSaxInputSource alloc] initWithJavaIoReader:[[JavaIoStringReader alloc] initWithNSString:response]]];
     id<OrgW3cDomElement> docEle = [((id<OrgW3cDomDocument>) nil_chk(dom)) getDocumentElement];
-    id<OrgW3cDomNodeList> predictions = [((id<OrgW3cDomElement>) nil_chk(docEle)) getElementsByTagNameWithNSString:@"predictions"];
+    id<OrgW3cDomNodeList> errors = [((id<OrgW3cDomElement>) nil_chk(docEle)) getElementsByTagNameWithNSString:@"Error"];
+    if (errors != nil && [errors getLength] != 0) {
+      ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, @"NexTrip returned an error");
+      return nil;
+    }
+    id<OrgW3cDomNodeList> predictions = [docEle getElementsByTagNameWithNSString:@"predictions"];
     if (predictions != nil && [predictions getLength] > 0) {
       for (jint i = 0; i < [predictions getLength]; i++) {
         id<OrgW3cDomElement> prediction = (id<OrgW3cDomElement>) check_protocol_cast([predictions itemWithInt:i], @protocol(OrgW3cDomElement));
@@ -236,7 +247,6 @@ void ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_wi
             ComRemulasceLametroappJava_coreBasic_typesVehicle *v = [[ComRemulasceLametroappJava_coreBasic_typesVehicle alloc] initWithNSString:vehicleAttribute];
             [s setStopNameWithNSString:stopTitleAttribute];
             ComRemulasceLametroappJava_coreLaMetroUtil_addNewArrivalWithJavaUtilList_withInt_withComRemulasceLametroappJava_coreBasic_typesDestination_withComRemulasceLametroappJava_coreBasic_typesRoute_withComRemulasceLametroappJava_coreBasic_typesStop_withComRemulasceLametroappJava_coreBasic_typesVehicle_(ret, seconds, d, r, s, v);
-            ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, [arrival description]);
           }
         }
       }
@@ -244,13 +254,21 @@ void ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_wi
   }
   @catch (JavaxXmlParsersParserConfigurationException *pce) {
     [((JavaxXmlParsersParserConfigurationException *) nil_chk(pce)) printStackTrace];
+    return nil;
   }
   @catch (OrgXmlSaxSAXException *se) {
     [((OrgXmlSaxSAXException *) nil_chk(se)) printStackTrace];
+    return nil;
   }
   @catch (JavaIoIOException *ioe) {
     [((JavaIoIOException *) nil_chk(ioe)) printStackTrace];
+    return nil;
   }
+  @catch (JavaLangException *e) {
+    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, @"Unaddressed exception!");
+    return nil;
+  }
+  return ret;
 }
 
 NSString *ComRemulasceLametroappJava_coreLaMetroUtil_cleanupStopIDWithNSString_(NSString *stopIDAttribute) {
@@ -333,7 +351,6 @@ void ComRemulasceLametroappJava_coreLaMetroUtil_addNewArrivalWithJavaUtilList_wi
   ComRemulasceLametroappJava_coreLaMetroUtil_init();
   ComRemulasceLametroappJava_coreAnalyticsLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, JreStrcat("$IC@C@C@C@", @"Adding new arrival ", seconds, ' ', d, ' ', r, ' ', s, ' ', v));
   if (ComRemulasceLametroappJava_coreLaMetroUtil_locationTranslator_ != nil) {
-    [((ComRemulasceLametroappJava_coreBasic_typesStop *) nil_chk(s)) setLocationWithComRemulasceLametroappJava_coreBasic_typesBasicLocation:[ComRemulasceLametroappJava_coreLaMetroUtil_locationTranslator_ getStopLocationWithComRemulasceLametroappJava_coreBasic_typesStop:s]];
   }
   if (ComRemulasceLametroappJava_coreLaMetroUtil_routeColorer_ != nil) {
     [((ComRemulasceLametroappJava_coreBasic_typesRoute *) nil_chk(r)) setColorWithComRemulasceLametroappJava_coreStatic_dataTypesRouteColor:[ComRemulasceLametroappJava_coreLaMetroUtil_routeColorer_ getColorWithComRemulasceLametroappJava_coreBasic_typesRoute:r]];
@@ -366,11 +383,8 @@ NSString *ComRemulasceLametroappJava_coreLaMetroUtil_standaloneTimeToDisplayWith
   if (seconds > 60) {
     return JreStrcat("$$", NSString_valueOfInt_(seconds / 60), @" min");
   }
-  if (seconds > 1) {
+  if (seconds >= 1) {
     return JreStrcat("$C", NSString_valueOfInt_(seconds), 's');
-  }
-  if (seconds == 0) {
-    return @"1s";
   }
   return @"arrived";
 }

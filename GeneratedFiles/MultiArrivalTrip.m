@@ -12,11 +12,9 @@
 #include "Stop.h"
 #include "StopRouteDestinationArrival.h"
 #include "java/lang/Math.h"
-#include "java/lang/System.h"
 
 @interface ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip () {
  @public
-  jlong lastLocationUpdate_;
   jdouble lastDistanceToStop_;
 }
 @end
@@ -25,7 +23,6 @@
 
 - (instancetype)initWithComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *)parentArrival {
   if (self = [super init]) {
-    lastLocationUpdate_ = 0;
     lastDistanceToStop_ = 0;
     self->parentArrival_ = parentArrival;
   }
@@ -62,9 +59,9 @@
 
 - (jdouble)getCurrentDistanceToStop {
   id<ComRemulasceLametroappJava_coreLocationLocationRetriever> retriever = ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever();
-  if (retriever != nil && JavaLangSystem_currentTimeMillis() > lastLocationUpdate_ + 30000) {
-    lastLocationUpdate_ = JavaLangSystem_currentTimeMillis();
-    lastDistanceToStop_ = [retriever getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
+  jdouble currentDistanceToStop = [((id<ComRemulasceLametroappJava_coreLocationLocationRetriever>) nil_chk(retriever)) getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
+  if (currentDistanceToStop > 0) {
+    lastDistanceToStop_ = currentDistanceToStop;
   }
   return lastDistanceToStop_;
 }
@@ -99,10 +96,9 @@
   };
   static const J2ObjcFieldInfo fields[] = {
     { "parentArrival_", NULL, 0x11, "Lcom.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;", NULL,  },
-    { "lastLocationUpdate_", NULL, 0x2, "J", NULL,  },
     { "lastDistanceToStop_", NULL, 0x2, "D", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip = { 2, "MultiArrivalTrip", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 8, methods, 3, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip = { 2, "MultiArrivalTrip", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 8, methods, 2, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip;
 }
 

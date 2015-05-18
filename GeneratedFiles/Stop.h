@@ -6,6 +6,7 @@
 #ifndef _ComRemulasceLametroappJava_coreBasic_typesStop_H_
 #define _ComRemulasceLametroappJava_coreBasic_typesStop_H_
 
+@class ComRemulasceLametroappJava_coreBasic_typesAgency;
 @class ComRemulasceLametroappJava_coreBasic_typesBasicLocation;
 
 #include "J2ObjC_header.h"
@@ -26,6 +27,8 @@
 
 - (jboolean)isEqual:(id)o;
 
+- (ComRemulasceLametroappJava_coreBasic_typesAgency *)getAgency;
+
 - (ComRemulasceLametroappJava_coreBasic_typesBasicLocation *)getLocation;
 
 - (jint)getNum;
@@ -39,6 +42,8 @@
 - (NSUInteger)hash;
 
 - (jboolean)isValid;
+
+- (void)setAgencyWithComRemulasceLametroappJava_coreBasic_typesAgency:(ComRemulasceLametroappJava_coreBasic_typesAgency *)agency;
 
 - (void)setLocationWithComRemulasceLametroappJava_coreBasic_typesBasicLocation:(ComRemulasceLametroappJava_coreBasic_typesBasicLocation *)location;
 

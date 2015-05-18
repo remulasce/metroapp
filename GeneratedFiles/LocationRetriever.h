@@ -6,6 +6,7 @@
 #ifndef _ComRemulasceLametroappJava_coreLocationLocationRetriever_H_
 #define _ComRemulasceLametroappJava_coreLocationLocationRetriever_H_
 
+@class ComRemulasceLametroappJava_coreBasic_typesBasicLocation;
 @class ComRemulasceLametroappJava_coreBasic_typesStop;
 
 #include "J2ObjC_header.h"
@@ -13,6 +14,8 @@
 @protocol ComRemulasceLametroappJava_coreLocationLocationRetriever < NSObject, JavaObject >
 
 #pragma mark Public
+
+- (jdouble)getCurrentDistanceToLocationWithComRemulasceLametroappJava_coreBasic_typesBasicLocation:(ComRemulasceLametroappJava_coreBasic_typesBasicLocation *)location;
 
 - (jdouble)getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:(ComRemulasceLametroappJava_coreBasic_typesStop *)stop;
 

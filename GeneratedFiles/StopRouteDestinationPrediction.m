@@ -8,6 +8,7 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "LaMetroUtil.h"
+#include "Prediction.h"
 #include "PredictionManager.h"
 #include "Route.h"
 #include "Stop.h"
@@ -26,17 +27,14 @@
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
 #include "java/util/List.h"
+#include "java/util/concurrent/CopyOnWriteArrayList.h"
 
 @interface ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction () {
  @public
   jint MINIMUM_UPDATE_INTERVAL_;
   ComRemulasceLametroappJava_coreBasic_typesStop *stop_;
   ComRemulasceLametroappJava_coreBasic_typesRoute *route_;
-  jboolean inScope_;
-  jboolean needsQuickUpdate_;
   id<JavaUtilCollection> trackedArrivals_;
-  jlong lastUpdate_;
-  jboolean inUpdate_;
 }
 
 - (void)writeObjectWithJavaIoObjectOutputStream:(JavaIoObjectOutputStream *)oos;
@@ -56,10 +54,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
                    withComRemulasceLametroappJava_coreBasic_typesRoute:(ComRemulasceLametroappJava_coreBasic_typesRoute *)route {
   if (self = [super init]) {
     MINIMUM_UPDATE_INTERVAL_ = 5000;
-    inScope_ = NO;
-    needsQuickUpdate_ = NO;
-    trackedArrivals_ = [[JavaUtilArrayList alloc] init];
-    inUpdate_ = NO;
+    trackedArrivals_ = [[JavaUtilConcurrentCopyOnWriteArrayList alloc] init];
     self->stop_ = stop;
     self->route_ = route;
   }
@@ -81,10 +76,6 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
   [self stopPredicting];
 }
 
-- (jboolean)isInScope {
-  return inScope_;
-}
-
 - (jboolean)hasAnyPredictions {
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival * __strong arrival in nil_chk(trackedArrivals_)) {
     if ([((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(arrival)) isInScope]) {
@@ -98,6 +89,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
   AndroidUtilLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction_TAG_, @"StartPredicting SRDP");
   @synchronized(trackedArrivals_) {
     inScope_ = YES;
+    inUpdate_ = NO;
     [((ComRemulasceLametroappJava_coreDynamic_dataPredictionManager *) nil_chk(ComRemulasceLametroappJava_coreDynamic_dataPredictionManager_getInstance())) startTrackingWithComRemulasceLametroappJava_coreDynamic_dataTypesPrediction:self];
   }
 }
@@ -138,8 +130,18 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
 }
 
 - (void)handleResponseWithNSString:(NSString *)response {
-  lastUpdate_ = JavaLangSystem_currentTimeMillis();
+  [super handleResponseWithNSString:response];
   id<JavaUtilList> arrivals = ComRemulasceLametroappJava_coreLaMetroUtil_parseAllArrivalsWithNSString_(response);
+  if (arrivals == nil) {
+    if ([((id<JavaUtilCollection>) nil_chk(self->trackedArrivals_)) size] > 0) {
+      predictionState_ = ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionStateEnum_get_CACHED();
+      return;
+    }
+    else {
+      predictionState_ = ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionStateEnum_get_BAD();
+      return;
+    }
+  }
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesArrival * __strong newA in nil_chk(arrivals)) {
     [((ComRemulasceLametroappJava_coreDynamic_dataTypesArrival *) nil_chk(newA)) setScopeWithBoolean:inScope_];
     if ([self arrivalTrackedWithComRemulasceLametroappJava_coreDynamic_dataTypesArrival:newA]) {
@@ -154,7 +156,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
       }
       if (a == nil) {
         @synchronized(trackedArrivals_) {
-          ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *newSRDA = [[ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival alloc] initWithComRemulasceLametroappJava_coreBasic_typesStop:[newA getStop] withComRemulasceLametroappJava_coreBasic_typesRoute:[newA getRoute] withComRemulasceLametroappJava_coreBasic_typesDestination:[newA getDirection]];
+          ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *newSRDA = [[ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival alloc] initWithComRemulasceLametroappJava_coreBasic_typesStop:stop_ withComRemulasceLametroappJava_coreBasic_typesRoute:[newA getRoute] withComRemulasceLametroappJava_coreBasic_typesDestination:[newA getDirection]];
           [newSRDA setScopeWithBoolean:inScope_];
           [trackedArrivals_ addWithId:newSRDA];
         }
@@ -163,14 +165,6 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
   }
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival * __strong a in nil_chk(trackedArrivals_)) {
     [((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(a)) updateArrivalTimesWithJavaUtilCollection:arrivals];
-  }
-}
-
-- (void)setUpdated {
-  @synchronized(self) {
-    inUpdate_ = NO;
-    needsQuickUpdate_ = NO;
-    self->lastUpdate_ = JavaLangSystem_currentTimeMillis();
   }
 }
 
@@ -203,12 +197,6 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
   }
   AndroidUtilLog_vWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction_TAG_, JreStrcat("$F", @"GetRequestedUpdateInterval SRDArrival ", interval));
   return J2ObjCFpToInt(JavaLangMath_maxWithFloat_withFloat_(MINIMUM_UPDATE_INTERVAL_, interval));
-}
-
-- (void)setGettingUpdate {
-  @synchronized(self) {
-    inUpdate_ = YES;
-  }
 }
 
 - (NSUInteger)hash {
@@ -252,7 +240,6 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
     { "initWithComRemulasceLametroappJava_coreBasic_typesStop:withComRemulasceLametroappJava_coreBasic_typesRoute:", "StopRouteDestinationPrediction", NULL, 0x1, NULL },
     { "restoreTrips", NULL, "V", 0x1, NULL },
     { "cancelTrips", NULL, "V", 0x1, NULL },
-    { "isInScope", NULL, "Z", 0x1, NULL },
     { "hasAnyPredictions", NULL, "Z", 0x1, NULL },
     { "startPredicting", NULL, "V", 0x1, NULL },
     { "stopPredicting", NULL, "V", 0x1, NULL },
@@ -261,11 +248,9 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
     { "getTimeSinceLastUpdate", NULL, "J", 0x1, NULL },
     { "arrivalTrackedWithComRemulasceLametroappJava_coreDynamic_dataTypesArrival:", "arrivalTracked", "Z", 0x0, NULL },
     { "handleResponseWithNSString:", "handleResponse", "V", 0x1, NULL },
-    { "setUpdated", NULL, "V", 0x1, NULL },
     { "getRoute", NULL, "Lcom.remulasce.lametroapp.java_core.basic_types.Route;", 0x1, NULL },
     { "getArrivals", NULL, "Ljava.util.Collection;", 0x1, NULL },
     { "getRequestedUpdateInterval", NULL, "I", 0x1, NULL },
-    { "setGettingUpdate", NULL, "V", 0x1, NULL },
     { "hash", "hashCode", "I", 0x1, NULL },
     { "writeObjectWithJavaIoObjectOutputStream:", "writeObject", "V", 0x2, "Ljava.io.IOException;" },
     { "readObjectWithJavaIoObjectInputStream:", "readObject", "V", 0x2, "Ljava.lang.ClassNotFoundException;Ljava.io.IOException;" },
@@ -275,13 +260,9 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
     { "MINIMUM_UPDATE_INTERVAL_", NULL, 0x12, "I", NULL,  },
     { "stop_", NULL, 0x2, "Lcom.remulasce.lametroapp.java_core.basic_types.Stop;", NULL,  },
     { "route_", NULL, 0x2, "Lcom.remulasce.lametroapp.java_core.basic_types.Route;", NULL,  },
-    { "inScope_", NULL, 0x2, "Z", NULL,  },
-    { "needsQuickUpdate_", NULL, 0x2, "Z", NULL,  },
     { "trackedArrivals_", NULL, 0x2, "Ljava.util.Collection;", NULL,  },
-    { "lastUpdate_", NULL, 0x2, "J", NULL,  },
-    { "inUpdate_", NULL, 0x2, "Z", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction = { 2, "StopRouteDestinationPrediction", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 20, methods, 9, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction = { 2, "StopRouteDestinationPrediction", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 17, methods, 5, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction;
 }
 

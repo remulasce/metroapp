@@ -7,6 +7,7 @@
 #include "J2ObjC_source.h"
 #include "Log.h"
 #include "Prediction.h"
+#include "RequestStatusTrip.h"
 #include "Stop.h"
 #include "StopRouteDestinationArrival.h"
 #include "StopRouteDestinationPrediction.h"
@@ -17,8 +18,10 @@
 #include "java/io/ObjectOutputStream.h"
 #include "java/lang/ClassNotFoundException.h"
 #include "java/lang/Exception.h"
+#include "java/lang/IllegalArgumentException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
+#include "java/util/List.h"
 
 __attribute__((unused)) static void ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_makePredictions(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *self);
 
@@ -27,6 +30,7 @@ __attribute__((unused)) static void ComRemulasceLametroappJava_coreBasic_typesSt
   id<JavaUtilCollection> stops_;
   id<JavaUtilCollection> predictions_;
   jboolean updateAvailable__;
+  ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip *statusTrip_;
 }
 
 - (void)makePredictions;
@@ -38,6 +42,7 @@ __attribute__((unused)) static void ComRemulasceLametroappJava_coreBasic_typesSt
 
 J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest, stops_, id<JavaUtilCollection>)
 J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest, predictions_, id<JavaUtilCollection>)
+J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest, statusTrip_, ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip *)
 
 @implementation ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest
 
@@ -50,6 +55,7 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
     updateAvailable__ = YES;
     self->stops_ = stops;
     self->displayName_ = displayName;
+    self->statusTrip_ = [[ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip alloc] initWithComRemulasceLametroappJava_coreBasic_typesStopServiceRequest:self];
   }
   return self;
 }
@@ -62,6 +68,7 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
     stops_ = [[JavaUtilArrayList alloc] init];
     [stops_ addWithId:stop];
     self->displayName_ = displayName;
+    self->statusTrip_ = [[ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip alloc] initWithComRemulasceLametroappJava_coreBasic_typesStopServiceRequest:self];
   }
   return self;
 }
@@ -75,6 +82,9 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
 
 - (id<JavaUtilCollection>)getTrips {
   id<JavaUtilCollection> trips = [[JavaUtilArrayList alloc] init];
+  if ((statusTrip_ != nil && [statusTrip_ isValid] && [self determineNetworkStatusState] == ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_get_ERROR()) || [self determineNetworkStatusState] == ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_get_SPINNER()) {
+    [trips addWithId:statusTrip_];
+  }
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction * __strong p in nil_chk(self->predictions_)) {
     if ([p isKindOfClass:[ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction class]]) {
       for (ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival * __strong srda in nil_chk([((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction *) nil_chk(((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction *) check_class_cast(p, [ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationPrediction class])))) getArrivals])) {
@@ -119,6 +129,7 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
   for (ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction * __strong p in nil_chk(predictions_)) {
     [((ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction *) nil_chk(p)) restoreTrips];
   }
+  [((ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip *) nil_chk(statusTrip_)) restore];
 }
 
 - (jboolean)updateAvailable {
@@ -153,18 +164,62 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
 - (void)writeObjectWithJavaIoObjectOutputStream:(JavaIoObjectOutputStream *)oos {
   [((JavaIoObjectOutputStream *) nil_chk(oos)) writeObjectWithId:stops_];
   [oos writeObjectWithId:predictions_];
+  [oos writeObjectWithId:statusTrip_];
 }
 
 - (void)readObjectWithJavaIoObjectInputStream:(JavaIoObjectInputStream *)ois {
   @try {
     stops_ = (id<JavaUtilCollection>) check_protocol_cast([((JavaIoObjectInputStream *) nil_chk(ois)) readObject], @protocol(JavaUtilCollection));
     predictions_ = (id<JavaUtilCollection>) check_protocol_cast([ois readObject], @protocol(JavaUtilCollection));
+    statusTrip_ = (ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip *) check_class_cast([ois readObject], [ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip class]);
   }
   @catch (JavaLangException *e) {
     stops_ = [[JavaUtilArrayList alloc] init];
     predictions_ = [[JavaUtilArrayList alloc] init];
+    statusTrip_ = [[ComRemulasceLametroappJava_coreDynamic_dataTypesRequestStatusTrip alloc] initWithComRemulasceLametroappJava_coreBasic_typesStopServiceRequest:self];
     [((JavaLangException *) nil_chk(e)) printStackTrace];
   }
+}
+
+- (void)testRawSetPredictionsWithJavaUtilList:(id<JavaUtilList>)overridePredictions {
+  self->predictions_ = overridePredictions;
+}
+
+- (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)determineNetworkStatusState {
+  jboolean anyFetching = NO;
+  jboolean anyGood = NO;
+  jboolean anyCached = NO;
+  jboolean anyBad = NO;
+  for (ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction * __strong p in nil_chk(predictions_)) {
+    switch ([[((ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction *) nil_chk(p)) getPredictionState] ordinal]) {
+      case ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionState_GOOD:
+      anyGood = YES;
+      break;
+      case ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionState_CACHED:
+      anyCached = YES;
+      break;
+      case ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionState_FETCHING:
+      anyFetching = YES;
+      break;
+      case ComRemulasceLametroappJava_coreDynamic_dataTypesPrediction_PredictionState_BAD:
+      anyBad = YES;
+      break;
+      default:
+      ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_, @"Unknown prediction state");
+      break;
+    }
+  }
+  if (anyFetching) {
+    return ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_get_SPINNER();
+  }
+  if (anyBad && !anyGood && !anyCached) {
+    return ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_get_ERROR();
+  }
+  return ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_get_NOTHING();
+}
+
+- (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)getNetworkStatus {
+  return [self determineNetworkStatusState];
 }
 
 + (const J2ObjcClassInfo *)__metadata {
@@ -185,14 +240,19 @@ NSString * ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_ = @
     { "getRaw", NULL, "Ljava.util.Collection;", 0x1, NULL },
     { "writeObjectWithJavaIoObjectOutputStream:", "writeObject", "V", 0x2, "Ljava.io.IOException;" },
     { "readObjectWithJavaIoObjectInputStream:", "readObject", "V", 0x2, "Ljava.lang.ClassNotFoundException;Ljava.io.IOException;" },
+    { "testRawSetPredictionsWithJavaUtilList:", "testRawSetPredictions", "V", 0x1, NULL },
+    { "determineNetworkStatusState", NULL, "Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;", 0x0, NULL },
+    { "getNetworkStatus", NULL, "Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;", 0x1, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_TAG_,  },
     { "stops_", NULL, 0x2, "Ljava.util.Collection;", NULL,  },
     { "predictions_", NULL, 0x2, "Ljava.util.Collection;", NULL,  },
     { "updateAvailable__", "updateAvailable", 0x2, "Z", NULL,  },
+    { "statusTrip_", NULL, 0x2, "Lcom.remulasce.lametroapp.java_core.dynamic_data.types.RequestStatusTrip;", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest = { 2, "StopServiceRequest", "com.remulasce.lametroapp.java_core.basic_types", NULL, 0x1, 16, methods, 4, fields, 0, NULL, 0, NULL};
+  static const char *inner_classes[] = {"Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;"};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest = { 2, "StopServiceRequest", "com.remulasce.lametroapp.java_core.basic_types", NULL, 0x1, 19, methods, 5, fields, 0, NULL, 1, inner_classes};
   return &_ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest;
 }
 
@@ -212,3 +272,69 @@ void ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_makePrediction
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest)
+
+BOOL ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_initialized = NO;
+
+ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[3];
+
+@implementation ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum
+
+- (instancetype)initWithNSString:(NSString *)__name
+                         withInt:(jint)__ordinal {
+  return [super initWithNSString:__name withInt:__ordinal];
+}
+
+IOSObjectArray *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values() {
+  ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_init();
+  return [IOSObjectArray arrayWithObjects:ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_ count:3 type:ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_class_()];
+}
++ (IOSObjectArray *)values {
+  return ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values();
+}
+
++ (ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *)valueOfWithNSString:(NSString *)name {
+  return ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_valueOfWithNSString_(name);
+}
+
+ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_valueOfWithNSString_(NSString *name) {
+  ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_init();
+  for (int i = 0; i < 3; i++) {
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum *e = ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_values_[i];
+    if ([name isEqual:[e name]]) {
+      return e;
+    }
+  }
+  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
+  return nil;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+  return self;
+}
+
++ (void)initialize {
+  if (self == [ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum class]) {
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_NOTHING = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum alloc] initWithNSString:@"NOTHING" withInt:0];
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_SPINNER = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum alloc] initWithNSString:@"SPINNER" withInt:1];
+    ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_ERROR = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum alloc] initWithNSString:@"ERROR" withInt:2];
+    J2OBJC_SET_INITIALIZED(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum)
+  }
+}
+
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "NOTHING", "NOTHING", 0x4019, "Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;", &ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_NOTHING,  },
+    { "SPINNER", "SPINNER", 0x4019, "Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;", &ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_SPINNER,  },
+    { "ERROR", "ERROR", 0x4019, "Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;", &ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum_ERROR,  },
+  };
+  static const char *superclass_type_args[] = {"Lcom.remulasce.lametroapp.java_core.basic_types.StopServiceRequest$NetworkStatusState;"};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum = { 2, "NetworkStatusState", "com.remulasce.lametroapp.java_core.basic_types", "StopServiceRequest", 0x4019, 1, methods, 3, fields, 1, superclass_type_args, 0, NULL};
+  return &_ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest_NetworkStatusStateEnum)

@@ -6,6 +6,8 @@
 #ifndef _ComRemulasceLametroappJava_coreRegionalizationHelper_H_
 #define _ComRemulasceLametroappJava_coreRegionalizationHelper_H_
 
+@protocol JavaUtilCollection;
+
 #include "J2ObjC_header.h"
 
 @interface ComRemulasceLametroappJava_coreRegionalizationHelper : NSObject {
@@ -15,7 +17,11 @@
 
 #pragma mark Public
 
+- (id<JavaUtilCollection>)getActiveAgencies;
+
 + (ComRemulasceLametroappJava_coreRegionalizationHelper *)getInstance;
+
+- (void)setActiveAgenciesWithJavaUtilCollection:(id<JavaUtilCollection>)agencies;
 
 @end
 

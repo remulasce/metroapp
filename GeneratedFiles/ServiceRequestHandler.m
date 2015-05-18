@@ -133,7 +133,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComRemulasceLametroappJava_coreServiceRequestHa
 
 - (jint)compareWithId:(ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *)lhs
                withId:(ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *)rhs {
-  return ([((ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *) nil_chk(lhs)) getPriority] < [((ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *) nil_chk(rhs)) getPriority]) ? 1 : -1;
+  jfloat lhsPriority = [((ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *) nil_chk(lhs)) getPriority];
+  jfloat rhsPriority = [((ComRemulasceLametroappJava_coreDynamic_dataTypesTrip *) nil_chk(rhs)) getPriority];
+  if (lhsPriority < rhsPriority) {
+    return 1;
+  }
+  else if (lhsPriority == rhsPriority) {
+    return 0;
+  }
+  else {
+    return -1;
+  }
 }
 
 - (instancetype)init {

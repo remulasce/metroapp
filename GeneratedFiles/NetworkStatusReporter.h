@@ -14,6 +14,8 @@
 
 - (void)reportFailure;
 
+- (void)reportGettingUpdate;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComRemulasceLametroappJava_coreNetwork_statusNetworkStatusReporter)
