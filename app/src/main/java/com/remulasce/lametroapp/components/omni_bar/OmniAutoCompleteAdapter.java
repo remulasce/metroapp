@@ -25,6 +25,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     private final AutoCompleteCombinedFiller autoCompleteCombinedFiller;
     private final LocationRetriever locations;
 
+    private FilterTaskCompleteListener completeListener;
     private final AutoCompleteFiller autoCompleteFiller;
 
     public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteCombinedFiller t,
@@ -91,13 +92,16 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                 else {
                     notifyDataSetInvalidated();
                 }
+                if (constraint != null) {
+                    completeListener.filterCompletionDetails(constraint.toString());
+                } else {
+                    completeListener.filterCompletionDetails(null);
+                }
             }};
         return filter;
     }
 
-
-
-
-
-
+    public void setCompleteListener(FilterTaskCompleteListener completeListener) {
+        this.completeListener = completeListener;
+    }
 }
