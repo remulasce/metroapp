@@ -74,7 +74,7 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView implement
         // the AutoCompleteTextview is about to start the filtering so show
         // the ProgressPager
         if (showLoadingIndicator) {
-            Log.w(TAG,"PerformFiltering, show progress spinner");
+            Log.d(TAG,"PerformFiltering, show progress spinner");
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
         super.performFiltering(text, keyCode);
@@ -84,11 +84,15 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView implement
     @Override
     public void filterCompletionDetails(String constraint) {
         String text = this.getText().toString();
-        if (constraint.equals(text)) {
-            Log.w(TAG, "Filter current text complete, hide progress spinner");
+        // Just give up.
+        if (constraint == null) {
+            Log.w(TAG, "Filter of null returned? Just give up.");
+            mLoadingIndicator.setVisibility(INVISIBLE);
+        } else if (constraint.equals(text)) {
+            Log.d(TAG, "Filter current text complete, hide progress spinner");
             mLoadingIndicator.setVisibility(INVISIBLE);
         } else {
-            Log.w(TAG, "Filter returned results, but not for current text, so leave up progress spinner");
+            Log.d(TAG, "Filter returned results, but not for current text, so leave up progress spinner");
         }
     }
 }
