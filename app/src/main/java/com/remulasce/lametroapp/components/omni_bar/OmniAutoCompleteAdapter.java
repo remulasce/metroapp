@@ -67,7 +67,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0 ) {
+                if (results != null && results.count > 0) {
                     try {
                         ArrayList<OmniAutoCompleteEntry> n = new ArrayList<OmniAutoCompleteEntry>((Collection<OmniAutoCompleteEntry>) results.values);
                         Collections.sort(n, new Comparator<OmniAutoCompleteEntry>() {
@@ -88,16 +88,18 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
                         e.printStackTrace();
                         Log.e(TAG, "Results of omniautocomplete publish results not expected");
                     }
-                }
-                else {
+                } else {
                     notifyDataSetInvalidated();
                 }
-                if (constraint != null) {
-                    completeListener.filterCompletionDetails(constraint.toString());
-                } else {
-                    completeListener.filterCompletionDetails(null);
+                if (completeListener != null) {
+                    if (constraint != null) {
+                        completeListener.filterCompletionDetails(constraint.toString());
+                    } else {
+                        completeListener.filterCompletionDetails(null);
+                    }
                 }
-            }};
+            }
+        };
         return filter;
     }
 
