@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -65,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private Button donateButton;
     private Button legalButton;
     private TextView aboutPaneHint;
+    private TextView versionNumber;
     private TextView donateButtonPresses;
     private ProgressBar autocompleteProgress;
 
@@ -199,7 +201,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
                 Toast.makeText(MainActivity.this, "Thanks! I'm linking you to paypal now.", Toast.LENGTH_LONG).show();
 
-                Handler uiHandler = new Handler( MainActivity.this.getMainLooper() );
+                Handler uiHandler = new Handler(MainActivity.this.getMainLooper());
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -219,6 +221,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         donateButtonPresses.setText(str);
+
+        try {
+            versionNumber.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Version not found");
+            versionNumber.setVisibility(View.GONE);
+        }
     }
 
     void linkViewReferences() {
@@ -226,6 +235,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
+        versionNumber = (TextView) findViewById(R.id.about_version_number);
         autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
         aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
         donateButtonPresses = (TextView) findViewById(R.id.donate_button_press_count_text);
