@@ -272,7 +272,7 @@ public class ArrivalNotifyService extends Service {
 
 	                
 	                mBuilder
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.drawable.important_icon_3)
 	                        .setContentTitle(dispTitle)
 	                        .setContentText(dispText)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
