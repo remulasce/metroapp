@@ -3,7 +3,6 @@
 //  source: /Users/nighelles/Desktop/MetroAppIOS/app/src/main/java/com/remulasce/lametroapp/java_core/LaMetroUtil.java
 //
 
-#include "Agency.h"
 #include "Arrival.h"
 #include "Destination.h"
 #include "IOSClass.h"
@@ -203,10 +202,6 @@ NSString *ComRemulasceLametroappJava_coreLaMetroUtil_makePredictionsRequestWithC
 
 id<JavaUtilList> ComRemulasceLametroappJava_coreLaMetroUtil_parseAllArrivalsWithNSString_(NSString *response) {
   ComRemulasceLametroappJava_coreLaMetroUtil_init();
-  if (response == nil || [response isEmpty]) {
-    ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreLaMetroUtil_TAG_, @"Error in input given to parseAllArrivals, possible network failure");
-    return nil;
-  }
   id<JavaUtilList> ret = ComRemulasceLametroappJava_coreLaMetroUtil_parseWithJavaLibsWithNSString_(response);
   return ret;
 }

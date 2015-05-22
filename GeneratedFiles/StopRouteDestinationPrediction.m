@@ -54,7 +54,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
                    withComRemulasceLametroappJava_coreBasic_typesRoute:(ComRemulasceLametroappJava_coreBasic_typesRoute *)route {
   if (self = [super init]) {
     MINIMUM_UPDATE_INTERVAL_ = 5000;
-    trackedArrivals_ = [[JavaUtilConcurrentCopyOnWriteArrayList alloc] init];
+    trackedArrivals_ = [[JavaUtilArrayList alloc] init];
     self->stop_ = stop;
     self->route_ = route;
   }
