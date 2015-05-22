@@ -34,7 +34,7 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
 
     public MetroStaticsProvider(Context context) {
-        stopsReader = new SQLPreloadedStopsReader(context);
+        stopsReader = new SQLPreloadedStopsReader(context, "StopNames.db");
         autoCompleteHistoryFiller = new AndroidAutocompleteHistory(context);
     }
 

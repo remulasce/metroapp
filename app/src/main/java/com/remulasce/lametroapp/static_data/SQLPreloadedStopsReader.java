@@ -11,7 +11,9 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
@@ -36,7 +38,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
-    private static final String DATABASE_NAME = "StopNames.db";
+    private String DATABASE_NAME;
     private static final int DATABASE_VERSION = 8;
 
     // Only send one in trackDivider hits
@@ -63,8 +65,10 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private final Context context;
 
-    public SQLPreloadedStopsReader(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public SQLPreloadedStopsReader(Context context, String fileName) {
+        super(context, fileName, null, DATABASE_VERSION);
+
+        this.DATABASE_NAME = fileName;
         this.context = context;
     }
 
@@ -162,6 +166,10 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
+
+            // This shouldn't need to happen since we started using the new database.
+            // - Nighelles
+
             for (SQLEntry entry : matchingEntries) {
                 // Each station entrance in Metro has its own stopID.
                 // Duplicates have letters at the end; originals are straight digits.
@@ -173,6 +181,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                         Stop newStop = new Stop(entry.stopID);
                         newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
                         newEntry.setStop(newStop);
+                        newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
                         tmp.put(entry.stopName, newEntry);
                     }
                 }
