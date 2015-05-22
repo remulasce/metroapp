@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /* This thing makes all the StopRouteDestinationArrivals each stop could need.
 That means it's named slightly wrong. This thing does more than one stoproutedestinationprediction.
@@ -26,7 +27,7 @@ public class StopRouteDestinationPrediction extends Prediction {
     private Route route;
 
 
-    private Collection<StopRouteDestinationArrival> trackedArrivals = new ArrayList<StopRouteDestinationArrival>();
+    private Collection<StopRouteDestinationArrival> trackedArrivals = new CopyOnWriteArrayList<StopRouteDestinationArrival>();
 
     public StopRouteDestinationPrediction(Stop stop, Route route) {
         this.stop = stop;

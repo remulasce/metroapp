@@ -105,7 +105,7 @@ public class StopRouteDestinationArrival implements Serializable {
                 // But this code totally doesn't do anything
                 // Since the update arrival comes in from NexTrip, which will never
                 //  report <= 0.
-                if (a != null && update.getEstimatedArrivalSeconds() <= 0)
+                if (a != null && update.getEstimatedArrivalSeconds() <= -30)
                 {
                     arrivalsToDelete.add(a);
                 } else {
@@ -127,7 +127,8 @@ public class StopRouteDestinationArrival implements Serializable {
             }
         }
         for (Arrival arrival : arrivals) {
-            if (arrival.getEstimatedArrivalSeconds() <= 0) {
+            // Changed to -30 to allow time to display "Arrived", etc.
+            if (arrival.getEstimatedArrivalSeconds() <= -30) {
                 arrivalsToDelete.add(arrival);
             }
         }
