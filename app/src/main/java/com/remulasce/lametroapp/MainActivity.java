@@ -3,6 +3,7 @@ package com.remulasce.lametroapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -36,9 +37,9 @@ import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
-import com.remulasce.lametroapp.components.location.MetroLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
@@ -54,6 +55,9 @@ import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
@@ -62,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private Button donateButton;
     private Button legalButton;
     private TextView aboutPaneHint;
+    private TextView versionNumber;
     private TextView donateButtonPresses;
     private ProgressBar autocompleteProgress;
 
@@ -91,10 +96,11 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
-        super.onCreate( savedInstanceState );
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         startAnalytics();
+        setupRegionalization();
         initializeStaticData();
         initializeDynamicData();
         setupLocation();
@@ -105,7 +111,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupActionListeners();
         setupOmniBar();
         setupNetworkStatus();
-        setupRegionalization();
         setupAboutPage();
         setupTutorials();
 
@@ -114,6 +119,12 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private void setupRegionalization() {
         RegionalizationHelper.getInstance().agencyName = "lametro";
+
+        Collection<Agency> agencies = new ArrayList<Agency>();
+        agencies.add(new Agency("lametro-rail"));
+        agencies.add(new Agency("lametro"));
+
+        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
     }
 
     private void initializeDynamicData() {
@@ -190,7 +201,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
                 Toast.makeText(MainActivity.this, "Thanks! I'm linking you to paypal now.", Toast.LENGTH_LONG).show();
 
-                Handler uiHandler = new Handler( MainActivity.this.getMainLooper() );
+                Handler uiHandler = new Handler(MainActivity.this.getMainLooper());
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -210,6 +221,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         donateButtonPresses.setText(str);
+
+        try {
+            versionNumber.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Version not found");
+            versionNumber.setVisibility(View.GONE);
+        }
     }
 
     void linkViewReferences() {
@@ -217,6 +235,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
+        versionNumber = (TextView) findViewById(R.id.about_version_number);
         autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
         aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
         donateButtonPresses = (TextView) findViewById(R.id.donate_button_press_count_text);
@@ -335,7 +354,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     // So instead we check every xms until we actually have a window.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus && requestHandler.getRequests().size() == 0) {
+        // The whole thing doesn't really work on Gingerbread.
+        // Not that anyone actually still uses Gingerbread.
+        if (hasFocus && requestHandler.getRequests().size() == 0 && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             Handler h = new Handler(Looper.getMainLooper());
             h.postDelayed(showDropdownOnStart, 100);
         }

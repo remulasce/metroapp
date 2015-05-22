@@ -40,6 +40,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private String DATABASE_NAME;
+    private Agency agency;
     private static final int DATABASE_VERSION = 10;
 
     // Only send one in trackDivider hits
@@ -66,11 +67,12 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private final Context context;
 
-    public SQLPreloadedStopsReader(Context context, String fileName) {
+    public SQLPreloadedStopsReader(Context context, String fileName, Agency agency) {
         super(context, fileName, null, DATABASE_VERSION);
 
         this.DATABASE_NAME = fileName;
         this.context = context;
+        this.agency = agency;
 
         // Just rewrite the db when upgrading.
         setForcedUpgrade();
@@ -176,21 +178,23 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                 if (!tmp.containsKey(entry.stopName)) {
                     OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
                     Stop newStop = new Stop(entry.stopID);
+                    newStop.setStopName(entry.stopName);
                     newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
                     ArrayList<Stop> s1 = new ArrayList<Stop>();
                     s1.add(newStop);
                     newEntry.setStops(s1);
-                    newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
+                    newStop.setAgency(agency);
                     tmp.put(entry.stopName, newEntry);
                 } else {
                     // Actually, let's put all matching stops in now.
                     OmniAutoCompleteEntry existingEntry = tmp.get(entry.stopName);
                     Stop newStop = new Stop(entry.stopID);
                     newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    newStop.setStopName(entry.stopName);
                     List<Stop> s1 = existingEntry.getStops();
                     s1.add(newStop);
                     existingEntry.setStops(s1);
-                    newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
+                    newStop.setAgency(agency);
                 }
             }
 
@@ -206,7 +210,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         }
 
         if (trackNumber++ % trackDivider == 0) {
-            Tracking.sendTime("SQL", "StopNames", "getAutocomplete", t);
+            Tracking.sendTime("SQL", "StopNames", "individual getAutocomplete", t);
         }
         Log.d(TAG,"Got autocomplete for "+input+", "+ ret.size()+" matches");
 

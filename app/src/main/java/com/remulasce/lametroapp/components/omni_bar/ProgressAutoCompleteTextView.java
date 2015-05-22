@@ -1,10 +1,15 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
+import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Filterable;
+import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 
 import com.remulasce.lametroapp.java_core.analytics.Log;
@@ -17,12 +22,16 @@ import com.remulasce.lametroapp.java_core.analytics.Log;
  *
  * Also, show suggestion drop-down on 0 text input (as soon as it's focused)
  */
-public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
+public class ProgressAutoCompleteTextView extends AutoCompleteTextView implements FilterTaskCompleteListener {
+
+    public static final String TAG = "Autocompleteview";
+
     public ProgressAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     private ProgressBar mLoadingIndicator;
+    private boolean showLoadingIndicator = false;
 
     public void setLoadingIndicator(ProgressBar view) {
         mLoadingIndicator = view;
@@ -32,11 +41,12 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     protected void onFocusChanged(boolean focused, int direction,
                                   Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
-        if (focused && getWindowVisibility() != View.GONE) {
+
+        if (focused && getWindowVisibility() != View.GONE && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             performFiltering(getText(), 0);
             showDropDown();
         } else {
-            Log.w("Autocompleteview", "Couldn't show dropdown because we don't have focus / window visibility");
+            Log.w(TAG, "Couldn't show dropdown because we don't have focus / window visibility");
         }
     }
     @Override
@@ -45,20 +55,44 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView {
     }
 
     @Override
-    protected void performFiltering(CharSequence text, int keyCode) {
-        // the AutoCompleteTextview is about to start the filtering so show
-        // the ProgressPager
-        mLoadingIndicator.setVisibility(View.VISIBLE);
-        super.performFiltering(text, keyCode);
+    public <T extends ListAdapter & Filterable> void setAdapter(T adapter) {
+        super.setAdapter(adapter);
+
+        // Ugh.
+        if (adapter instanceof OmniAutoCompleteAdapter) {
+            ((OmniAutoCompleteAdapter) adapter).setCompleteListener(this);
+            showLoadingIndicator = true;
+        } else {
+            showLoadingIndicator = false;
+            mLoadingIndicator.setVisibility(GONE);
+            Log.w(TAG, "Expected adapter to bea OmniAutoCompleteAdapter, but it didn't. Progress spinner won't work.");
+        }
     }
 
     @Override
-    public void onFilterComplete(int count) {
-        // the AutoCompleteTextView has done its job and it's about to show
-        // the drop down so close/hide the ProgreeBar
-        if (!isPerformingCompletion()) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
+    protected void performFiltering(CharSequence text, int keyCode) {
+        // the AutoCompleteTextview is about to start the filtering so show
+        // the ProgressPager
+        if (showLoadingIndicator) {
+            Log.d(TAG,"PerformFiltering, show progress spinner");
+            mLoadingIndicator.setVisibility(View.VISIBLE);
         }
-        super.onFilterComplete(count);
+        super.performFiltering(text, keyCode);
+    }
+
+
+    @Override
+    public void filterCompletionDetails(String constraint) {
+        String text = this.getText().toString();
+        // Just give up.
+        if (constraint == null) {
+            Log.w(TAG, "Filter of null returned? Just give up.");
+            mLoadingIndicator.setVisibility(INVISIBLE);
+        } else if (constraint.equals(text)) {
+            Log.d(TAG, "Filter current text complete, hide progress spinner");
+            mLoadingIndicator.setVisibility(INVISIBLE);
+        } else {
+            Log.d(TAG, "Filter returned results, but not for current text, so leave up progress spinner");
+        }
     }
 }

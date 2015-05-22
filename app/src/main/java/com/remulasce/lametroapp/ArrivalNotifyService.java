@@ -74,9 +74,6 @@ public class ArrivalNotifyService extends Service {
 	    
 		@Override
 		public void run() {
-			StrictMode.ThreadPolicy policy = new StrictMode.
-					ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
 			// Prevents confusion in the notification handler
 			arrivalUpdatedAt = System.currentTimeMillis();
 			
