@@ -172,7 +172,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
-
             for (SQLEntry entry : matchingEntries) {
                 // Try to only put stuff in once
                 if (!tmp.containsKey(entry.stopName)) {
