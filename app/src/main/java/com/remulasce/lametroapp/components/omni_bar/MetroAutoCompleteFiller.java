@@ -103,10 +103,10 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
                 @Override
                 public void run() {
                     if (entry.hasLocation()) {
-                        if (entry.hasStop() && entry.getStop() != null) {
-                            Log.v(TAG, "Getting distance to "+entry.getStop().getStopID());
-                            double distance = stopLocations.getCurrentDistanceToStop(entry.getStop());
-                            Log.v(TAG, "Distance to "+entry.getStop().getStopID()+", " +distance);
+                        if (entry.hasStop() && entry.getStops() != null && entry.getStops().size() > 0) {
+                            Log.v(TAG, "Getting distance to "+entry.getStops().get(0).getStopID());
+                            double distance = stopLocations.getCurrentDistanceToStop(entry.getStops().get(0));
+                            Log.v(TAG, "Distance to "+entry.getStops().get(0).getStopID()+", " +distance);
 
                             if (distance > 0) {
                                 // Two stage priority:

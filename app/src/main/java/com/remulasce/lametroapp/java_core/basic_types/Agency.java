@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
+import java.io.Serializable;
+
 /**
  * Created by Remulasce on 5/4/2015.
  *
@@ -9,7 +11,7 @@ package com.remulasce.lametroapp.java_core.basic_types;
  * Note: the Los Angeles MTA has 2 agencies: lametro and lametro-rail.
  * One is busses, the other trains.
  */
-public class Agency {
+public class Agency implements Serializable{
     public String raw = "";
 
     public Agency(String raw) {

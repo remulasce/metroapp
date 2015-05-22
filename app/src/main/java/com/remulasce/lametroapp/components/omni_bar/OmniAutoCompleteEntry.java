@@ -3,6 +3,8 @@ package com.remulasce.lametroapp.components.omni_bar;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 public class OmniAutoCompleteEntry implements Cloneable, Serializable, Comparable {
 
@@ -11,7 +13,7 @@ public class OmniAutoCompleteEntry implements Cloneable, Serializable, Comparabl
 
     // meh inheritance
     private boolean hasStop = false;
-    private Stop stop = null;
+    private List<Stop> stops;
 
 
     public OmniAutoCompleteEntry(String text, float priority) {
@@ -35,9 +37,9 @@ public class OmniAutoCompleteEntry implements Cloneable, Serializable, Comparabl
     public boolean hasLocation() { return true; }
 
     public boolean hasStop() { return hasStop; }
-    public void setStop(Stop s) { this.stop = s; hasStop = true; }
-    public Stop getStop() {
-        return this.stop;
+    public void setStops(List<Stop> s) { this.stops = s; hasStop = true; }
+    public List<Stop> getStops() {
+        return this.stops;
     }
 
     // This helps with autocomplete history.

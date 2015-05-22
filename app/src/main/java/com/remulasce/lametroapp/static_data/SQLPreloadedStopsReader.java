@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private String DATABASE_NAME;
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
@@ -70,6 +71,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         this.DATABASE_NAME = fileName;
         this.context = context;
+
+        // Just rewrite the db when upgrading.
+        setForcedUpgrade();
     }
 
     public void initialize() {
@@ -95,7 +99,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         BasicLocation ret = null;
         Long t = Tracking.startTime();
 
-        Log.d(TAG, "StopLocation searching for "+stop);
+        Log.d(TAG, "StopLocation searching for " + stop);
         Collection<SQLEntry> entries = getMatchingEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
         Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
 
@@ -116,7 +120,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Tracking.sendTime("SQL", "StopNames", "getLocation", t);
         }
 
-        Log.d(TAG,"Got location for "+stop+", "+ ret.latitude + ", " + ret.longitude);
+        Log.d(TAG, "Got location for " + stop + ", " + ret.latitude + ", " + ret.longitude);
 
         return ret;
     }
@@ -167,23 +171,26 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
 
-            // This shouldn't need to happen since we started using the new database.
-            // - Nighelles
-
             for (SQLEntry entry : matchingEntries) {
-                // Each station entrance in Metro has its own stopID.
-                // Duplicates have letters at the end; originals are straight digits.
-                // Only add the originals
-                if (entry.stopID.matches("\\d+$")) {
-                    // Try to only put stuff in once
-                    if (!tmp.containsKey(entry.stopName)) {
-                        OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
-                        Stop newStop = new Stop(entry.stopID);
-                        newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
-                        newEntry.setStop(newStop);
-                        newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
-                        tmp.put(entry.stopName, newEntry);
-                    }
+                // Try to only put stuff in once
+                if (!tmp.containsKey(entry.stopName)) {
+                    OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
+                    Stop newStop = new Stop(entry.stopID);
+                    newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    ArrayList<Stop> s1 = new ArrayList<Stop>();
+                    s1.add(newStop);
+                    newEntry.setStops(s1);
+                    newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
+                    tmp.put(entry.stopName, newEntry);
+                } else {
+                    // Actually, let's put all matching stops in now.
+                    OmniAutoCompleteEntry existingEntry = tmp.get(entry.stopName);
+                    Stop newStop = new Stop(entry.stopID);
+                    newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+                    List<Stop> s1 = existingEntry.getStops();
+                    s1.add(newStop);
+                    existingEntry.setStops(s1);
+                    newStop.setAgency(new Agency(LaMetroUtil.getAgencyFromRoute(null, newStop)));
                 }
             }
 
