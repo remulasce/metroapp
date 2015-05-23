@@ -289,7 +289,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         if ( stop.isValid() ) {
             // Early devices don't support notification actions
             // So this is the only way to disable arrival notification for them
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            // Added in 4.1 (API 16)
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                 NotifyServiceManager.stopNotifyService(this);
             }
         }
