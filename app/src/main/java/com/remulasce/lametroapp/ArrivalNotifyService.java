@@ -273,7 +273,6 @@ public class ArrivalNotifyService extends Service {
 
 	                
 	                mBuilder
-                            .setSmallIcon(R.mipmap.ic_launcher)
 	                        .setContentTitle(dispTitle)
 	                        .setContentText(dispText)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -283,7 +282,6 @@ public class ArrivalNotifyService extends Service {
                         Uri uri = Uri.parse("android.resource://"
                                 + ArrivalNotifyService.this.getPackageName() + "/" + R.raw.notification_custom);
                         mBuilder.setSound(uri, AudioManager.STREAM_ALARM);
-						mBuilder.setSmallIcon(R.mipmap.important_icon_3);
 
                         toast("Vehicle arrives " + LaMetroUtil.timeToDisplay(secondsTillArrival));
 	                    
@@ -295,6 +293,8 @@ public class ArrivalNotifyService extends Service {
 
 					if (useImportantIcon) {
 						mBuilder.setSmallIcon(R.mipmap.important_icon_3);
+					} else {
+						mBuilder.setSmallIcon(R.mipmap.ic_launcher);
 					}
 
                     Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
