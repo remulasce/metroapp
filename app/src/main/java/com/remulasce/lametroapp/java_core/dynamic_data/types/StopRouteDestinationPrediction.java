@@ -143,7 +143,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                     for (StopRouteDestinationArrival arrival : trackedArrivals) {
                         if (arrival.getDirection().equals(newA.getDirection()) &&
                                 arrival.getRoute().equals(newA.getRoute()) &&
-                                arrival.getStop().equals(newA.getStop())) {
+                                stop.equals(newA.getStop())) {
                             a = arrival;
                             break;
                         }
