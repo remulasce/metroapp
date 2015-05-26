@@ -262,6 +262,7 @@ public class ArrivalNotifyService extends Service {
 	        final String dispTitle = msg1;
 	        final String dispText = msg2;
 	        final boolean doVibrate = vibrate;
+			final boolean useImportantIcon = secondsTillArrival < notificationTime;
 	        
 	        h.post(new Runnable() {
 	            @Override
@@ -272,7 +273,6 @@ public class ArrivalNotifyService extends Service {
 
 	                
 	                mBuilder
-                            .setSmallIcon(R.mipmap.ic_launcher)
 	                        .setContentTitle(dispTitle)
 	                        .setContentText(dispText)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -291,6 +291,11 @@ public class ArrivalNotifyService extends Service {
 	                    mBuilder.setSound(null);
 	                }
 
+					if (useImportantIcon) {
+						mBuilder.setSmallIcon(R.mipmap.important_icon_3);
+					} else {
+						mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+					}
 
                     Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
 	                resultIntent.putExtra("Route", routeName);

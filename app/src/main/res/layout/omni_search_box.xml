@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true" >
     <com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
@@ -20,7 +22,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="right|center_vertical"
-        android:background="@drawable/ic_action_remove"
+        android:background="@drawable/remove_button_x"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
