@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MetroAppIOS.iml" filepath="$PROJECT_DIR$/MetroAppIOS.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lametroapp.iml" filepath="$PROJECT_DIR$/lametroapp.iml" />
     </modules>
   </component>
 </project>
-

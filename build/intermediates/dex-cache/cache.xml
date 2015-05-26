@@ -16,13 +16,6 @@
         <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.0-80e839762042aeb2bf74f5dde51ddeacbb8eb838.jar" />
     </item>
     <item
-        jar="C:\Users\Remulasce\.gradle\caches\modules-2\files-2.1\com.readystatesoftware.sqliteasset\sqliteassethelper\2.0.1\d5f02e4a4d65ec0fbb339f2e4228723d1540bb9f\sqliteassethelper-2.0.1.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="d5f02e4a4d65ec0fbb339f2e4228723d1540bb9f">
-        <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\sqliteassethelper-2.0.1-71a2397aac9b26e88f8da6780797540afeda4502.jar" />
-    </item>
-    <item
         jar="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -30,18 +23,25 @@
         <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\classes-bde50ce36378ac5c46a9db37d854980304e5965d.jar" />
     </item>
     <item
-        jar="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\20.0.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef">
-        <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\classes-1ae34014573cb72d29028cd666a0b74dd1857579.jar" />
-    </item>
-    <item
         jar="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
         <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\classes-294d7f52f4d36c5b8bb3446a23ae0c46e310bef7.jar" />
+    </item>
+    <item
+        jar="C:\Users\Remulasce\.gradle\caches\modules-2\files-2.1\com.readystatesoftware.sqliteasset\sqliteassethelper\2.0.1\d5f02e4a4d65ec0fbb339f2e4228723d1540bb9f\sqliteassethelper-2.0.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d5f02e4a4d65ec0fbb339f2e4228723d1540bb9f">
+        <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\sqliteassethelper-2.0.1-71a2397aac9b26e88f8da6780797540afeda4502.jar" />
+    </item>
+    <item
+        jar="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef">
+        <dex dex="C:\Users\Remulasce\Code\Android\AS\lametroapp\app\build\intermediates\pre-dexed\debug\classes-1ae34014573cb72d29028cd666a0b74dd1857579.jar" />
     </item>
     <item
         jar="C:\Users\Remulasce\.gradle\caches\modules-2\files-2.1\ch.acra\acra\4.5.0\44a5eb946e0d83eed4a0128d877ca1fd8168b83a\acra-4.5.0.jar"

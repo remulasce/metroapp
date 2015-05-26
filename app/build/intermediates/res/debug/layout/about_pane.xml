@@ -7,7 +7,7 @@
     android:layout_height="fill_parent"
     android:layout_gravity="start"
     android:paddingLeft="20dp"
-    android:paddingRight="14dp"
+    android:paddingRight="20dp"
     android:paddingBottom="16dp"
     android:paddingTop="20dp"
     android:choiceMode="singleChoice"
@@ -21,18 +21,30 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/legal_info_button_text"
-                android:id="@+id/legal_info_button" />
+                android:id="@+id/legal_info_button"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="v#.#"
+                android:layout_alignBaseline="@id/legal_info_button"
+                android:id="@+id/about_version_number"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
 
     </ScrollView>
 
@@ -81,7 +93,7 @@
                 android:text="@string/donate_pitch"
                 android:id="@+id/donate_text"
                 android:layout_marginTop="50dp"
-                android:layout_below="@+id/about_author"
+                android:layout_below="@+id/feedback_call_action"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
@@ -91,11 +103,34 @@
                 android:text="@string/donate_button_text"
                 android:id="@+id/donate_button"
                 android:layout_below="@+id/donate_text"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:background="#ffcec81e"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="1 person has donated"
+                android:id="@+id/donate_button_press_count_text"
+                android:layout_below="@id/donate_button"
+                android:layout_centerHorizontal="true"
+                android:textSize="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Email me with suggestions"
+                android:id="@+id/feedback_call_action"
+                android:layout_below="@+id/about_author"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
 
-
-            </RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
-<!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/about_pane.xml -->
+<!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/about_pane.xml -->

@@ -62,4 +62,4 @@
         android:layout_toEndOf="@+id/prediction_time_minutes"
         android:textColor="@android:color/secondary_text_dark"
         android:layout_marginLeft="2dp" />
-</RelativeLayout><!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/trip_item.xml -->
+</RelativeLayout><!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/trip_item.xml -->

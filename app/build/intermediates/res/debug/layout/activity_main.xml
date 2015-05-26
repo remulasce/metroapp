@@ -60,6 +60,18 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Help make this app better! Swipe left to learn more."
+            android:id="@+id/about_tutorial"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="20dp"
+            android:paddingBottom="10dp" />
+
         <ProgressBar
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
@@ -77,7 +89,18 @@
             android:layout_height="wrap_content"
             layout="@layout/network_status_bar"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:id="@+id/network_status_bar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Predicted Arrivals"
+            android:id="@+id/trip_list_secondary_hint"
+            android:layout_below="@+id/separator"
+            android:layout_centerHorizontal="true"/>
+
     </RelativeLayout>
 
     <!-- The navigation drawer -->
@@ -98,4 +121,4 @@
 
      </RelativeLayout>
 
-</android.support.v4.widget.DrawerLayout><!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/activity_main.xml -->
+</android.support.v4.widget.DrawerLayout><!-- From: file:/C:/Users/Remulasce/Code/Android/AS/lametroapp/app/src/main/res/layout/activity_main.xml -->
