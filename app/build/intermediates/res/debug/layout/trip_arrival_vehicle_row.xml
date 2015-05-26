@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_alignParentTop="true"
+        android:text="@string/example_arrival_time_minutes"
+        android:id="@+id/prediction_time_minutes"
+        android:layout_marginLeft="45dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/example_vehicle_text"
+        android:id="@+id/prediction_vehicle"
+        android:textColor="#64646464"
+        android:layout_alignBaseline="@+id/prediction_time_minutes"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/example_time_seconds"
+        android:id="@+id/prediction_time_seconds"
+        android:layout_alignBaseline="@+id/prediction_time_minutes"
+        android:layout_toRightOf="@+id/prediction_time_minutes"
+        android:layout_toEndOf="@+id/prediction_time_minutes"
+        android:textColor="@android:color/secondary_text_dark"
+        android:layout_marginLeft="2dp" />
+
+</RelativeLayout><!-- From: file:/Users/nighelles/Desktop/MetroAppIOS/app/src/main/res/layout/trip_arrival_vehicle_row.xml -->
