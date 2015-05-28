@@ -94,7 +94,7 @@ for agencyName in agencyList:
                                                 stopnameroutetagTuple = (stopname, routeTag, stoptag)
                                                 if not stopnameroutetagTuple in stopnameroutetagList:
                                                         stopnameroutetagList.append( stopnameroutetagTuple )
-                                                        print stopnameroutetagTuple
+                                                        #print stopnameroutetagTuple
                                                 
 						if "stopId" in child.attrib.keys():
 							#print child.attrib
