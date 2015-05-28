@@ -66,18 +66,18 @@ for agencyName in agencyList:
         
 	i=0.0
 	uniquetag = 1
-	for route in routeList:
+	for routeTag in routeList:
 		i = i + 1
 		print agencyName + " " + str(int(100*i/len(routeList))) + "%"
-		routeRequestString = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a="+agencyName+"&r="+route
+		routeRequestString = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a="+agencyName+"&r="+routeTag
 		routeResponse = requests.get(routeRequestString)
 	
 		print routeRequestString
 	
 		root = ET.fromstring(routeResponse.text)
-		for route in root:
-			if route.tag == "route":
-				for child in route:
+		for routeObject in root:
+			if routeObject.tag == "route":
+				for child in routeObject:
 					if child.tag == "stop":
 						if "stopId" in child.attrib.keys():
 							#print child.attrib
@@ -97,18 +97,29 @@ for agencyName in agencyList:
 								uniquetag = uniquetag + 1
 								#print stopnamesList
 
+                                                        stoprouteTuple = (stopid, routeTag)
+                                                        if not stoprouteTuple in stoproutesList:
+                                                                stoproutesList.append( stoprouteTuple )
+                                                                #print stoproutesList
+
 	print "Finished scraping "+agencyName+", saving to SQL...";
 	conn = sqlite3.connect(agencyName + '.db')
 
 	c = conn.cursor()
 	# Delete old contents, if any
 	c.execute('''DROP TABLE stopnames''')
+	c.execute('''DROP TABLE stoproutes''')
 
 	# Create table
 	c.execute('''CREATE TABLE stopnames
 	             (uniqueid integer, stopid text, stopname text, latitude real, longitude real)''')
+	# Correct way to make primary keys, Nighelles
+	c.execute('''CREATE TABLE stoproutes
+	             ( stopid text, route text)''')
+	# ...Is to ignore them. Sqlite will add one for you anyway, and increment it itself.
 
 	c.executemany('INSERT INTO stopnames VALUES (?,?,?,?,?)', stopnamesList)
+	c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
 
 	# Save (commit) the changes
 	conn.commit()
