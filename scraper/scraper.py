@@ -107,8 +107,8 @@ for agencyName in agencyList:
 
 	c = conn.cursor()
 	# Delete old contents, if any
-	c.execute('''DROP TABLE stopnames''')
-	c.execute('''DROP TABLE stoproutes''')
+	c.execute('''DROP TABLE IF EXISTS stopnames''')
+	c.execute('''DROP TABLE IF EXISTS stoproutes''')
 
 	# Create table
 	c.execute('''CREATE TABLE stopnames
