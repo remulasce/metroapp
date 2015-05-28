@@ -63,6 +63,15 @@ for agencyName in agencyList:
         # Therefore, the stop-routes table for each agency simply has two columns:
         # [STOPID, ROUTE]
         stoproutesList = []
+
+        # For future conversion from stopid to route + stopTag
+        # This will avoid some issues with agencies not assigning stopids to some stops
+        # Technically they're optional. It's just some agencies fuck up, like, 2 of them.
+        #
+        # Note that this isn't just an alternate way of calling stopid. Some stopid stops
+        # will be split into multiple route + stopTags.
+        #[STOPNAME, ROUTE, STOPTAG]
+        stopnameroutetagList = []
         
 	i=0.0
 	uniquetag = 1
@@ -79,12 +88,20 @@ for agencyName in agencyList:
 			if routeObject.tag == "route":
 				for child in routeObject:
 					if child.tag == "stop":
+                                                # Don't know if stoptag needs some cleaning like stopid
+                                                stopname = child.attrib["title"]
+                                                stoptag = child.attrib["tag"]
+                                                stopnameroutetagTuple = (stopname, routeTag, stoptag)
+                                                if not stopnameroutetagTuple in stopnameroutetagList:
+                                                        stopnameroutetagList.append( stopnameroutetagTuple )
+                                                        print stopnameroutetagTuple
+                                                
 						if "stopId" in child.attrib.keys():
 							#print child.attrib
 							#uniquetag = child.attrib["tag"]
 							stopid = child.attrib["stopId"]
 							stopid = stopid.lstrip("0");
-							stopname = child.attrib["title"]
+							
 							lat = child.attrib["lat"]
 							lon = child.attrib["lon"]
 							newstop = 1
@@ -93,14 +110,15 @@ for agencyName in agencyList:
 									newstop = 0
 								#print "Match: " + str(el[0]) + ", " + str(stopid)
 							if newstop==1:
-								stopnamesList.append( (uniquetag,stopid,stopname,lat,lon) )
-								uniquetag = uniquetag + 1
-								#print stopnamesList
+                                                                stopnamesList.append( (uniquetag,stopid,stopname,lat,lon) )
+                                                                uniquetag = uniquetag + 1
+                                                                #print stopnamesList
 
                                                         stoprouteTuple = (stopid, routeTag)
                                                         if not stoprouteTuple in stoproutesList:
                                                                 stoproutesList.append( stoprouteTuple )
                                                                 #print stoproutesList
+
 
 	print "Finished scraping "+agencyName+", saving to SQL...";
 	conn = sqlite3.connect(agencyName + '.db')
@@ -109,6 +127,7 @@ for agencyName in agencyList:
 	# Delete old contents, if any
 	c.execute('''DROP TABLE IF EXISTS stopnames''')
 	c.execute('''DROP TABLE IF EXISTS stoproutes''')
+	c.execute('''DROP TABLE IF EXISTS stopnameroutetags''')
 
 	# Create table
 	c.execute('''CREATE TABLE stopnames
@@ -117,9 +136,12 @@ for agencyName in agencyList:
 	c.execute('''CREATE TABLE stoproutes
 	             ( stopid text, route text)''')
 	# ...Is to ignore them. Sqlite will add one for you anyway, and increment it itself.
+        c.execute('''CREATE TABLE stopnameroutetags
+	             ( stopname text, route text, stoptag text)''')
 
 	c.executemany('INSERT INTO stopnames VALUES (?,?,?,?,?)', stopnamesList)
 	c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
+	c.executemany('INSERT INTO stopnameroutetags VALUES (?,?,?)', stopnameroutetagList)
 
 	# Save (commit) the changes
 	conn.commit()
