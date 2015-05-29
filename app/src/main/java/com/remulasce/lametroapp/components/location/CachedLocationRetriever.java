@@ -184,7 +184,7 @@ public class CachedLocationRetriever implements LocationRetriever {
 
     private double getCachedDistanceTo(BasicLocation stopRawLoc) {
         if (stopRawLoc == null) {
-            Log.d(TAG, "Stop didn't have a location, can't provide distance to.");
+            Log.w(TAG, "Stop didn't have a location, can't provide distance to.");
             return -1;
         }
 
