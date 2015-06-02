@@ -155,7 +155,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                         // TODO use stop instead of newA.getStop to use the stop that actually
                         // has location, agency information.
                         StopRouteDestinationArrival newSRDA = new StopRouteDestinationArrival(
-                                newA.getStop(), newA.getRoute(), newA.getDirection());
+                                stop, newA.getRoute(), newA.getDirection());
                         newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
                     }
