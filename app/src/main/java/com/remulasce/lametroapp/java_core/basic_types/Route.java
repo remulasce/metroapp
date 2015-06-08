@@ -5,10 +5,11 @@ import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 import java.io.Serializable;
 
 public class Route implements Serializable {
-    private static final long serialVersionUID = -1330979643298664422L;
-
-    // 802, 754, etc.
+    // 802, 754, etc. Required.
     private String raw = "";
+
+    // Not required yet, for backwards compatibility.
+    private Agency agency;
 
     // Optional. Check null before using.
     private RouteColor color;
@@ -43,5 +44,13 @@ public class Route implements Serializable {
         if ( o.getClass() != this.getClass()) { return false; }
 
         return (o.hashCode() == this.hashCode());
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 }
