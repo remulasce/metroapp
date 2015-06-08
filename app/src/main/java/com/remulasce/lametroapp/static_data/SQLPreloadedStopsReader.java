@@ -85,6 +85,12 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         // Just rewrite the db when upgrading.
         setForcedUpgrade();
+
+        //TODO testing
+        getRoutesToStop("80301");
+        getRoutesToStop("80125");
+        getRoutesToStop("30000");
+        getRoutesToStop("30006");
     }
 
     public void initialize() {
