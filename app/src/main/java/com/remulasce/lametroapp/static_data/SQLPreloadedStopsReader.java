@@ -283,32 +283,32 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return ret;
     }
 
-    public Collection<String> getRoutesToStop(String stopID) {
+    public Collection<String> getRoutesToStop(String stopID) { // -
         if (badQueryInput(stopID)) {
             return null;
         }
 
         Long t = Tracking.startTime();
-        Collection<String> ret = new ArrayList<String>();
+        Collection<String> ret = new ArrayList<String>(); // -
 
         try {
             SQLiteDatabase db = getReadableDatabase();
 
-            Collection<SQLEntry> matching;
+            Collection<SQLEntry> matching; // -
 
             matching = getMatchingStopNameEntries(StopRoutesEntry.TABLE_NAME, makeStopRoutesParameterizedSelection(),
-                    new String[]{stopID}, db);
+                    new String[]{stopID}, db); // -
 
-            for (SQLEntry each : matching) {
+            for (SQLEntry each : matching) { // -
                 ret.add(each.stopID);
             }
 
-            cleanStopIDs(ret);
+            cleanStopIDs(ret); // -
 
             if (trackNumber++ % trackDivider == 0) {
-                Tracking.sendTime("SQL", "StopNames", "getStopID", t);
+                Tracking.sendTime("SQL", "StopNames", "getStopID", t); // -
             }
-            Log.d(TAG, "Got stopID for " + stopID + ", " + ret);
+            Log.d(TAG, "Got stopID for " + stopID + ", " + ret); // -
         } catch (SQLiteException e) {
             Log.w(TAG, "SQLiteException. Prebuilt database file may be missing");
         }
