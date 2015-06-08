@@ -7,6 +7,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
+import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 import com.remulasce.lametroapp.static_data.AutoCompleteCombinedFiller;
 
 import java.util.ArrayList;
@@ -24,15 +25,18 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
     private final AutoCompleteCombinedFiller autoCompleteCombinedFiller;
     private final LocationRetriever locations;
+    private final RouteColorer colors;
 
     private FilterTaskCompleteListener completeListener;
     private final AutoCompleteFiller autoCompleteFiller;
 
+    // Colors optional.
     public OmniAutoCompleteAdapter(Context context, int resource, int textView, AutoCompleteCombinedFiller t,
-                                   LocationRetriever locations) {
+                                   LocationRetriever locations, RouteColorer colors) {
         super(context, resource, textView);
         autoCompleteCombinedFiller = t;
         this.locations = locations;
+        this.colors = colors;
 
         autoCompleteFiller = new MetroAutoCompleteFiller(autoCompleteCombinedFiller, autoCompleteCombinedFiller, locations);
     }
