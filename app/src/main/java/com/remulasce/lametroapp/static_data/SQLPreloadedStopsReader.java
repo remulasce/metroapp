@@ -17,6 +17,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.java_core.static_data.types.StopRoutesTranslator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +33,7 @@ import java.util.Map;
  * Library deals with moving it all to the right places.
  */
 public class SQLPreloadedStopsReader extends SQLiteAssetHelper
-        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
+        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator, StopRoutesTranslator {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
@@ -294,6 +295,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return ret;
     }
 
+    @Override
     public Collection<String> getRoutesToStop(String stopID) {
         if (badQueryInput(stopID)) {
             return null;
