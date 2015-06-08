@@ -39,7 +39,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private String DATABASE_NAME;
     private Agency agency;
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
