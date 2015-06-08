@@ -215,4 +215,9 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
         return ret;
     }
+
+    @Override
+    public Collection<String> getRoutesToStop(String stopID) {
+        return null;
+    }
 }

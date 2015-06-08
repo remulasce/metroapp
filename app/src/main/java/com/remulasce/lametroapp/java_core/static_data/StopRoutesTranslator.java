@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.java_core.static_data.types;
+package com.remulasce.lametroapp.java_core.static_data;
 
 import java.util.Collection;
 

@@ -17,7 +17,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
-import com.remulasce.lametroapp.java_core.static_data.types.StopRoutesTranslator;
+import com.remulasce.lametroapp.java_core.static_data.StopRoutesTranslator;
 
 import java.io.IOException;
 import java.io.InputStream;
