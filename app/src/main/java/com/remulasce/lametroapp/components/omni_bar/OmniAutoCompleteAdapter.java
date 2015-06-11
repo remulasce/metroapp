@@ -2,12 +2,17 @@ package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.remulasce.lametroapp.java_core.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
+import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 import com.remulasce.lametroapp.static_data.AutoCompleteCombinedFiller;
 
 import java.util.ArrayList;
@@ -109,5 +114,35 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
     public void setCompleteListener(FilterTaskCompleteListener completeListener) {
         this.completeListener = completeListener;
+    }
+
+    @Override
+    public View getView(int position, View recycle, ViewGroup parent) {
+
+        OmniAutoCompleteEntry omniAutoCompleteEntry = resultList.get(position);
+        Collection<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
+
+        return super.getView(position, recycle, parent);
+    }
+
+    private Collection<RouteColor> getColorBars(OmniAutoCompleteEntry entry) {
+        ArrayList<RouteColor> colorBars = new ArrayList<RouteColor>();
+
+        Collection<Stop> stops = entry.getStops();
+
+        for (Stop stop : stops) {
+            Collection<Route> routes = autoCompleteCombinedFiller.getRoutesToStop(stop);
+
+            for (Route r : routes) {
+                RouteColor color = colors.getColor(r);
+                if (color != null && color.color != null && !color.color.isEmpty() && !colorBars.contains(color)) {
+                    colorBars.add(color);
+                }
+            }
+        }
+
+        Log.v(TAG, "Got colors for "+entry+", "+colorBars);
+
+        return colorBars;
     }
 }

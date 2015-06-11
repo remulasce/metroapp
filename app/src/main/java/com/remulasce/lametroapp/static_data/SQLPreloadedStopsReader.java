@@ -33,7 +33,7 @@ import java.util.Map;
  * Library deals with moving it all to the right places.
  */
 public class SQLPreloadedStopsReader extends SQLiteAssetHelper
-        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator, StopRoutesTranslator {
+        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator, StopRoutesTable {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
@@ -86,12 +86,6 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
         // Just rewrite the db when upgrading.
         setForcedUpgrade();
-
-        //TODO testing
-        getRoutesToStop("80301");
-        getRoutesToStop("80125");
-        getRoutesToStop("30000");
-        getRoutesToStop("30006");
     }
 
     public void initialize() {

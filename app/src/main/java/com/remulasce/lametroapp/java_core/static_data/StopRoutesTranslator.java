@@ -1,5 +1,8 @@
 package com.remulasce.lametroapp.java_core.static_data;
 
+import com.remulasce.lametroapp.java_core.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
+
 import java.util.Collection;
 
 /**
@@ -8,5 +11,5 @@ import java.util.Collection;
  * Use to get all routes to a specific stop
  */
 public interface StopRoutesTranslator {
-    public Collection<String> getRoutesToStop(String stopID);
+    public Collection<Route> getRoutesToStop(Stop stopID);
 }

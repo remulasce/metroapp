@@ -7,10 +7,12 @@ import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
+import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -217,7 +219,47 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     }
 
     @Override
-    public Collection<String> getRoutesToStop(String stopID) {
-        return null;
+    public Collection<Route> getRoutesToStop(Stop stop) {
+        Collection<Route> ret = new ArrayList<Route>();
+
+        if (stop == null || !stop.isValid()) {
+            Log.w(TAG, "Returning empty color list because bad input.");
+            return ret;
+        }
+
+        Agency stopAgency = stop.getAgency();
+
+        if (stopAgency == null || !stopAgency.isValid()) {
+            Log.w(TAG, "Returning empty color list because stop didn't have a valid agency");
+            return ret;
+        }
+
+        long t = Tracking.startTime();
+
+
+        SQLPreloadedStopsReader reader = regionalStopsReaders.get(stopAgency);
+
+        if (reader == null) {
+            Log.w(TAG, "Don't have preloaded region "+ stopAgency +", can't get routes to stop "+stop);
+            return ret;
+        }
+
+        Collection<String> entries = reader.getRoutesToStop(stop.getStopID());
+
+        Log.d(TAG, "Received route number list "+entries+" for "+stop);
+
+        for (String routeID : entries) {
+            Route r = new Route(routeID);
+            r.setAgency(stopAgency);
+
+            ret.add(r);
+        }
+
+        long time = Tracking.timeSpent(t);
+
+        Log.d(TAG, "Got all routes to "+stop+", "+ret);
+
+        return ret;
+
     }
 }
