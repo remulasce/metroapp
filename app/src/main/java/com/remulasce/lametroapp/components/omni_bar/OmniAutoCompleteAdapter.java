@@ -11,10 +11,13 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
@@ -136,12 +139,62 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
             view = (LinearLayout) inflater.inflate(R.layout.omnibar_dropdown_item, parent, false);
         }
 
-        View v = view.findViewById(R.id.color_box1);
-
         OmniAutoCompleteEntry omniAutoCompleteEntry = resultList.get(position);
-        List<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
 
-        v.setBackgroundColor(Color.parseColor(colorBars.get(0).color));
+        // Set the main station name
+        TextView name = (TextView) view.findViewById(R.id.omnibar_item_station_name);
+        name.setText(omniAutoCompleteEntry.toString());
+
+
+        // Set the color bars to the left of the name to show what routes serve the station
+        List<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
+        ViewGroup colorsLayout = (ViewGroup) view.findViewById(R.id.autocomplete_item_color_layout);
+
+        List<View> updateViews = new ArrayList<View>();
+        // If we change the size of the view, we should invalidate it and redraw.
+        boolean sizeChanged = false;
+        // Find all the color bar views we can reuse
+        for (int i = 0; i < colorsLayout.getChildCount(); i++) {
+            View v = colorsLayout.getChildAt(i);
+
+            Object tag = v.getTag();
+            if (tag instanceof RouteColor) {
+                updateViews.add(v);
+            }
+        }
+
+        // Get all the Arrivals displayed
+        for (RouteColor c : colorBars) {
+            View updateColorView;
+
+            // If there's recycled views to use
+            if (updateViews.size() > 0) {
+                updateColorView = updateViews.get(0);
+                updateViews.remove(0);
+            }
+            // If there's no recycled views left, make one.
+            else {
+                sizeChanged = true;
+                updateColorView = inflater.inflate(R.layout.omnibar_dropdown_color_bar, colorsLayout, false);
+                updateColorView.setTag(c);
+
+                colorsLayout.addView(updateColorView);
+            }
+
+            updateColorView.setBackgroundColor(Color.parseColor(c.color));
+        }
+
+        // Remove extra recycled arrivals
+        for (View v : updateViews) {
+            sizeChanged = true;
+            colorsLayout.removeView(v);
+        }
+
+        // This might not actually be necessary.
+        if (sizeChanged) {
+            colorsLayout.requestLayout();
+            colorsLayout.invalidate();
+        }
 
         return view;
     }
