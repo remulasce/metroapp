@@ -9,7 +9,6 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:background="#ffdddddd"
         android:paddingLeft="1dp"
         android:paddingRight="4dp"
         android:minWidth="20dp"

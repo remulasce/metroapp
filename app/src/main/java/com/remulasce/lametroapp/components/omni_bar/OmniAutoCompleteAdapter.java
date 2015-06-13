@@ -147,62 +147,16 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
 
         // Set the color bars to the left of the name to show what routes serve the station
-        // TODO: This is FS access on UI thread. Very slow and bad.
-
-//        List<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
         ViewGroup colorsLayout = (ViewGroup) view.findViewById(R.id.autocomplete_item_color_layout);
-
-        /*
-        List<View> updateViews = new ArrayList<View>();
-        // If we change the size of the view, we should invalidate it and redraw.
-        boolean sizeChanged = false;
-        // Find all the color bar views we can reuse
-        for (int i = 0; i < colorsLayout.getChildCount(); i++) {
-            View v = colorsLayout.getChildAt(i);
-
-            Object tag = v.getTag();
-            if (tag instanceof RouteColor) {
-                updateViews.add(v);
-            }
-        }
-
-        // Get all the Arrivals displayed
-        for (RouteColor c : colorBars) {
-            View updateColorView;
-
-            // If there's recycled views to use
-            if (updateViews.size() > 0) {
-                updateColorView = updateViews.get(0);
-                updateViews.remove(0);
-            }
-            // If there's no recycled views left, make one.
-            else {
-                sizeChanged = true;
-                updateColorView = inflater.inflate(R.layout.omnibar_dropdown_color_bar, colorsLayout, false);
-                updateColorView.setTag(c);
-
-                colorsLayout.addView(updateColorView);
-            }
-
-            updateColorView.setBackgroundColor(Color.parseColor(c.color));
-        }
-
-        // Remove extra recycled arrivals
-        for (View v : updateViews) {
-            sizeChanged = true;
-            colorsLayout.removeView(v);
-        }
-
-        // This might not actually be necessary.
-        if (sizeChanged) {
-            colorsLayout.requestLayout();
-            colorsLayout.invalidate();
-        }
-        */
 
         RouteColorerTask routeColorerTask = new RouteColorerTask(colorsLayout, autoCompleteCombinedFiller, colors);
         // Setting the task helps with concurrency during recycling
         // Prevents previous tasks from completing when the layout gets recycled to a new stop
+
+        Object tag = colorsLayout.getTag();
+        if (tag instanceof RouteColorerTask) {
+            ((RouteColorerTask) tag).cancel(true);
+        }
         colorsLayout.setTag(routeColorerTask);
         routeColorerTask.execute(omniAutoCompleteEntry.getStops());
 

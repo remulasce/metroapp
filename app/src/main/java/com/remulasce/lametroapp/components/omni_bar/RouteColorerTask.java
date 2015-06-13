@@ -43,6 +43,7 @@ public class RouteColorerTask extends AsyncTask<Collection<Stop>, Void, Collecti
         // For recycled views, there may already be color bars created.
         // We want to reuse the Views, but don't want to see the old colors.
         // So we set them to INVISIBLE until we finish loading.
+        // Also set the 'loading' state.
         clearExistingColors(colorBarLayout);
     }
 
@@ -55,6 +56,8 @@ public class RouteColorerTask extends AsyncTask<Collection<Stop>, Void, Collecti
                 v.setVisibility(View.INVISIBLE);
             }
         }
+
+        layout.setBackgroundColor(Color.WHITE);
     }
 
     // Actual download method, run in the task thread
@@ -66,13 +69,19 @@ public class RouteColorerTask extends AsyncTask<Collection<Stop>, Void, Collecti
     @Override
     // Once the image is downloaded, associates it to the imageView
     protected void onPostExecute(Collection<RouteColor> colors) {
+        if (isCancelled()) {
+            return;
+        }
+
         if (viewGroupWeakReference != null) {
             ViewGroup colorsLayout = viewGroupWeakReference.get();
             // getTag == this ensures that the view has not been recycled and had a new
             // color lookup task set to it.
             if (colorsLayout != null && colorsLayout.getTag() == this) {
                 fillinColorBars(colorsLayout, colors);
+                colorsLayout.setBackgroundColor(Color.parseColor("#ffdddddd"));
             }
+
         }
     }
 
