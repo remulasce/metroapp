@@ -70,7 +70,7 @@ public class MultiArrivalTrip extends Trip {
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
 
-        double distance = 1;//getCurrentDistanceToStop();
+        double distance = getCurrentDistanceToStop();
 
         // ~20 miles
         proximity += Math.max(0,
