@@ -104,8 +104,8 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(Math.min(5000 + seconds * 200, 5 * 1000));
-//					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
+					Thread.sleep(Math.min(5000 + seconds * 200, 15 * 1000));
+//					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000)); TODO debug value
 				} catch (InterruptedException e) { e.printStackTrace(); }
 			}
 		}
@@ -188,7 +188,8 @@ public class ArrivalNotifyService extends Service {
 	        
 	        final int secondsTillArrival = (int)(netTask.arrivalTime - System.currentTimeMillis()) / 1000;
 	        final int minutesSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000 / 60; 
-	        
+	        final int secondsSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000;
+
 	        final String destination = netTask.destination;
 	        final String lastDestination = netTask.lastDestination;
 	        final String vehicleNumber = netTask.vehicleNumber;
@@ -231,6 +232,12 @@ public class ArrivalNotifyService extends Service {
 	            msg2 = "Vehicle arrived";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
+
+				if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+					vibrate = true;
+				}
+
+				lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = secondsTillArrival+" seconds";
@@ -255,7 +262,7 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
-	        if (minutesSinceEstimate >= 3) { msg2 += " : "+minutesSinceEstimate; }
+	        if (minutesSinceEstimate >= 0) { msg2 += "\nupdated "+secondsSinceEstimate+" seconds ago"; }
 	        
 	        
 	        if (vehicleNumber != null) {
