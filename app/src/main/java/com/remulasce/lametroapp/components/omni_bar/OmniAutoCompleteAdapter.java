@@ -1,13 +1,18 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.remulasce.lametroapp.R;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Adapter for the autocomplete drop-down-list on stop entri field.
@@ -117,15 +123,30 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
     }
 
     @Override
-    public View getView(int position, View recycle, ViewGroup parent) {
+    public View getView(int position, View recycleView, ViewGroup parent) {
+
+        LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        LinearLayout view;
+
+        if (recycleView != null && recycleView.getId() == R.id.omnibar_dropdown_item) {
+            view = (LinearLayout)recycleView;
+        } else {
+            view = (LinearLayout) inflater.inflate(R.layout.omnibar_dropdown_item, parent, false);
+        }
+
+        View v = view.findViewById(R.id.color_box1);
 
         OmniAutoCompleteEntry omniAutoCompleteEntry = resultList.get(position);
-        Collection<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
+        List<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
 
-        return super.getView(position, recycle, parent);
+        v.setBackgroundColor(Color.parseColor(colorBars.get(0).color));
+
+        return view;
     }
 
-    private Collection<RouteColor> getColorBars(OmniAutoCompleteEntry entry) {
+    private List<RouteColor> getColorBars(OmniAutoCompleteEntry entry) {
         ArrayList<RouteColor> colorBars = new ArrayList<RouteColor>();
 
         Collection<Stop> stops = entry.getStops();
