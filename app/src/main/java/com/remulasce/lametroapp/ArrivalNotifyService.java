@@ -79,6 +79,8 @@ public class ArrivalNotifyService extends Service {
 			
 			while (run) {
 
+				Log.d(TAG, "Notify service updating from network");
+
 				String response = getXMLArrivalString(stopID, agency, routeName);				
 				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
 				int seconds = arrival.arrivalTime;
@@ -93,6 +95,8 @@ public class ArrivalNotifyService extends Service {
 					if (runNum == 0) {
                         toast ("Next arrival "+ LaMetroUtil.timeToDisplay(seconds));
 					}
+				} else {
+					Log.w(TAG, "Couldn't get prediction from server");
 				}
 				
 				runNum++;
@@ -100,7 +104,8 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
+					Thread.sleep(Math.min(5000 + seconds * 200, 5 * 1000));
+//					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
 				} catch (InterruptedException e) { e.printStackTrace(); }
 			}
 		}
@@ -202,6 +207,9 @@ public class ArrivalNotifyService extends Service {
         	        ShutdownService();
                     return;
     		    }
+				/*
+				"No Service" is an accepted use case
+				eg. Going from blue -> red line underground
     		    if ( minutesSinceEstimate > 5 ) {
                 	Log.e(TAG, "NotifyService ending because we haven't received an estimate in a while");
 
@@ -209,9 +217,10 @@ public class ArrivalNotifyService extends Service {
                 	ShutdownService();
                     return;
     		    }
+    		    */
 	        }
 	        
-	        if ( !netTask.isValid || minutesSinceEstimate < 0 || minutesSinceEstimate > 5) {
+	        if ( !netTask.isValid || minutesSinceEstimate < 0 ) {
 	            msg2 = "Getting prediction...";
 	            if (destination != null) {
                     msg2 += "\n";
@@ -246,7 +255,7 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
-	        if (minutesSinceEstimate >= 5) { msg2 += " : "+minutesSinceEstimate; }
+	        if (minutesSinceEstimate >= 3) { msg2 += " : "+minutesSinceEstimate; }
 	        
 	        
 	        if (vehicleNumber != null) {
