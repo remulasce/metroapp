@@ -147,6 +147,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
 
 
         // Set the color bars to the left of the name to show what routes serve the station
+        // TODO: This is FS access on UI thread. Very slow and bad.
         List<RouteColor> colorBars = getColorBars(omniAutoCompleteEntry);
         ViewGroup colorsLayout = (ViewGroup) view.findViewById(R.id.autocomplete_item_color_layout);
 
