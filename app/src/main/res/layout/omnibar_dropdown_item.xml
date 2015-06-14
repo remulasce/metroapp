@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/omnibar_dropdown_item"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
+    <LinearLayout
+        android:id="@+id/autocomplete_item_color_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:paddingLeft="1dp"
+        android:paddingRight="4dp"
+        android:minWidth="20dp"
+        >
+    </LinearLayout>
+
     <TextView
-        android:id="@+id/item"
+        android:id="@+id/omnibar_item_station_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:paddingLeft="6dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
         android:textSize="16sp"
         android:textColor="#000"
+        android:text="Example Station"
         />
 
 </LinearLayout>

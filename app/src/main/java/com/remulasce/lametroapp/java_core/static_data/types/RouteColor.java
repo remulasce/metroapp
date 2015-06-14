@@ -15,4 +15,20 @@ public class RouteColor implements Serializable {
     }
 
     public String color;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RouteColor that = (RouteColor) o;
+
+        return !(color != null ? !color.equals(that.color) : that.color != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return color != null ? color.hashCode() : 0;
+    }
 }

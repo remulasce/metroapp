@@ -4,14 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
-import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
@@ -19,6 +17,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
+import com.remulasce.lametroapp.java_core.static_data.StopRoutesTranslator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,14 +33,14 @@ import java.util.Map;
  * Library deals with moving it all to the right places.
  */
 public class SQLPreloadedStopsReader extends SQLiteAssetHelper
-        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator {
+        implements StopNameTranslator, AutoCompleteStopFiller, StopLocationTranslator, StopRoutesTable {
     private static final String TAG = "StopNameSQLHelper";
 
     private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
 
     private String DATABASE_NAME;
     private Agency agency;
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
@@ -57,12 +56,23 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
 
+    public static abstract class StopRouteEntry implements BaseColumns {
+        public static final String TABLE_NAME = "stoproutes";
+        public static final String COLUMN_NAME_STOPID = "stopid";
+        public static final String COLUMN_NAME_STOPNAME = "route";
+    }
 
-    private class SQLEntry {
+
+    private class SQLStopNamesEntry {
         public String stopID;
         public String stopName;
         public double latitude;
         public double longitude;
+    }
+
+    private class SQLStopRouteEntry {
+        public String stopID;
+        public String route;
     }
 
     private final Context context;
@@ -102,11 +112,11 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         Long t = Tracking.startTime();
 
         Log.d(TAG, "StopLocation searching for " + stop);
-        Collection<SQLEntry> entries = getMatchingEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
+        Collection<SQLStopNamesEntry> entries = getMatchingStopNameEntriesRaw(makeStopLocationRequest(stop.getStopID()), getReadableDatabase());
         Log.d(TAG, "StopLocation found "+entries.size()+" for "+stop);
 
         if (entries.size() > 0 && entries.iterator().hasNext()) {
-            SQLEntry firstLoc = entries.iterator().next();
+            SQLStopNamesEntry firstLoc = entries.iterator().next();
             double latitude = firstLoc.latitude;
             double longitude = firstLoc.longitude;
 
@@ -140,9 +150,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return false;
     }
 
-    private Collection<SQLEntry> getAutoCompleteEntries(SQLiteDatabase db, String stopName) {
-        return getMatchingEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameParameterizedSelection(),
-                new String[] { "%"+stopName+"%" }, db);
+    private Collection<SQLStopNamesEntry> getAutoCompleteEntries(SQLiteDatabase db, String stopName) {
+        return getMatchingStopNameEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameParameterizedSelection(),
+                new String[]{"%" + stopName + "%"}, db);
     }
 
     // Gets all of the name-based autocomplete results.
@@ -169,10 +179,10 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             }
 
             Log.d(TAG, "Autocomplete searching for " + s);
-            Collection<SQLEntry> matchingEntries = getAutoCompleteEntries(db, s);
+            Collection<SQLStopNamesEntry> matchingEntries = getAutoCompleteEntries(db, s);
             Log.d(TAG, "Autocomplete returned " + matchingEntries.size() + " entries for " + s);
 
-            for (SQLEntry entry : matchingEntries) {
+            for (SQLStopNamesEntry entry : matchingEntries) {
                 // Try to only put stuff in once
                 if (!tmp.containsKey(entry.stopName)) {
                     OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
@@ -229,7 +239,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         try {
             SQLiteDatabase db = getReadableDatabase();
 
-            Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
+            Collection<SQLStopNamesEntry> matching = getMatchingStopNameEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
                     new String[]{stopID}, db);
 
             if (matching.size() > 0) {
@@ -257,12 +267,12 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         try {
             SQLiteDatabase db = getReadableDatabase();
 
-            Collection<SQLEntry> matching;
+            Collection<SQLStopNamesEntry> matching;
 
-            matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopIDParameterizedSelection(),
+            matching = getMatchingStopNameEntries(StopNameEntry.TABLE_NAME, makeStopIDParameterizedSelection(),
                     new String[]{stopName}, db);
 
-            for (SQLEntry each : matching) {
+            for (SQLStopNamesEntry each : matching) {
                 ret.add(each.stopID);
             }
 
@@ -274,6 +284,36 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             Log.d(TAG, "Got stopID for " + stopName + ", " + ret);
         } catch (SQLiteException e) {
             Log.w(TAG, "SQLiteException. Prebuilt database file may be missing");
+        }
+
+        return ret;
+    }
+
+    @Override
+    public Collection<String> getRoutesToStop(String stopID) {
+        if (badQueryInput(stopID)) {
+            return null;
+        }
+
+        Collection<String> ret = new ArrayList<String>();
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+
+            Collection<SQLStopRouteEntry> matching;
+
+            matching = getMatchingStopRouteEntries(StopRouteEntry.TABLE_NAME, makeStopRoutesParameterizedSelection(),
+                    new String[]{stopID}, db);
+
+            for (SQLStopRouteEntry each : matching) {
+                ret.add(each.route);
+            }
+
+            // TODO performance tracking
+
+            Log.d(TAG, "Got routes to " + stopID + ", " + ret);
+        } catch (SQLiteException e) {
+            Log.w(TAG, "SQLiteException. Prebuilt database file may be missing stoproutes table");
         }
 
         return ret;
@@ -296,9 +336,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         ret.removeAll(rem);
     }
 
-    // Get all matching SQL entries, using injection-safe queries.
-    private Collection<SQLEntry> getMatchingEntries(String table, String selection, String[] args, SQLiteDatabase db) {
-        Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
+    // Get all matching SQL entries for the stopnames / location info, using injection-safe queries.
+    private Collection<SQLStopNamesEntry> getMatchingStopNameEntries(String table, String selection, String[] args, SQLiteDatabase db) {
+        Collection<SQLStopNamesEntry> ret = new ArrayList<SQLStopNamesEntry>();
 
         try {
             Cursor cursor = db.query(table, null, selection, args, null, null, null);
@@ -317,7 +357,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                 double latitude = cursor.getDouble(latitudeColumnIndex);
                 double longitude = cursor.getDouble(longitudeColumnIndex);
 
-                SQLEntry add = new SQLEntry();
+                SQLStopNamesEntry add = new SQLStopNamesEntry();
 
                 add.stopID = stopID;
                 add.stopName = stopName;
@@ -336,9 +376,45 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return ret;
     }
 
+    // Get all matching SQL entries for the stopid -> routes serving info, using injection-safe queries.
+    // Note that there should be an entry per route serving the stop.
+    private Collection<SQLStopRouteEntry> getMatchingStopRouteEntries(String table, String selection, String[] args, SQLiteDatabase db) {
+        Collection<SQLStopRouteEntry> ret = new ArrayList<SQLStopRouteEntry>();
+
+        try {
+            Cursor cursor = db.query(table, null, selection, args, null, null, null);
+
+            cursor.moveToFirst();
+
+            while(!cursor.isAfterLast()) {
+
+                int idColumnIndex = cursor.getColumnIndexOrThrow(StopRouteEntry.COLUMN_NAME_STOPID);
+                int routeColumnIndex = cursor.getColumnIndexOrThrow(StopRouteEntry.COLUMN_NAME_STOPNAME);
+
+                String route = cursor.getString(routeColumnIndex);
+                String stopID = cursor.getString(idColumnIndex);
+
+                SQLStopRouteEntry add = new SQLStopRouteEntry();
+
+                add.stopID = stopID;
+                add.route = route;
+
+                ret.add(add);
+
+                cursor.moveToNext();
+            }
+
+            cursor.close();
+        } catch (CursorIndexOutOfBoundsException e) {
+            ret = null;
+            Log.w(TAG, "Something wrong with stop->routes table");
+        }
+        return ret;
+    }
+
     // General "Give us all we've got" entry retrieval, using unsafe raw queries
-    private Collection<SQLEntry> getMatchingEntriesRaw(String query, SQLiteDatabase db) {
-        Collection<SQLEntry> ret = new ArrayList<SQLEntry>();
+    private Collection<SQLStopNamesEntry> getMatchingStopNameEntriesRaw(String query, SQLiteDatabase db) {
+        Collection<SQLStopNamesEntry> ret = new ArrayList<SQLStopNamesEntry>();
 
         try {
             Cursor cursor = db.rawQuery(query, null);
@@ -356,7 +432,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                 Double latitude = cursor.getDouble(latitudeColumnIndex);
                 Double longitude = cursor.getDouble(longitudeColumnIndex);
 
-                SQLEntry add = new SQLEntry();
+                SQLStopNamesEntry add = new SQLStopNamesEntry();
 
                 add.stopID = stopID;
                 add.stopName = stopName;
@@ -415,6 +491,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         return StopNameEntry.COLUMN_NAME_STOPID + " LIKE ?";
     }
 
+    private String makeStopRoutesParameterizedSelection() {
+        return StopRouteEntry.COLUMN_NAME_STOPID + " LIKE ?";
+    }
     // Request for a stopid, given stopname
     private String makeStopIDRequest(String stopName) {
         return "SELECT * FROM " + StopNameEntry.TABLE_NAME +

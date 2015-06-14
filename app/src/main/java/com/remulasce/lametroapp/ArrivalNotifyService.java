@@ -79,6 +79,8 @@ public class ArrivalNotifyService extends Service {
 			
 			while (run) {
 
+				Log.d(TAG, "Notify service updating from network");
+
 				String response = getXMLArrivalString(stopID, agency, routeName);				
 				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
 				int seconds = arrival.arrivalTime;
@@ -93,6 +95,8 @@ public class ArrivalNotifyService extends Service {
 					if (runNum == 0) {
                         toast ("Next arrival "+ LaMetroUtil.timeToDisplay(seconds));
 					}
+				} else {
+					Log.w(TAG, "Couldn't get prediction from server");
 				}
 				
 				runNum++;
@@ -100,7 +104,12 @@ public class ArrivalNotifyService extends Service {
 				
 				
 				try {
-					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
+					if (seconds != -1) {
+						Thread.sleep(Math.min(5000 + seconds * 200, 60 * 1000));
+//					Thread.sleep(Math.min(5000 + seconds * 200, 240 * 1000));
+					} else {
+						Thread.sleep(10000);
+					}
 				} catch (InterruptedException e) { e.printStackTrace(); }
 			}
 		}
@@ -183,7 +192,8 @@ public class ArrivalNotifyService extends Service {
 	        
 	        final int secondsTillArrival = (int)(netTask.arrivalTime - System.currentTimeMillis()) / 1000;
 	        final int minutesSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000 / 60; 
-	        
+	        final int secondsSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000;
+
 	        final String destination = netTask.destination;
 	        final String lastDestination = netTask.lastDestination;
 	        final String vehicleNumber = netTask.vehicleNumber;
@@ -202,6 +212,9 @@ public class ArrivalNotifyService extends Service {
         	        ShutdownService();
                     return;
     		    }
+				/*
+				"No Service" is an accepted use case
+				eg. Going from blue -> red line underground
     		    if ( minutesSinceEstimate > 5 ) {
                 	Log.e(TAG, "NotifyService ending because we haven't received an estimate in a while");
 
@@ -209,9 +222,10 @@ public class ArrivalNotifyService extends Service {
                 	ShutdownService();
                     return;
     		    }
+    		    */
 	        }
 	        
-	        if ( !netTask.isValid || minutesSinceEstimate < 0 || minutesSinceEstimate > 5) {
+	        if ( !netTask.isValid || minutesSinceEstimate < 0 ) {
 	            msg2 = "Getting prediction...";
 	            if (destination != null) {
                     msg2 += "\n";
@@ -222,6 +236,12 @@ public class ArrivalNotifyService extends Service {
 	            msg2 = "Vehicle arrived";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
+
+				if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+					vibrate = true;
+				}
+
+				lastDisplayedSeconds = secondsTillArrival;
 	        }
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = secondsTillArrival+" seconds";
@@ -246,7 +266,7 @@ public class ArrivalNotifyService extends Service {
 	            lastDisplayedSeconds = secondsTillArrival;
 	        }
 	            
-	        if (minutesSinceEstimate >= 5) { msg2 += " : "+minutesSinceEstimate; }
+	        if (minutesSinceEstimate >= 0) { msg2 += "\nupdated "+secondsSinceEstimate+" seconds ago"; }
 	        
 	        
 	        if (vehicleNumber != null) {
