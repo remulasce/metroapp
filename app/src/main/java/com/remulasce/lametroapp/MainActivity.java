@@ -217,7 +217,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             }
         });
 
-        final SpannableStringBuilder str = new SpannableStringBuilder("1 person has donated");
+        final SpannableStringBuilder str = new SpannableStringBuilder("2 people have donated");
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         donateButtonPresses.setText(str);
