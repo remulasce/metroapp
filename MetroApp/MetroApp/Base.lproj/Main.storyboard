@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14A386a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14A388a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -50,9 +50,12 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="uwT-1n-btH"/>
                                 </connections>
                             </tableView>
-                            <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="6RG-mw-lJs" userLabel="Search View">
-                                <rect key="frame" x="34" y="64" width="540" height="353"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="6RG-mw-lJs" userLabel="Search View">
+                                <rect key="frame" x="16" y="64" width="568" height="40"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="AK3-oN-WkX"/>
+                                </constraints>
                                 <color key="separatorColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="74O-bU-U3d"/>
@@ -77,14 +80,16 @@
                             <constraint firstItem="oyk-W4-0X8" firstAttribute="top" secondItem="ycd-QU-ZlP" secondAttribute="bottom" id="F2z-Nj-X6L"/>
                             <constraint firstItem="ycd-QU-ZlP" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="H5I-Pd-YXh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MJO-Gk-UIx" secondAttribute="trailing" constant="-16" id="KxG-QC-YZA"/>
+                            <constraint firstItem="6RG-mw-lJs" firstAttribute="top" secondItem="d9B-FP-g6J" secondAttribute="bottom" id="LtM-eo-M6F"/>
                             <constraint firstItem="d9B-FP-g6J" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="N9e-Dz-QGr"/>
                             <constraint firstItem="oyk-W4-0X8" firstAttribute="top" secondItem="ycd-QU-ZlP" secondAttribute="bottom" id="Nng-DE-2oe"/>
                             <constraint firstItem="6RG-mw-lJs" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="VSo-9r-uGo"/>
                             <constraint firstItem="d9B-FP-g6J" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="VeW-Cg-r5o"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="oyk-W4-0X8" secondAttribute="bottom" id="XrS-o6-fNS"/>
-                            <constraint firstItem="6RG-mw-lJs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="28" id="Z5R-7M-2xh"/>
+                            <constraint firstItem="6RG-mw-lJs" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="aKZ-bq-gz6"/>
                             <constraint firstItem="z7f-35-WAe" firstAttribute="leading" secondItem="d9B-FP-g6J" secondAttribute="trailing" id="g7o-25-2sM"/>
                             <constraint firstItem="z7f-35-WAe" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="hBx-0b-jvV"/>
+                            <constraint firstItem="6RG-mw-lJs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="qgJ-DW-DVM"/>
                             <constraint firstItem="6RG-mw-lJs" firstAttribute="top" secondItem="z7f-35-WAe" secondAttribute="bottom" constant="6" id="rvt-Tx-6lC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ycd-QU-ZlP" secondAttribute="trailing" constant="-16" id="sOv-A5-VmO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="oyk-W4-0X8" secondAttribute="trailing" constant="-16" id="uXj-Ds-QgI"/>

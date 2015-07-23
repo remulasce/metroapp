@@ -51,7 +51,10 @@
     StopNameInfo *testStops = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
                                                                          Tol:.01];
+    
+    StopNameInfo *testStops2 = [[[StopNameDatabase database] getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
     NSLog(@"Search Test: %@",[testStops stopName]);
+    NSLog(@"Search Test 2: %@",[testStops2 stopName]);
 
     
     // TEST THE DATABASE
@@ -85,10 +88,11 @@
     regionalizationHelper = [ComRemulasceLametroappJava_coreRegionalizationHelper getInstance];
     regionalizationHelper->agencyName_ = @"actransit";
     
-    // Final UI tweaks
+    //########## Final UI tweaks
     
     self.serviceRequestView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.multiArrivalTripView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
 }
 
 #pragma mark - Table View Code
@@ -111,6 +115,14 @@
         {
             return 0;
         } else {
+            // moving hide/show of searchbar here to try to avoid annoying UI things if it's not populated
+            if ([searchResults count] == 0) {
+                [self.searchView setHidden:true];
+            } else {
+                [self.searchView setHidden:false];
+                // To get dropshadow to update
+                //[self updateSearchView];
+            }
             return [searchResults count];
         }
     }
@@ -438,7 +450,11 @@
 - (IBAction)enterSearchState:(id)sender
 {
     searchState = 1;
-    [self.searchView setHidden:false];
+    //[self updateSearchView];
+    [[self serviceRequestView] setUserInteractionEnabled:FALSE];
+    [[self multiArrivalTripView] setUserInteractionEnabled:FALSE];
+    // Moving this to maybe avoid annoying non-resizing issues
+    //[self.searchView setHidden:false];
 }
 
 - (IBAction)exitSearchState:(id)sender
@@ -446,6 +462,22 @@
     searchState = 0;
     [self.searchView setHidden:true];
     [self.searchText resignFirstResponder];
+    
+    [[self serviceRequestView] setUserInteractionEnabled:TRUE];
+    [[self multiArrivalTripView] setUserInteractionEnabled:TRUE];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (searchState == true) {
+        for (UITouch *touch in touches) {
+            CGPoint touchPoint = [touch locationInView:self.view];
+            if (!([[self searchView] pointInside:touchPoint withEvent:nil] ||
+                  [[self searchText] pointInside:touchPoint withEvent:nil])) {
+                [self exitSearchState:nil];
+            }
+        }
+    }
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
@@ -495,10 +527,33 @@
         } else {
             searchResultsAvailable = NO;
         }
-        [self.searchView reloadData];
+        
+        [self updateSearchView];
     }
     
     return YES;
+}
+
+- (void) updateSearchView
+{
+    // Dynamically Resize
+    CGRect searchViewFrame = self.searchView.frame;
+    searchViewFrame.size.height = [searchResults count]*40;
+    if (searchViewFrame.size.height == 0) searchViewFrame.size.height = 40;
+    searchViewFrame.size.width = self.view.frame.size.width-32;
+    [self.searchView setFrame:searchViewFrame];
+    
+    //Update Dropshadow
+    
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.searchView.bounds];
+    self.searchView.layer.masksToBounds = NO;
+    self.searchView.layer.shadowColor = [UIColor grayColor].CGColor;
+    self.searchView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    self.searchView.layer.shadowOpacity = 0.5f;
+    self.searchView.layer.shadowPath = shadowPath.CGPath;
+    
+    [self.searchView reloadData];
+    [self.searchView setNeedsDisplay];
 }
 
 #pragma mark - Other program logic
