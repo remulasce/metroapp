@@ -13,6 +13,7 @@
 		310448E61AD6FADF00DCA091 /* MetroAppWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 310A04971ACB323C000E1B8E /* StopNameDatabase.m */; };
 		311E05F91B5F83E9002CBBFB /* Agency.java in Sources */ = {isa = PBXBuildFile; fileRef = 311E05F81B5F83E9002CBBFB /* Agency.java */; };
+		311E06021B619938002CBBFB /* SearchBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 311E06011B619938002CBBFB /* SearchBox.xib */; };
 		312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC5241AD75D3800DD21FA /* MetroAppShared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
 		312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */; };
@@ -162,6 +163,7 @@
 		310A04961ACB323C000E1B8E /* StopNameDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameDatabase.h; sourceTree = "<group>"; };
 		310A04971ACB323C000E1B8E /* StopNameDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameDatabase.m; sourceTree = "<group>"; };
 		311E05F81B5F83E9002CBBFB /* Agency.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Agency.java; sourceTree = "<group>"; };
+		311E06011B619938002CBBFB /* SearchBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBox.xib; sourceTree = "<group>"; };
 		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
 		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
 		312CC5201AD75D3800DD21FA /* MetroAppShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetroAppShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -540,6 +542,7 @@
 				318B6A6F1ADB0AFC001F24FD /* ReminderViewController.xib */,
 				312FFE2F1AA7E89D005D5477 /* Main.storyboard */,
 				312FFE341AA7E89D005D5477 /* LaunchScreen.xib */,
+				311E06011B619938002CBBFB /* SearchBox.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -782,6 +785,7 @@
 				3178F9C51AE306BB00922A49 /* StopNamesLA.sqlite3 in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
+				311E06021B619938002CBBFB /* SearchBox.xib in Resources */,
 				3178F97E1AE086D000922A49 /* icon-152.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

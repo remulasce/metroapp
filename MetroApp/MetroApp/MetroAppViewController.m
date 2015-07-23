@@ -69,6 +69,8 @@
     searchState = 0;
     searchResultsAvailable = NO;
     
+    [self.searchContainerView setHidden:TRUE];
+    
     // Update MultiArrivalView table with timer
     queue = [NSOperationQueue new];
     [queue setMaxConcurrentOperationCount:1];
@@ -116,13 +118,6 @@
             return 0;
         } else {
             // moving hide/show of searchbar here to try to avoid annoying UI things if it's not populated
-            if ([searchResults count] == 0) {
-                [self.searchView setHidden:true];
-            } else {
-                [self.searchView setHidden:false];
-                // To get dropshadow to update
-                //[self updateSearchView];
-            }
             return [searchResults count];
         }
     }
@@ -453,18 +448,29 @@
     //[self updateSearchView];
     [[self serviceRequestView] setUserInteractionEnabled:FALSE];
     [[self multiArrivalTripView] setUserInteractionEnabled:FALSE];
-    // Moving this to maybe avoid annoying non-resizing issues
-    //[self.searchView setHidden:false];
+    
+    CGRect searchViewFrame;
+    searchViewFrame.size.width = self.view.frame.size.width - 32;
+    searchViewFrame.size.height = 300;
+    searchViewFrame.origin.x = 16;
+    searchViewFrame.origin.y = 32;
+    
+    //self.searchView.frame = searchViewFrame;
+    
+    [self.searchContainerView setHidden:false];
+    [self updateSearchView];
 }
 
 - (IBAction)exitSearchState:(id)sender
 {
     searchState = 0;
-    [self.searchView setHidden:true];
+    
     [self.searchText resignFirstResponder];
+    [self.searchText setText:@""];
     
     [[self serviceRequestView] setUserInteractionEnabled:TRUE];
     [[self multiArrivalTripView] setUserInteractionEnabled:TRUE];
+    [self.searchContainerView setHidden:true];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -527,33 +533,27 @@
         } else {
             searchResultsAvailable = NO;
         }
-        
-        [self updateSearchView];
     }
+    
+    [self updateSearchView];
     
     return YES;
 }
 
 - (void) updateSearchView
 {
-    // Dynamically Resize
-    CGRect searchViewFrame = self.searchView.frame;
-    searchViewFrame.size.height = [searchResults count]*40;
-    if (searchViewFrame.size.height == 0) searchViewFrame.size.height = 40;
-    searchViewFrame.size.width = self.view.frame.size.width-32;
-    [self.searchView setFrame:searchViewFrame];
     
-    //Update Dropshadow
+    //Add Dropshadow
     
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.searchView.bounds];
-    self.searchView.layer.masksToBounds = NO;
-    self.searchView.layer.shadowColor = [UIColor grayColor].CGColor;
-    self.searchView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
-    self.searchView.layer.shadowOpacity = 0.5f;
-    self.searchView.layer.shadowPath = shadowPath.CGPath;
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.searchContainerView.bounds];
+    self.searchContainerView.layer.masksToBounds = NO;
+    self.searchContainerView.layer.shadowColor = [UIColor grayColor].CGColor;
+    self.searchContainerView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    self.searchContainerView.layer.shadowOpacity = 0.5f;
+    self.searchContainerView.layer.shadowPath = shadowPath.CGPath;
     
     [self.searchView reloadData];
-    [self.searchView setNeedsDisplay];
+    [self.searchContainerView setNeedsDisplay];
 }
 
 #pragma mark - Other program logic

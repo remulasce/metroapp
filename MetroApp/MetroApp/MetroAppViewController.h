@@ -56,7 +56,9 @@
 
 @property (nonatomic, weak) IBOutlet UITableView* serviceRequestView;
 @property (nonatomic, weak) IBOutlet UITableView* multiArrivalTripView;
-@property (nonatomic, weak) IBOutlet UITableView* searchView;
+
+@property (nonatomic, strong) IBOutlet UIView* searchContainerView;
+@property (nonatomic, strong) IBOutlet UITableView* searchView;
 
 @property (nonatomic, weak) IBOutlet UIView* windowView;
 
