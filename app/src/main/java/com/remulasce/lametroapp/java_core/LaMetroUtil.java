@@ -36,7 +36,9 @@ import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
-    private static final String BART_FEED_URL = "http://api.bart.gov/api/etd.aspx?cmd=etd";
+    private static final String BART_FEED_URL = "http://api.bart.gov/api/etd.aspx";
+
+    private static final String BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
     public static final String TAG = "LaMetroUtil";
 
     public static StopLocationTranslator locationTranslator;
@@ -88,18 +90,19 @@ public class LaMetroUtil {
             agency = new Agency(getAgencyFromRoute( route, stop ) );
         }
 
+        // Kinda sketchy, should work
         String URI = new String();
-        if (agency.raw == "BART") {
-            URI = BART_FEED_URL + "&orig="+stop.getString()+"&key=MW9S-E7SL-26DU-VV8V";
+        if (agency.raw.equals("BART")) {
+            URI = BART_FEED_URL + "?cmd=etd&orig="+stop.getString()+"&key="+BART_API_KEY;
         } else {
             URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                     + stop.getString();
+            if ( isValidRoute(route) ) {
+                URI += "&routeTag=" + route.getString();
+            }
         }
 
-        if ( isValidRoute(route) ) {
-            URI += "&routeTag=" + route.getString();
-        }
-
+        Log.w(TAG,"Request string: " + URI);
         return URI;
     }
 
@@ -237,7 +240,7 @@ public class LaMetroUtil {
             ioe.printStackTrace();
             return null;
         }catch (Exception e) {
-            Log.w(TAG, "Unaddressed exception!");
+            Log.w(TAG, "Unaddressed exception! " + e.getMessage());
             return null;
         }
 
