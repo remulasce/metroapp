@@ -36,6 +36,7 @@ import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
+    private static final String BART_FEED_URL = "http://api.bart.gov/api/etd.aspx?cmd=etd";
     public static final String TAG = "LaMetroUtil";
 
     public static StopLocationTranslator locationTranslator;
@@ -87,8 +88,13 @@ public class LaMetroUtil {
             agency = new Agency(getAgencyFromRoute( route, stop ) );
         }
 
-        String URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
-                + stop.getString();
+        String URI = new String();
+        if (agency.raw == "BART") {
+            URI = BART_FEED_URL + "&orig="+stop.getString()+"&key=MW9S-E7SL-26DU-VV8V";
+        } else {
+            URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
+                    + stop.getString();
+        }
 
         if ( isValidRoute(route) ) {
             URI += "&routeTag=" + route.getString();
@@ -151,7 +157,7 @@ public class LaMetroUtil {
 
             int seconds = 0;
 
-            if (uriTags != null) {
+            if (uriTags != null && uriTags.getLength() > 0) {
                 //We've gotten GTFS data
                 // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do this tomorrow when I'm not so tired.
                 //
