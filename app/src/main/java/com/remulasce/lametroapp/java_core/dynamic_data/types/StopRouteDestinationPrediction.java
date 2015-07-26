@@ -119,7 +119,7 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
 
-        LaMetroUtil.fillinAgency(arrivals, stop.getAgency());
+        LaMetroUtil.fillinAgencyAndStopID(arrivals, stop.getAgency(), stop.getStopID());
 
         // We have a problem!
         if (arrivals == null) {

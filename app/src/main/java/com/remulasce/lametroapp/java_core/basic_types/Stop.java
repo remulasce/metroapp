@@ -32,9 +32,11 @@ public class Stop implements Serializable {
     public int getNum() {
         return Integer.valueOf( raw );
     }
+
     public String getStopID() {
         return raw;
     }
+    public void setStopID(String stopID) { raw = stopID;}
 
     public void setAgency(Agency agency) {
         this.agency = agency;

@@ -212,11 +212,11 @@ public class LaMetroUtil {
 
                                 directionAttribute = direction.getAttribute("title");
                                 routeAttribute = prediction.getAttribute("routeTag");
-                                stopIDAttribute = prediction.getAttribute("stopTag");
+                                //stopIDAttribute = prediction.getAttribute("stopID");
                                 stopTitleAttribute = prediction.getAttribute("stopTitle");
                                 vehicleAttribute = arrival.getAttribute("vehicle");
 
-                                stopIDAttribute = cleanupStopID(stopIDAttribute);
+                                //stopIDAttribute = cleanupStopID(stopIDAttribute);
                             }
                         }
                     }
@@ -425,7 +425,7 @@ public class LaMetroUtil {
 
     //  The nextbus return data doesn't properly note which agency the request was for
     // So once we figure it out, fill it all in for us.
-    public static void fillinAgency(List<Arrival> arrivals, Agency agency) {
+    public static void fillinAgencyAndStopID(List<Arrival> arrivals, Agency agency, String stopID) {
         if (arrivals == null) {
             return;
         }
@@ -437,6 +437,7 @@ public class LaMetroUtil {
 
             a.getStop().setAgency(agency);
             a.getRoute().setAgency(agency);
+            a.getStop().setStopID(stopID);
         }
     }
 }
