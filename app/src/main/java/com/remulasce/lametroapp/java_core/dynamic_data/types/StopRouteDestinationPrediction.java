@@ -119,6 +119,8 @@ public class StopRouteDestinationPrediction extends Prediction {
 
         List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
 
+        LaMetroUtil.fillinAgency(arrivals, stop.getAgency());
+
         // We have a problem!
         if (arrivals == null) {
             if (this.trackedArrivals.size() > 0) {
