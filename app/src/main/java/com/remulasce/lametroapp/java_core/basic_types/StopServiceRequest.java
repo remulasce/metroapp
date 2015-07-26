@@ -238,6 +238,9 @@ public class StopServiceRequest extends ServiceRequest {
         return NetworkStatusState.NOTHING;
     }
 
+    public String getAgencyName() {
+        return "Network";
+    }
     public NetworkStatusState getNetworkStatus() {
         return determineNetworkStatusState();
     }

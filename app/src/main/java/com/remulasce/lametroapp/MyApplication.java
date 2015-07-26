@@ -30,6 +30,6 @@ public class MyApplication extends Application {
         super.onCreate();
 
         // The following line triggers the initialization of ACRA
-        // ACRA.init(this);
+        ACRA.init(this);
     }
 }

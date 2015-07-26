@@ -71,6 +71,10 @@ public class RequestStatusTrip extends Trip{
         }
     }
 
+    public String getAgencyName() {
+        return parentRequest.getAgencyName();
+    }
+
     @Override
     public void dismiss() {
         this.hidden = true;

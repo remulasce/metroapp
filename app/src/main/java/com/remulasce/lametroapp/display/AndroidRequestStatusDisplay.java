@@ -58,13 +58,13 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
                 progres_spinner.setVisibility(View.VISIBLE);
                 status_text.setVisibility(View.VISIBLE);
 
-                status_text.setText("Getting predictions from NexTrip...");
+                status_text.setText("Getting predictions from " + parentTrip.getAgencyName() + ".");
                 break;
             case ERROR:
                 progres_spinner.setVisibility(View.INVISIBLE);
                 status_text.setVisibility(View.VISIBLE);
 
-                status_text.setText("Error contacting NexTrip!");
+                status_text.setText("Error contacting " + parentTrip.getAgencyName() + "!");
                 break;
             default:
                 // ???
