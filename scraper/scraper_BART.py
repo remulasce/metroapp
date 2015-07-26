@@ -6,6 +6,8 @@ stopListRequestString = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=MW9S-E7SL
 stopListResponse = requests.get(stopListRequestString)
 root = ET.fromstring(stopListResponse.text)
 
+root = root[1]
+
 stopnamesList = []
 stoproutesList = []
 
@@ -16,18 +18,21 @@ for child in root:
 		newstopLat = child[2].text
 		newstopLong = child[3].text
 
-		stopnameslist.append([newstopID,newstopName,newstopLat,newstopLong])
+		stopnamesList.append([newstopID,newstopName,newstopLat,newstopLong])
 		
 		routesListRequestString = "http://api.bart.gov/api/stn.aspx?cmd=stninfo&orig="+newstopID+"&key=MW9S-E7SL-26DU-VV8V"
 		routesListResponse = requests.get(routesListRequestString)
-		routesRoot = ET.fromstring(routesListResponse)
+		routesRoot = ET.fromstring(routesListResponse.text)
+		
+		routesRoot = routesRoot[1][0]
 		
 		for routeChild in routesRoot:
 			if routeChild.tag == "north_routes" or routeChild.tag == "south_roots":
 				for route in routeChild:
 					stoproutesList.append([newstopID,route.text])
 
-
+print stopnamesList
+print stoproutesList
 		
 agencyName = "BART"
 
@@ -40,11 +45,11 @@ c.execute('''DROP TABLE IF EXISTS stopnames''')
 c.execute('''DROP TABLE IF EXISTS stoproutes''')
 
 # Create table
-c.execute('''CREATE TABLE stopnames (uniqueid integer, stopid text, stopname text, latitude real, longitude real)''')
+c.execute('''CREATE TABLE stopnames (stopid text, stopname text, latitude real, longitude real)''')
 # Correct way to make primary keys, Nighelles
 c.execute('''CREATE TABLE stoproutes ( stopid text, route text)''')
 
-c.executemany('INSERT INTO stopnames VALUES (?,?,?,?,?)', stopnamesList)
+c.executemany('INSERT INTO stopnames VALUES (?,?,?,?)', stopnamesList)
 c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
 
 # Save (commit) the changes
