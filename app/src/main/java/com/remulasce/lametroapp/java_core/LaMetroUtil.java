@@ -12,6 +12,7 @@ import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -28,6 +29,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.remulasce.lametroapp.java_core.RegionalizationHelper;
+
+
+// OK, I'm modifying this to do the correct thing if we ask it to handle GTFS instead of nextbus
+// GTFS conveniently provides us with a tag called <uri></uri> that will let us know if it's GTFS or not, as well as the request URL
 
 public class LaMetroUtil {
     private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
@@ -131,47 +136,91 @@ public class LaMetroUtil {
 
             NodeList errors = docEle.getElementsByTagName("Error");
             if (errors != null && errors.getLength() != 0) {
-                Log.d(TAG, "NexTrip returned an error");
+                Log.d(TAG, "NexTrip/GTFS returned an error");
                 return null;
             }
 
-            NodeList predictions = docEle.getElementsByTagName("predictions");
-            if(predictions != null && predictions.getLength() > 0) {
-                for(int i = 0 ; i < predictions.getLength();i++) {
-                    Element prediction = (Element)predictions.item(i);
+            // Figure out if it's nextbus or GTFS
+            NodeList uriTags = docEle.getElementsByTagName("uri");
 
-                    NodeList directions = prediction.getElementsByTagName("direction");
-                    for(int j = 0 ; j < directions.getLength(); j++) {
-                        Element direction = (Element)directions.item(j);
+            String directionAttribute = new String();
+            String routeAttribute = new String();
+            String stopIDAttribute = new String();
+            String stopTitleAttribute = new String();
+            String vehicleAttribute = new String();
 
-                        NodeList arrivals = direction.getElementsByTagName("prediction");
-                        for(int k = 0 ; k < arrivals.getLength(); k++) {
-                            Element arrival = (Element)arrivals.item(k);
+            int seconds = 0;
 
-                            int seconds = Integer.parseInt(arrival.getAttribute("seconds"));
+            if (uriTags != null) {
+                //We've gotten GTFS data
+                // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do this tomorrow when I'm not so tired.
+                //
 
-                            String directionAttribute = direction.getAttribute("title");
-                            String routeAttribute = prediction.getAttribute("routeTag");
-                            String stopIDAttribute = prediction.getAttribute("stopTag");
-                            String stopTitleAttribute = prediction.getAttribute("stopTitle");
-                            String vehicleAttribute = arrival.getAttribute("vehicle");
+                Element station = (Element)docEle.getElementsByTagName("station").item(0);
+                stopIDAttribute = station.getElementsByTagName("abbreviation").item(0).getTextContent();
+                stopTitleAttribute = station.getElementsByTagName("name").item(0).getTextContent();
 
-                            stopIDAttribute = cleanupStopID(stopIDAttribute);
+                NodeList predictions = docEle.getElementsByTagName("etd");
+                if (predictions != null && predictions.getLength() > 0) {
+                    for (int i = 0; i < predictions.getLength();i++) {
+                        Element prediction = (Element)predictions.item(i);
 
-                            Destination d   = new Destination(directionAttribute);
-                            Route r         = new Route(routeAttribute);
-                            Stop s          = new Stop(stopIDAttribute);
-                            Vehicle v       = new Vehicle(vehicleAttribute);
+                        NodeList directions = prediction.getElementsByTagName("destination");
+                        if (directions != null && directions.getLength() > 0) {
+                            Element direction = (Element)directions.item(0);
+                            directionAttribute = direction.getTextContent();
+                        }
 
-                            s.setStopName(stopTitleAttribute);
+                        NodeList arrivals = prediction.getElementsByTagName("estimate");
+                        for (int j = 0; j<arrivals.getLength();j++) {
+                            Element arrival = (Element)arrivals.item(j);
 
-                            addNewArrival(ret, seconds, d, r, s, v);
+                            int minutes = Integer.parseInt(arrival.getElementsByTagName("minutes").item(0).getTextContent());
+                            seconds = minutes * 60; // BART doesn't provide seconds
+                            routeAttribute = prediction.getElementsByTagName("abbreviation").item(0).getTextContent();
+
+                            // BART doesn't give us bus numbers, maybe we can use the length of the car to be helpful with a hack?
+                            vehicleAttribute = prediction.getElementsByTagName("length").item(0).getTextContent();
+                        }
+                    }
+                }
+            } else {
+                //We've gotten NextBus Data
+                NodeList predictions = docEle.getElementsByTagName("predictions");
+                if(predictions != null && predictions.getLength() > 0) {
+                    for(int i = 0 ; i < predictions.getLength();i++) {
+                        Element prediction = (Element)predictions.item(i);
+
+                        NodeList directions = prediction.getElementsByTagName("direction");
+                        for(int j = 0 ; j < directions.getLength(); j++) {
+                            Element direction = (Element)directions.item(j);
+
+                            NodeList arrivals = direction.getElementsByTagName("prediction");
+                            for(int k = 0 ; k < arrivals.getLength(); k++) {
+                                Element arrival = (Element)arrivals.item(k);
+
+                                seconds = Integer.parseInt(arrival.getAttribute("seconds"));
+
+                                directionAttribute = direction.getAttribute("title");
+                                routeAttribute = prediction.getAttribute("routeTag");
+                                stopIDAttribute = prediction.getAttribute("stopTag");
+                                stopTitleAttribute = prediction.getAttribute("stopTitle");
+                                vehicleAttribute = arrival.getAttribute("vehicle");
+
+                                stopIDAttribute = cleanupStopID(stopIDAttribute);
+                            }
                         }
                     }
                 }
             }
+            Destination d   = new Destination(directionAttribute);
+            Route r         = new Route(routeAttribute);
+            Stop s          = new Stop(stopIDAttribute);
+            Vehicle v       = new Vehicle(vehicleAttribute);
 
+            s.setStopName(stopTitleAttribute);
 
+            addNewArrival(ret, seconds, d, r, s, v);
         }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
             return null;
