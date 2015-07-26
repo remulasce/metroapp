@@ -123,6 +123,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         Collection<Agency> agencies = new ArrayList<Agency>();
         agencies.add(new Agency("lametro-rail"));
         agencies.add(new Agency("lametro"));
+        agencies.add(new Agency("actransit"));
+        agencies.add(new Agency("sf-muni"));
 
         RegionalizationHelper.getInstance().setActiveAgencies(agencies);
     }
