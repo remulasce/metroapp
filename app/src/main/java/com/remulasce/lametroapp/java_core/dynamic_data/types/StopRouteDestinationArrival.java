@@ -78,6 +78,12 @@ public class StopRouteDestinationArrival implements Serializable {
         return interval;
     }
 
+    // Some of the values aren't quite filled in all the way from the server
+    // So just check if it's close enough.
+    public boolean stopBasicallyMatches(Stop a, Stop b) {
+        return (a.getAgency().equals(b.getAgency()) && a.getStopID().equals(b.getStopID()));
+    }
+
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {
         Log.d(TAG, "Updating SRDArrival times from " + updatedArrivals.size() + " arrivals");
 
@@ -86,7 +92,7 @@ public class StopRouteDestinationArrival implements Serializable {
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
-                    update.getStop().equals(stop) ){
+                    stopBasicallyMatches(update.getStop(), stop) ){
 
 
                 Arrival a = null;

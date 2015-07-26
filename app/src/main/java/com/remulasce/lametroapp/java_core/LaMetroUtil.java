@@ -364,4 +364,21 @@ public class LaMetroUtil {
         }
 
     }
+
+    //  The nextbus return data doesn't properly note which agency the request was for
+    // So once we figure it out, fill it all in for us.
+    public static void fillinAgency(List<Arrival> arrivals, Agency agency) {
+        if (arrivals == null) {
+            return;
+        }
+        for (Arrival a : arrivals) {
+            if (a.getStop().getAgency() != null || a.getRoute().getAgency() != null) {
+                Log.w(TAG, "fillinAgency tried to fill an agency that already existed");
+                return;
+            }
+
+            a.getStop().setAgency(agency);
+            a.getRoute().setAgency(agency);
+        }
+    }
 }
