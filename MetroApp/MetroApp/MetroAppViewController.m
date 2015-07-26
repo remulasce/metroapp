@@ -95,6 +95,15 @@
     self.serviceRequestView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.multiArrivalTripView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
+    
+    // Setup Andoid Log Stuff
+    iosLogger = [[ComRemulasceLametroappJava_coreAnalyticsIosLog alloc] init];
+    
+    [ComRemulasceLametroappJava_coreAnalyticsLog SetLoggerWithComRemulasceLametroappJava_coreAnalyticsLog:iosLogger];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(printAndroidLogs) userInfo:nil repeats:YES];
+    
+    [ComRemulasceLametroappJava_coreAnalyticsIosLog dWithNSString:@"TEST" withNSString:@"Test Android Logging."];
 }
 
 #pragma mark - Table View Code
@@ -427,7 +436,7 @@
     return nil;
 }
 
-#pragma mark - MultiArrivalView
+#pragma mark - Timer Callback
 
 - (void)updateMultiArrivalView {
     NSLog(@"Timer ticked!");
@@ -439,6 +448,14 @@
     [queue addOperationWithBlock:block];
     [self.multiArrivalTripView reloadData];
 }
+
+- (void)printAndroidLogs {
+    NSLog(@"----------ANDROID LOGS----------");
+    NSString *logToDate = [iosLogger getLogToDate];
+    NSLog(logToDate);
+    NSLog(@"--------------------------------");
+}
+
 
 #pragma mark - Search Bar Code
 

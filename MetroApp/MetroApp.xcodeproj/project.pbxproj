@@ -14,6 +14,7 @@
 		310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 310A04971ACB323C000E1B8E /* StopNameDatabase.m */; };
 		311E05F91B5F83E9002CBBFB /* Agency.java in Sources */ = {isa = PBXBuildFile; fileRef = 311E05F81B5F83E9002CBBFB /* Agency.java */; };
 		311E06021B619938002CBBFB /* SearchBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 311E06011B619938002CBBFB /* SearchBox.xib */; };
+		311E06081B61A891002CBBFB /* IosLog.java in Sources */ = {isa = PBXBuildFile; fileRef = 311E06071B61A891002CBBFB /* IosLog.java */; };
 		312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC5241AD75D3800DD21FA /* MetroAppShared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
 		312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */; };
@@ -164,6 +165,7 @@
 		310A04971ACB323C000E1B8E /* StopNameDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameDatabase.m; sourceTree = "<group>"; };
 		311E05F81B5F83E9002CBBFB /* Agency.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Agency.java; sourceTree = "<group>"; };
 		311E06011B619938002CBBFB /* SearchBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBox.xib; sourceTree = "<group>"; };
+		311E06071B61A891002CBBFB /* IosLog.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IosLog.java; sourceTree = "<group>"; };
 		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
 		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
 		312CC5201AD75D3800DD21FA /* MetroAppShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetroAppShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -457,6 +459,7 @@
 			children = (
 				3178F9851AE3060E00922A49 /* Log.java */,
 				3178F9861AE3060E00922A49 /* Tracking.java */,
+				311E06071B61A891002CBBFB /* IosLog.java */,
 			);
 			path = analytics;
 			sourceTree = "<group>";
@@ -873,6 +876,7 @@
 				3178F9C11AE3060E00922A49 /* RouteColor.java in Sources */,
 				31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */,
 				3178F9A91AE3060E00922A49 /* BasicLocation.java in Sources */,
+				311E06081B61A891002CBBFB /* IosLog.java in Sources */,
 				3178F9B61AE3060E00922A49 /* StopRouteDestinationPrediction.java in Sources */,
 				3178F9BC1AE3060E00922A49 /* RegionalizationHelper.java in Sources */,
 				31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */,
