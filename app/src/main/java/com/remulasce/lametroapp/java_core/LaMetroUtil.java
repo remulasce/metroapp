@@ -54,7 +54,7 @@ public class LaMetroUtil {
         }
 
         try {
-            int stopNum = Integer.parseInt( stop );
+            int stopNum = Integer.parseInt(stop);
 
             if ( stopNum <= 0 ) {
                 return false;
@@ -166,7 +166,7 @@ public class LaMetroUtil {
                 //
 
                 Element station = (Element)docEle.getElementsByTagName("station").item(0);
-                stopIDAttribute = station.getElementsByTagName("abbreviation").item(0).getTextContent();
+                stopIDAttribute = station.getElementsByTagName("abbr").item(0).getTextContent();
                 stopTitleAttribute = station.getElementsByTagName("name").item(0).getTextContent();
 
                 NodeList predictions = docEle.getElementsByTagName("etd");
@@ -190,23 +190,31 @@ public class LaMetroUtil {
 
                             // BART doesn't give us bus numbers, maybe we can use the length of the car to be helpful with a hack?
                             vehicleAttribute = prediction.getElementsByTagName("length").item(0).getTextContent();
+
+                            Destination d   = new Destination(directionAttribute);
+                            Route r         = new Route(routeAttribute);
+                            Stop s          = new Stop(stopIDAttribute);
+                            Vehicle v       = new Vehicle(vehicleAttribute);
+
+                            s.setStopName(stopTitleAttribute);
+                            addNewArrival(ret, seconds, d, r, s, null);
                         }
                     }
                 }
             } else {
                 //We've gotten NextBus Data
                 NodeList predictions = docEle.getElementsByTagName("predictions");
-                if(predictions != null && predictions.getLength() > 0) {
-                    for(int i = 0 ; i < predictions.getLength();i++) {
-                        Element prediction = (Element)predictions.item(i);
+                if (predictions != null && predictions.getLength() > 0) {
+                    for (int i = 0; i < predictions.getLength(); i++) {
+                        Element prediction = (Element) predictions.item(i);
 
                         NodeList directions = prediction.getElementsByTagName("direction");
-                        for(int j = 0 ; j < directions.getLength(); j++) {
-                            Element direction = (Element)directions.item(j);
+                        for (int j = 0; j < directions.getLength(); j++) {
+                            Element direction = (Element) directions.item(j);
 
                             NodeList arrivals = direction.getElementsByTagName("prediction");
-                            for(int k = 0 ; k < arrivals.getLength(); k++) {
-                                Element arrival = (Element)arrivals.item(k);
+                            for (int k = 0; k < arrivals.getLength(); k++) {
+                                Element arrival = (Element) arrivals.item(k);
 
                                 seconds = Integer.parseInt(arrival.getAttribute("seconds"));
 
@@ -217,19 +225,19 @@ public class LaMetroUtil {
                                 vehicleAttribute = arrival.getAttribute("vehicle");
 
                                 //stopIDAttribute = cleanupStopID(stopIDAttribute);
+
+                                Destination d   = new Destination(directionAttribute);
+                                Route r         = new Route(routeAttribute);
+                                Stop s          = new Stop(stopIDAttribute);
+                                Vehicle v       = new Vehicle(vehicleAttribute);
+
+                                s.setStopName(stopTitleAttribute);
+                                addNewArrival(ret, seconds, d, r, s, v);
                             }
                         }
                     }
                 }
             }
-            Destination d   = new Destination(directionAttribute);
-            Route r         = new Route(routeAttribute);
-            Stop s          = new Stop(stopIDAttribute);
-            Vehicle v       = new Vehicle(vehicleAttribute);
-
-            s.setStopName(stopTitleAttribute);
-
-            addNewArrival(ret, seconds, d, r, s, v);
         }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
             return null;

@@ -89,6 +89,14 @@ public class StopRouteDestinationArrival implements Serializable {
 
         List<Arrival> arrivalsToDelete = new ArrayList<Arrival>();
 
+        // To handle GTFS cases where there's no BART vehicle nums, we want to get all of them
+        // again in order to avoid overwriting the newer arrivals with the longest wait-ing one
+
+        if (arrivals != null && arrivals.size() > 0 && arrivals.iterator().hasNext()) {
+            if (arrivals.iterator().next().getVehicleNum() == null) {
+                arrivals.clear();
+            }
+        }
         for (Arrival update : updatedArrivals) {
             if (update.getDirection().equals(destination) &&
                     update.getRoute().equals(route) &&
@@ -99,7 +107,7 @@ public class StopRouteDestinationArrival implements Serializable {
 
                 // Find an existing arrival to update
                 for (Arrival arrival : arrivals) {
-                    if (arrival.getVehicleNum().equals(update.getVehicleNum())) {
+                    if (arrival.getVehicleNum() != null && arrival.getVehicleNum().equals(update.getVehicleNum())) {
                         // We lose a little precision here
                         a = arrival;
                         break;

@@ -117,8 +117,13 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             RelativeLayout updateTimeView;
 
             int seconds = (int) a.getEstimatedArrivalSeconds();
-            String vehicle = "Veh " + a.getVehicleNum().getString() + " ";
 
+            String vehicle;
+            if (a.getVehicleNum() == null) {
+                vehicle = "";
+            } else {
+                vehicle = "Veh " + a.getVehicleNum().getString() + " ";
+            }
             // If the bus is long gone, don't add it.
             // But keep displaying the "arrived" text for a little while, so you can
             // see the bus # once you've boarded.
