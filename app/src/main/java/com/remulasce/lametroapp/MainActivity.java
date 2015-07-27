@@ -65,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private Button clearButton;
     private Button donateButton;
     private Button legalButton;
+    private Button settingsButton;
     private TextView aboutPaneHint;
     private TextView versionNumber;
     private TextView donateButtonPresses;
@@ -114,7 +115,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupAboutPage();
         setupTutorials();
 
-        setupDefaults( getIntent() );
+        setupDefaults(getIntent());
     }
 
     private void setupRegionalization() {
@@ -238,6 +239,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         clearButton = (Button) findViewById( R.id.omni_clear_button );
         donateButton = (Button) findViewById( R.id.donate_button );
         legalButton = (Button) findViewById(R.id.legal_info_button);
+        settingsButton = (Button) findViewById(R.id.settings_button);
         versionNumber = (TextView) findViewById(R.id.about_version_number);
         autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
         aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
@@ -263,6 +265,15 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(getString(R.string.legal_info_dialog_title))
                         .setView(View.inflate(MainActivity.this, R.layout.legal_page, null)).show();
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getString(R.string.settings_dialog_title))
+                        .setView(View.inflate(MainActivity.this, R.layout.settings_pane, null)).show();
             }
         });
     }
