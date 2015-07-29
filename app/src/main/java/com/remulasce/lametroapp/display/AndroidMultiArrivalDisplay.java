@@ -191,7 +191,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
             } else if (miles < 100){
                 return (int) (miles + 0.5) + "mi";
             } else {
-                return "really far!";
+                return "Far!";
             }
         } else {
             return (int) yards + "yd";
