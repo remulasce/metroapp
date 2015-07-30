@@ -85,9 +85,8 @@ public class LaMetroUtil {
         Agency agency = stop.getAgency();
 
         if (agency == null || !agency.isValid()) {
-            Log.w(TAG, "No agency attached to stop, determining from region. Deprecated.");
-
-            agency = new Agency(getAgencyFromRoute( route, stop ) );
+            Log.e(TAG, "No agency attached to stop, old functions removed. Specify the agency as part of your stops.");
+            return null;
         }
 
         // Kinda sketchy, should work
@@ -394,41 +393,6 @@ public class LaMetroUtil {
     public static String standaloneSecondsRemainderTime(int seconds) {
         if (seconds <= 60) { return ""; }
         return (seconds % 60)+"s";
-    }
-
-    public static String getAgencyFromRoute( Route route, Stop stop )
-            throws IllegalArgumentException {
-        try {
-            if  (RegionalizationHelper.getInstance().agencyName.equals("actransit"))
-            {
-                return "actransit";
-            } else if (RegionalizationHelper.getInstance().agencyName.equals("lametro"))
-            {
-                if ( route == null || !route.isValid() ) {
-                    if ( stop.getNum() > 80000 && stop.getNum() < 81000 ) {
-                        return "lametro-rail";
-                    }
-
-                    return "lametro";
-                }
-                int routeN = Integer.valueOf( route.getString() );
-                if ( routeN / 100 == 8 ) {
-                    return "lametro-rail";
-                }
-                else if ( routeN > 0 && routeN < 1000 ) {
-                    return "lametro";
-                }
-                else {
-                    return "lametro";
-                }
-            }
-            else {
-                return "lametro";
-            }
-        } catch ( Exception e ) {
-            throw new IllegalArgumentException( e.getLocalizedMessage() );
-        }
-
     }
 
     //  The nextbus return data doesn't properly note which agency the request was for

@@ -7,11 +7,6 @@ import java.util.Collection;
 public class RegionalizationHelper {
     public static final RegionalizationHelper instance = new RegionalizationHelper();
 
-    // Old, direct name.
-    // Should still refer to the overall region- lametro, etc, instead of the nextrip agency.
-    public String agencyName;
-
-    // New way
     // Supports N agencies at any location
     // So we should make a general "is agency useful here" method, instead of defining
     // regions.

@@ -34,7 +34,8 @@ public class NotifyServiceManager {
         }
 
         try {
-            i.putExtra( "Agency", LaMetroUtil.getAgencyFromRoute(route, stop) );
+            // TODO make sure this works
+            i.putExtra( "Agency", stop.getAgency() );
             i.putExtra( "StopID", stop.getNum() );
 
             if ( destination != null && destination.isValid() ) {
