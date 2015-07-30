@@ -7,10 +7,13 @@ import java.util.Collection;
 public class RegionalizationHelper {
     public static final RegionalizationHelper instance = new RegionalizationHelper();
 
+    // TODO: Separate list of all installed agencies
+    // TODO  And, code to set which ones are active or not.
+
     // Supports N agencies at any location
     // So we should make a general "is agency useful here" method, instead of defining
     // regions.
-    private Collection<Agency> agencies;
+    private Collection<Agency> activeAgencies;
 
     private RegionalizationHelper() {};
     
@@ -20,9 +23,9 @@ public class RegionalizationHelper {
     }
 
     public Collection<Agency> getActiveAgencies() {
-        return agencies;
+        return activeAgencies;
     }
     public void setActiveAgencies(Collection<Agency> agencies) {
-        this.agencies = agencies;
+        this.activeAgencies = agencies;
     }
 }
