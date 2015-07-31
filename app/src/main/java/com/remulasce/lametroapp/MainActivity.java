@@ -1,6 +1,7 @@
 package com.remulasce.lametroapp;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
+import com.remulasce.lametroapp.components.regions.RegionSettingsDialogFragment;
 import com.remulasce.lametroapp.components.tutorial.AndroidTutorialManager;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
@@ -269,9 +271,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(getString(R.string.settings_dialog_title))
-                        .setView(View.inflate(MainActivity.this, R.layout.region_settings_pane, null)).show();
+                DialogFragment settingsFragment = new RegionSettingsDialogFragment();
+                settingsFragment.show(getFragmentManager(), "region_settings");
             }
         });
     }
