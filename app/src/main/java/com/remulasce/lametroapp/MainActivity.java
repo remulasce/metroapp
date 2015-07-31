@@ -130,9 +130,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         agencies.add(new Agency("sf-muni"));
         agencies.add(new Agency("BART"));
 
-//        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
-        RegionalizationHelper.getInstance().loadPersistedAgencies();
         RegionalizationHelper.getInstance().setInstalledAgencies(agencies);
+        RegionalizationHelper.getInstance().loadPersistedAgencies();
     }
 
     private void initializeDynamicData() {

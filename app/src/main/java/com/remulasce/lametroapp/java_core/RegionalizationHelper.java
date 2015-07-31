@@ -12,6 +12,7 @@ public class RegionalizationHelper {
     private static final RegionalizationHelper instance = new RegionalizationHelper();
     public static final String ACTIVE_REGIONS = "active_regions";
     private static FieldSaver persistence;
+    private static final String TAG = "RegionalizationHelper";
 
     public static void setPersistence(FieldSaver persistence) {
         RegionalizationHelper.persistence = persistence;
@@ -25,16 +26,33 @@ public class RegionalizationHelper {
 
     private RegionalizationHelper() {};
     public void loadPersistedAgencies() {
-        if (persistence != null) {
+        // If there's nothing saved, default to adding all the installed agencies
+        if (persistence == null) {
+            Log.w(TAG, "RegionalizationHelper tried to load persisted agencies, but there's no saver set");
+            if (installedAgencies == null || installedAgencies.size() == 0) {
+                Log.w(TAG, "No installed agencies, can't properly make default active agencies");
+                activeAgencies = new ArrayList<Agency>();
+                return;
+            }
+            activeAgencies.addAll(installedAgencies);
+        } else {
+            // We can try to load from persistence
             Object persistedDeal = persistence.loadObject(ACTIVE_REGIONS);
 
             if (persistedDeal != null && persistedDeal instanceof Collection) {
                 try {
                     activeAgencies = (Collection<Agency>) persistedDeal;
                 } catch (Exception exception) {
-                    Log.w("RegionalizationHelper", "Error loading persisted file, dropping it" );
+                    Log.w(TAG, "Error loading persisted file, dropping it" );
                     persistence.saveObject(ACTIVE_REGIONS, null);
                 }
+            } else {
+                if (installedAgencies == null || installedAgencies.size() == 0) {
+                    Log.w(TAG, "No installed agencies, can't properly make default active agencies");
+                    activeAgencies = new ArrayList<Agency>();
+                    return;
+                }
+                activeAgencies.addAll(installedAgencies);
             }
         }
     }
