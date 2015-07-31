@@ -2,18 +2,17 @@ package com.remulasce.lametroapp.java_core;
 
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class RegionalizationHelper {
     public static final RegionalizationHelper instance = new RegionalizationHelper();
 
-    // TODO: Separate list of all installed agencies
-    // TODO  And, code to set which ones are active or not.
+    // All agencies that can be enabled (have input sql dbs)
+    private Collection<Agency> installedAgencies = new ArrayList<Agency>();
 
-    // Supports N agencies at any location
-    // So we should make a general "is agency useful here" method, instead of defining
-    // regions.
-    private Collection<Agency> activeAgencies;
+    // All agencies that should be queried on input
+    private Collection<Agency> activeAgencies = new ArrayList<Agency>();
 
     private RegionalizationHelper() {};
     
@@ -21,6 +20,10 @@ public class RegionalizationHelper {
     {
         return instance;
     }
+
+
+    public Collection<Agency> getInstalledAgencies() { return installedAgencies; }
+    public void setInstalledAgencies(Collection<Agency> agencies) { this.installedAgencies = agencies; }
 
     public Collection<Agency> getActiveAgencies() {
         return activeAgencies;
