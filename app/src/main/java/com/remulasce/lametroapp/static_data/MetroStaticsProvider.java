@@ -49,9 +49,9 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     }
 
     private void setupRegion(Context context) {
-        Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
-        if (activeAgencies != null) {
-            for (Agency agency : activeAgencies) {
+        Collection<Agency> installedAgencies = RegionalizationHelper.getInstance().getInstalledAgencies();
+        if (installedAgencies != null) {
+            for (Agency agency : installedAgencies) {
                 if (!regionalStopsReaders.containsKey(agency)) {
                     // add agency
                     SQLPreloadedStopsReader reader = new SQLPreloadedStopsReader(context, getFileName(agency), agency);
@@ -115,7 +115,14 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
         // So we need a quick way to get existing entries to add additional stops to them.
         Map<String, OmniAutoCompleteEntry> usedStops = new HashMap<String, OmniAutoCompleteEntry>();
 
-        for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
+        Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
+
+        for (Agency a : regionalStopsReaders.keySet()) {
+            if (!activeAgencies.contains(a)) {
+                continue;
+            }
+            SQLPreloadedStopsReader reader = regionalStopsReaders.get(a);
+
             Collection<OmniAutoCompleteEntry> entries = reader.autocompleteStopName(input);
 
             for (OmniAutoCompleteEntry newEntry : entries) {
