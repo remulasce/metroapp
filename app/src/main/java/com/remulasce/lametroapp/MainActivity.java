@@ -271,7 +271,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
             public void onClick(View view) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(getString(R.string.settings_dialog_title))
-                        .setView(View.inflate(MainActivity.this, R.layout.settings_pane, null)).show();
+                        .setView(View.inflate(MainActivity.this, R.layout.region_settings_pane, null)).show();
             }
         });
     }
