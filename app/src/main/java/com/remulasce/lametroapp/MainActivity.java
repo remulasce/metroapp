@@ -121,6 +121,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void setupRegionalization() {
+        RegionalizationHelper.setPersistence(getFieldSaver());
+
         Collection<Agency> agencies = new ArrayList<Agency>();
         agencies.add(new Agency("lametro-rail"));
         agencies.add(new Agency("lametro"));
@@ -128,7 +130,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         agencies.add(new Agency("sf-muni"));
         agencies.add(new Agency("BART"));
 
-        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
+//        RegionalizationHelper.getInstance().setActiveAgencies(agencies);
+        RegionalizationHelper.getInstance().loadPersistedAgencies();
         RegionalizationHelper.getInstance().setInstalledAgencies(agencies);
     }
 

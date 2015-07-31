@@ -1,16 +1,20 @@
 package com.remulasce.lametroapp.components.persistence;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -108,5 +112,58 @@ public class SerializedFileFieldSaver implements FieldSaver {
             e.printStackTrace();
             return emptyRequests;
         }
+    }
+
+    @Override
+    public void saveObject(String key, Object object) {
+        Log.d(TAG, "Saving "+key+" object: "+object);
+
+        FileOutputStream fos;
+        try {
+            fos = context.openFileOutput(getFilename(key), Context.MODE_PRIVATE);
+
+            ObjectOutputStream oos;
+            oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(object);
+
+            oos.close();
+        } catch (IOException e) {
+            Tracking.sendEvent("Errors", "SerializedFileFieldSaver", "Exception in saveObject");
+            e.printStackTrace();
+        }
+    }
+
+    @NonNull
+    private String getFilename(String key) {
+        return key+".ser";
+    }
+
+    @Override
+    public Object loadObject(String key) {
+        Log.d(TAG, "Loading service requests");
+
+        Collection<ServiceRequest> emptyRequests = new ArrayList<ServiceRequest>();
+        try {
+            FileInputStream fileIn = context.openFileInput(getFilename(key));
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+
+            Object o = in.readObject();
+            return o;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (OptionalDataException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "No object found for key "+key);
+
+        return null;
     }
 }

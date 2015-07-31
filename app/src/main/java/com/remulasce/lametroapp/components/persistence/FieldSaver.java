@@ -13,4 +13,8 @@ import java.util.Collection;
 public interface FieldSaver {
     public void saveServiceRequests(Collection<ServiceRequest> requests);
     public Collection<ServiceRequest> loadServiceRequests();
+
+    public void saveObject(String key, Object object);
+    public Object loadObject(String key);
+
 }

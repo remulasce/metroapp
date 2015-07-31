@@ -141,4 +141,14 @@ public class SettingFieldSaver implements FieldSaver {
         Log.d("SettingFieldSaver", "Loaded up to "+requestCount+" requests");
         return ret;
     }
+
+    @Override
+    public void saveObject(String key, Object object) {
+
+    }
+
+    @Override
+    public Object loadObject(String key) {
+        return null;
+    }
 }
