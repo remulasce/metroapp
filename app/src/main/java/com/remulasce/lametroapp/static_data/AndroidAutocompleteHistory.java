@@ -95,6 +95,7 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
             boolean stopIsInScope = true;
             for (Stop s : stops) {
+                // We later check to make sure all stops are in region, in the adapter deal
                 if (!RegionalizationHelper.getInstance().getActiveAgencies().contains(s.getAgency())) {
                     stopIsInScope = false;
                     break;
