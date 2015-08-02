@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.remulasce.lametroapp.components.omni_bar.AutocompleteEntry;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
+import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -82,10 +84,27 @@ public class AndroidAutocompleteHistory implements AutoCompleteHistoryFiller {
 
     // Make all the actual OmniAutoCompleteEntries, which are suitable to be shown directly to user.
     // But, don't make the ones that don't pass the censor. Filter. Thing.
+    // Also, don't show anything that involves a non-active region.
+    // That keeps region-switching simple in terms of history. If it's got anything out of region,
+    // just ignore it.
     private Collection<OmniAutoCompleteEntry> makeOmniEntriesFromHistory(String filter) {
         Collection<OmniAutoCompleteEntry> ret = new ArrayList<OmniAutoCompleteEntry>();
 
         for (AutocompleteEntry entry : historyEntries) {
+            Collection<Stop> stops = entry.getEntry().getStops();
+
+            boolean stopIsInScope = true;
+            for (Stop s : stops) {
+                if (!RegionalizationHelper.getInstance().getActiveAgencies().contains(s.getAgency())) {
+                    stopIsInScope = false;
+                    break;
+                }
+            }
+
+            if (!stopIsInScope) {
+                continue;
+            }
+
             if (entry.passesFilter(filter)) {
                 ret.add(entry.getEntry());
             }
