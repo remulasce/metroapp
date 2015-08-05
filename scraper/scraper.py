@@ -6,13 +6,14 @@ import sys
 
 print "Specify which agencies to scrape as command-line arguments"
 print "Or leave none to scrape all agencies"
+print "Command-line agencies won't have their proper titles scraped"
 
 agencyList = []
 
 
 for arg in sys.argv[1:]:
         print arg
-        agencyList.append(arg)
+        agencyList.append( (arg, arg) )
 
 if len(agencyList) == 0:
         print "No arguments given; scraping all available agencies"
@@ -22,11 +23,12 @@ if len(agencyList) == 0:
         root = ET.fromstring(agencyListResponse.text)
         for child in root:
                 if child.tag == "agency":
-                        agencyList.append(child.attrib['tag'])
+                        agencyList.append( (child.attrib['tag'], child.attrib['title']) )
 
 print "Scraping " + str(len(agencyList)) + " agencies"		
 		
-for agencyName in agencyList:
+for agencyParam in agencyList:
+        agencyName = agencyParam[0]
 	print "Now scraping: " + agencyName
 	searchString = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=" + agencyName
 
@@ -43,6 +45,16 @@ for agencyName in agencyList:
 
 	print "Found "+str(len(routeList))+" routes for agency "+agencyName
 	#routelist contains a list of all routes
+
+        agencyid = agencyName
+        agencytitle = agencyParam[1]
+        agencyLatMin = None;
+        agencyLatMax = None;
+        agencyLonMin = None;
+        agencyLonMax = None;
+
+        # [AGENCYID, AGENCYTITLE, LATMIN, LATMAX, LONMIN, LONMAX]
+        agencyInfo = []
 
 	# [UNIQUEID, STOPID, STOPNAME, LAT, LONG]
 	stopnamesList = []
@@ -82,10 +94,30 @@ for agencyName in agencyList:
 		routeResponse = requests.get(routeRequestString)
 	
 		print routeRequestString
-	
+
 		root = ET.fromstring(routeResponse.text)
 		for routeObject in root:
 			if routeObject.tag == "route":
+                                # Collect the bounds of each route to calculate the agency's total service area
+                                # Add .5 lon / lat to show where we could possibly want data. This is pretty far away from the agency.
+                                
+                                routeLatMin = float(routeObject.attrib["latMin"]) - .5;
+                                routeLonMin = float(routeObject.attrib["lonMin"]) - .5;
+                                routeLatMax = float(routeObject.attrib["latMax"]) + .5;
+                                routeLonMax = float(routeObject.attrib["lonMax"]) + .5;
+                                # print "Found area bounds for route "+routeObject.attrib["title"]+": "+routeLatMin+" "+routeLatMax+" "+routeLonMin+" "+routeLonMax
+                                
+                                if (agencyLatMin == None):
+                                        agencyLatMin = routeLatMin
+                                        agencyLatMax = routeLatMax
+                                        agencyLonMin = routeLonMin
+                                        agencyLonMax = routeLonMax
+                                else:
+                                        agencyLatMin = min(routeLatMin, agencyLatMin)
+                                        agencyLatMax = max(routeLatMax, agencyLatMax)
+                                        agencyLonMin = min(routeLonMin, agencyLonMin)
+                                        agencyLonMax = max(routeLonMax, agencyLonMax)
+                                
 				for child in routeObject:
 					if child.tag == "stop":
                                                 # Don't know if stoptag needs some cleaning like stopid
@@ -119,7 +151,6 @@ for agencyName in agencyList:
                                                                 stoproutesList.append( stoprouteTuple )
                                                                 #print stoproutesList
 
-
 	print "Finished scraping "+agencyName+", saving to SQL...";
 	conn = sqlite3.connect(agencyName + '.db')
 
@@ -128,6 +159,7 @@ for agencyName in agencyList:
 	c.execute('''DROP TABLE IF EXISTS stopnames''')
 	c.execute('''DROP TABLE IF EXISTS stoproutes''')
 	c.execute('''DROP TABLE IF EXISTS stopnameroutetags''')
+	c.execute('''DROP TABLE IF EXISTS agencyinfo''')
 
 	# Create table
 	c.execute('''CREATE TABLE stopnames
@@ -138,10 +170,14 @@ for agencyName in agencyList:
 	# ...Is to ignore them. Sqlite will add one for you anyway, and increment it itself.
         c.execute('''CREATE TABLE stopnameroutetags
 	             ( stopname text, route text, stoptag text)''')
+        # Overall info about the agency. Agencyid should be internal id, like lametro-rail, with the name being user-facing
+        c.execute('''CREATE TABLE agencyinfo
+                     ( agencyid text, agencyname text, latMin real, latMax real, lonMin real, lonMax real )''')
 
 	c.executemany('INSERT INTO stopnames VALUES (?,?,?,?,?)', stopnamesList)
 	c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
 	c.executemany('INSERT INTO stopnameroutetags VALUES (?,?,?)', stopnameroutetagList)
+	c.execute('INSERT INTO agencyinfo VALUES (?,?,?,?,?,?)', (agencyid, agencytitle, agencyLatMin, agencyLatMax, agencyLonMin, agencyLonMax))
 
 	# Save (commit) the changes
 	conn.commit()
