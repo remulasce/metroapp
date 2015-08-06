@@ -52,19 +52,16 @@ public class LaMetroUtil {
         if ( stop.isEmpty() ) {
             return false;
         }
-        
+
         return true;
     }
 
     public static boolean isValidRoute( Route route ) {
-        if ( route == null || !route.isValid() )
-            return false;
-        try {
-            int routeNum = Integer.valueOf(route.getString());
-            return routeNum > 0 && routeNum < 1000;
-        } catch ( Exception e ) {
+        if (route == null || !route.isValid()) {
             return false;
         }
+
+        return true;
     }
 
     public static String makePredictionsRequest( Stop stop, Route route ) {
