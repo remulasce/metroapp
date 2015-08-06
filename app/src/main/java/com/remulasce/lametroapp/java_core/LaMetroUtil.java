@@ -52,21 +52,7 @@ public class LaMetroUtil {
         if ( stop.isEmpty() ) {
             return false;
         }
-
-        try {
-            int stopNum = Integer.parseInt(stop);
-
-            if ( stopNum <= 0 ) {
-                return false;
-            }
-            /* Actually, there are some ridiculous stopids
-            if ( stopNum > 100000 ) {
-                return false;
-            }
-            */
-        } catch ( Exception e ) {
-            return false;
-        }
+        
         return true;
     }
 
