@@ -182,8 +182,13 @@ public class LaMetroUtil {
                         NodeList arrivals = prediction.getElementsByTagName("estimate");
                         for (int j = 0; j<arrivals.getLength();j++) {
                             Element arrival = (Element)arrivals.item(j);
-
-                            int minutes = Integer.parseInt(arrival.getElementsByTagName("minutes").item(0).getTextContent());
+                            int minutes;
+                            try {
+                                minutes = Integer.parseInt(arrival.getElementsByTagName("minutes").item(0).getTextContent());
+                            } catch (Exception e)
+                            {
+                                minutes = 0;
+                            }
                             seconds = minutes * 60; // BART doesn't provide seconds
                             routeAttribute = prediction.getElementsByTagName("abbreviation").item(0).getTextContent();
 
