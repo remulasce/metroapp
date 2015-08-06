@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -19,10 +20,12 @@ import android.widget.Toast;
 
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.Destination;
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
+import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -40,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.List;
 
 public class ArrivalNotifyService extends Service {
 
@@ -55,7 +59,7 @@ public class ArrivalNotifyService extends Service {
 
 	    boolean run = true;
 
-	    public int stopID;
+	    public String stopID;
         public String stopName;
 	    public String vehicleNumber;
 	    public String agency;
@@ -122,7 +126,7 @@ public class ArrivalNotifyService extends Service {
 	        Destination d = new Destination(destination);
 	        Vehicle v = new Vehicle(vehicleNumber);
 	        
-	        if (!s.isValid()) stopID = 0;
+	        if (!s.isValid()) stopID = null;
 	        if (!r.isValid()) routeName = null;
 	        if (!d.isValid()) destination = null;
 	        if (!v.isValid()) vehicleNumber = null;
@@ -199,7 +203,7 @@ public class ArrivalNotifyService extends Service {
 	        final String vehicleNumber = netTask.vehicleNumber;
 	        final String routeName = netTask.routeName;
             final String stopName = netTask.stopName;
-	        final int stopID = netTask.stopID;
+	        final String stopID = netTask.stopID;
             final int notificationTime = netTask.notificationTime;
 	        
 	        boolean vibrate = false;
@@ -355,7 +359,7 @@ public class ArrivalNotifyService extends Service {
         notificationTask = new NotificationTask();
         
 		netTask.agency			= intent.getExtras().getString("Agency");
-		netTask.stopID			= intent.getExtras().getInt("StopID");
+		netTask.stopID			= intent.getExtras().getString("StopID");
 		netTask.routeName		= intent.getExtras().getString("Route");
 		netTask.destination		= intent.getExtras().getString("Destination");
 		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber");
@@ -366,6 +370,8 @@ public class ArrivalNotifyService extends Service {
 		if (!netTask.parametersValid()) {
 		    Log.e(TAG, "Bad input into ArrivalNotify Service");
             Tracking.sendEvent(TAG, "Bad input in notify service start");
+
+			Toast.makeText(this, "Notify Service couldn't track this request",Toast.LENGTH_SHORT).show();
 
 		    return Service.START_NOT_STICKY;
 		}
@@ -407,11 +413,11 @@ public class ArrivalNotifyService extends Service {
 	    }
 	    
 	    new Handler(ArrivalNotifyService.this.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                stopForeground(true);
-            }
-        });
+			@Override
+			public void run() {
+				stopForeground(true);
+			}
+		});
 	}
 	
 	@Override
@@ -439,67 +445,58 @@ public class ArrivalNotifyService extends Service {
         public String stopName;
     }
 	StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
+
+		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml);
+
+
 		int time = -1;
 		String lastDestination = "";
-
         String stopName = "";
 
-		XmlPullParserFactory factory;
-		try {
-			factory = XmlPullParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-			XmlPullParser xpp = factory.newPullParser();
 
-			xpp.setInput(new StringReader (xml));
-			int eventType = xpp.getEventType();
-			String curDirection = "";
-			while (eventType != XmlPullParser.END_DOCUMENT) {
-				if(eventType == XmlPullParser.START_TAG) {
-					String name = xpp.getName();
-
-                    if(name.equals("predictions")) { stopName = xpp.getAttributeValue(null, "stopTitle"); }
-					if(name.equals("direction")) { curDirection = xpp.getAttributeValue(null, "title"); }
-					if(name.equals( "prediction" )) {
-
-						String timeString = xpp.getAttributeValue(null, "seconds");
-						String vehicleNum = xpp.getAttributeValue(null, "vehicle");
-
-						int predTime = Integer.valueOf(timeString); 
-						if (predTime >= 0 && ( predTime < time || time < 0) )
-						{
-							if ( ! (destination == null || destination.equals(curDirection))) {	}
-							else if ( vehicleNumber != null && !vehicleNumber.equals(vehicleNum) ) {
-								
-							}
-							else {
-								time = predTime;
-								lastDestination = curDirection;
-							}
-						}
-					}
-				}
-				eventType = xpp.next();
+		for (Arrival a : parsedArrivals) {
+			if (!a.getDirection().getString().equals(destination)) {
+				continue;
 			}
-		} catch (XmlPullParserException e1) {
-			e1.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			if (vehicleNumber != null && !vehicleNumber.isEmpty() && !vehicleNumber.equals(a.getVehicleNum().getString())) {
+				continue;
+			}
+
+			stopName = a.getStop().getStopName();
+			lastDestination = a.getDirection().getString();
+
+			if (time == -1 || a.getEstimatedArrivalSeconds() < time) {
+				time = (int) a.getEstimatedArrivalSeconds();
+			}
 		}
+
 		
 		StupidArrival ret = new StupidArrival();
 		ret.arrivalTime = time;
         ret.stopName = stopName;
 		ret.destination = lastDestination;
+
 		return ret;
 	}
 	
-	String getXMLArrivalString(int stopID, String agency, String routeName) {
+	String getXMLArrivalString(String stopID, String agency, String routeName) {
+
+		Stop tempStop = new Stop(stopID);
+		Agency tempAgency = new Agency(agency);
+		Route tempRoute = new Route(routeName);
+
+		tempStop.setAgency(tempAgency);
+
+		String URI = LaMetroUtil.makePredictionsRequest(tempStop, tempRoute);
+
+		String ret = getStringFromNet(URI);
+		return ret;
+	}
+
+	@NonNull
+	private String getStringFromNet(String URI) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
-		String URI = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a="+agency+"&stopId="+stopID;
-		if (routeName != null && !routeName.isEmpty()) {
-			URI += "&routeTag="+routeName;
-		}
 		HttpGet httpGet = new HttpGet(URI);
 		try {
 			HttpResponse response = client.execute(httpGet);
@@ -521,6 +518,7 @@ public class ArrivalNotifyService extends Service {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return builder.toString();
 	}
 

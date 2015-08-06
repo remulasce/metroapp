@@ -35,8 +35,8 @@ public class NotifyServiceManager {
 
         try {
             // TODO make sure this works
-            i.putExtra( "Agency", stop.getAgency() );
-            i.putExtra( "StopID", stop.getNum() );
+            i.putExtra( "Agency", stop.getAgency().raw );
+            i.putExtra( "StopID", stop.getString() );
 
             if ( destination != null && destination.isValid() ) {
                 i.putExtra( "Destination", destination.getString() );
