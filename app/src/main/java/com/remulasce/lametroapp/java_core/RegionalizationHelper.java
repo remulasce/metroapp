@@ -79,9 +79,30 @@ public class RegionalizationHelper {
             BasicLocation current = GlobalLocationProvider.getRetriever().getCurrentLocation();
             if (current == null) {
                 Log.w(TAG, "Couldn't automatically update current region from helper");
-                lastRegionUpdateTime = System.currentTimeMillis() + 5000;
+                lastRegionUpdateTime = System.currentTimeMillis() - 55000;
             } else {
-                // ... TODO check against Agency definitions?
+                lastRegionUpdateTime = System.currentTimeMillis();
+                Collection<Agency> newActiveAgencies = new ArrayList<Agency>();
+                for (Agency a : installedAgencies) {
+                    if (a.hasBounds()) {
+                        if (    current.latitude > a.minLatLonBound.latitude &&
+                                current.latitude < a.maxLatLonBound.latitude &&
+                                current.longitude > a.minLatLonBound.longitude &&
+                                current.longitude < a.maxLatLonBound.longitude ) {
+                            newActiveAgencies.add(a);
+                        } else {
+                            // This is where agencies which have bounds, but aren't in them, are not added.
+                            // As you can see, it's empty.
+                        }
+                    } else {
+                        // TODO Don't auto-add agencies with no bounds. This is temp while we don't have boundary lookup.
+                        //Log.w(TAG, "RegionalizationHelper can't regionalize an agency with no bounds: "+a);
+
+                        newActiveAgencies.add(a);
+                    }
+                }
+
+                setActiveAgencies(newActiveAgencies);
             }
 
             Log.d(TAG, "RegionalizationHelper pulled current location: "+current);

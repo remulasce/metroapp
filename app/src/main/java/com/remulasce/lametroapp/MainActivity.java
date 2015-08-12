@@ -40,6 +40,7 @@ import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
@@ -124,11 +125,14 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         RegionalizationHelper.setPersistence(getFieldSaver());
 
         Collection<Agency> agencies = new ArrayList<Agency>();
-        agencies.add(new Agency("lametro-rail"));
-        agencies.add(new Agency("lametro"));
-        agencies.add(new Agency("actransit"));
-        agencies.add(new Agency("sf-muni"));
-        agencies.add(new Agency("BART"));
+        agencies.add(new Agency("lametro-rail", "Los Angeles Metro Rail",
+                new BasicLocation(33.20685, -119.36091), new BasicLocation(34.8261599, -117.30943)));
+        agencies.add(new Agency("lametro", "Los Angeles Metro Bus",
+                new BasicLocation(33.20685, -119.36091), new BasicLocation(34.8261599, -117.30943)));
+        agencies.add(new Agency("actransit", "AC Transit", null, null));
+        agencies.add(new Agency("sf-muni", "SF Muni",
+                new BasicLocation(37.2057599, -123.03867), new BasicLocation(38.3364399, -121.86545)));
+        agencies.add(new Agency("BART", "BART", null, null));
 
         RegionalizationHelper.getInstance().setInstalledAgencies(agencies);
         RegionalizationHelper.getInstance().loadPersistedAgencies();

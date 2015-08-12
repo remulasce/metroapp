@@ -1,26 +1,59 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
+import com.remulasce.lametroapp.java_core.analytics.Log;
+
 import java.io.Serializable;
 
 /**
  * Created by Remulasce on 5/4/2015.
  *
- * An Agency is exactly what you'd give NexTrip in the Agency field.
- * One Agency per Stop (StopID).
+ * One Agency per seperate network-referenced transit provider. (this.raw)
+ * eg. lametro, lametro-rail, bart, sf-muni
  *
- * Note: the Los Angeles MTA has 2 agencies: lametro and lametro-rail.
- * One is busses, the other trains.
+ * We support all Nextrip agencies by nextrip agency, as well as hardcoded BART gtfs data.
+ *
+ * LaMetroUtils will figure out how to get a list of arrivals for you given your agency. So you shouldn't
+ *   have to deal with it here.
+ *
+ * The agency boundary is now used for automatic region-switching.
+ * Display name is supposed to be more publicly-showable. Don't assume it's short.
+ *
  */
 public class Agency implements Serializable{
     public String raw = "";
+    public String displayName = "";
+    public BasicLocation minLatLonBound;
+    public BasicLocation maxLatLonBound;
 
-    public Agency(String raw) {
+    public Agency(String raw, String displayName, BasicLocation minBound, BasicLocation maxBounds ) {
         this.raw = raw;
+        this.displayName = displayName;
+        this.minLatLonBound = minBound;
+        this.maxLatLonBound = maxBounds;
     }
 
-    // Quick and dirty check if we've ever actually been set.
+
+    // Checks if we have a raw string, a public-display name, and boundary locations.
     public boolean isValid() {
-        return raw != null && !raw.isEmpty();
+        if (isNameBad()) { return false; }
+        if (isBoundsBad()) { Log.w("Agency", "Agency is missing its bounds."); }
+
+        return true;
+    }
+
+    private boolean isBoundsBad() {
+        return minLatLonBound == null || maxLatLonBound == null;
+    }
+
+    public boolean hasBounds() {
+        return !isBoundsBad();
+    }
+
+    private boolean isNameBad() {
+        if (raw == null || raw.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -482,7 +482,7 @@ public class ArrivalNotifyService extends Service {
 	String getXMLArrivalString(String stopID, String agency, String routeName) {
 
 		Stop tempStop = new Stop(stopID);
-		Agency tempAgency = new Agency(agency);
+		Agency tempAgency = new Agency(agency, agency, null, null);
 		Route tempRoute = new Route(routeName);
 
 		tempStop.setAgency(tempAgency);
