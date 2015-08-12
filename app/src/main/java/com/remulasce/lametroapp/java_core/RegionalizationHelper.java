@@ -3,6 +3,9 @@ package com.remulasce.lametroapp.java_core;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
+import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
+import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -23,6 +26,10 @@ public class RegionalizationHelper {
 
     // All agencies that should be queried on input
     private Collection<Agency> activeAgencies = new ArrayList<Agency>();
+
+    // Help us figure out when to update the active agencies. Should be like, barely ever.
+    // Do we even want to support hot-swapping?
+    private long lastRegionUpdateTime = 0;
 
     private RegionalizationHelper() {};
     public void loadPersistedAgencies() {
@@ -67,6 +74,20 @@ public class RegionalizationHelper {
     public void setInstalledAgencies(Collection<Agency> agencies) { this.installedAgencies = agencies; }
 
     public Collection<Agency> getActiveAgencies() {
+
+        if (System.currentTimeMillis() > lastRegionUpdateTime + 60000) {
+            BasicLocation current = GlobalLocationProvider.getRetriever().getCurrentLocation();
+            if (current == null) {
+                Log.w(TAG, "Couldn't automatically update current region from helper");
+                lastRegionUpdateTime = System.currentTimeMillis() + 5000;
+            } else {
+                // ... TODO check against Agency definitions?
+            }
+
+            Log.d(TAG, "RegionalizationHelper pulled current location: "+current);
+        }
+
+
         return activeAgencies;
     }
     public void setActiveAgencies(Collection<Agency> agencies) {

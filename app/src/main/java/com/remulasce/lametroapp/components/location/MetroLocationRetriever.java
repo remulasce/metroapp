@@ -151,4 +151,12 @@ public class MetroLocationRetriever implements LocationRetriever {
     public double getCurrentDistanceToLocation(BasicLocation location) {
         return getDistanceTo(location);
     }
+
+    @Override
+    public BasicLocation getCurrentLocation() {
+        if (getBestLocation() == null) {
+            return null;
+        }
+        return new BasicLocation(getBestLocation().getLatitude(), getBestLocation().getLongitude());
+    }
 }

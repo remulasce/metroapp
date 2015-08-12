@@ -44,7 +44,6 @@ public class CachedLocationRetriever implements LocationRetriever {
     private GoogleApiClient mGoogleApiClient;
     private Location lastRetrievedLocation;
 
-    private BasicLocation curLocation;
     private long lastCacheUpdate;
     ConcurrentHashMap<BasicLocation, CachedProximity> cache = new ConcurrentHashMap<BasicLocation, CachedProximity>();
 
@@ -222,5 +221,16 @@ public class CachedLocationRetriever implements LocationRetriever {
     @Override
     public double getCurrentDistanceToLocation(BasicLocation location) {
         return getCachedDistanceTo(location);
+    }
+
+    // This just returns the last / best location we've retrieved.
+    // Might not actually exist, you should check.
+    @Override
+    public BasicLocation getCurrentLocation() {
+        if (lastRetrievedLocation == null) {
+            Log.d(TAG, "Returning possibly bad (null) cached location");
+            return null;
+        }
+        return new BasicLocation(lastRetrievedLocation.getLatitude(), lastRetrievedLocation.getLongitude());
     }
 }

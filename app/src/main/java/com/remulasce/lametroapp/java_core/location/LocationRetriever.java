@@ -13,4 +13,5 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 public interface LocationRetriever {
     public double getCurrentDistanceToStop(Stop stop);
     public double getCurrentDistanceToLocation(BasicLocation location);
+    public BasicLocation getCurrentLocation();
 }
