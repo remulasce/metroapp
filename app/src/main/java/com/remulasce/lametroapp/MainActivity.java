@@ -365,13 +365,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         tryShowDropdown();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        if (hasFocus) {
-//        tryShowDropdown();
-        }
-    }
-
     // Ugly hack to show history suggestions as soon as app loads
     // Except, Android won't actually tell you when it's ok with dialogs showing
     // So instead we check every xms until we actually have a window.
