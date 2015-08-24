@@ -362,17 +362,24 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         Tracking.setScreenName("Main Screen");
         locationService.startLocating(this);
 
+        tryShowDropdown();
     }
 
-    // Ugly hack to show history suggestions as soon as ap loads
-    // Except, Android won't actually tell you when it's ok with dialogs showing
-    // So instead we check every xms until we actually have a window.
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+//        tryShowDropdown();
+        }
+    }
+
+    // Ugly hack to show history suggestions as soon as app loads
+    // Except, Android won't actually tell you when it's ok with dialogs showing
+    // So instead we check every xms until we actually have a window.
+    private void tryShowDropdown() {
         // The whole thing doesn't really work on Gingerbread.
         // Not that anyone actually still uses Gingerbread.
         // Check if we're in the about pane, cause that's whack
-        if (hasFocus && requestHandler.getRequests().size() == 0 && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+        if (requestHandler.getRequests().size() == 0 && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
             Handler h = new Handler(Looper.getMainLooper());
             h.postDelayed(showDropdownOnStart, 100);
         }
