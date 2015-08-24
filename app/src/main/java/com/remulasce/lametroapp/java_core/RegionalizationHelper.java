@@ -14,8 +14,10 @@ import java.util.Collection;
 public class RegionalizationHelper {
     private static final RegionalizationHelper instance = new RegionalizationHelper();
     public static final String ACTIVE_REGIONS = "active_regions";
+    public static final String AUTODETECT_REGIONS = "autodetect_regions";
     private static FieldSaver persistence;
     private static final String TAG = "RegionalizationHelper";
+
 
     public static void setPersistence(FieldSaver persistence) {
         RegionalizationHelper.persistence = persistence;
@@ -30,6 +32,7 @@ public class RegionalizationHelper {
     // Help us figure out when to update the active agencies. Should be like, barely ever.
     // Do we even want to support hot-swapping?
     private long lastRegionUpdateTime = 0;
+    private boolean autoDetect = true;
 
     private RegionalizationHelper() {};
     public void loadPersistedAgencies() {
@@ -44,8 +47,17 @@ public class RegionalizationHelper {
             activeAgencies.addAll(installedAgencies);
         } else {
             // We can try to load from persistence
-            Object persistedDeal = persistence.loadObject(ACTIVE_REGIONS);
+            Object useAutoDetect = persistence.loadObject(AUTODETECT_REGIONS);
+            if (useAutoDetect != null && useAutoDetect instanceof Boolean) {
+                try {
+                    autoDetect = (Boolean) useAutoDetect;
+                } catch (Exception e) {
+                    Log.w(TAG, "Error loading persisted file, dropping it" );
+                    persistence.saveObject(AUTODETECT_REGIONS, null);
+                }
+            }
 
+            Object persistedDeal = persistence.loadObject(ACTIVE_REGIONS);
             if (persistedDeal != null && persistedDeal instanceof Collection) {
                 try {
                     activeAgencies = (Collection<Agency>) persistedDeal;
@@ -69,45 +81,61 @@ public class RegionalizationHelper {
         return instance;
     }
 
+    public void setAutoDetect(boolean autoDetect) {
+        this.autoDetect = autoDetect;
+
+        persistence.saveObject(AUTODETECT_REGIONS, autoDetect);
+
+        if (autoDetect) {
+            autodetectRegions();
+        }
+    }
+
+    public boolean getAutoDetect() {
+        return this.autoDetect;
+    }
 
     public Collection<Agency> getInstalledAgencies() { return installedAgencies; }
     public void setInstalledAgencies(Collection<Agency> agencies) { this.installedAgencies = agencies; }
 
     public Collection<Agency> getActiveAgencies() {
-
-        if (System.currentTimeMillis() > lastRegionUpdateTime + 60000) {
-            BasicLocation current = GlobalLocationProvider.getRetriever().getCurrentLocation();
-            if (current == null) {
-                Log.w(TAG, "Couldn't automatically update current region from helper");
-                lastRegionUpdateTime = System.currentTimeMillis() - 55000;
-            } else {
-                lastRegionUpdateTime = System.currentTimeMillis();
-                Collection<Agency> newActiveAgencies = new ArrayList<Agency>();
-                for (Agency a : installedAgencies) {
-                    if (a.hasBounds()) {
-                        if (    current.latitude > a.minLatLonBound.latitude &&
-                                current.latitude < a.maxLatLonBound.latitude &&
-                                current.longitude > a.minLatLonBound.longitude &&
-                                current.longitude < a.maxLatLonBound.longitude ) {
-                            newActiveAgencies.add(a);
-                        } else {
-                            // This is where agencies which have bounds, but aren't in them, are not added.
-                            // As you can see, it's empty.
-                        }
-                    } else {
-                        Log.w(TAG, "RegionalizationHelper can't regionalize an agency with no bounds: "+a);
-                    }
-                }
-
-                setActiveAgencies(newActiveAgencies);
-            }
-
-            Log.d(TAG, "RegionalizationHelper pulled current location: "+current);
+        if (autoDetect && System.currentTimeMillis() > lastRegionUpdateTime + 60000) {
+            autodetectRegions();
         }
-
 
         return activeAgencies;
     }
+
+    private void autodetectRegions() {
+        BasicLocation current = GlobalLocationProvider.getRetriever().getCurrentLocation();
+        if (current == null) {
+            Log.w(TAG, "Couldn't automatically update current region from helper");
+            lastRegionUpdateTime = System.currentTimeMillis() - 55000;
+        } else {
+            lastRegionUpdateTime = System.currentTimeMillis();
+            Collection<Agency> newActiveAgencies = new ArrayList<Agency>();
+            for (Agency a : installedAgencies) {
+                if (a.hasBounds()) {
+                    if (    current.latitude > a.minLatLonBound.latitude &&
+                            current.latitude < a.maxLatLonBound.latitude &&
+                            current.longitude > a.minLatLonBound.longitude &&
+                            current.longitude < a.maxLatLonBound.longitude ) {
+                        newActiveAgencies.add(a);
+                    } else {
+                        // This is where agencies which have bounds, but aren't in them, are not added.
+                        // As you can see, it's empty.
+                    }
+                } else {
+                    Log.w(TAG, "RegionalizationHelper can't regionalize an agency with no bounds: "+a);
+                }
+            }
+
+            setActiveAgencies(newActiveAgencies);
+        }
+
+        Log.d(TAG, "RegionalizationHelper pulled current location: "+current);
+    }
+
     public void setActiveAgencies(Collection<Agency> agencies) {
         this.activeAgencies = agencies;
 

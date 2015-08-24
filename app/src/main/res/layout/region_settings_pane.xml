@@ -56,4 +56,10 @@
 
     </ScrollView>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Autodetect Regions"
+        android:id="@+id/region_settings_pane_autodetect_checkbox" />
+
 </LinearLayout>

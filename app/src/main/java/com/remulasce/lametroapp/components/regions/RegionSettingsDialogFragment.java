@@ -29,6 +29,7 @@ import java.util.Collection;
 public class RegionSettingsDialogFragment extends DialogFragment {
 
     private ViewGroup checkBoxList;
+    private CheckBox autodetectCheckBox;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -36,13 +37,29 @@ public class RegionSettingsDialogFragment extends DialogFragment {
         View view = View.inflate(getActivity(), R.layout.region_settings_pane, null);
 
         checkBoxList = (ViewGroup) view.findViewById(R.id.region_settings_pane_agencies_layout);
+        autodetectCheckBox = (CheckBox) view.findViewById(R.id.region_settings_pane_autodetect_checkbox);
 
         addAgencyItems();
+        autodetectCheckBox.setChecked(RegionalizationHelper.getInstance().getAutoDetect());
+        autodetectCheckBox.setOnCheckedChangeListener(checkedChangeListener);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.settings_dialog_title))
                 .setView(view).create();
     }
+
+    CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            RegionalizationHelper.getInstance().setAutoDetect(b);
+
+            // We don't want to deal with changing all the checkboxes when autodetect runs
+            // So just close the window and let the user open again if s/he wants.
+            if (b) {
+                dismiss();
+            }
+        }
+    };
 
     private void addAgencyItems() {
         checkBoxList.removeAllViews();
