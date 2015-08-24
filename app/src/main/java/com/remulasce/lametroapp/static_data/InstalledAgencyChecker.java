@@ -44,13 +44,18 @@ public class InstalledAgencyChecker {
 
                 // We need to properly open the details for each db file
                 Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
-                Log.d(TAG, "Found agency for "+fileList[i]+", "+a);
+                Log.d(TAG, "Found agency for " + fileList[i] + ", " + a);
+
+                if (a != null) {
+                    ret.add(a);
+                }
             }
         } catch (IOException e) {
             Log.w(TAG, "No databases/ asset folder present");
             return null;
         }
 
-        return null;
+        Log.i(TAG, "Found installed agencies: "+ret);
+        return ret;
     }
 }

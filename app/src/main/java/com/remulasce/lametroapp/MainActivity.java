@@ -126,19 +126,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         RegionalizationHelper.setPersistence(getFieldSaver());
 
         InstalledAgencyChecker checker = new InstalledAgencyChecker(this);
-        checker.getInstalledAgencies();
+        Collection<Agency> installedAgencies = checker.getInstalledAgencies();
 
-        Collection<Agency> agencies = new ArrayList<Agency>();
-        agencies.add(new Agency("lametro-rail", "Los Angeles Metro Rail",
-                new BasicLocation(33.20685, -119.36091), new BasicLocation(34.8261599, -117.30943)));
-        agencies.add(new Agency("lametro", "Los Angeles Metro Bus",
-                new BasicLocation(33.20685, -119.36091), new BasicLocation(34.8261599, -117.30943)));
-        agencies.add(new Agency("actransit", "AC Transit", null, null));
-        agencies.add(new Agency("sf-muni", "SF Muni",
-                new BasicLocation(37.2057599, -123.03867), new BasicLocation(38.3364399, -121.86545)));
-        agencies.add(new Agency("BART", "BART", null, null));
-
-        RegionalizationHelper.getInstance().setInstalledAgencies(agencies);
+        RegionalizationHelper.getInstance().setInstalledAgencies(installedAgencies);
         RegionalizationHelper.getInstance().loadPersistedAgencies();
     }
 
