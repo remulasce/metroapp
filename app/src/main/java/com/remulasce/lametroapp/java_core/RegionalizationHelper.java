@@ -95,10 +95,7 @@ public class RegionalizationHelper {
                             // As you can see, it's empty.
                         }
                     } else {
-                        // TODO Don't auto-add agencies with no bounds. This is temp while we don't have boundary lookup.
-                        //Log.w(TAG, "RegionalizationHelper can't regionalize an agency with no bounds: "+a);
-
-                        newActiveAgencies.add(a);
+                        Log.w(TAG, "RegionalizationHelper can't regionalize an agency with no bounds: "+a);
                     }
                 }
 
