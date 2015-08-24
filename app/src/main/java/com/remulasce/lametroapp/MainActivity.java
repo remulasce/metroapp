@@ -55,6 +55,7 @@ import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
 import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
+import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
@@ -123,6 +124,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private void setupRegionalization() {
         RegionalizationHelper.setPersistence(getFieldSaver());
+
+        InstalledAgencyChecker checker = new InstalledAgencyChecker(this);
+        checker.getInstalledAgencies();
 
         Collection<Agency> agencies = new ArrayList<Agency>();
         agencies.add(new Agency("lametro-rail", "Los Angeles Metro Rail",
