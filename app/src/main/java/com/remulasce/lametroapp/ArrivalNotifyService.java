@@ -87,7 +87,11 @@ public class ArrivalNotifyService extends Service {
 
 				String response = getXMLArrivalString(stopID, agency, routeName);				
 				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
-				int seconds = arrival.arrivalTime;
+				
+				int seconds = -1;
+				if (arrival != null) {
+					seconds = arrival.arrivalTime;
+				}
 
 				if (seconds != -1) {
 				    isValid = true;
@@ -448,6 +452,9 @@ public class ArrivalNotifyService extends Service {
 
 		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml);
 
+		if (parsedArrivals == null) {
+			return null;
+		}
 
 		int time = -1;
 		String lastDestination = "";

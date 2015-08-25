@@ -64,9 +64,9 @@ public class RegionSettingsDialogFragment extends DialogFragment {
     private void addAgencyItems() {
         checkBoxList.removeAllViews();
 
-        for(Agency a : RegionalizationHelper.getInstance().getInstalledAgencies()) {
+        for( Agency a : RegionalizationHelper.getInstance().getInstalledAgencies()) {
             CheckBox agencyItem = new CheckBox(getActivity());
-            agencyItem.setText(a.raw);
+            agencyItem.setText(a.displayName);
             agencyItem.setTag(a);
 
             if (RegionalizationHelper.getInstance().getActiveAgencies().contains(a)) {
