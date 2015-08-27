@@ -17,7 +17,6 @@
 #import "Stop.h"
 #import "Arrival.h"
 
-
 #import "java/util/ArrayList.h"
 #import "java/util/List.h"
 

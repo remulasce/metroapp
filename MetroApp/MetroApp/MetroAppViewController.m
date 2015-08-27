@@ -81,9 +81,12 @@
     
     // Set regionalization
     
+    
     ComRemulasceLametroappJava_coreRegionalizationHelper *regionalizationHelper;
     regionalizationHelper = [ComRemulasceLametroappJava_coreRegionalizationHelper getInstance];
-    regionalizationHelper->agencyName_ = @"actransit";
+    //OLD regionalizationHelper->agencyName_ = @"actransit";
+    
+    
     
     // Final UI tweaks
     
