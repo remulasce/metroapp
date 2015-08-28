@@ -10,15 +10,17 @@
 #import <sqlite3.h>
 
 #import "StopNameInfo.h"
+#import "Agency.h"
 
 @interface StopNameDatabase : NSObject {
     sqlite3 *_database;
+    ComRemulasceLametroappJava_coreBasic_typesAgency *_agency;
 }
 
 + (StopNameDatabase*)database;
 - (NSArray *)getStopsByName:(NSString*)stopNameFragment;
 - (NSArray *)getStopsByNameFragment:(NSString*)stopNameFragment;
--(NSArray*)getStopsByLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
--(StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
+- (NSArray*)getStopsByLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
+- (StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
 
 @end

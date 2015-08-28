@@ -68,7 +68,7 @@
 
 - (jfloat)getPriority {
   jfloat proximity = 0;
-  jdouble distance = [self getCurrentDistanceToStop];
+  jdouble distance = 1;
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .2f * (jfloat) (1 - (distance / 32000)));
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .8f * (jfloat) (1 - (distance / 3200)));
   proximity = JavaLangMath_maxWithFloat_withFloat_(proximity, 0);

@@ -25,11 +25,11 @@ static StopNameDatabase *m_database;
     if ((self = [super init])) {
 #if REGIONLOSANGELES
         NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"StopNamesLA"
-                                                             ofType:@"sqlite3"];
+                                                             ofType:@"db"];
 #endif
 #if REGIONSANFRANCISCO
         NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"actransit"
-                                                             ofType:@"sqlite3"];
+                                                             ofType:@"db"];
 #endif
         
         if (sqlite3_open([sqLiteDb UTF8String], &_database) != SQLITE_OK) {
@@ -77,8 +77,10 @@ static StopNameDatabase *m_database;
 
 -(NSArray *)getStopsByNameFragment:(NSString*)stopNameFragment
 {
+    NSString *queryString = [stopNameFragment stringByReplacingOccurrencesOfString:@" " withString:@"%%"];
+    
     NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSString *query = [NSString stringWithFormat:@"SELECT * FROM stopnames WHERE stopname LIKE '%%%@%%'",stopNameFragment];
+    NSString *query = [NSString stringWithFormat:@"SELECT * FROM stopnames WHERE stopname LIKE '%%%@%%'",queryString];
     
     NSLog(@"%@",query);
     

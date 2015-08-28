@@ -51,7 +51,10 @@
     StopNameInfo *testStops = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
                                                                          Tol:.01];
+    
+    StopNameInfo *testStops2 = [[[StopNameDatabase database] getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
     NSLog(@"Search Test: %@",[testStops stopName]);
+    NSLog(@"Search Test 2: %@",[testStops2 stopName]);
 
     
     // TEST THE DATABASE
@@ -65,6 +68,8 @@
     // Search Bar Setup
     searchState = 0;
     searchResultsAvailable = NO;
+    
+    [self.searchContainerView setHidden:TRUE];
     
     // Update MultiArrivalView table with timer
     queue = [NSOperationQueue new];
@@ -88,10 +93,20 @@
     
     
     
-    // Final UI tweaks
+    //########## Final UI tweaks
     
     self.serviceRequestView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.multiArrivalTripView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
+    
+    // Setup Andoid Log Stuff
+    iosLogger = [[ComRemulasceLametroappJava_coreAnalyticsIosLog alloc] init];
+    
+    [ComRemulasceLametroappJava_coreAnalyticsLog SetLoggerWithComRemulasceLametroappJava_coreAnalyticsLog:iosLogger];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(printAndroidLogs) userInfo:nil repeats:YES];
+    
+    [ComRemulasceLametroappJava_coreAnalyticsIosLog dWithNSString:@"TEST" withNSString:@"Test Android Logging."];
 }
 
 #pragma mark - Table View Code
@@ -114,6 +129,7 @@
         {
             return 0;
         } else {
+            // moving hide/show of searchbar here to try to avoid annoying UI things if it's not populated
             return [searchResults count];
         }
     }
@@ -423,7 +439,7 @@
     return nil;
 }
 
-#pragma mark - MultiArrivalView
+#pragma mark - Timer Callback
 
 - (void)updateMultiArrivalView {
     NSLog(@"Timer ticked!");
@@ -436,19 +452,58 @@
     [self.multiArrivalTripView reloadData];
 }
 
+- (void)printAndroidLogs {
+    NSLog(@"----------ANDROID LOGS----------");
+    NSString *logToDate = [iosLogger getLogToDate];
+    NSLog(logToDate);
+    NSLog(@"--------------------------------");
+}
+
+
 #pragma mark - Search Bar Code
 
 - (IBAction)enterSearchState:(id)sender
 {
     searchState = 1;
-    [self.searchView setHidden:false];
+    //[self updateSearchView];
+    [[self serviceRequestView] setUserInteractionEnabled:FALSE];
+    [[self multiArrivalTripView] setUserInteractionEnabled:FALSE];
+    
+    CGRect searchViewFrame;
+    searchViewFrame.size.width = self.view.frame.size.width - 32;
+    searchViewFrame.size.height = 300;
+    searchViewFrame.origin.x = 16;
+    searchViewFrame.origin.y = 32;
+    
+    //self.searchView.frame = searchViewFrame;
+    
+    [self.searchContainerView setHidden:false];
+    [self updateSearchView];
 }
 
 - (IBAction)exitSearchState:(id)sender
 {
     searchState = 0;
-    [self.searchView setHidden:true];
+    
     [self.searchText resignFirstResponder];
+    [self.searchText setText:@""];
+    
+    [[self serviceRequestView] setUserInteractionEnabled:TRUE];
+    [[self multiArrivalTripView] setUserInteractionEnabled:TRUE];
+    [self.searchContainerView setHidden:true];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if (searchState == true) {
+        for (UITouch *touch in touches) {
+            CGPoint touchPoint = [touch locationInView:self.view];
+            if (!([[self searchView] pointInside:touchPoint withEvent:nil] ||
+                  [[self searchText] pointInside:touchPoint withEvent:nil])) {
+                [self exitSearchState:nil];
+            }
+        }
+    }
 }
 
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
@@ -498,10 +553,27 @@
         } else {
             searchResultsAvailable = NO;
         }
-        [self.searchView reloadData];
     }
     
+    [self updateSearchView];
+    
     return YES;
+}
+
+- (void) updateSearchView
+{
+    
+    //Add Dropshadow
+    
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.searchContainerView.bounds];
+    self.searchContainerView.layer.masksToBounds = NO;
+    self.searchContainerView.layer.shadowColor = [UIColor grayColor].CGColor;
+    self.searchContainerView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    self.searchContainerView.layer.shadowOpacity = 0.5f;
+    self.searchContainerView.layer.shadowPath = shadowPath.CGPath;
+    
+    [self.searchView reloadData];
+    [self.searchContainerView setNeedsDisplay];
 }
 
 #pragma mark - Other program logic

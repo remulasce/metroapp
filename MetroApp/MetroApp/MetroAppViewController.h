@@ -26,6 +26,9 @@
 
 #import "MetroAppLocationManager.h"
 
+#import "Log.h"
+#import "IosLog.h"
+
 @interface MetroAppViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
     ComRemulasceLametroappJava_coreServiceRequestHandler *requestHandler;
@@ -51,11 +54,15 @@
     ReminderViewController* reminderViewController;
     
     MetroAppLocationManager* metroAppLocationManager;
+    
+    ComRemulasceLametroappJava_coreAnalyticsIosLog *iosLogger;
 }
 
 @property (nonatomic, weak) IBOutlet UITableView* serviceRequestView;
 @property (nonatomic, weak) IBOutlet UITableView* multiArrivalTripView;
-@property (nonatomic, weak) IBOutlet UITableView* searchView;
+
+@property (nonatomic, strong) IBOutlet UIView* searchContainerView;
+@property (nonatomic, strong) IBOutlet UITableView* searchView;
 
 @property (nonatomic, weak) IBOutlet UIView* windowView;
 

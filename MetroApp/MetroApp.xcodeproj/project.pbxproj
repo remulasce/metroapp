@@ -12,6 +12,73 @@
 		310448E31AD6FADF00DCA091 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 310448E21AD6FADF00DCA091 /* MainInterface.storyboard */; };
 		310448E61AD6FADF00DCA091 /* MetroAppWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 310448D81AD6FADF00DCA091 /* MetroAppWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 310A04971ACB323C000E1B8E /* StopNameDatabase.m */; };
+		311E05F91B5F83E9002CBBFB /* Agency.java in Sources */ = {isa = PBXBuildFile; fileRef = 311E05F81B5F83E9002CBBFB /* Agency.java */; };
+		311E06021B619938002CBBFB /* SearchBox.xib in Resources */ = {isa = PBXBuildFile; fileRef = 311E06011B619938002CBBFB /* SearchBox.xib */; };
+		311E06081B61A891002CBBFB /* IosLog.java in Sources */ = {isa = PBXBuildFile; fileRef = 311E06071B61A891002CBBFB /* IosLog.java */; };
+		311EA2AB1B8FD81600DC5142 /* actransit.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2731B8FD81600DC5142 /* actransit.db */; };
+		311EA2AC1B8FD81600DC5142 /* art.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2741B8FD81600DC5142 /* art.db */; };
+		311EA2AD1B8FD81600DC5142 /* bronx.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2751B8FD81600DC5142 /* bronx.db */; };
+		311EA2AE1B8FD81600DC5142 /* brooklyn.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2761B8FD81600DC5142 /* brooklyn.db */; };
+		311EA2AF1B8FD81600DC5142 /* camarillo.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2771B8FD81600DC5142 /* camarillo.db */; };
+		311EA2B01B8FD81600DC5142 /* ccny.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2781B8FD81600DC5142 /* ccny.db */; };
+		311EA2B11B8FD81600DC5142 /* ccrta.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2791B8FD81600DC5142 /* ccrta.db */; };
+		311EA2B21B8FD81600DC5142 /* chapel-hill.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27A1B8FD81600DC5142 /* chapel-hill.db */; };
+		311EA2B31B8FD81600DC5142 /* charles-river.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27B1B8FD81600DC5142 /* charles-river.db */; };
+		311EA2B41B8FD81600DC5142 /* charm-city.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27C1B8FD81600DC5142 /* charm-city.db */; };
+		311EA2B51B8FD81600DC5142 /* collegetown.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27D1B8FD81600DC5142 /* collegetown.db */; };
+		311EA2B61B8FD81600DC5142 /* cyride.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27E1B8FD81600DC5142 /* cyride.db */; };
+		311EA2B71B8FD81600DC5142 /* da.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA27F1B8FD81600DC5142 /* da.db */; };
+		311EA2B81B8FD81600DC5142 /* dc-circulator.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2801B8FD81600DC5142 /* dc-circulator.db */; };
+		311EA2B91B8FD81600DC5142 /* dumbarton.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2811B8FD81600DC5142 /* dumbarton.db */; };
+		311EA2BA1B8FD81600DC5142 /* ecu.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2821B8FD81600DC5142 /* ecu.db */; };
+		311EA2BB1B8FD81600DC5142 /* emery.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2831B8FD81600DC5142 /* emery.db */; };
+		311EA2BC1B8FD81600DC5142 /* fairfax.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2841B8FD81600DC5142 /* fairfax.db */; };
+		311EA2BD1B8FD81600DC5142 /* foothill.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2851B8FD81600DC5142 /* foothill.db */; };
+		311EA2BE1B8FD81600DC5142 /* ft-worth.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2861B8FD81600DC5142 /* ft-worth.db */; };
+		311EA2BF1B8FD81600DC5142 /* georgia-college.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2871B8FD81600DC5142 /* georgia-college.db */; };
+		311EA2C01B8FD81600DC5142 /* glendale.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2881B8FD81600DC5142 /* glendale.db */; };
+		311EA2C11B8FD81600DC5142 /* gmu.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2891B8FD81600DC5142 /* gmu.db */; };
+		311EA2C21B8FD81600DC5142 /* howard.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28A1B8FD81600DC5142 /* howard.db */; };
+		311EA2C31B8FD81600DC5142 /* indianapolis-air.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28B1B8FD81600DC5142 /* indianapolis-air.db */; };
+		311EA2C41B8FD81600DC5142 /* jhu-apl.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28C1B8FD81600DC5142 /* jhu-apl.db */; };
+		311EA2C51B8FD81600DC5142 /* jta.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28D1B8FD81600DC5142 /* jta.db */; };
+		311EA2C61B8FD81600DC5142 /* jtafla.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28E1B8FD81600DC5142 /* jtafla.db */; };
+		311EA2C71B8FD81600DC5142 /* lametro-rail.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA28F1B8FD81600DC5142 /* lametro-rail.db */; };
+		311EA2C81B8FD81600DC5142 /* lametro.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2901B8FD81600DC5142 /* lametro.db */; };
+		311EA2C91B8FD81600DC5142 /* lasell.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2911B8FD81600DC5142 /* lasell.db */; };
+		311EA2CA1B8FD81600DC5142 /* mbta.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2921B8FD81600DC5142 /* mbta.db */; };
+		311EA2CB1B8FD81600DC5142 /* mit.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2931B8FD81600DC5142 /* mit.db */; };
+		311EA2CC1B8FD81600DC5142 /* moorpark.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2941B8FD81600DC5142 /* moorpark.db */; };
+		311EA2CD1B8FD81600DC5142 /* nctd.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2951B8FD81600DC5142 /* nctd.db */; };
+		311EA2CE1B8FD81600DC5142 /* nova-se.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2961B8FD81600DC5142 /* nova-se.db */; };
+		311EA2CF1B8FD81600DC5142 /* omnitrans.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2971B8FD81600DC5142 /* omnitrans.db */; };
+		311EA2D01B8FD81600DC5142 /* oxford-ms.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2981B8FD81600DC5142 /* oxford-ms.db */; };
+		311EA2D11B8FD81600DC5142 /* pgc.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2991B8FD81600DC5142 /* pgc.db */; };
+		311EA2D21B8FD81600DC5142 /* portland-sc.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29A1B8FD81600DC5142 /* portland-sc.db */; };
+		311EA2D31B8FD81600DC5142 /* pvpta.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29B1B8FD81600DC5142 /* pvpta.db */; };
+		311EA2D41B8FD81600DC5142 /* radford.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29C1B8FD81600DC5142 /* radford.db */; };
+		311EA2D51B8FD81600DC5142 /* reno.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29D1B8FD81600DC5142 /* reno.db */; };
+		311EA2D61B8FD81600DC5142 /* roosevelt.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29E1B8FD81600DC5142 /* roosevelt.db */; };
+		311EA2D71B8FD81600DC5142 /* rutgers-newark.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA29F1B8FD81600DC5142 /* rutgers-newark.db */; };
+		311EA2D81B8FD81600DC5142 /* rutgers.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A01B8FD81600DC5142 /* rutgers.db */; };
+		311EA2D91B8FD81600DC5142 /* sf-mission-bay.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A11B8FD81600DC5142 /* sf-mission-bay.db */; };
+		311EA2DA1B8FD81600DC5142 /* sf-muni.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A21B8FD81600DC5142 /* sf-muni.db */; };
+		311EA2DB1B8FD81600DC5142 /* simi-valley.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A31B8FD81600DC5142 /* simi-valley.db */; };
+		311EA2DC1B8FD81600DC5142 /* south-coast.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A41B8FD81600DC5142 /* south-coast.db */; };
+		311EA2DD1B8FD81600DC5142 /* sria.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A51B8FD81600DC5142 /* sria.db */; };
+		311EA2DE1B8FD81600DC5142 /* staten-island.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A61B8FD81600DC5142 /* staten-island.db */; };
+		311EA2DF1B8FD81600DC5142 /* stl.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A71B8FD81600DC5142 /* stl.db */; };
+		311EA2E01B8FD81600DC5142 /* thousand-oaks.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A81B8FD81600DC5142 /* thousand-oaks.db */; };
+		311EA2E11B8FD81600DC5142 /* thunderbay.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2A91B8FD81600DC5142 /* thunderbay.db */; };
+		311EA2E21B8FD81600DC5142 /* ttc.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2AA1B8FD81600DC5142 /* ttc.db */; };
+		311EA2E71B8FD82700DC5142 /* seattle-sc.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2E31B8FD82700DC5142 /* seattle-sc.db */; };
+		311EA2E81B8FD82700DC5142 /* ucsf.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2E41B8FD82700DC5142 /* ucsf.db */; };
+		311EA2E91B8FD82700DC5142 /* umd.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2E51B8FD82700DC5142 /* umd.db */; };
+		311EA2EA1B8FD82700DC5142 /* umn-twin.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2E61B8FD82700DC5142 /* umn-twin.db */; };
+		311EA2EF1B8FD83300DC5142 /* unitrans.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2EB1B8FD83300DC5142 /* unitrans.db */; };
+		311EA2F01B8FD83300DC5142 /* vista.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2EC1B8FD83300DC5142 /* vista.db */; };
+		311EA2F11B8FD83300DC5142 /* wku.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2ED1B8FD83300DC5142 /* wku.db */; };
+		311EA2F21B8FD83300DC5142 /* york-pa.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2EE1B8FD83300DC5142 /* york-pa.db */; };
 		312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC5241AD75D3800DD21FA /* MetroAppShared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
 		312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */; };
@@ -33,7 +100,6 @@
 		3146748A1AEDA15900409D9E /* RequestStatusTrip.java in Sources */ = {isa = PBXBuildFile; fileRef = 314674891AEDA15900409D9E /* RequestStatusTrip.java */; };
 		3146748C1AEDA37100409D9E /* actransit.sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = 3146748B1AEDA37100409D9E /* actransit.sqlite3 */; };
 		315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 315242161ADEDD7B00643039 /* MetroAppLocationManager.m */; };
-		3167592F1B8C000E00DB6C38 /* Agency.java in Sources */ = {isa = PBXBuildFile; fileRef = 3167592E1B8C000E00DB6C38 /* Agency.java */; };
 		316759311B8C003900DB6C38 /* StopRoutesTranslator.java in Sources */ = {isa = PBXBuildFile; fileRef = 316759301B8C003900DB6C38 /* StopRoutesTranslator.java */; };
 		3178F97C1AE086D000922A49 /* icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F9791AE086D000922A49 /* icon-76.png */; };
 		3178F97D1AE086D000922A49 /* icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 3178F97A1AE086D000922A49 /* icon-120.png */; };
@@ -73,7 +139,6 @@
 		31865C921AC7F546007421BE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 31865C881AC7EA04007421BE /* libsqlite3.dylib */; };
 		318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */; };
 		318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318B6A6F1ADB0AFC001F24FD /* ReminderViewController.xib */; };
-		31935F391B8CC3AB0047F478 /* FieldSaver.java in Sources */ = {isa = PBXBuildFile; fileRef = 31935F381B8CC3AB0047F478 /* FieldSaver.java */; };
 		31BADC7F1ADAE011004961EA /* regionalization.h in Headers */ = {isa = PBXBuildFile; fileRef = 31BADC7E1ADAE011004961EA /* regionalization.h */; };
 /* End PBXBuildFile section */
 
@@ -163,6 +228,73 @@
 		310448E21AD6FADF00DCA091 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		310A04961ACB323C000E1B8E /* StopNameDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopNameDatabase.h; sourceTree = "<group>"; };
 		310A04971ACB323C000E1B8E /* StopNameDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StopNameDatabase.m; sourceTree = "<group>"; };
+		311E05F81B5F83E9002CBBFB /* Agency.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Agency.java; sourceTree = "<group>"; };
+		311E06011B619938002CBBFB /* SearchBox.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBox.xib; sourceTree = "<group>"; };
+		311E06071B61A891002CBBFB /* IosLog.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = IosLog.java; sourceTree = "<group>"; };
+		311EA2731B8FD81600DC5142 /* actransit.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = actransit.db; path = ../../scraper/actransit.db; sourceTree = "<group>"; };
+		311EA2741B8FD81600DC5142 /* art.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = art.db; path = ../../scraper/art.db; sourceTree = "<group>"; };
+		311EA2751B8FD81600DC5142 /* bronx.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = bronx.db; path = ../../scraper/bronx.db; sourceTree = "<group>"; };
+		311EA2761B8FD81600DC5142 /* brooklyn.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = brooklyn.db; path = ../../scraper/brooklyn.db; sourceTree = "<group>"; };
+		311EA2771B8FD81600DC5142 /* camarillo.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = camarillo.db; path = ../../scraper/camarillo.db; sourceTree = "<group>"; };
+		311EA2781B8FD81600DC5142 /* ccny.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = ccny.db; path = ../../scraper/ccny.db; sourceTree = "<group>"; };
+		311EA2791B8FD81600DC5142 /* ccrta.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = ccrta.db; path = ../../scraper/ccrta.db; sourceTree = "<group>"; };
+		311EA27A1B8FD81600DC5142 /* chapel-hill.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "chapel-hill.db"; path = "../../scraper/chapel-hill.db"; sourceTree = "<group>"; };
+		311EA27B1B8FD81600DC5142 /* charles-river.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "charles-river.db"; path = "../../scraper/charles-river.db"; sourceTree = "<group>"; };
+		311EA27C1B8FD81600DC5142 /* charm-city.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "charm-city.db"; path = "../../scraper/charm-city.db"; sourceTree = "<group>"; };
+		311EA27D1B8FD81600DC5142 /* collegetown.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = collegetown.db; path = ../../scraper/collegetown.db; sourceTree = "<group>"; };
+		311EA27E1B8FD81600DC5142 /* cyride.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = cyride.db; path = ../../scraper/cyride.db; sourceTree = "<group>"; };
+		311EA27F1B8FD81600DC5142 /* da.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = da.db; path = ../../scraper/da.db; sourceTree = "<group>"; };
+		311EA2801B8FD81600DC5142 /* dc-circulator.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "dc-circulator.db"; path = "../../scraper/dc-circulator.db"; sourceTree = "<group>"; };
+		311EA2811B8FD81600DC5142 /* dumbarton.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = dumbarton.db; path = ../../scraper/dumbarton.db; sourceTree = "<group>"; };
+		311EA2821B8FD81600DC5142 /* ecu.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = ecu.db; path = ../../scraper/ecu.db; sourceTree = "<group>"; };
+		311EA2831B8FD81600DC5142 /* emery.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = emery.db; path = ../../scraper/emery.db; sourceTree = "<group>"; };
+		311EA2841B8FD81600DC5142 /* fairfax.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = fairfax.db; path = ../../scraper/fairfax.db; sourceTree = "<group>"; };
+		311EA2851B8FD81600DC5142 /* foothill.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = foothill.db; path = ../../scraper/foothill.db; sourceTree = "<group>"; };
+		311EA2861B8FD81600DC5142 /* ft-worth.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ft-worth.db"; path = "../../scraper/ft-worth.db"; sourceTree = "<group>"; };
+		311EA2871B8FD81600DC5142 /* georgia-college.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "georgia-college.db"; path = "../../scraper/georgia-college.db"; sourceTree = "<group>"; };
+		311EA2881B8FD81600DC5142 /* glendale.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = glendale.db; path = ../../scraper/glendale.db; sourceTree = "<group>"; };
+		311EA2891B8FD81600DC5142 /* gmu.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = gmu.db; path = ../../scraper/gmu.db; sourceTree = "<group>"; };
+		311EA28A1B8FD81600DC5142 /* howard.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = howard.db; path = ../../scraper/howard.db; sourceTree = "<group>"; };
+		311EA28B1B8FD81600DC5142 /* indianapolis-air.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "indianapolis-air.db"; path = "../../scraper/indianapolis-air.db"; sourceTree = "<group>"; };
+		311EA28C1B8FD81600DC5142 /* jhu-apl.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "jhu-apl.db"; path = "../../scraper/jhu-apl.db"; sourceTree = "<group>"; };
+		311EA28D1B8FD81600DC5142 /* jta.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = jta.db; path = ../../scraper/jta.db; sourceTree = "<group>"; };
+		311EA28E1B8FD81600DC5142 /* jtafla.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = jtafla.db; path = ../../scraper/jtafla.db; sourceTree = "<group>"; };
+		311EA28F1B8FD81600DC5142 /* lametro-rail.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "lametro-rail.db"; path = "../../scraper/lametro-rail.db"; sourceTree = "<group>"; };
+		311EA2901B8FD81600DC5142 /* lametro.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = lametro.db; path = ../../scraper/lametro.db; sourceTree = "<group>"; };
+		311EA2911B8FD81600DC5142 /* lasell.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = lasell.db; path = ../../scraper/lasell.db; sourceTree = "<group>"; };
+		311EA2921B8FD81600DC5142 /* mbta.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = mbta.db; path = ../../scraper/mbta.db; sourceTree = "<group>"; };
+		311EA2931B8FD81600DC5142 /* mit.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = mit.db; path = ../../scraper/mit.db; sourceTree = "<group>"; };
+		311EA2941B8FD81600DC5142 /* moorpark.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = moorpark.db; path = ../../scraper/moorpark.db; sourceTree = "<group>"; };
+		311EA2951B8FD81600DC5142 /* nctd.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = nctd.db; path = ../../scraper/nctd.db; sourceTree = "<group>"; };
+		311EA2961B8FD81600DC5142 /* nova-se.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "nova-se.db"; path = "../../scraper/nova-se.db"; sourceTree = "<group>"; };
+		311EA2971B8FD81600DC5142 /* omnitrans.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = omnitrans.db; path = ../../scraper/omnitrans.db; sourceTree = "<group>"; };
+		311EA2981B8FD81600DC5142 /* oxford-ms.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "oxford-ms.db"; path = "../../scraper/oxford-ms.db"; sourceTree = "<group>"; };
+		311EA2991B8FD81600DC5142 /* pgc.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = pgc.db; path = ../../scraper/pgc.db; sourceTree = "<group>"; };
+		311EA29A1B8FD81600DC5142 /* portland-sc.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "portland-sc.db"; path = "../../scraper/portland-sc.db"; sourceTree = "<group>"; };
+		311EA29B1B8FD81600DC5142 /* pvpta.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = pvpta.db; path = ../../scraper/pvpta.db; sourceTree = "<group>"; };
+		311EA29C1B8FD81600DC5142 /* radford.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = radford.db; path = ../../scraper/radford.db; sourceTree = "<group>"; };
+		311EA29D1B8FD81600DC5142 /* reno.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = reno.db; path = ../../scraper/reno.db; sourceTree = "<group>"; };
+		311EA29E1B8FD81600DC5142 /* roosevelt.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = roosevelt.db; path = ../../scraper/roosevelt.db; sourceTree = "<group>"; };
+		311EA29F1B8FD81600DC5142 /* rutgers-newark.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "rutgers-newark.db"; path = "../../scraper/rutgers-newark.db"; sourceTree = "<group>"; };
+		311EA2A01B8FD81600DC5142 /* rutgers.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = rutgers.db; path = ../../scraper/rutgers.db; sourceTree = "<group>"; };
+		311EA2A11B8FD81600DC5142 /* sf-mission-bay.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "sf-mission-bay.db"; path = "../../scraper/sf-mission-bay.db"; sourceTree = "<group>"; };
+		311EA2A21B8FD81600DC5142 /* sf-muni.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "sf-muni.db"; path = "../../scraper/sf-muni.db"; sourceTree = "<group>"; };
+		311EA2A31B8FD81600DC5142 /* simi-valley.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "simi-valley.db"; path = "../../scraper/simi-valley.db"; sourceTree = "<group>"; };
+		311EA2A41B8FD81600DC5142 /* south-coast.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "south-coast.db"; path = "../../scraper/south-coast.db"; sourceTree = "<group>"; };
+		311EA2A51B8FD81600DC5142 /* sria.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = sria.db; path = ../../scraper/sria.db; sourceTree = "<group>"; };
+		311EA2A61B8FD81600DC5142 /* staten-island.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "staten-island.db"; path = "../../scraper/staten-island.db"; sourceTree = "<group>"; };
+		311EA2A71B8FD81600DC5142 /* stl.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = stl.db; path = ../../scraper/stl.db; sourceTree = "<group>"; };
+		311EA2A81B8FD81600DC5142 /* thousand-oaks.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "thousand-oaks.db"; path = "../../scraper/thousand-oaks.db"; sourceTree = "<group>"; };
+		311EA2A91B8FD81600DC5142 /* thunderbay.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = thunderbay.db; path = ../../scraper/thunderbay.db; sourceTree = "<group>"; };
+		311EA2AA1B8FD81600DC5142 /* ttc.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = ttc.db; path = ../../scraper/ttc.db; sourceTree = "<group>"; };
+		311EA2E31B8FD82700DC5142 /* seattle-sc.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "seattle-sc.db"; path = "../../scraper/seattle-sc.db"; sourceTree = "<group>"; };
+		311EA2E41B8FD82700DC5142 /* ucsf.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = ucsf.db; path = ../../scraper/ucsf.db; sourceTree = "<group>"; };
+		311EA2E51B8FD82700DC5142 /* umd.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = umd.db; path = ../../scraper/umd.db; sourceTree = "<group>"; };
+		311EA2E61B8FD82700DC5142 /* umn-twin.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "umn-twin.db"; path = "../../scraper/umn-twin.db"; sourceTree = "<group>"; };
+		311EA2EB1B8FD83300DC5142 /* unitrans.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = unitrans.db; path = ../../scraper/unitrans.db; sourceTree = "<group>"; };
+		311EA2EC1B8FD83300DC5142 /* vista.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = vista.db; path = ../../scraper/vista.db; sourceTree = "<group>"; };
+		311EA2ED1B8FD83300DC5142 /* wku.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = wku.db; path = ../../scraper/wku.db; sourceTree = "<group>"; };
+		311EA2EE1B8FD83300DC5142 /* york-pa.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "york-pa.db"; path = "../../scraper/york-pa.db"; sourceTree = "<group>"; };
 		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
 		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
 		312CC5201AD75D3800DD21FA /* MetroAppShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetroAppShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,7 +325,6 @@
 		3146748B1AEDA37100409D9E /* actransit.sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = file; name = actransit.sqlite3; path = ../../scraper/actransit.sqlite3; sourceTree = "<group>"; };
 		315242151ADEDD7B00643039 /* MetroAppLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetroAppLocationManager.h; sourceTree = "<group>"; };
 		315242161ADEDD7B00643039 /* MetroAppLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetroAppLocationManager.m; sourceTree = "<group>"; };
-		3167592E1B8C000E00DB6C38 /* Agency.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Agency.java; sourceTree = "<group>"; };
 		316759301B8C003900DB6C38 /* StopRoutesTranslator.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StopRoutesTranslator.java; sourceTree = "<group>"; };
 		3178F9791AE086D000922A49 /* icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-76.png"; sourceTree = "<group>"; };
 		3178F97A1AE086D000922A49 /* icon-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-120.png"; sourceTree = "<group>"; };
@@ -314,6 +445,77 @@
 				310448DE1AD6FADF00DCA091 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		311EA2721B8FD7EB00DC5142 /* SQL Databases */ = {
+			isa = PBXGroup;
+			children = (
+				311EA2EB1B8FD83300DC5142 /* unitrans.db */,
+				311EA2EC1B8FD83300DC5142 /* vista.db */,
+				311EA2ED1B8FD83300DC5142 /* wku.db */,
+				311EA2EE1B8FD83300DC5142 /* york-pa.db */,
+				311EA2E31B8FD82700DC5142 /* seattle-sc.db */,
+				311EA2E41B8FD82700DC5142 /* ucsf.db */,
+				311EA2E51B8FD82700DC5142 /* umd.db */,
+				311EA2E61B8FD82700DC5142 /* umn-twin.db */,
+				311EA2731B8FD81600DC5142 /* actransit.db */,
+				311EA2741B8FD81600DC5142 /* art.db */,
+				311EA2751B8FD81600DC5142 /* bronx.db */,
+				311EA2761B8FD81600DC5142 /* brooklyn.db */,
+				311EA2771B8FD81600DC5142 /* camarillo.db */,
+				311EA2781B8FD81600DC5142 /* ccny.db */,
+				311EA2791B8FD81600DC5142 /* ccrta.db */,
+				311EA27A1B8FD81600DC5142 /* chapel-hill.db */,
+				311EA27B1B8FD81600DC5142 /* charles-river.db */,
+				311EA27C1B8FD81600DC5142 /* charm-city.db */,
+				311EA27D1B8FD81600DC5142 /* collegetown.db */,
+				311EA27E1B8FD81600DC5142 /* cyride.db */,
+				311EA27F1B8FD81600DC5142 /* da.db */,
+				311EA2801B8FD81600DC5142 /* dc-circulator.db */,
+				311EA2811B8FD81600DC5142 /* dumbarton.db */,
+				311EA2821B8FD81600DC5142 /* ecu.db */,
+				311EA2831B8FD81600DC5142 /* emery.db */,
+				311EA2841B8FD81600DC5142 /* fairfax.db */,
+				311EA2851B8FD81600DC5142 /* foothill.db */,
+				311EA2861B8FD81600DC5142 /* ft-worth.db */,
+				311EA2871B8FD81600DC5142 /* georgia-college.db */,
+				311EA2881B8FD81600DC5142 /* glendale.db */,
+				311EA2891B8FD81600DC5142 /* gmu.db */,
+				311EA28A1B8FD81600DC5142 /* howard.db */,
+				311EA28B1B8FD81600DC5142 /* indianapolis-air.db */,
+				311EA28C1B8FD81600DC5142 /* jhu-apl.db */,
+				311EA28D1B8FD81600DC5142 /* jta.db */,
+				311EA28E1B8FD81600DC5142 /* jtafla.db */,
+				311EA28F1B8FD81600DC5142 /* lametro-rail.db */,
+				311EA2901B8FD81600DC5142 /* lametro.db */,
+				311EA2911B8FD81600DC5142 /* lasell.db */,
+				311EA2921B8FD81600DC5142 /* mbta.db */,
+				311EA2931B8FD81600DC5142 /* mit.db */,
+				311EA2941B8FD81600DC5142 /* moorpark.db */,
+				311EA2951B8FD81600DC5142 /* nctd.db */,
+				311EA2961B8FD81600DC5142 /* nova-se.db */,
+				311EA2971B8FD81600DC5142 /* omnitrans.db */,
+				311EA2981B8FD81600DC5142 /* oxford-ms.db */,
+				311EA2991B8FD81600DC5142 /* pgc.db */,
+				311EA29A1B8FD81600DC5142 /* portland-sc.db */,
+				311EA29B1B8FD81600DC5142 /* pvpta.db */,
+				311EA29C1B8FD81600DC5142 /* radford.db */,
+				311EA29D1B8FD81600DC5142 /* reno.db */,
+				311EA29E1B8FD81600DC5142 /* roosevelt.db */,
+				311EA29F1B8FD81600DC5142 /* rutgers-newark.db */,
+				311EA2A01B8FD81600DC5142 /* rutgers.db */,
+				311EA2A11B8FD81600DC5142 /* sf-mission-bay.db */,
+				311EA2A21B8FD81600DC5142 /* sf-muni.db */,
+				311EA2A31B8FD81600DC5142 /* simi-valley.db */,
+				311EA2A41B8FD81600DC5142 /* south-coast.db */,
+				311EA2A51B8FD81600DC5142 /* sria.db */,
+				311EA2A61B8FD81600DC5142 /* staten-island.db */,
+				311EA2A71B8FD81600DC5142 /* stl.db */,
+				311EA2A81B8FD81600DC5142 /* thousand-oaks.db */,
+				311EA2A91B8FD81600DC5142 /* thunderbay.db */,
+				311EA2AA1B8FD81600DC5142 /* ttc.db */,
+			);
+			name = "SQL Databases";
 			sourceTree = "<group>";
 		};
 		312CC5211AD75D3800DD21FA /* MetroAppShared */ = {
@@ -460,6 +662,7 @@
 			children = (
 				3178F9851AE3060E00922A49 /* Log.java */,
 				3178F9861AE3060E00922A49 /* Tracking.java */,
+				311E06071B61A891002CBBFB /* IosLog.java */,
 			);
 			path = analytics;
 			sourceTree = "<group>";
@@ -467,7 +670,7 @@
 		3178F9871AE3060E00922A49 /* basic_types */ = {
 			isa = PBXGroup;
 			children = (
-				3167592E1B8C000E00DB6C38 /* Agency.java */,
+				311E05F81B5F83E9002CBBFB /* Agency.java */,
 				3178F9881AE3060E00922A49 /* BasicLocation.java */,
 				3178F9891AE3060E00922A49 /* Destination.java */,
 				3178F98A1AE3060E00922A49 /* Route.java */,
@@ -546,6 +749,7 @@
 				318B6A6F1ADB0AFC001F24FD /* ReminderViewController.xib */,
 				312FFE2F1AA7E89D005D5477 /* Main.storyboard */,
 				312FFE341AA7E89D005D5477 /* LaunchScreen.xib */,
+				311E06011B619938002CBBFB /* SearchBox.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -568,6 +772,7 @@
 		31865C8D1AC7EA97007421BE /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				311EA2721B8FD7EB00DC5142 /* SQL Databases */,
 				3146748B1AEDA37100409D9E /* actransit.sqlite3 */,
 				3178F9C41AE306BB00922A49 /* StopNamesLA.sqlite3 */,
 				310A04961ACB323C000E1B8E /* StopNameDatabase.h */,
@@ -788,16 +993,81 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				311EA2E81B8FD82700DC5142 /* ucsf.db in Resources */,
+				311EA2F11B8FD83300DC5142 /* wku.db in Resources */,
+				311EA2CA1B8FD81600DC5142 /* mbta.db in Resources */,
+				311EA2AC1B8FD81600DC5142 /* art.db in Resources */,
+				311EA2DD1B8FD81600DC5142 /* sria.db in Resources */,
+				311EA2B21B8FD81600DC5142 /* chapel-hill.db in Resources */,
+				311EA2DA1B8FD81600DC5142 /* sf-muni.db in Resources */,
+				311EA2E11B8FD81600DC5142 /* thunderbay.db in Resources */,
+				311EA2BD1B8FD81600DC5142 /* foothill.db in Resources */,
 				3178F97C1AE086D000922A49 /* icon-76.png in Resources */,
 				3178F97D1AE086D000922A49 /* icon-120.png in Resources */,
 				312FFE311AA7E89D005D5477 /* Main.storyboard in Resources */,
+				311EA2C41B8FD81600DC5142 /* jhu-apl.db in Resources */,
+				311EA2B51B8FD81600DC5142 /* collegetown.db in Resources */,
+				311EA2C91B8FD81600DC5142 /* lasell.db in Resources */,
+				311EA2B71B8FD81600DC5142 /* da.db in Resources */,
+				311EA2DF1B8FD81600DC5142 /* stl.db in Resources */,
+				311EA2C01B8FD81600DC5142 /* glendale.db in Resources */,
+				311EA2D91B8FD81600DC5142 /* sf-mission-bay.db in Resources */,
+				311EA2CB1B8FD81600DC5142 /* mit.db in Resources */,
+				311EA2AF1B8FD81600DC5142 /* camarillo.db in Resources */,
+				311EA2D71B8FD81600DC5142 /* rutgers-newark.db in Resources */,
 				3146748C1AEDA37100409D9E /* actransit.sqlite3 in Resources */,
+				311EA2AD1B8FD81600DC5142 /* bronx.db in Resources */,
+				311EA2D61B8FD81600DC5142 /* roosevelt.db in Resources */,
+				311EA2D01B8FD81600DC5142 /* oxford-ms.db in Resources */,
+				311EA2CE1B8FD81600DC5142 /* nova-se.db in Resources */,
+				311EA2B41B8FD81600DC5142 /* charm-city.db in Resources */,
+				311EA2F21B8FD83300DC5142 /* york-pa.db in Resources */,
+				311EA2BF1B8FD81600DC5142 /* georgia-college.db in Resources */,
 				318B6A711ADB0AFC001F24FD /* ReminderViewController.xib in Resources */,
+				311EA2C81B8FD81600DC5142 /* lametro.db in Resources */,
+				311EA2D81B8FD81600DC5142 /* rutgers.db in Resources */,
+				311EA2CC1B8FD81600DC5142 /* moorpark.db in Resources */,
+				311EA2AB1B8FD81600DC5142 /* actransit.db in Resources */,
 				312FFE361AA7E89D005D5477 /* LaunchScreen.xib in Resources */,
+				311EA2BC1B8FD81600DC5142 /* fairfax.db in Resources */,
 				3178F9C51AE306BB00922A49 /* StopNamesLA.sqlite3 in Resources */,
 				312FFE331AA7E89D005D5477 /* Images.xcassets in Resources */,
+				311EA2C21B8FD81600DC5142 /* howard.db in Resources */,
+				311EA2F01B8FD83300DC5142 /* vista.db in Resources */,
+				311EA2AE1B8FD81600DC5142 /* brooklyn.db in Resources */,
+				311EA2C51B8FD81600DC5142 /* jta.db in Resources */,
+				311EA2E91B8FD82700DC5142 /* umd.db in Resources */,
+				311EA2C61B8FD81600DC5142 /* jtafla.db in Resources */,
+				311EA2D21B8FD81600DC5142 /* portland-sc.db in Resources */,
+				311EA2D51B8FD81600DC5142 /* reno.db in Resources */,
 				312FFF3E1AA830BF005D5477 /* ic_launcher.png in Resources */,
+				311EA2BB1B8FD81600DC5142 /* emery.db in Resources */,
+				311EA2CD1B8FD81600DC5142 /* nctd.db in Resources */,
+				311EA2B81B8FD81600DC5142 /* dc-circulator.db in Resources */,
+				311E06021B619938002CBBFB /* SearchBox.xib in Resources */,
+				311EA2DE1B8FD81600DC5142 /* staten-island.db in Resources */,
+				311EA2B11B8FD81600DC5142 /* ccrta.db in Resources */,
+				311EA2C31B8FD81600DC5142 /* indianapolis-air.db in Resources */,
+				311EA2E71B8FD82700DC5142 /* seattle-sc.db in Resources */,
+				311EA2BA1B8FD81600DC5142 /* ecu.db in Resources */,
+				311EA2E21B8FD81600DC5142 /* ttc.db in Resources */,
+				311EA2D11B8FD81600DC5142 /* pgc.db in Resources */,
 				3178F97E1AE086D000922A49 /* icon-152.png in Resources */,
+				311EA2D31B8FD81600DC5142 /* pvpta.db in Resources */,
+				311EA2DB1B8FD81600DC5142 /* simi-valley.db in Resources */,
+				311EA2EA1B8FD82700DC5142 /* umn-twin.db in Resources */,
+				311EA2B91B8FD81600DC5142 /* dumbarton.db in Resources */,
+				311EA2BE1B8FD81600DC5142 /* ft-worth.db in Resources */,
+				311EA2E01B8FD81600DC5142 /* thousand-oaks.db in Resources */,
+				311EA2B01B8FD81600DC5142 /* ccny.db in Resources */,
+				311EA2CF1B8FD81600DC5142 /* omnitrans.db in Resources */,
+				311EA2C71B8FD81600DC5142 /* lametro-rail.db in Resources */,
+				311EA2D41B8FD81600DC5142 /* radford.db in Resources */,
+				311EA2EF1B8FD83300DC5142 /* unitrans.db in Resources */,
+				311EA2C11B8FD81600DC5142 /* gmu.db in Resources */,
+				311EA2B61B8FD81600DC5142 /* cyride.db in Resources */,
+				311EA2DC1B8FD81600DC5142 /* south-coast.db in Resources */,
+				311EA2B31B8FD81600DC5142 /* charles-river.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -884,13 +1154,13 @@
 				3178F9C11AE3060E00922A49 /* RouteColor.java in Sources */,
 				31865C851AC7E693007421BE /* Stops.xcdatamodeld in Sources */,
 				3178F9A91AE3060E00922A49 /* BasicLocation.java in Sources */,
+				311E06081B61A891002CBBFB /* IosLog.java in Sources */,
 				3178F9B61AE3060E00922A49 /* StopRouteDestinationPrediction.java in Sources */,
 				316759311B8C003900DB6C38 /* StopRoutesTranslator.java in Sources */,
 				3178F9BC1AE3060E00922A49 /* RegionalizationHelper.java in Sources */,
 				31865C7E1AC61EFF007421BE /* MetroAppViewController.m in Sources */,
 				3178F9AC1AE3060E00922A49 /* ServiceRequest.java in Sources */,
-				3167592F1B8C000E00DB6C38 /* Agency.java in Sources */,
-				31935F391B8CC3AB0047F478 /* FieldSaver.java in Sources */,
+				311E05F91B5F83E9002CBBFB /* Agency.java in Sources */,
 				3178F9B71AE3060E00922A49 /* Trip.java in Sources */,
 				310A04981ACB323C000E1B8E /* StopNameDatabase.m in Sources */,
 				3178F9B91AE3060E00922A49 /* GlobalLocationProvider.java in Sources */,
