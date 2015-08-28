@@ -48,13 +48,16 @@
     testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithInt:80122];
     
     
-    StopNameInfo *testStops = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
+    testDatabase = [[StopNameDatabase alloc] initWithFilename:@"actransit"];
+    
+    ComRemulasceLametroappJava_coreBasic_typesStop *testStops = [testDatabase getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
                                                                          Tol:.01];
     
-    StopNameInfo *testStops2 = [[[StopNameDatabase database] getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
-    NSLog(@"Search Test: %@",[testStops stopName]);
-    NSLog(@"Search Test 2: %@",[testStops2 stopName]);
+    ComRemulasceLametroappJava_coreBasic_typesStop *testStops2 = [[testDatabase getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
+    
+    NSLog(@"Search Test: %@",[testStops getStopName]);
+    NSLog(@"Search Test 2: %@",[testStops2 getStopName]);
 
     
     // TEST THE DATABASE
@@ -398,8 +401,8 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
         }
         
-        cell.textLabel.text = [[searchResults objectAtIndex:[indexPath indexAtPosition:1]] stopName];
-        NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] stopName]);
+        cell.textLabel.text = [[searchResults objectAtIndex:[indexPath indexAtPosition:1]] getStopName];
+        NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] getStopName]);
         return cell;
     }
     return nil;
@@ -413,7 +416,7 @@
         
         NSString *stopName = [[[self.searchView cellForRowAtIndexPath:indexPath] textLabel] text];
         
-        [self createServiceRequestWithName:stopName];
+        [self createServiceRequestWithStop:[searchResults objectAtIndex:[indexPath indexAtPosition:1]]];
     } else if (tableView == self.multiArrivalTripView){
         // Code for setting a reminder
         
@@ -544,11 +547,11 @@
     
     if (tempSearchString.length >= 3) {
         // Do SQL Search to populate search bar
-        searchResults = [[StopNameDatabase database] getStopsByNameFragment:tempSearchString];
+        searchResults = [testDatabase getStopsByNameFragment:tempSearchString];
 
         if ([searchResults count] > 0)
         {
-            NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] stopName]);
+            NSLog(@"Search Test: %@",[[searchResults objectAtIndex:0] getStopName]);
             searchResultsAvailable = YES;
         } else {
             searchResultsAvailable = NO;
@@ -610,20 +613,12 @@
     [[UIApplication sharedApplication] scheduleLocalNotification:newBusArrivalNotification];
 }
 
-- (void)createServiceRequestWithName:(NSString*)stopName
+- (void)createServiceRequestWithStop:(ComRemulasceLametroappJava_coreBasic_typesStop*)stop
 {
-    searchResults = [[StopNameDatabase database] getStopsByName:stopName];
-    
-    JavaUtilArrayList *tempStopList = [[JavaUtilArrayList alloc] init];
-    
-    [tempStopList addWithId:
-         [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:[[searchResults objectAtIndex:0] stopID]]];
-
-    
     ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest *newServiceRequest;
     
     newServiceRequest = [[ComRemulasceLametroappJava_coreBasic_typesStopServiceRequest alloc]
-                         initWithJavaUtilCollection:tempStopList withNSString:stopName];
+                         initWithComRemulasceLametroappJava_coreBasic_typesStop:stop withNSString:[stop getStopName]];
     
     [serviceRequestList addObject:newServiceRequest];
     
@@ -642,12 +637,12 @@
 {
     CLLocation *currentLocation = [[metroAppLocationManager getLocationManager] location];
 
-    StopNameInfo *closestStop = [[StopNameDatabase database] getClosestStopLat:currentLocation.coordinate.latitude
+    ComRemulasceLametroappJava_coreBasic_typesStop *closestStop = [testDatabase getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
                                                                          Tol:.005];
-    
+
     if (closestStop != nil) {
-        [self createServiceRequestWithName:[closestStop stopName]];
+        [self createServiceRequestWithStop:closestStop];
     }
     
     return;

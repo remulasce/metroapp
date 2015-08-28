@@ -25,6 +25,11 @@
 
 - (instancetype)initWithNSString:(NSString *)stopText;
 
+- (instancetype)initWithNSString:(NSString *)stopText
+                    withNSString:(NSString *)stopNameText
+withComRemulasceLametroappJava_coreBasic_typesAgency:(ComRemulasceLametroappJava_coreBasic_typesAgency *)newAgency
+withComRemulasceLametroappJava_coreBasic_typesBasicLocation:(ComRemulasceLametroappJava_coreBasic_typesBasicLocation *)newLocation;
+
 - (jboolean)isEqual:(id)o;
 
 - (ComRemulasceLametroappJava_coreBasic_typesAgency *)getAgency;

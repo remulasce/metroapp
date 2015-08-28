@@ -29,6 +29,8 @@
 #import "Log.h"
 #import "IosLog.h"
 
+#import "StopNameDatabase.h"
+
 @interface MetroAppViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
     ComRemulasceLametroappJava_coreServiceRequestHandler *requestHandler;
@@ -55,6 +57,8 @@
     
     MetroAppLocationManager* metroAppLocationManager;
     
+    StopNameDatabase* testDatabase; //REMOVE
+    
     ComRemulasceLametroappJava_coreAnalyticsIosLog *iosLogger;
 }
 
@@ -69,7 +73,7 @@
 @property (nonatomic, strong) IBOutlet UITextField* searchText;
 
 - (void)createReminderWithName:(NSString*)name forArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesArrival*)arrival;
-- (void)createServiceRequestWithName:(NSString*)stopName;
+- (void)createServiceRequestWithStop:(NSString*)stopName;
 - (void)addClosestStop;
 - (IBAction)enterSearchState:(id)sender;
 - (IBAction)exitSearchState:(id)sender;

@@ -11,16 +11,20 @@
 
 #import "StopNameInfo.h"
 #import "Agency.h"
+#import "BasicLocation.h"
+#import "Stop.h"
 
 @interface StopNameDatabase : NSObject {
     sqlite3 *_database;
     ComRemulasceLametroappJava_coreBasic_typesAgency *_agency;
 }
 
-+ (StopNameDatabase*)database;
-- (NSArray *)getStopsByName:(NSString*)stopNameFragment;
+
+// Change this so they return Stops
+
+- (id) initWithFilename:(NSString*)fileName;
 - (NSArray *)getStopsByNameFragment:(NSString*)stopNameFragment;
 - (NSArray*)getStopsByLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
-- (StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
+- (ComRemulasceLametroappJava_coreBasic_typesStop*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance;
 
 @end

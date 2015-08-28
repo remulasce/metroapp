@@ -7,6 +7,7 @@
 #include "GlobalLocationProvider.h"
 #include "J2ObjC_source.h"
 #include "LocationRetriever.h"
+#include "Log.h"
 #include "MultiArrivalTrip.h"
 #include "Route.h"
 #include "Stop.h"
@@ -20,6 +21,8 @@
 @end
 
 @implementation ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip
+
+NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip_TAG_ = @"MultiArrivalTrip";
 
 - (instancetype)initWithComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival:(ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *)parentArrival {
   if (self = [super init]) {
@@ -59,16 +62,22 @@
 
 - (jdouble)getCurrentDistanceToStop {
   id<ComRemulasceLametroappJava_coreLocationLocationRetriever> retriever = ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever();
-  jdouble currentDistanceToStop = [((id<ComRemulasceLametroappJava_coreLocationLocationRetriever>) nil_chk(retriever)) getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
-  if (currentDistanceToStop > 0) {
-    lastDistanceToStop_ = currentDistanceToStop;
+  if (retriever != nil) {
+    jdouble currentDistanceToStop = [retriever getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
+    if (currentDistanceToStop > 0) {
+      lastDistanceToStop_ = currentDistanceToStop;
+    }
+  }
+  else {
+    lastDistanceToStop_ = 1;
+    ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip_TAG_, @"Location Retriever was null");
   }
   return lastDistanceToStop_;
 }
 
 - (jfloat)getPriority {
   jfloat proximity = 0;
-  jdouble distance = 1;
+  jdouble distance = [self getCurrentDistanceToStop];
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .2f * (jfloat) (1 - (distance / 32000)));
   proximity += JavaLangMath_maxWithFloat_withFloat_(0, .8f * (jfloat) (1 - (distance / 3200)));
   proximity = JavaLangMath_maxWithFloat_withFloat_(proximity, 0);
@@ -96,9 +105,10 @@
   };
   static const J2ObjcFieldInfo fields[] = {
     { "parentArrival_", NULL, 0x11, "Lcom.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;", NULL,  },
+    { "TAG_", NULL, 0x1a, "Ljava.lang.String;", &ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip_TAG_,  },
     { "lastDistanceToStop_", NULL, 0x2, "D", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip = { 2, "MultiArrivalTrip", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 8, methods, 2, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip = { 2, "MultiArrivalTrip", "com.remulasce.lametroapp.java_core.dynamic_data.types", NULL, 0x1, 8, methods, 3, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip;
 }
 

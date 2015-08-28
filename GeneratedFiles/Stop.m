@@ -57,6 +57,22 @@ J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStop, location_, C
   return self;
 }
 
+- (instancetype)initWithNSString:(NSString *)stopText
+                    withNSString:(NSString *)stopNameText
+withComRemulasceLametroappJava_coreBasic_typesAgency:(ComRemulasceLametroappJava_coreBasic_typesAgency *)newAgency
+withComRemulasceLametroappJava_coreBasic_typesBasicLocation:(ComRemulasceLametroappJava_coreBasic_typesBasicLocation *)newLocation {
+  if (self = [super init]) {
+    raw_ = @"";
+    stopName_ = @"";
+    agency_ = nil;
+    raw_ = stopText;
+    stopName_ = stopNameText;
+    agency_ = newAgency;
+    location_ = newLocation;
+  }
+  return self;
+}
+
 - (jboolean)isValid {
   return ComRemulasceLametroappJava_coreLaMetroUtil_isValidStopWithNSString_(raw_);
 }
@@ -127,6 +143,7 @@ J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStop, location_, C
     { "init", "Stop", NULL, 0x1, NULL },
     { "initWithNSString:", "Stop", NULL, 0x1, NULL },
     { "initWithInt:", "Stop", NULL, 0x1, NULL },
+    { "initWithNSString:withNSString:withComRemulasceLametroappJava_coreBasic_typesAgency:withComRemulasceLametroappJava_coreBasic_typesBasicLocation:", "Stop", NULL, 0x1, NULL },
     { "isValid", NULL, "Z", 0x1, NULL },
     { "getNum", NULL, "I", 0x1, NULL },
     { "getStopID", NULL, "Ljava.lang.String;", 0x1, NULL },
@@ -148,7 +165,7 @@ J2OBJC_FIELD_SETTER(ComRemulasceLametroappJava_coreBasic_typesStop, location_, C
     { "agency_", NULL, 0x2, "Lcom.remulasce.lametroapp.java_core.basic_types.Agency;", NULL,  },
     { "location_", NULL, 0x2, "Lcom.remulasce.lametroapp.java_core.basic_types.BasicLocation;", NULL,  },
   };
-  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreBasic_typesStop = { 2, "Stop", "com.remulasce.lametroapp.java_core.basic_types", NULL, 0x1, 16, methods, 5, fields, 0, NULL, 0, NULL};
+  static const J2ObjcClassInfo _ComRemulasceLametroappJava_coreBasic_typesStop = { 2, "Stop", "com.remulasce.lametroapp.java_core.basic_types", NULL, 0x1, 17, methods, 5, fields, 0, NULL, 0, NULL};
   return &_ComRemulasceLametroappJava_coreBasic_typesStop;
 }
 

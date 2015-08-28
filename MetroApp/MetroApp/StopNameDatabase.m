@@ -12,67 +12,49 @@
 
 @implementation StopNameDatabase
 
-static StopNameDatabase *m_database;
-
-+ (StopNameDatabase*)database {
-    if (m_database == nil) {
-        m_database = [[StopNameDatabase alloc] init];
-    }
-    return m_database;
-}
-
-- (id)init {
+- (id)initWithFilename:(NSString*)fileName {
+    
     if ((self = [super init])) {
-#if REGIONLOSANGELES
-        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"StopNamesLA"
+        
+        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:fileName
                                                              ofType:@"db"];
-#endif
-#if REGIONSANFRANCISCO
-        NSString *sqLiteDb = [[NSBundle mainBundle] pathForResource:@"actransit"
-                                                             ofType:@"db"];
-#endif
         
         if (sqlite3_open([sqLiteDb UTF8String], &_database) != SQLITE_OK) {
             NSLog(@"Could not load stop name database.");
         } else {
             NSLog(@"Loaded Database");
         }
+        
+        NSString *query = [NSString stringWithFormat:@"SELECT * FROM agencyinfo;"];
+        
+        sqlite3_stmt *statement;
+        if (sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, nil)
+            == SQLITE_OK) {
+            while (sqlite3_step(statement) == SQLITE_ROW) {
+                char *agencyNameCharacters = sqlite3_column_text(statement, 0);
+                NSString *agencyName = [[NSString alloc] initWithUTF8String:agencyNameCharacters];
+                
+                char *agencyDisplayNameCharacters = sqlite3_column_text(statement, 1);
+                NSString *agencyDisplayName = [[NSString alloc] initWithUTF8String:agencyDisplayNameCharacters];
+                
+                double latMin = sqlite3_column_double(statement, 2);
+                double latMax = sqlite3_column_double(statement, 3);
+                double lonMin = sqlite3_column_double(statement, 4);
+                double lonMax = sqlite3_column_double(statement, 5);
+                
+                ComRemulasceLametroappJava_coreBasic_typesBasicLocation *bottomLeft = [[ComRemulasceLametroappJava_coreBasic_typesBasicLocation alloc] initWithDouble:latMin withDouble:lonMin];
+                ComRemulasceLametroappJava_coreBasic_typesBasicLocation *topRight = [[ComRemulasceLametroappJava_coreBasic_typesBasicLocation alloc] initWithDouble:latMax withDouble:lonMax];
+                
+                _agency = [[ComRemulasceLametroappJava_coreBasic_typesAgency alloc] initWithNSString:agencyName withNSString:agencyDisplayName withComRemulasceLametroappJava_coreBasic_typesBasicLocation:bottomLeft withComRemulasceLametroappJava_coreBasic_typesBasicLocation:topRight];
+                
+            }
+            sqlite3_finalize(statement);
+        } else {
+            NSLog(@"could not prepare statement: %s\n", sqlite3_errmsg(_database));
+        }
+        
     }
     return self;
-}
-
--(NSArray *)getStopsByName:(NSString*)stopNameFragment
-{
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-    NSString *query = [NSString stringWithFormat:@"SELECT * FROM stopnames WHERE stopname LIKE '%@'",stopNameFragment];
-    
-    NSLog(@"%@",query);
-    
-    sqlite3_stmt *statement;
-    if (sqlite3_prepare_v2(_database, [query UTF8String], -1, &statement, nil)
-        == SQLITE_OK) {
-        while (sqlite3_step(statement) == SQLITE_ROW) {
-            int uniqueId = sqlite3_column_int(statement, 0);
-            char *stopIDChars = (char *) sqlite3_column_text(statement, 1);
-            char *stopNameChars = (char *) sqlite3_column_text(statement, 2);
-            double latitude = sqlite3_column_double(statement, 3);
-            double longitude = sqlite3_column_double(statement, 4);
-            NSString *stopID = [[NSString alloc] initWithUTF8String:stopIDChars];
-            NSString *stopName = [[NSString alloc] initWithUTF8String:stopNameChars];
-            StopNameInfo *info = [[StopNameInfo alloc]
-                                  initWithUniqueID:uniqueId
-                                  stopID:stopID
-                                  stopName:stopName
-                                  latitude:latitude
-                                  longitude:longitude];
-            
-            [result addObject:info];
-        }
-        sqlite3_finalize(statement);
-    } else {
-        NSLog(@"could not prepare statement: %s\n", sqlite3_errmsg(_database));
-    }
-    return result;
 }
 
 -(NSArray *)getStopsByNameFragment:(NSString*)stopNameFragment
@@ -95,19 +77,17 @@ static StopNameDatabase *m_database;
             double longitude = sqlite3_column_double(statement, 4);
             NSString *stopID = [[NSString alloc] initWithUTF8String:stopIDChars];
             NSString *stopName = [[NSString alloc] initWithUTF8String:stopNameChars];
-            StopNameInfo *info = [[StopNameInfo alloc]
-                                initWithUniqueID:uniqueId
-                                  stopID:stopID
-                                  stopName:stopName
-                                  latitude:latitude
-                                  longitude:longitude];
             
-            [result addObject:info];
+            ComRemulasceLametroappJava_coreBasic_typesBasicLocation* tempLocation = [[ComRemulasceLametroappJava_coreBasic_typesBasicLocation alloc] initWithDouble:latitude withDouble:longitude];
+            ComRemulasceLametroappJava_coreBasic_typesStop *newStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:stopID withNSString:stopName withComRemulasceLametroappJava_coreBasic_typesAgency:_agency withComRemulasceLametroappJava_coreBasic_typesBasicLocation:tempLocation];
+            
+            [result addObject:newStop];
         }
         sqlite3_finalize(statement);
     } else {
         NSLog(@"could not prepare statement: %s\n", sqlite3_errmsg(_database));
     }
+    
     return result;
 }
 
@@ -133,14 +113,11 @@ static StopNameDatabase *m_database;
             double longitude = sqlite3_column_double(statement, 4);
             NSString *stopID = [[NSString alloc] initWithUTF8String:stopIDChars];
             NSString *stopName = [[NSString alloc] initWithUTF8String:stopNameChars];
-            StopNameInfo *info = [[StopNameInfo alloc]
-                                  initWithUniqueID:uniqueId
-                                  stopID:stopID
-                                  stopName:stopName
-                                  latitude:latitude
-                                  longitude:longitude];
             
-            [result addObject:info];
+            ComRemulasceLametroappJava_coreBasic_typesBasicLocation* tempLocation = [[ComRemulasceLametroappJava_coreBasic_typesBasicLocation alloc] initWithDouble:latitude withDouble:longitude];
+            ComRemulasceLametroappJava_coreBasic_typesStop *newStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithNSString:stopID withNSString:stopName withComRemulasceLametroappJava_coreBasic_typesAgency:_agency withComRemulasceLametroappJava_coreBasic_typesBasicLocation:tempLocation];
+            
+            [result addObject:newStop];
         }
         sqlite3_finalize(statement);
     } else {
@@ -167,12 +144,12 @@ static StopNameDatabase *m_database;
     return R*c;
 }
 
--(StopNameInfo*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance
+-(ComRemulasceLametroappJava_coreBasic_typesStop*)getClosestStopLat:(float)latitude Long:(float)longitude Tol:(float)tolerance
 {
     NSArray *stopsWithinTolerance = [self getStopsByLat:latitude Long:longitude Tol:tolerance];
     
-    StopNameInfo* closestStop = nil;
-    StopNameInfo* testStop = nil;
+    ComRemulasceLametroappJava_coreBasic_typesStop* closestStop = nil;
+    ComRemulasceLametroappJava_coreBasic_typesStop* testStop = nil;
     double closestDist = 0;
     double newDist = 0;
     
@@ -180,16 +157,16 @@ static StopNameDatabase *m_database;
         testStop = [stopsWithinTolerance objectAtIndex:i];
         if (closestStop == nil)
         {
-            closestStop = [stopsWithinTolerance objectAtIndex:i];
+            closestStop = (ComRemulasceLametroappJava_coreBasic_typesStop*)[stopsWithinTolerance objectAtIndex:i];
             // This is not actually a distance, but we don't care, because we're just comparing
             // No need for an expensive square root
-            closestDist = [self GeoDistLat1:closestStop.latitude Lat2:latitude Lon1:closestStop.longitude Lon2:longitude];
+            closestDist = [self GeoDistLat1:[closestStop getLocation]->latitude_ Lat2:latitude Lon1:[closestStop getLocation]->longitude_ Lon2:longitude];
             
-            NSLog(@"Setting initial stop to: %@, %f",closestStop.stopName,closestDist);
+            NSLog(@"Setting initial stop to: %@, %f",[closestStop getStopName],closestDist);
         } else {
-            newDist = [self GeoDistLat1:testStop.latitude Lat2:latitude Lon1:testStop.longitude Lon2:longitude];
+            newDist = [self GeoDistLat1:[closestStop getLocation]->latitude_ Lat2:latitude Lon1:[closestStop getLocation]->longitude_ Lon2:longitude];
             
-            NSLog(@"Checking stop: %@, %f",testStop.stopName,newDist);
+            NSLog(@"Checking stop: %@, %f",[testStop getStopName],newDist);
             if (newDist < closestDist)
             {
                 NSLog(@"Set as new closest");
@@ -197,9 +174,10 @@ static StopNameDatabase *m_database;
                 closestDist = newDist;
             }
         }
-        NSLog(@"Current selection is: %@", closestStop.stopName);
+        NSLog(@"Current selection is: %@", [closestStop getStopName]);
     }
-    NSLog(@"Search Chose: %@, %f",closestStop.stopName,closestDist);
+    NSLog(@"Search Chose: %@, %f",[closestStop getStopName],closestDist);
+    
     return closestStop;
 }
 

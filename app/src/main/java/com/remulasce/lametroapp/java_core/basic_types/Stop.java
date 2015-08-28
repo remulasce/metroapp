@@ -24,6 +24,14 @@ public class Stop implements Serializable {
     public Stop( int stopNum ) {
         raw = String.valueOf( stopNum );
     }
+    
+    public Stop( String stopText, String stopNameText, Agency newAgency, BasicLocation newLocation)
+    {
+        raw = stopText;
+        stopName = stopNameText;
+        agency = newAgency;
+        location = newLocation;
+    }
 
     public boolean isValid() {
         return LaMetroUtil.isValidStop( raw );

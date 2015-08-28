@@ -5,10 +5,13 @@ import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
+import com.remulasce.lametroapp.java_core.analytics.Log;
 
 public class MultiArrivalTrip extends Trip {
 
     public final StopRouteDestinationArrival parentArrival;
+    
+    private static final String TAG = "MultiArrivalTrip";
 
     private double lastDistanceToStop = 0;
 
@@ -26,7 +29,7 @@ public class MultiArrivalTrip extends Trip {
         Destination dest = parentArrival.getDirection();
         
         String routeString = route.getString();
-        String stopString = stop.getStopName();
+            String stopString = stop.getStopName();
         String destString = dest.getString();
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
@@ -54,11 +57,17 @@ public class MultiArrivalTrip extends Trip {
     public double getCurrentDistanceToStop() {
         LocationRetriever retriever = GlobalLocationProvider.getRetriever();
 
-        double currentDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
-        if (currentDistanceToStop > 0) {
-            lastDistanceToStop = currentDistanceToStop;
+        if (retriever != null) {
+            double currentDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+            if (currentDistanceToStop > 0) {
+                lastDistanceToStop = currentDistanceToStop;
+            }
         }
-
+        else {
+            lastDistanceToStop = 1;
+            Log.d(TAG, "Location Retriever was null");
+        }
+            
         return lastDistanceToStop;
     }
 
@@ -70,7 +79,7 @@ public class MultiArrivalTrip extends Trip {
         // 20 miles away you start, you get more at 1 mile.
         float proximity = 0;
 
-        double distance = 1; //getCurrentDistanceToStop();
+        double distance = getCurrentDistanceToStop();
 
         // ~20 miles
         proximity += Math.max(0,

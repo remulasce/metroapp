@@ -155,7 +155,7 @@ public class StopRouteDestinationPrediction extends Prediction {
                 if (a == null) {
                     synchronized (trackedArrivals) {
                         StopRouteDestinationArrival newSRDA = new StopRouteDestinationArrival(
-                                newA.getStop(), newA.getRoute(), newA.getDirection());
+                                stop, newA.getRoute(), newA.getDirection());
                         newSRDA.setScope(inScope);
                         trackedArrivals.add(newSRDA);
                     }

@@ -158,7 +158,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationP
       }
       if (a == nil) {
         @synchronized(trackedArrivals_) {
-          ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *newSRDA = [[ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival alloc] initWithComRemulasceLametroappJava_coreBasic_typesStop:[newA getStop] withComRemulasceLametroappJava_coreBasic_typesRoute:[newA getRoute] withComRemulasceLametroappJava_coreBasic_typesDestination:[newA getDirection]];
+          ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *newSRDA = [[ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival alloc] initWithComRemulasceLametroappJava_coreBasic_typesStop:stop_ withComRemulasceLametroappJava_coreBasic_typesRoute:[newA getRoute] withComRemulasceLametroappJava_coreBasic_typesDestination:[newA getDirection]];
           [newSRDA setScopeWithBoolean:inScope_];
           [trackedArrivals_ addWithId:newSRDA];
         }
