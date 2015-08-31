@@ -36,15 +36,15 @@ public class RegionalizationHelper {
 
     private RegionalizationHelper() {};
     public void loadPersistedAgencies() {
-        // If there's nothing saved, default to adding all the installed agencies
+        if (installedAgencies == null || installedAgencies.size() == 0) {
+            Log.w(TAG, "No installed agencies, fail-fast instead of trying to load persisted active regions.");
+            activeAgencies = new ArrayList<Agency>();
+            return;
+        }
+        // If there's nothing saved, default to autodetect
         if (persistence == null) {
-            Log.w(TAG, "RegionalizationHelper tried to load persisted agencies, but there's no saver set");
-            if (installedAgencies == null || installedAgencies.size() == 0) {
-                Log.w(TAG, "No installed agencies, can't properly make default active agencies");
-                activeAgencies = new ArrayList<Agency>();
-                return;
-            }
-            activeAgencies.addAll(installedAgencies);
+            Log.w(TAG, "RegionalizationHelper tried to load persisted agencies, but there's no saver set. Defaulting to auto-detect.");
+            autodetectRegions();
         } else {
             // We can try to load from persistence
             Object useAutoDetect = persistence.loadObject(AUTODETECT_REGIONS);
@@ -65,13 +65,8 @@ public class RegionalizationHelper {
                     Log.w(TAG, "Error loading persisted file, dropping it" );
                     persistence.saveObject(ACTIVE_REGIONS, null);
                 }
-            } else {
-                if (installedAgencies == null || installedAgencies.size() == 0) {
-                    Log.w(TAG, "No installed agencies, can't properly make default active agencies");
-                    activeAgencies = new ArrayList<Agency>();
-                    return;
-                }
-                activeAgencies.addAll(installedAgencies);
+            } else { // No or invalid persisted active agencies. Default to autodetected regions.
+                autodetectRegions();
             }
         }
     }
@@ -109,7 +104,13 @@ public class RegionalizationHelper {
     }
 
     private void autodetectRegions() {
-        BasicLocation current = GlobalLocationProvider.getRetriever().getCurrentLocation();
+        LocationRetriever retriever = GlobalLocationProvider.getRetriever();
+        if (retriever == null) {
+            Log.w(TAG, "Couldn't automatically update current region from helper");
+            lastRegionUpdateTime = System.currentTimeMillis() - 55000;
+            return;
+        }
+        BasicLocation current = retriever.getCurrentLocation();
         if (current == null) {
             Log.w(TAG, "Couldn't automatically update current region from helper");
             lastRegionUpdateTime = System.currentTimeMillis() - 55000;
