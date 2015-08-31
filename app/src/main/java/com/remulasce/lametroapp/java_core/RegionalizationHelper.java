@@ -84,7 +84,9 @@ public class RegionalizationHelper {
     public void setAutoDetect(boolean autoDetect) {
         this.autoDetect = autoDetect;
 
-        persistence.saveObject(AUTODETECT_REGIONS, autoDetect);
+        if (persistence != null) {
+            persistence.saveObject(AUTODETECT_REGIONS, autoDetect);
+        }
 
         if (autoDetect) {
             autodetectRegions();
