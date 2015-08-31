@@ -60,14 +60,14 @@ NSString * ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_ = @"Regiona
 }
 
 - (void)loadPersistedAgencies {
+  if (installedAgencies_ == nil || [installedAgencies_ size] == 0) {
+    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"No installed agencies, fail-fast instead of trying to load persisted active regions.");
+    activeAgencies_ = [[JavaUtilArrayList alloc] init];
+    return;
+  }
   if (ComRemulasceLametroappJava_coreRegionalizationHelper_persistence_ == nil) {
-    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"RegionalizationHelper tried to load persisted agencies, but there's no saver set");
-    if (installedAgencies_ == nil || [installedAgencies_ size] == 0) {
-      ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"No installed agencies, can't properly make default active agencies");
-      activeAgencies_ = [[JavaUtilArrayList alloc] init];
-      return;
-    }
-    [((id<JavaUtilCollection>) nil_chk(activeAgencies_)) addAllWithJavaUtilCollection:installedAgencies_];
+    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"RegionalizationHelper tried to load persisted agencies, but there's no saver set. Defaulting to auto-detect.");
+    ComRemulasceLametroappJava_coreRegionalizationHelper_autodetectRegions(self);
   }
   else {
     id useAutoDetect = [ComRemulasceLametroappJava_coreRegionalizationHelper_persistence_ loadObjectWithNSString:ComRemulasceLametroappJava_coreRegionalizationHelper_AUTODETECT_REGIONS_];
@@ -91,12 +91,7 @@ NSString * ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_ = @"Regiona
       }
     }
     else {
-      if (installedAgencies_ == nil || [installedAgencies_ size] == 0) {
-        ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"No installed agencies, can't properly make default active agencies");
-        activeAgencies_ = [[JavaUtilArrayList alloc] init];
-        return;
-      }
-      [((id<JavaUtilCollection>) nil_chk(activeAgencies_)) addAllWithJavaUtilCollection:installedAgencies_];
+      ComRemulasceLametroappJava_coreRegionalizationHelper_autodetectRegions(self);
     }
   }
 }
@@ -107,7 +102,9 @@ NSString * ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_ = @"Regiona
 
 - (void)setAutoDetectWithBoolean:(jboolean)autoDetect {
   self->autoDetect_ = autoDetect;
-  [((id<ComRemulasceLametroappComponentsPersistenceFieldSaver>) nil_chk(ComRemulasceLametroappJava_coreRegionalizationHelper_persistence_)) saveObjectWithNSString:ComRemulasceLametroappJava_coreRegionalizationHelper_AUTODETECT_REGIONS_ withId:JavaLangBoolean_valueOfWithBoolean_(autoDetect)];
+  if (ComRemulasceLametroappJava_coreRegionalizationHelper_persistence_ != nil) {
+    [ComRemulasceLametroappJava_coreRegionalizationHelper_persistence_ saveObjectWithNSString:ComRemulasceLametroappJava_coreRegionalizationHelper_AUTODETECT_REGIONS_ withId:JavaLangBoolean_valueOfWithBoolean_(autoDetect)];
+  }
   if (autoDetect) {
     ComRemulasceLametroappJava_coreRegionalizationHelper_autodetectRegions(self);
   }
@@ -192,7 +189,13 @@ ComRemulasceLametroappJava_coreRegionalizationHelper *ComRemulasceLametroappJava
 }
 
 void ComRemulasceLametroappJava_coreRegionalizationHelper_autodetectRegions(ComRemulasceLametroappJava_coreRegionalizationHelper *self) {
-  ComRemulasceLametroappJava_coreBasic_typesBasicLocation *current = [((id<ComRemulasceLametroappJava_coreLocationLocationRetriever>) nil_chk(ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever())) getCurrentLocation];
+  id<ComRemulasceLametroappJava_coreLocationLocationRetriever> retriever = ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever();
+  if (retriever == nil) {
+    ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"Couldn't automatically update current region from helper");
+    self->lastRegionUpdateTime_ = JavaLangSystem_currentTimeMillis() - 55000;
+    return;
+  }
+  ComRemulasceLametroappJava_coreBasic_typesBasicLocation *current = [((id<ComRemulasceLametroappJava_coreLocationLocationRetriever>) nil_chk(retriever)) getCurrentLocation];
   if (current == nil) {
     ComRemulasceLametroappJava_coreAnalyticsLog_wWithNSString_withNSString_(ComRemulasceLametroappJava_coreRegionalizationHelper_TAG_, @"Couldn't automatically update current region from helper");
     self->lastRegionUpdateTime_ = JavaLangSystem_currentTimeMillis() - 55000;

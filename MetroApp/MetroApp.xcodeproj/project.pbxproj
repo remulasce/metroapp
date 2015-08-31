@@ -79,6 +79,9 @@
 		311EA2F01B8FD83300DC5142 /* vista.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2EC1B8FD83300DC5142 /* vista.db */; };
 		311EA2F11B8FD83300DC5142 /* wku.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2ED1B8FD83300DC5142 /* wku.db */; };
 		311EA2F21B8FD83300DC5142 /* york-pa.db in Resources */ = {isa = PBXBuildFile; fileRef = 311EA2EE1B8FD83300DC5142 /* york-pa.db */; };
+		311EA2F91B92AB7A00DC5142 /* LocationUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 311EA2F81B92AB7A00DC5142 /* LocationUtil.m */; };
+		311EA2FC1B93CC7700DC5142 /* IosFieldSaver.m in Sources */ = {isa = PBXBuildFile; fileRef = 311EA2FB1B93CC7700DC5142 /* IosFieldSaver.m */; };
+		311EA2FF1B93E43200DC5142 /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 311EA2FE1B93E43200DC5142 /* DatabaseHandler.m */; };
 		312CC5251AD75D3800DD21FA /* MetroAppShared.h in Headers */ = {isa = PBXBuildFile; fileRef = 312CC5241AD75D3800DD21FA /* MetroAppShared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		312CC52B1AD75D3800DD21FA /* MetroAppShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 312CC5201AD75D3800DD21FA /* MetroAppShared.framework */; };
 		312CC5341AD75D3800DD21FA /* MetroAppSharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CC5331AD75D3800DD21FA /* MetroAppSharedTests.m */; };
@@ -295,6 +298,12 @@
 		311EA2EC1B8FD83300DC5142 /* vista.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = vista.db; path = ../../scraper/vista.db; sourceTree = "<group>"; };
 		311EA2ED1B8FD83300DC5142 /* wku.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = wku.db; path = ../../scraper/wku.db; sourceTree = "<group>"; };
 		311EA2EE1B8FD83300DC5142 /* york-pa.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = "york-pa.db"; path = "../../scraper/york-pa.db"; sourceTree = "<group>"; };
+		311EA2F71B92AB7A00DC5142 /* LocationUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationUtil.h; sourceTree = "<group>"; };
+		311EA2F81B92AB7A00DC5142 /* LocationUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationUtil.m; sourceTree = "<group>"; };
+		311EA2FA1B93CC7700DC5142 /* IosFieldSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IosFieldSaver.h; sourceTree = "<group>"; };
+		311EA2FB1B93CC7700DC5142 /* IosFieldSaver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IosFieldSaver.m; sourceTree = "<group>"; };
+		311EA2FD1B93E43200DC5142 /* DatabaseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHandler.h; sourceTree = "<group>"; };
+		311EA2FE1B93E43200DC5142 /* DatabaseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseHandler.m; sourceTree = "<group>"; };
 		312CC4741AD7011E00DD21FA /* MetroApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroApp.entitlements; sourceTree = "<group>"; };
 		312CC4751AD7013500DD21FA /* MetroAppWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MetroAppWidget.entitlements; sourceTree = "<group>"; };
 		312CC5201AD75D3800DD21FA /* MetroAppShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetroAppShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -518,6 +527,17 @@
 			name = "SQL Databases";
 			sourceTree = "<group>";
 		};
+		311EA2F61B92AB5C00DC5142 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				315242151ADEDD7B00643039 /* MetroAppLocationManager.h */,
+				315242161ADEDD7B00643039 /* MetroAppLocationManager.m */,
+				311EA2F71B92AB7A00DC5142 /* LocationUtil.h */,
+				311EA2F81B92AB7A00DC5142 /* LocationUtil.m */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
 		312CC5211AD75D3800DD21FA /* MetroAppShared */ = {
 			isa = PBXGroup;
 			children = (
@@ -591,6 +611,7 @@
 				31935F371B8CC3780047F478 /* java_noncore */,
 				3178F9831AE3060E00922A49 /* java_core */,
 				312CC4741AD7011E00DD21FA /* MetroApp.entitlements */,
+				311EA2F61B92AB5C00DC5142 /* Location */,
 				31865C8D1AC7EA97007421BE /* Database */,
 				31865C781AC61EAE007421BE /* Controllers */,
 				31865C741AC61E77007421BE /* Views */,
@@ -763,8 +784,10 @@
 				31865C831AC7E693007421BE /* Stops.xcdatamodeld */,
 				318B6A6D1ADB0AFC001F24FD /* ReminderViewController.h */,
 				318B6A6E1ADB0AFC001F24FD /* ReminderViewController.m */,
-				315242151ADEDD7B00643039 /* MetroAppLocationManager.h */,
-				315242161ADEDD7B00643039 /* MetroAppLocationManager.m */,
+				311EA2FA1B93CC7700DC5142 /* IosFieldSaver.h */,
+				311EA2FB1B93CC7700DC5142 /* IosFieldSaver.m */,
+				311EA2FD1B93E43200DC5142 /* DatabaseHandler.h */,
+				311EA2FE1B93E43200DC5142 /* DatabaseHandler.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1127,18 +1150,21 @@
 				3178F9AE1AE3060E00922A49 /* StopServiceRequest.java in Sources */,
 				3178F9B41AE3060E00922A49 /* Prediction.java in Sources */,
 				3178F9AA1AE3060E00922A49 /* Destination.java in Sources */,
+				311EA2F91B92AB7A00DC5142 /* LocationUtil.m in Sources */,
 				3146748A1AEDA15900409D9E /* RequestStatusTrip.java in Sources */,
 				3178F9AD1AE3060E00922A49 /* Stop.java in Sources */,
 				315242171ADEDD7B00643039 /* MetroAppLocationManager.m in Sources */,
 				3178F9BD1AE3060E00922A49 /* ServiceRequestHandler.java in Sources */,
 				318B6A701ADB0AFC001F24FD /* ReminderViewController.m in Sources */,
 				3178F9BE1AE3060E00922A49 /* RouteColorer.java in Sources */,
+				311EA2FC1B93CC7700DC5142 /* IosFieldSaver.m in Sources */,
 				312FFE2E1AA7E89C005D5477 /* ViewController.m in Sources */,
 				312FFE2B1AA7E89C005D5477 /* AppDelegate.m in Sources */,
 				3178F9B51AE3060E00922A49 /* StopRouteDestinationArrival.java in Sources */,
 				3178F9A81AE3060E00922A49 /* Tracking.java in Sources */,
 				3178F9BA1AE3060E00922A49 /* LocationRetriever.java in Sources */,
 				3178F9C01AE3060E00922A49 /* StopNameTranslator.java in Sources */,
+				311EA2FF1B93E43200DC5142 /* DatabaseHandler.m in Sources */,
 				31865C901AC7EAAC007421BE /* StopNameInfo.m in Sources */,
 				3178F9BF1AE3060E00922A49 /* StopLocationTranslator.java in Sources */,
 				3178F9AF1AE3060E00922A49 /* Vehicle.java in Sources */,

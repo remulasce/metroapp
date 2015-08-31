@@ -48,16 +48,16 @@
     testStop = [[ComRemulasceLametroappJava_coreBasic_typesStop alloc] initWithInt:80122];
     
     
-    testDatabase = [[StopNameDatabase alloc] initWithFilename:@"actransit"];
+    StopNameDatabase* testDatabase = [[StopNameDatabase alloc] initWithFilename:@"lametro"];
     
     ComRemulasceLametroappJava_coreBasic_typesStop *testStops = [testDatabase getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
                                                                          Tol:.01];
     
-    ComRemulasceLametroappJava_coreBasic_typesStop *testStops2 = [[testDatabase getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
+    //ComRemulasceLametroappJava_coreBasic_typesStop *testStops2 = [[testDatabase getStopsByNameFragment:@"Shattuck"] objectAtIndex:0];
     
     NSLog(@"Search Test: %@",[testStops getStopName]);
-    NSLog(@"Search Test 2: %@",[testStops2 getStopName]);
+    //NSLog(@"Search Test 2: %@",[testStops2 getStopName]);
 
     
     // TEST THE DATABASE
@@ -87,13 +87,45 @@
     
     reminderViewController = [[ReminderViewController alloc] initWithDelegate:self];
     
+    
+    // Set global locaiton provider
+    [ComRemulasceLametroappJava_coreLocationGlobalLocationProvider
+     setRetrieverWithComRemulasceLametroappJava_coreLocationLocationRetriever: metroAppLocationManager];
+    
+    // Set up Field Saver for IOS
+    IosFieldSaver *fieldSaver = [IosFieldSaver sharedInstance];
+    
     // Set regionalization
     
     
     ComRemulasceLametroappJava_coreRegionalizationHelper *regionalizationHelper;
     regionalizationHelper = [ComRemulasceLametroappJava_coreRegionalizationHelper getInstance];
-    //OLD regionalizationHelper->agencyName_ = @"actransit";
     
+    [ComRemulasceLametroappJava_coreRegionalizationHelper setPersistenceWithComRemulasceLametroappComponentsPersistenceFieldSaver:fieldSaver];
+    
+    // Set up installed agencies
+    // This is not ideal at the moment, need new function to look for installed agency names
+    
+    NSArray *installedAgencyNames = [[NSArray alloc] initWithObjects:@"actransit",@"lametro", nil];
+    
+    JavaUtilArrayList *installedAgencies = [[JavaUtilArrayList alloc] init];
+    
+    for (NSString *agencyName in installedAgencyNames) {
+        StopNameDatabase* tempDatabase;
+        tempDatabase = [[StopNameDatabase alloc] initWithFilename:agencyName];
+        
+        ComRemulasceLametroappJava_coreBasic_typesAgency* tempAgency = tempDatabase->_agency;
+        
+        [installedAgencies addWithId:tempAgency];
+    }
+    
+    [regionalizationHelper setInstalledAgenciesWithJavaUtilCollection:installedAgencies];
+    
+    [regionalizationHelper setAutoDetectWithBoolean:true];
+    
+    databaseHandler = [[DatabaseHandler alloc] init];
+    [databaseHandler setRegionalization:regionalizationHelper];
+    [databaseHandler setupRegions];
     
     
     //########## Final UI tweaks
@@ -547,7 +579,7 @@
     
     if (tempSearchString.length >= 3) {
         // Do SQL Search to populate search bar
-        searchResults = [testDatabase getStopsByNameFragment:tempSearchString];
+        searchResults = [databaseHandler getStopsByNameFragment:tempSearchString];
 
         if ([searchResults count] > 0)
         {
@@ -637,9 +669,9 @@
 {
     CLLocation *currentLocation = [[metroAppLocationManager getLocationManager] location];
 
-    ComRemulasceLametroappJava_coreBasic_typesStop *closestStop = [testDatabase getClosestStopLat:currentLocation.coordinate.latitude
+    ComRemulasceLametroappJava_coreBasic_typesStop *closestStop = [databaseHandler getClosestStopLat:currentLocation.coordinate.latitude
                                                                         Long:currentLocation.coordinate.longitude
-                                                                         Tol:.005];
+                                                                         Tol:.02];
 
     if (closestStop != nil) {
         [self createServiceRequestWithStop:closestStop];
