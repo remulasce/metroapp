@@ -64,6 +64,7 @@ NSString * ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip_TAG_
   id<ComRemulasceLametroappJava_coreLocationLocationRetriever> retriever = ComRemulasceLametroappJava_coreLocationGlobalLocationProvider_getRetriever();
   if (retriever != nil) {
     jdouble currentDistanceToStop = [retriever getCurrentDistanceToStopWithComRemulasceLametroappJava_coreBasic_typesStop:[((ComRemulasceLametroappJava_coreDynamic_dataTypesStopRouteDestinationArrival *) nil_chk(parentArrival_)) getStop]];
+    ComRemulasceLametroappJava_coreAnalyticsLog_dWithNSString_withNSString_(ComRemulasceLametroappJava_coreDynamic_dataTypesMultiArrivalTrip_TAG_, JreStrcat("$D", @"Location retriever returned: %f", currentDistanceToStop));
     if (currentDistanceToStop > 0) {
       lastDistanceToStop_ = currentDistanceToStop;
     }

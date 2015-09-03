@@ -59,6 +59,7 @@ public class MultiArrivalTrip extends Trip {
 
         if (retriever != null) {
             double currentDistanceToStop = retriever.getCurrentDistanceToStop(parentArrival.getStop());
+            Log.d(TAG, "Location retriever returned: %f" + currentDistanceToStop);
             if (currentDistanceToStop > 0) {
                 lastDistanceToStop = currentDistanceToStop;
             }

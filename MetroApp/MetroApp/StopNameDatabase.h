@@ -14,8 +14,11 @@
 #import "BasicLocation.h"
 #import "Stop.h"
 
+#import "LocationUtil.h"
+
 @interface StopNameDatabase : NSObject {
     sqlite3 *_database;
+@public
     ComRemulasceLametroappJava_coreBasic_typesAgency *_agency;
 }
 

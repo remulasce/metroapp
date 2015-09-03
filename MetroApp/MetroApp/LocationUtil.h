@@ -9,5 +9,10 @@
 #import <Foundation/Foundation.h>
 
 @interface LocationUtil : NSObject
+{
+    
+}
+
++ (double)GeoDistLat1:(double)lat1 Lat2:(double)lat2 Lon1:(double)lon1 Lon2:(double)lon2;
 
 @end

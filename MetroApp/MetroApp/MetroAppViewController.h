@@ -31,6 +31,12 @@
 
 #import "StopNameDatabase.h"
 
+#import "GlobalLocationProvider.h"
+
+#import "IosFieldSaver.h"
+
+#import "DatabaseHandler.h"
+
 @interface MetroAppViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 {
     ComRemulasceLametroappJava_coreServiceRequestHandler *requestHandler;
@@ -57,7 +63,7 @@
     
     MetroAppLocationManager* metroAppLocationManager;
     
-    StopNameDatabase* testDatabase; //REMOVE
+    DatabaseHandler* databaseHandler; //REMOVE
     
     ComRemulasceLametroappJava_coreAnalyticsIosLog *iosLogger;
 }
