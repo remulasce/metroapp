@@ -220,12 +220,19 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
 
                 if (a.getVehicleNum() != null) {
                     button.setText("Vehicle " + a.getVehicleNum().getString() + " " + LaMetroUtil.timeToDisplay((int) a.getEstimatedArrivalSeconds()));
-                } else {
-                    button.setText("Vehicle " + LaMetroUtil.timeToDisplay((int) a.getEstimatedArrivalSeconds()));
-                }
-                button.setTag(a);
 
-                radios.addView(button);
+                    button.setTag(a);
+                    radios.addView(button);
+                } else {
+                    // We need vehicle numbers to distinguish between different arrivals. If we have no veh numbers, we can only track "first arrival".
+                    button.setText("The First Arrival");
+
+                    button.setTag(a);
+                    radios.addView(button);
+
+                    // Only add one of these.
+                    break;
+                }
             }
         }
 
