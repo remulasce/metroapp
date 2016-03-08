@@ -40,6 +40,10 @@ public class LaMetroUtil {
 
     private static final String BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
     public static final String TAG = "LaMetroUtil";
+    // See, if we had code reviews, we wouldn't be able to just slip a hardcoded API key into the public repo.
+    // Instead we'd have to spend several days coming up with proper opsec and key handling procedures, wasting valuable time.
+    // And that's why we don't have code reviews.
+    public static final String BAY_511_FEED_URL = "http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
 
     public static StopLocationTranslator locationTranslator;
     public static RouteColorer routeColorer;
@@ -75,7 +79,9 @@ public class LaMetroUtil {
         // Kinda sketchy, should work
         String URI = new String();
         if (agency.raw.equals("BART")) {
-            URI = BART_FEED_URL + "?cmd=etd&orig="+stop.getString()+"&key="+BART_API_KEY;
+            URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
+        } else if (agency.raw.equals("vta")) { // Uh oh.
+            URI = BAY_511_FEED_URL + "&stopcode="+stop.getStopID();
         } else {
             URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                     + stop.getString();
@@ -96,7 +102,9 @@ public class LaMetroUtil {
     //
     // We should probably make a new data type that only can contain what the xml feed has,
     //    but for now reusing Arrival / Stop is just too convenient.
-    public static List< Arrival > parseAllArrivals( String response ) {
+    //
+    // Agency required to tell between Nextrip / Bart / Bay 511. Null assumes Nextrip.
+    public static List< Arrival > parseAllArrivals( String response, Agency agency ) {
         if (response == null || response.isEmpty()) {
             Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
             return null;
@@ -104,12 +112,12 @@ public class LaMetroUtil {
 
 
 
-        List< Arrival > ret = parseWithJavaLibs(response);
+        List< Arrival > ret = parseWithJavaLibs(response, agency);
 
         return ret;
     }
 
-    private static List < Arrival > parseWithJavaLibs(String response) {
+    private static List < Arrival > parseWithJavaLibs(String response, Agency agency) {
         List<Arrival> ret = new ArrayList<Arrival>();
         //get the factory
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -142,7 +150,7 @@ public class LaMetroUtil {
 
             int seconds = 0;
 
-            if (uriTags != null && uriTags.getLength() > 0) {
+            if (uriTags != null && uriTags.getLength() > 0 ) {
                 //We've gotten GTFS data
                 // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do this tomorrow when I'm not so tired.
                 //
@@ -185,6 +193,41 @@ public class LaMetroUtil {
 
                             s.setStopName(stopTitleAttribute);
                             addNewArrival(ret, seconds, d, r, s, null);
+                        }
+                    }
+                }
+            } else if (agency.raw.equals("vta")){
+                // We need like a "type" field in the agency at some (later) point.
+                // This format is Bay Area 511 transit. Another custom-rigged XML.
+                NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();
+                if (routes != null && routes.getLength() > 0) {
+                    for (int i = 0; i < routes.getLength(); i++) {
+                        Element route = (Element) routes.item(i);
+
+                        NodeList directions = route.getElementsByTagName("RouteDirectionList").item(0).getChildNodes();
+                        for (int j = 0; j < directions.getLength(); j++) {
+                            Element direction = (Element) directions.item(j);
+
+                            NodeList stops = direction.getElementsByTagName("Stop");
+                            for (int k = 0; k < stops.getLength(); k++) {
+                                Element stop = (Element) stops.item(k);
+
+                                NodeList arrivals = stop.getElementsByTagName("DepartureTime");
+                                for (int l = 0; l < arrivals.getLength(); l++) {
+                                    Element arrival = (Element) arrivals.item(l);
+
+                                    seconds = Integer.parseInt(arrival.getFirstChild().getTextContent()) * 60;
+
+                                    Destination d   = new Destination(direction.getAttribute("Name"));
+                                    Route r         = new Route(route.getAttribute("Name"));
+                                    Stop s          = new Stop(stopIDAttribute);
+                                    // No bus #s here as well. Unfortunate.
+                                    Vehicle v       = null;
+
+                                    s.setStopName(stop.getAttribute("name"));
+                                    addNewArrival(ret, seconds, d, r, s, v);
+                                }
+                            }
                         }
                     }
                 }

@@ -117,7 +117,7 @@ public class StopRouteDestinationPrediction extends Prediction {
     public void handleResponse( String response ) {
         super.handleResponse(response);
 
-        List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response);
+        List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response, stop.getAgency());
 
         LaMetroUtil.fillinAgencyAndStopID(arrivals, stop.getAgency(), stop.getStopID());
 
