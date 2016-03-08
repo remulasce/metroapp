@@ -450,7 +450,7 @@ public class ArrivalNotifyService extends Service {
     }
 	StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
 
-		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml);
+		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml, null);
 
 		if (parsedArrivals == null) {
 			return null;
