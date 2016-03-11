@@ -86,7 +86,7 @@ public class ArrivalNotifyService extends Service {
 				Log.d(TAG, "Notify service updating from network");
 
 				String response = getXMLArrivalString(stopID, agency, routeName);				
-				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber);
+				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber, agency);
 				
 				int seconds = -1;
 				if (arrival != null) {
@@ -448,9 +448,9 @@ public class ArrivalNotifyService extends Service {
 	    public int arrivalTime;
         public String stopName;
     }
-	StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber) {
+	StupidArrival getFirstArrivalTime(String xml, String destination, String vehicleNumber, String agency) {
 
-		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml, null);
+		List<Arrival> parsedArrivals = LaMetroUtil.parseAllArrivals(xml, new Agency(agency, null, null, null));
 
 		if (parsedArrivals == null) {
 			return null;
