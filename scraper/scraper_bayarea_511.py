@@ -37,11 +37,20 @@ for agencyParam in agencyList:
         # So we must parse them ourselves from individual agency gtfs files.
         stops_dict = dict()
         with open(agencyName+"_gtfs/stops.txt") as stops_gtfs:
-            stops_gtfs.readline()
+            format = stops_gtfs.readline()
+            format = format.split(",")
+            format = [s.strip("'") for s in format]
+
+            stop_id_index = format.index("stop_id")
+            if ("stop_code" in format):
+                stop_id_index = format.index("stop_code")
+            lat_index = format.index("stop_lat")
+            lon_index = format.index("stop_lon")
+
             for line in stops_gtfs:
                 split = line.split(",")
                 #stop_code, (lat, lon)
-                stops_dict[split[1].strip('"')] = (float(split[4].strip('"')), float(split[5].strip('"')))
+                stops_dict[split[stop_id_index].strip('"')] = (float(split[lat_index].strip('"')), float(split[lon_index].strip('"')))
         
 
         searchString = "http://services.my511.org/Transit2.0/GetRoutesForAgency.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471&agencyName=" + agencyName.replace(' ', '%20')
@@ -126,26 +135,6 @@ for agencyParam in agencyList:
                 root = ET.fromstring(routeResponse.text).find("AgencyList").find("Agency").find("RouteList")
                 for routeObject in root:
                         if routeObject.tag == "Route":
-                                # Collect the bounds of each route to calculate the agency's total service area
-                                # Add .5 lon / lat to show where we could possibly want data. This is pretty far away from the agency.
-                                """
-                                routeLatMin = float(routeObject.attrib["latMin"]) - .5;
-                                routeLonMin = float(routeObject.attrib["lonMin"]) - .5;
-                                routeLatMax = float(routeObject.attrib["latMax"]) + .5;
-                                routeLonMax = float(routeObject.attrib["lonMax"]) + .5;
-                                # print "Found area bounds for route "+routeObject.attrib["title"]+": "+routeLatMin+" "+routeLatMax+" "+routeLonMin+" "+routeLonMax
-                                
-                                if (agencyLatMin == None):
-                                        agencyLatMin = routeLatMin
-                                        agencyLatMax = routeLatMax
-                                        agencyLonMin = routeLonMin
-                                        agencyLonMax = routeLonMax
-                                else:
-                                        agencyLatMin = min(routeLatMin, agencyLatMin)
-                                        agencyLatMax = max(routeLatMax, agencyLatMax)
-                                        agencyLonMin = min(routeLonMin, agencyLonMin)
-                                        agencyLonMax = max(routeLonMax, agencyLonMax)
-                                """
                                 for child in routeObject.find("RouteDirectionList").find("RouteDirection").find("StopList"):
                                         if child.tag == "Stop":
                                                 # Don't know if stoptag needs some cleaning like stopid
@@ -164,6 +153,26 @@ for agencyParam in agencyList:
                                                 
                                                 lat = stops_dict[str(stoptag)][0]
                                                 lon = stops_dict[str(stoptag)][1]
+
+                                                # Collect the bounds of each route to calculate the agency's total service area
+                                                # Add .5 lon / lat to show where we could possibly want data. This is pretty far away from the agency.
+                                                
+                                                routeLatMin = float(lat - .5);
+                                                routeLonMin = float(lon - .5);
+                                                routeLatMax = float(lat + .5);
+                                                routeLonMax = float(lon + .5);
+                                                # print "Found area bounds for route "+routeObject.attrib["title"]+": "+routeLatMin+" "+routeLatMax+" "+routeLonMin+" "+routeLonMax
+                                                
+                                                if (agencyLatMin == None):
+                                                        agencyLatMin = routeLatMin
+                                                        agencyLatMax = routeLatMax
+                                                        agencyLonMin = routeLonMin
+                                                        agencyLonMax = routeLonMax
+                                                else:
+                                                        agencyLatMin = min(routeLatMin, agencyLatMin)
+                                                        agencyLatMax = max(routeLatMax, agencyLatMax)
+                                                        agencyLonMin = min(routeLonMin, agencyLonMin)
+                                                        agencyLonMax = max(routeLonMax, agencyLonMax)
 
                                                 newstop = 1
                                                 for el in stopnamesList:

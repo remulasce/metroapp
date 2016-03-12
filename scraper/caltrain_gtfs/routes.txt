@@ -1,0 +1,6 @@
+route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color
+SHUTTLE,CT,,SHUTTLE,3,,
+LOCAL,CT,LOCAL,,2,,
+LIMITED,CT,,LIMITED,2,,
+BABY BULLET,CT,,BABY BULLET,2,,
+SX,CT,SX,,3,,
