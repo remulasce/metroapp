@@ -39,7 +39,7 @@ for agencyParam in agencyList:
         with open(agencyName+"_gtfs/stops.txt") as stops_gtfs:
             format = stops_gtfs.readline()
             format = format.split(",")
-            format = [s.strip("'") for s in format]
+            format = [s.strip('"') for s in format]
 
             stop_id_index = format.index("stop_id")
             if ("stop_code" in format):
