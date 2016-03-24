@@ -195,7 +195,8 @@ public class StopServiceRequest extends ServiceRequest {
     public enum NetworkStatusState {
         NOTHING,
         SPINNER,
-        ERROR
+        ERROR,
+        NOTRIPS
     }
     // Figure out if we should show an error message, progress bar, or nothing.
     NetworkStatusState determineNetworkStatusState() {
@@ -234,8 +235,13 @@ public class StopServiceRequest extends ServiceRequest {
             return NetworkStatusState.ERROR;
         }
 
-        // Otherwise don't display anything special.
-        return NetworkStatusState.NOTHING;
+        // Don't display anything if we are okie dokie
+        if (anyGood) {
+            return NetworkStatusState.NOTHING;
+        }
+
+        // Otherwise, there is no useful information.
+        return NetworkStatusState.NOTRIPS;
     }
 
     public String getAgencyName() {

@@ -46,7 +46,8 @@ public class RequestStatusTrip extends Trip{
     public enum RequestDisplayType {
         NOTHING,
         SPINNER,
-        ERROR
+        ERROR,
+        NOTRIPS
     }
 
     public RequestStatusTrip(StopServiceRequest parent) {
@@ -65,6 +66,8 @@ public class RequestStatusTrip extends Trip{
                 return RequestDisplayType.SPINNER;
             case ERROR:
                 return RequestDisplayType.ERROR;
+            case NOTRIPS:
+                return RequestDisplayType.NOTRIPS;
             default:
                 Log.w("RequestStatusTrip", "Unknown parent request status");
                 return RequestDisplayType.NOTHING;
