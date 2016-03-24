@@ -16,13 +16,14 @@ import com.remulasce.lametroapp.java_core.basic_types.StopServiceRequest;
  * Conditions are:
  * - Fetching update from server
  * - Error occured from server.
+ * - Server definitely reported no trips
  *
  * It is specific to the StopServiceRequest for now.
  *
  * Pass-through method to the platform-specific display:
- * - getRequestStatus() returns either NOTHING, SPINNER, or ERROR
- *   That denotes whether to display an error message, a progress spinner, or that
- *   actually this trip shouldn't be displayed at all.
+ * - getRequestStatus() returns either NOTHING, SPINNER, ERROR, or NOTRIPS
+ *   That denotes whether to display an error message, a progress spinner, a "no trips" message, or
+ *   that actually this trip shouldn't be displayed at all.
  * - getTitleText() returns a string to display up top.
  *   eg. "Redondo Beach Station"
  *

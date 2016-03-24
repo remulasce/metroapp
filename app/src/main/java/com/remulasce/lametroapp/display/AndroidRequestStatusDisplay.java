@@ -59,6 +59,7 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
                 status_text.setVisibility(View.VISIBLE);
 
                 status_text.setText("No arrivals reported by network");
+                break;
             case SPINNER:
                 progres_spinner.setVisibility(View.VISIBLE);
                 status_text.setVisibility(View.VISIBLE);
