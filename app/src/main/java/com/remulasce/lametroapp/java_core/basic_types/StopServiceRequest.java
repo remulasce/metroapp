@@ -56,7 +56,9 @@ public class StopServiceRequest extends ServiceRequest {
         Collection<Trip> trips = new ArrayList<Trip>();
 
         if (statusTrip != null && statusTrip.isValid() // TripPopulator can't handle empty / null Trips
-                && determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
+                && (    determineNetworkStatusState() == NetworkStatusState.ERROR
+                    ||  determineNetworkStatusState() == NetworkStatusState.SPINNER
+                    ||  determineNetworkStatusState() == NetworkStatusState.NOTRIPS)) {
 //                ) { // Testing, keep the status up.
             trips.add(statusTrip);
         }
@@ -208,7 +210,9 @@ public class StopServiceRequest extends ServiceRequest {
         for (Prediction p : predictions) {
             switch (p.getPredictionState()) {
                 case GOOD:
-                    anyGood = true;
+                    if (p.hasAnyPredictions()) {
+                        anyGood = true;
+                    }
                     break;
                 case CACHED:
                     anyCached = true;
