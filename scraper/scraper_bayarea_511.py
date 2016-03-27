@@ -117,6 +117,14 @@ for agencyParam in agencyList:
         # will be split into multiple route + stopTags.
         #[STOPNAME, ROUTE, STOPTAG]
         stopnameroutetagList = []
+
+        # Optimization to the autocomplete method
+        # Because we can search for stops by each word of the stopname, we'll split each
+        # stop into its different words and add each as an entry, with all info in tow.
+        # That way we won't have to do regular expressions inside sql.
+        # The stopname word is always lowercase.
+        # [UNIQUEID, STOPID, STOPNAME, STOPNAMEWORD, LAT, LONG]
+        stopnamewordsList = []
         
         i=0.0
         uniquetag = 1
@@ -181,6 +189,11 @@ for agencyParam in agencyList:
                                                         #print "Match: " + str(el[0]) + ", " + str(stopid)
                                                 if newstop==1:
                                                         stopnamesList.append( (uniquetag,stoptag,stopname,lat,lon) )
+
+                                                        stopnamewords = stopname.split(" ")
+                                                        for word in stopnamewords:
+                                                            stopnamewordsList.append( (uniquetag,stoptag,stopname,word.lower(),lat,lon) )
+
                                                         uniquetag = uniquetag + 1
                                                         #print stopnamesList
 
@@ -195,6 +208,7 @@ for agencyParam in agencyList:
         c = conn.cursor()
         # Delete old contents, if any
         c.execute('''DROP TABLE IF EXISTS stopnames''')
+        c.execute('''DROP TABLE IF EXISTS stopnamewords''')
         c.execute('''DROP TABLE IF EXISTS stoproutes''')
         c.execute('''DROP TABLE IF EXISTS stopnameroutetags''')
         c.execute('''DROP TABLE IF EXISTS agencyinfo''')
@@ -202,6 +216,9 @@ for agencyParam in agencyList:
         # Create table
         c.execute('''CREATE TABLE stopnames
                      (uniqueid integer, stopid text, stopname text, latitude real, longitude real)''')
+        # Create table
+        c.execute('''CREATE TABLE stopnamewords
+                     (uniqueid integer, stopid text, stopname text, stopnameword text, latitude real, longitude real)''')
         # Correct way to make primary keys, Nighelles
         c.execute('''CREATE TABLE stoproutes
                      ( stopid text, route text)''')
@@ -213,6 +230,7 @@ for agencyParam in agencyList:
                      ( agencyid text, agencyname text, latMin real, latMax real, lonMin real, lonMax real )''')
 
         c.executemany('INSERT INTO stopnames VALUES (?,?,?,?,?)', stopnamesList)
+        c.executemany('INSERT INTO stopnamewords VALUES (?,?,?,?,?,?)', stopnamewordsList)
         c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
         c.executemany('INSERT INTO stopnameroutetags VALUES (?,?,?)', stopnameroutetagList)
         c.execute('INSERT INTO agencyinfo VALUES (?,?,?,?,?,?)', (agencyid, agencytitle, agencyLatMin, agencyLatMax, agencyLonMin, agencyLonMax))

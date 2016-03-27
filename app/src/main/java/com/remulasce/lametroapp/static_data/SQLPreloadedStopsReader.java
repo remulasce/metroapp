@@ -40,8 +40,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     private String DATABASE_NAME;
     private Agency agency;
-    // Must be changed for InstalledAgencyLoader as well
-    private static final int DATABASE_VERSION = 14;
+    /** Must be changed for {@link InstalledAgencyLoader#DATABASE_VERSION} as well */
+    private static final int DATABASE_VERSION = 16;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
@@ -53,6 +53,15 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         public static final String TABLE_NAME = "stopnames";
         public static final String COLUMN_NAME_STOPID = "stopid";
         public static final String COLUMN_NAME_STOPNAME = "stopname";
+        public static final String COLUMN_NAME_LATITUDE = "latitude";
+        public static final String COLUMN_NAME_LONGITUDE = "longitude";
+    }
+
+    public static abstract class StopNameWordEntry implements BaseColumns {
+        public static final String TABLE_NAME = "stopnamewords";
+        public static final String COLUMN_NAME_STOPID = "stopid";
+        public static final String COLUMN_NAME_STOPNAME = "stopname";
+        public static final String COLUMN_NAME_STOPNAMEWORD = "stopnameword";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
     }
@@ -152,8 +161,8 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     }
 
     private Collection<SQLStopNamesEntry> getAutoCompleteEntries(SQLiteDatabase db, String stopName) {
-        return getMatchingStopNameEntries(StopNameEntry.TABLE_NAME, makeAutoCompleteNameParameterizedSelection(),
-                new String[]{"%" + stopName + "%"}, db);
+        return getMatchingStopNameEntries(StopNameWordEntry.TABLE_NAME, makeAutoCompleteNameParameterizedSelection(),
+                new String[]{stopName}, db);
     }
 
     // Gets all of the name-based autocomplete results.
@@ -514,7 +523,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
                 " LIKE \'%" + stopName + "%\'";
     }
     private String makeAutoCompleteNameParameterizedSelection() {
-        return StopNameEntry.COLUMN_NAME_STOPNAME + " LIKE ?";
+        return StopNameWordEntry.COLUMN_NAME_STOPNAMEWORD + " = ";
     }
 
     private void putNewStopDef(SQLiteDatabase sqLiteDatabase, String stopID, String stopName, double latitude, double longitude) {

@@ -16,8 +16,8 @@ import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
  * Given an agency filename, open up the agency overview table and actually make an Agency object for it.
  */
 public class InstalledAgencyLoader extends SQLiteAssetHelper {
-    // Note: Must be changed in SQLPreloadedStopsReader as well
-    private static final int DATABASE_VERSION = 14;
+    /** Note: Must be changed in {@link SQLPreloadedStopsReader#DATABASE_VERSION} as well */
+    private static final int DATABASE_VERSION = 16;
     public static final String INFOTABLE = "agencyinfo";
     public static final String TAG = "AgencyLoader";
 
