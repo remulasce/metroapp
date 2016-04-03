@@ -25,6 +25,31 @@ if len(agencyList) == 0:
 
 print "Scraping " + str(len(agencyList)) + " agencies"
 
+
+def parseStop(child, stopnamesList, stoproutesList):
+    stopname = child.attrib["title"]
+    stoptag = child.attrib["tag"]
+    stopnameroutetagTuple = (stopname, routeTag, stoptag)
+    if not stopnameroutetagTuple in stopnameroutetagList:
+        stopnameroutetagList.append(stopnameroutetagTuple)
+
+    if "stopId" in child.attrib.keys():
+        stopid = child.attrib["stopId"]
+        stopid = stopid.lstrip("0")
+        lat = child.attrib["lat"]
+        lon = child.attrib["lon"]
+
+        newstop = 1
+        for el in stopnamesList:
+            if el[1] == stopid:
+                newstop = 0
+        if newstop == 1:
+            stopnamesList.append((stopid, stopname, lat, lon))
+        stoprouteTuple = (stopid, routeTag)
+        if not stoprouteTuple in stoproutesList:
+            stoproutesList.append(stoprouteTuple)
+
+
 for agencyParam in agencyList:
     agencyName = agencyParam[0]
     print "Now scraping: " + agencyName
@@ -97,12 +122,10 @@ for agencyParam in agencyList:
             if routeObject.tag == "route":
                 # Collect the bounds of each route to calculate the agency's total service area
                 # Add .5 lon / lat to show where we could possibly want data. This is pretty far away from the agency.
-
-                routeLatMin = float(routeObject.attrib["latMin"]) - .5;
-                routeLonMin = float(routeObject.attrib["lonMin"]) - .5;
-                routeLatMax = float(routeObject.attrib["latMax"]) + .5;
-                routeLonMax = float(routeObject.attrib["lonMax"]) + .5;
-                # print "Found area bounds for route "+routeObject.attrib["title"]+": "+routeLatMin+" "+routeLatMax+" "+routeLonMin+" "+routeLonMax
+                routeLatMin = float(routeObject.attrib["latMin"]) - .5
+                routeLonMin = float(routeObject.attrib["lonMin"]) - .5
+                routeLatMax = float(routeObject.attrib["latMax"]) + .5
+                routeLonMax = float(routeObject.attrib["lonMax"]) + .5
 
                 if (agencyLatMin == None):
                     agencyLatMin = routeLatMin
@@ -117,30 +140,7 @@ for agencyParam in agencyList:
 
                 for child in routeObject:
                     if child.tag == "stop":
-                        # Don't know if stoptag needs some cleaning like stopid
-                        stopname = child.attrib["title"]
-                        stoptag = child.attrib["tag"]
-                        stopnameroutetagTuple = (stopname, routeTag, stoptag)
-                        if not stopnameroutetagTuple in stopnameroutetagList:
-                            stopnameroutetagList.append(stopnameroutetagTuple)
-                        # print stopnameroutetagTuple
-
-                        if "stopId" in child.attrib.keys():
-                            stopid = child.attrib["stopId"]
-                            stopid = stopid.lstrip("0");
-
-                            lat = child.attrib["lat"]
-                            lon = child.attrib["lon"]
-                            newstop = 1
-                            for el in stopnamesList:
-                                if el[1] == stopid:
-                                    newstop = 0
-                            if newstop == 1:
-                                stopnamesList.append((stopid, stopname, lat, lon))
-
-                            stoprouteTuple = (stopid, routeTag)
-                            if not stoprouteTuple in stoproutesList:
-                                stoproutesList.append(stoprouteTuple)
+                        parseStop(child, stopnamesList, stoproutesList)
 
     print "Finished scraping " + agencyName + ", saving to SQL...";
     conn = sqlite3.connect(agencyName + '.db')
