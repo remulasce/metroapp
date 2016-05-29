@@ -8,7 +8,7 @@
     <string name="notify_confirmation_title">Live Notification</string>
     <string name="about_text_title">Los Angeles Metro Companion</string>
     <string name="about_text_author">Made by Fintan O\'Grady\nlametrodeveloper@gmail.com</string>
-    <string name="about_text_legal" >This app uses realtime arrival information provided by NextBus and Metro.\n\nHowever, it is not endorsed by Metro</string>
+    <string name="about_text_legal">This app uses realtime arrival information provided by NextBus and Metro.\n\nHowever, it is not endorsed by Metro</string>
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer close</string>
     <string name="ok">OK</string>

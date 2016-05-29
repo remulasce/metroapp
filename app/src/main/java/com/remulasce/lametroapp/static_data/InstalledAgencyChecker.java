@@ -35,7 +35,7 @@ public class InstalledAgencyChecker {
     /**
      * Gets the agencies this device supports for the main prediction activity.
      *
-     * Discount the currently-prototyped routelines databases, which are different.
+     * Discount the currently-prototyped routemap databases, which are different.
      *
      * @return The agencies whose arrivals can be predicted
      */
@@ -52,14 +52,14 @@ public class InstalledAgencyChecker {
                 Log.d("", fileList[i]);
 
                 if (fileList[i].contains("-routelines.db.zip")) {
-                    // This is a prototype routelines db. Handled much differently.
+                    // This is a prototype routemap db. Handled much differently.
                     Log.d(TAG, fileList[i]);
 
                     continue;
                 }
                 // We need to properly open the details for each db file
                 Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
-                Log.d(TAG, "Found agency for " + fileList[i] + ", " + a);
+                Log.d(TAG, "Found prediction agency for " + fileList[i] + ", " + a);
 
                 if (a != null) {
                     ret.add(a);
@@ -70,7 +70,39 @@ public class InstalledAgencyChecker {
             return null;
         }
 
-        Log.i(TAG, "Found installed agencies: "+ret);
+        Log.i(TAG, "Found installed prediction agencies: "+ret);
+        return ret;
+    }
+
+    public Collection<Agency> getInstalledRouteMapAgencies() {
+        Collection<Agency> ret = new ArrayList<Agency>();
+
+        Resources res = c.getResources();
+        AssetManager am = res.getAssets();
+
+        try {
+            String[] fileList = am.list(DATABASES);
+
+            for (int i = 0; i < fileList.length; i++) {
+                Log.d("", fileList[i]);
+
+                if (fileList[i].contains("-routelines.db.zip")) {
+                    // This is a prototype routemap db. Yay!.
+                    // We need to properly open the details for each db file
+                    Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
+                    Log.d(TAG, "Found routemap agency for " + fileList[i] + ", " + a);
+
+                    if (a != null) {
+                        ret.add(a);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "No databases/ asset folder present");
+            return null;
+        }
+
+        Log.i(TAG, "Found installed routemap agencies: "+ret);
         return ret;
     }
 }
