@@ -1,0 +1,2 @@
+# Only keep files at this dir level. None of the actual gtfs files, because they're too big.
+*/**
