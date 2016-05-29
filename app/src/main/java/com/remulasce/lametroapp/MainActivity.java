@@ -40,7 +40,6 @@ import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
-import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
@@ -59,7 +58,6 @@ import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
@@ -126,7 +124,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         RegionalizationHelper.setPersistence(getFieldSaver());
 
         InstalledAgencyChecker checker = new InstalledAgencyChecker(this);
-        Collection<Agency> installedAgencies = checker.getInstalledAgencies();
+        Collection<Agency> installedAgencies = checker.getInstalledPredictionAgencies();
 
         RegionalizationHelper.getInstance().setInstalledAgencies(installedAgencies);
         RegionalizationHelper.getInstance().loadPersistedAgencies();

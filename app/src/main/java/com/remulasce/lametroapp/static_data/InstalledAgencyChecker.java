@@ -32,7 +32,14 @@ public class InstalledAgencyChecker {
         this.c = c;
     }
 
-    public Collection<Agency> getInstalledAgencies() {
+    /**
+     * Gets the agencies this device supports for the main prediction activity.
+     *
+     * Discount the currently-prototyped routelines databases, which are different.
+     *
+     * @return The agencies whose arrivals can be predicted
+     */
+    public Collection<Agency> getInstalledPredictionAgencies() {
         Collection<Agency> ret = new ArrayList<Agency>();
 
         Resources res = c.getResources();
