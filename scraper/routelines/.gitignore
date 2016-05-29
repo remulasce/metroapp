@@ -1,2 +1,3 @@
 # Ignore these dbs, since they are way too huge. Generate them yourself.
 *.db
+*.db.zip
