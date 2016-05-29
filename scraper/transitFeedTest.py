@@ -21,7 +21,7 @@ def extractStopsTable(schedule):
 		stops.append( (stop.stop_id, stop.stop_lat, stop.stop_lon) )
 
 	writeToDb(
-	        'routelines/'+agency+'.db',
+	        'routelines/'+agency+'-routelines.db',
 	         'stops',
 	         'stopid text, latitude real, longitude real',
 	         stops)
@@ -56,9 +56,9 @@ def extractStopShapesTable(schedule):
 						trip.shape_id,
 						stoptime.shape_dist_traveled) )
 	writeToDb(
-	        'routelines/'+agency+'.db',
+	        'routelines/'+agency+'-routelines.db',
 	         'stopshapes',
-	         'stopid text, shapeid real, distanceintoshapeft real',
+	         'stopid text, shapeid text, distanceintoshapeft real',
 	         stopshapes)
 
 """
@@ -84,7 +84,7 @@ def extractShapePointsTable(schedule):
 					shapepoint[0],
 					shapepoint[1]) )
 	writeToDb(
-	        'routelines/'+agency+'.db',
+	        'routelines/'+agency+'-routelines.db',
 	         'shapepoints',
 	         'shapeid text, distanceintoshapeft real, latitude real, longitude real',
 	         shapepoints)
