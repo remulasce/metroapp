@@ -2,6 +2,7 @@
 import sys
 from parseGtfsStops import *
 from gtfsParseUtils import *
+from gtfsDictionaryUtils import *
 
 def getDir(agencyName):
     return "gtfs_dirs/gtfs_"+agencyName
@@ -12,6 +13,8 @@ def parseRoutesDb(agency):
 
     gtfsDir = getDir(agency)
     stops = getStops(gtfsDir+"/stops.txt")
+
+    stopTimesDict = parseGtfsDictionary(gtfsDir+"/stop_times.txt")
 
     writeToDb(
         'routelines/'+agency+'.db',

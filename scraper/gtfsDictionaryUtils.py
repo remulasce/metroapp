@@ -21,5 +21,3 @@ def parseGtfsDictionary(filename):
 			print str(dictionary)+"\n"
 			ret.append(dictionary)
 	return ret
-
-parseGtfsDictionary("gtfs_dirs/gtfs_vta/stop_times.txt")
