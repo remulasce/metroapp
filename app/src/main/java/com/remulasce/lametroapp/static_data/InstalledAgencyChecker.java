@@ -18,6 +18,8 @@ import java.util.Collection;
  * That's, ah. Basically it.
  *
  * It'll look in the assets folder for every .db file, and pull the overview info out.
+ *
+ * Hacked-in support separates -routelines dbs from the normal ones.
  */
 public class InstalledAgencyChecker {
 
@@ -42,6 +44,12 @@ public class InstalledAgencyChecker {
             for (int i = 0; i < fileList.length; i++) {
                 Log.d("", fileList[i]);
 
+                if (fileList[i].contains("-routelines.db.zip")) {
+                    // This is a prototype routelines db. Handled much differently.
+                    Log.d(TAG, fileList[i]);
+
+                    continue;
+                }
                 // We need to properly open the details for each db file
                 Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
                 Log.d(TAG, "Found agency for " + fileList[i] + ", " + a);
