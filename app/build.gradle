@@ -45,4 +45,5 @@ dependencies {
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'ch.acra:acra:4.5.0'
+    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
 }

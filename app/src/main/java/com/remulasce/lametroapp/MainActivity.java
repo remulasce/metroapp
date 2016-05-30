@@ -28,6 +28,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.GoogleMap;
 import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
@@ -59,6 +61,12 @@ import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
 import java.util.Collection;
+
+import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.License;
+import de.psdev.licensesdialog.model.Notice;
+import de.psdev.licensesdialog.model.Notices;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
@@ -261,9 +269,54 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         legalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View dialogView = View.inflate(MainActivity.this, R.layout.legal_page, null);
+
+                Button showLicenses = (Button) dialogView.findViewById(R.id.show_licenses_button);
+                showLicenses.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Notices notices = new Notices();
+                        notices.addNotice(new Notice("Apache 2.0 License", "http://apache.org/licenses/LICENSE_2.0", "", new ApacheSoftwareLicense20()));
+                        notices.addNotice(new Notice("License for Google Maps integration", "", "", new License() {
+                            @Override
+                            public String getName() {
+                                return "License for Google Maps";
+                            }
+
+                            @Override
+                            public String readSummaryTextFromResources(Context context) {
+                                return null;
+                            }
+
+                            @Override
+                            public String readFullTextFromResources(Context context) {
+                                return GoogleApiAvailability.getInstance().getOpenSourceSoftwareLicenseInfo(context);
+                            }
+
+                            @Override
+                            public String getVersion() {
+                                return null;
+                            }
+
+                            @Override
+                            public String getUrl() {
+                                return null;
+                            }
+                        }));
+
+                        new LicensesDialog.Builder(MainActivity.this)
+                                .setNotices(notices)
+                                .setTitle("Licenses")
+                                .setShowFullLicenseText(true)
+                                .build()
+                                .show();
+                    }
+                });
+
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(getString(R.string.legal_info_dialog_title))
-                        .setView(View.inflate(MainActivity.this, R.layout.legal_page, null)).show();
+                        .setView(dialogView).show();
+
             }
         });
 
