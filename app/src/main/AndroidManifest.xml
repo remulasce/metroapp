@@ -28,10 +28,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <receiver
@@ -54,8 +50,12 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Dialog" />
-        <activity android:name=".MapHolderActivity">
 
+        <activity android:name=".MapHolderActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
