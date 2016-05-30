@@ -28,6 +28,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <receiver
@@ -51,11 +55,13 @@
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Dialog" />
         <activity android:name=".MapHolderActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC8-Xi5cuUQtm_QyMT2Gh8EO0SpOn4pF6g" />
+
     </application>
 
 </manifest>

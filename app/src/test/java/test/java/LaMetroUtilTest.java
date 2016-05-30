@@ -1,6 +1,7 @@
 package test.java;
 
 import com.remulasce.lametroapp.java_core.LaMetroUtil;
+import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 
 import junit.framework.TestCase;
@@ -19,7 +20,7 @@ public class LaMetroUtilTest extends TestCase {
 
     public void testParseAllArrivals() throws Exception {
 
-        Collection<Arrival> arrivals = LaMetroUtil.parseAllArrivals(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0);
+        Collection<Arrival> arrivals = LaMetroUtil.parseAllArrivals(TestConstants.BLUE_EXPO_7TH_METRO_RESPONSE_0, new Agency("lametro-rail", "lametro-rail", null, null));
 
         assert(arrivals.size() == 7);
     }
