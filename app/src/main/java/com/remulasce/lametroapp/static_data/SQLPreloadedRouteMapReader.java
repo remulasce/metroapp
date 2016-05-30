@@ -20,7 +20,7 @@ import java.util.Collection;
  */
 public class SQLPreloadedRouteMapReader extends SQLiteAssetHelper implements RouteMapFiller{
     private static final int DATABASE_VERSION = 1;
-    public static final double ROUGHLY_ONE_MILE_NEAR_SF = 0.005;
+    public static final double ROUGHLY_ONE_MILE_NEAR_SF = 0.010;
     private final String filename;
     private final Agency agency;
     private final Context context;
@@ -67,7 +67,11 @@ public class SQLPreloadedRouteMapReader extends SQLiteAssetHelper implements Rou
                 stop.setLocation(new BasicLocation(latitude, longitude));
 
                 ret.add(stop);
+
+                cursor.moveToNext();
             }
+
+            cursor.close();
         } catch (CursorIndexOutOfBoundsException e) {
             e.printStackTrace();
         }

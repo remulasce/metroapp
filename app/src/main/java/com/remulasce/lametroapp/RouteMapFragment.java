@@ -70,19 +70,14 @@ public class RouteMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this mapFragment
-        View v = inflater.inflate(R.layout.fragment_route_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_route_map, container, false);
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().replace(R.id.map_container, mapFragment).commit();
-        }
-
+        FragmentManager fragmentManager = getChildFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        return v;
+        return view;
     }
 
     @Override
