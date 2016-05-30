@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -62,9 +63,9 @@ public class RouteMapFragment extends Fragment implements OnMapReadyCallback {
         Agency agency = new InstalledAgencyChecker(getContext()).getInstalledRouteMapAgencies().iterator().next();
         SQLPreloadedRouteMapReader mapReader = new SQLPreloadedRouteMapReader(getContext(), "vta-routelines.db", agency);
 
-        Collection<Stop> nearbyStops = mapReader.getNearbyStops(new BasicLocation(37.4000944, -122.1026157));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.398648, -122.104824), 17));
 
-        Log.d("nearby stops", nearbyStops.toString());
+        Collection<Stop> nearbyStops = mapReader.getNearbyStops(new BasicLocation(37.3294748,-121.9035506));
 
         for (Stop s : nearbyStops) {
             BasicLocation loc = s.getLocation();
@@ -92,9 +93,9 @@ public class RouteMapFragment extends Fragment implements OnMapReadyCallback {
         // Draw them
         // (separated out for future multithreading
         for (ShapePoints sp : shapes) {
-            BasicLocation last = null;
-
             PolylineOptions line = new PolylineOptions();
+            // Force A color to be fully visible.
+            line.color(sp.hashCode() | 0xFF000000);
 
             for (ShapePoint point : sp.points) {
                 BasicLocation loc = point.loc;
