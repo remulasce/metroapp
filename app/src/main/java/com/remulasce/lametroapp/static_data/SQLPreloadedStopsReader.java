@@ -45,7 +45,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
-    private int trackNumber = 1;
+    private int trackNumber = 0;
     private final int trackDivider = 50;
 
 
