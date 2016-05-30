@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.remulasce.lametroapp"
         minSdkVersion 14
-        targetSdkVersion 20
+        targetSdkVersion 23
 
     }
 
