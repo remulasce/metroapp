@@ -1,0 +1,2 @@
+# If it's big enough to have to put in a .zip, it's too big for git.
+*.db.zip

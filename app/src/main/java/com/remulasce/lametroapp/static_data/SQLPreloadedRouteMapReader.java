@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
+import com.remulasce.lametroapp.java_core.basic_types.Shape;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 import java.util.ArrayList;
@@ -77,5 +78,47 @@ public class SQLPreloadedRouteMapReader extends SQLiteAssetHelper implements Rou
         }
 
         return ret;
+    }
+
+    class ShapeDistance {
+        public Shape shape;
+        public double dst;
+    }
+
+    /**
+     * Gets all shapes of trips that service this stop.
+     *
+     * Include the distance this stop is into the shape (dst), so you can tell where to begin
+     * drawing the shape.
+     */
+    @Override
+    public Collection<ShapeDistance> getShapeIndexesForStop(Stop stop) {
+        Collection<ShapeDistance> ret = new ArrayList<>();
+
+
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM stopshapes" +
+                    " WHERE stopid EQUALS " + stop.getStopID(), null);
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast()) {
+                int shapeIdColumnIndex = cursor.getColumnIndexOrThrow("shapeid");
+
+                String shapeId = cursor.getString(shapeIdColumnIndex);
+
+                ret.
+
+                cursor.moveToNext();
+            }
+
+            cursor.close();
+        } catch (CursorIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+
     }
 }

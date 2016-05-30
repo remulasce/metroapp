@@ -7,4 +7,6 @@ import java.util.Collection;
 
 public interface RouteMapFiller {
     Collection<Stop> getNearbyStops(BasicLocation loc);
+
+    Collection<SQLPreloadedRouteMapReader.ShapeDistance> getShapeIndexesForStop(Stop stop);
 }

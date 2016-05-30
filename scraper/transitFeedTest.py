@@ -1,5 +1,6 @@
 import transitfeed
 from gtfsParseUtils import *
+from collections import defaultdict
 
 agency = "vta"
 
@@ -48,13 +49,22 @@ def extractStopShapesTable(schedule):
 	# [stopid, shapeid, distanceintoshapeft]
 	stopshapes = []
 
+	# We'll use this set-default-dict to prevent the (many) duplicate mappings.
+	# Maps stop to a list of shapes.
+	stopshapesdict = defaultdict(set)
+
 	for stop in stopList:
 		for trip in stop.GetTrips():
 			for stoptime in trip.GetStopTimes():
-				stopshapes.append( (
-						stop.stop_id,
-						trip.shape_id,
-						stoptime.shape_dist_traveled) )
+				stopshapesdict[stoptime.stop_id].add(
+					# Add the stopid to the value to, for convenience later.
+					(stoptime.stop_id, trip.shape_id, stoptime.shape_dist_traveled) )
+
+	for keysets in stopshapesdict.values():
+		for value in keysets:
+			stopshapes.append(value)
+
+
 	writeToDb(
 	        'routelines/'+agency+'-routelines.db',
 	         'stopshapes',
