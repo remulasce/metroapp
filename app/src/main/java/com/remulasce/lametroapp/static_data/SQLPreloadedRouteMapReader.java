@@ -20,7 +20,7 @@ import java.util.Collection;
  * Extracts all the good parts out of the sql
  */
 public class SQLPreloadedRouteMapReader extends SQLiteAssetHelper implements RouteMapFiller{
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final double ROUGHLY_ONE_MILE_NEAR_SF = 0.010;
     private final String filename;
     private final Agency agency;
