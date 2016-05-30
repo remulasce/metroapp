@@ -89,7 +89,7 @@ public class InstalledAgencyChecker {
                 if (fileList[i].contains("-routelines.db.zip")) {
                     // This is a prototype routemap db. Yay!.
                     // We need to properly open the details for each db file
-                    Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
+                    Agency a = new InstalledAgencyLoader(c, fileList[i].replace("-routelines", "").replace(".db.zip", ".db")).getAgency();
                     Log.d(TAG, "Found routemap agency for " + fileList[i] + ", " + a);
 
                     if (a != null) {
