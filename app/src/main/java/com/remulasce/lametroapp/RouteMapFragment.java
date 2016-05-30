@@ -13,14 +13,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
+import com.remulasce.lametroapp.java_core.basic_types.Route;
+import com.remulasce.lametroapp.java_core.basic_types.Shape;
+import com.remulasce.lametroapp.java_core.basic_types.ShapePoint;
+import com.remulasce.lametroapp.java_core.basic_types.ShapePoints;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.SQLPreloadedRouteMapReader;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -64,6 +71,37 @@ public class RouteMapFragment extends Fragment implements OnMapReadyCallback {
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.latitude, loc.longitude))
                     .title("M"));
+        }
+
+        // TODO: Should be a map shape -> shapeDistance, keeping only minimum distance shapedistance
+        Set<Shape> shapeSet = new HashSet<>();
+
+        for (Stop s : nearbyStops) {
+            Collection<SQLPreloadedRouteMapReader.ShapeDistance> shapes
+                    = mapReader.getShapeIndexesForStop(s);
+            for (SQLPreloadedRouteMapReader.ShapeDistance sd : shapes) {
+                shapeSet.add(sd.shape);
+            }
+        }
+
+        Set<ShapePoints> shapes = new HashSet<>();
+        for (Shape s : shapeSet) {
+            shapes.add(mapReader.getShapePoints(s.getShapeId(), 0));
+        }
+
+        // Draw them
+        // (separated out for future multithreading
+        for (ShapePoints sp : shapes) {
+            BasicLocation last = null;
+
+            PolylineOptions line = new PolylineOptions();
+
+            for (ShapePoint point : sp.points) {
+                BasicLocation loc = point.loc;
+                line.add(new LatLng(loc.latitude, loc.longitude));
+            }
+
+            map.addPolyline(line);
         }
     }
 
