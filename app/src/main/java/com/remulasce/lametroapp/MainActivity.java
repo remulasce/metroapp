@@ -174,7 +174,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupActionBar() {
         android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
 
-        mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setDisplayShowTitleEnabled(false);
         mActionBar.setCustomView(R.layout.omni_search_box);
         mActionBar.setDisplayShowCustomEnabled(true);
