@@ -27,6 +27,7 @@ import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.SQLPreloadedRouteMapReader;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
