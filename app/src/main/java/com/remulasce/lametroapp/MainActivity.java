@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -201,6 +202,18 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    private void setupFloatingActionButton() {
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.myFAB);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent().setClass(MainActivity.this, MapHolderActivity.class));
+            }
+        });
+
+        fab.show();
+    }
+
     void setupAboutPage() {
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -383,6 +396,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     @Override
     protected void onStart() {
         super.onStart();
+        setupFloatingActionButton();
+
         requestHandler.StartPopulating();
         tripPopulator.StartPopulating();
         tutorialManager.appStarted();

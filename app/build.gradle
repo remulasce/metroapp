@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
-    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
+//    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.remulasce.lametroapp"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 22
 
     }
 
@@ -34,16 +34,20 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    dexOptions {
+    }
 }
 
 dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.9.5'
-    compile 'com.android.support:support-v4:23.+'
-    compile 'com.android.support:appcompat-v7:23.+'
-    compile 'com.google.android.gms:play-services:9.0.1'
+
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:support-v4:22.0'
+    compile 'com.android.support:design:22.2.1'
+    compile 'com.google.android.gms:play-services:8.3.+'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'ch.acra:acra:4.5.0'
-    compile 'de.psdev.licensesdialog:licensesdialog:1.8.1'
+    compile 'de.psdev.licensesdialog:licensesdialog:1.8.0'
 }
