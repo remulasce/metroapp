@@ -1,6 +1,8 @@
 # Los Angeles Metro Companion App
 Realtime arrival notification utility for LA Metro on Android
-Also, port in progress for AC Transit on iOS with automatic region detection planned.
+
+Note: Developers got jobs and moved to Silicon Valley.
+App is fully functional, and in a total coincidence, now supports bart and other Bay Area transit providers.
 
 ![Promo Banner](/promotional_images/promo_banner.png?raw=true "Promo Banner")
 
