@@ -181,7 +181,6 @@ public class ArrivalNotifyService extends Service {
 			}
 		}
 
-
         public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
 	        if (netTask == null) {
 				Log.w(TAG, "Notification thread waiting on null netTask");
@@ -235,39 +234,29 @@ public class ArrivalNotifyService extends Service {
 	                msg2 += "\n" + destination;
 	            }
 	        }
-	        else if (secondsTillArrival <= 0) {
-	            msg2 = "Vehicle arrived";
-                msg2 += "\n" + stopName;
-	            msg2 += "\n" + lastDestination;
-
-				if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
-					vibrate = true;
-				}
-
-				lastDisplayedEstimateSeconds = secondsTillArrival;
-	        }
-	        else if (secondsTillArrival <= 90) {
-	            msg2 = secondsTillArrival+" seconds";
-                msg2 += "\n" + stopName;
-	            msg2 += "\n" + lastDestination;
-
-                if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
-                    vibrate = true;
-                }
-
-	            lastDisplayedEstimateSeconds = secondsTillArrival;
-	        }
 	        else {
-	            msg2 = (secondsTillArrival/60)+" minutes";
-                msg2 += "\n" + stopName;
-	            msg2 += "\n" + lastDestination;
+	            if (secondsTillArrival <= 0) {
+                    msg2 = "Vehicle arrived";
+                    msg2 += "\n" + stopName;
+                    msg2 += "\n" + lastDestination;
+                } else if (secondsTillArrival <= 90) {
+                    msg2 = secondsTillArrival + " seconds";
+                    msg2 += "\n" + stopName;
+                    msg2 += "\n" + lastDestination;
+                } else {
+                    msg2 = (secondsTillArrival / 60) + " minutes";
+                    msg2 += "\n" + stopName;
+                    msg2 += "\n" + lastDestination;
+                }
 
-                if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
+                // Vibrate when notification time is hit
+                if (lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
                     vibrate = true;
                 }
 
-	            lastDisplayedEstimateSeconds = secondsTillArrival;
-	        }
+                // Pass forward last displayed seconds
+                lastDisplayedEstimateSeconds = secondsTillArrival;
+            }
 	            
 	        if (minutesSinceEstimate >= 0) { msg2 += "\nupdated "+secondsSinceEstimate+" seconds ago"; }
 	        
