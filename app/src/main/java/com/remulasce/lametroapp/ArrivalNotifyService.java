@@ -10,7 +10,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.StrictMode;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -34,15 +33,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.List;
 
 public class ArrivalNotifyService extends Service {
@@ -64,10 +59,10 @@ public class ArrivalNotifyService extends Service {
 	    public String vehicleNumber;
 	    public String agency;
 	    public String routeName;
-	    public String destination;
+	    public String destinationFromIntent;
         public int notificationTime = 90;
 
-	    public boolean isValid = false;
+	    public boolean hasPrediction = false;
 	    
 	    int runNum = 0;
 
@@ -86,7 +81,7 @@ public class ArrivalNotifyService extends Service {
 				Log.d(TAG, "Notify service updating from network");
 
 				String response = getXMLArrivalString(stopID, agency, routeName);				
-				StupidArrival arrival = getFirstArrivalTime(response, destination, vehicleNumber, agency);
+				StupidArrival arrival = getFirstArrivalTime(response,  destinationFromIntent, vehicleNumber, agency);
 				
 				int seconds = -1;
 				if (arrival != null) {
@@ -94,7 +89,7 @@ public class ArrivalNotifyService extends Service {
 				}
 
 				if (seconds != -1) {
-				    isValid = true;
+				    hasPrediction = true;
 				    lastDestination = arrival.destination;
                     stopName = arrival.stopName;
 					arrivalTime = System.currentTimeMillis() + seconds * 1000;
@@ -127,12 +122,12 @@ public class ArrivalNotifyService extends Service {
           void cleanParameters() {
 	        Stop s = new Stop(stopID);
 	        Route r = new Route(routeName);
-	        Destination d = new Destination(destination);
+	        Destination d = new Destination(destinationFromIntent);
 	        Vehicle v = new Vehicle(vehicleNumber);
 	        
 	        if (!s.isValid()) stopID = null;
 	        if (!r.isValid()) routeName = null;
-	        if (!d.isValid()) destination = null;
+	        if (!d.isValid()) destinationFromIntent = null;
 	        if (!v.isValid()) vehicleNumber = null;
 	    }
 		
@@ -157,7 +152,7 @@ public class ArrivalNotifyService extends Service {
 		
 	    public boolean run = true;
 
-	    public int lastDisplayedSeconds = 10000;
+	    public int lastDisplayedEstimateSeconds = 10000;
 	    
 	    public NotificationTask() {
 	    }
@@ -177,7 +172,7 @@ public class ArrivalNotifyService extends Service {
 				Log.d(TAG, "Notification update thread loop...");
 				updateNotificationText(mBuilder);
 				try {
-                    if (netTask != null && netTask.isValid) {
+                    if (netTask != null && netTask.hasPrediction) {
                         Thread.sleep(5000);
                     } else {
                         Thread.sleep(100);
@@ -202,7 +197,7 @@ public class ArrivalNotifyService extends Service {
 	        final int minutesSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000 / 60; 
 	        final int secondsSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000;
 
-	        final String destination = netTask.destination;
+	        final String destination = netTask.destinationFromIntent;
 	        final String lastDestination = netTask.lastDestination;
 	        final String vehicleNumber = netTask.vehicleNumber;
 	        final String routeName = netTask.routeName;
@@ -233,7 +228,7 @@ public class ArrivalNotifyService extends Service {
     		    */
 	        }
 	        
-	        if ( !netTask.isValid || minutesSinceEstimate < 0 ) {
+	        if ( !netTask.hasPrediction || minutesSinceEstimate < 0 ) {
 	            msg2 = "Getting prediction...";
 	            if (destination != null) {
                     msg2 += "\n";
@@ -245,33 +240,33 @@ public class ArrivalNotifyService extends Service {
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 
-				if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+				if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
 					vibrate = true;
 				}
 
-				lastDisplayedSeconds = secondsTillArrival;
+				lastDisplayedEstimateSeconds = secondsTillArrival;
 	        }
 	        else if (secondsTillArrival <= 90) {
 	            msg2 = secondsTillArrival+" seconds";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 
-                if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+                if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
                     vibrate = true;
                 }
 
-	            lastDisplayedSeconds = secondsTillArrival;
+	            lastDisplayedEstimateSeconds = secondsTillArrival;
 	        }
 	        else {
 	            msg2 = (secondsTillArrival/60)+" minutes";
                 msg2 += "\n" + stopName;
 	            msg2 += "\n" + lastDestination;
 
-                if( lastDisplayedSeconds > notificationTime && secondsTillArrival < notificationTime) {
+                if( lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
                     vibrate = true;
                 }
 
-	            lastDisplayedSeconds = secondsTillArrival;
+	            lastDisplayedEstimateSeconds = secondsTillArrival;
 	        }
 	            
 	        if (minutesSinceEstimate >= 0) { msg2 += "\nupdated "+secondsSinceEstimate+" seconds ago"; }
@@ -362,12 +357,12 @@ public class ArrivalNotifyService extends Service {
         netTask = new NetTask();
         notificationTask = new NotificationTask();
         
-		netTask.agency			= intent.getExtras().getString("Agency");
-		netTask.stopID			= intent.getExtras().getString("StopID");
-		netTask.routeName		= intent.getExtras().getString("Route");
-		netTask.destination		= intent.getExtras().getString("Destination");
-		netTask.vehicleNumber	= intent.getExtras().getString("VehicleNumber");
-        netTask.notificationTime= intent.getExtras().getInt("NotificationTime", 120);
+		netTask.agency					= intent.getExtras().getString("Agency");
+		netTask.stopID					= intent.getExtras().getString("StopID");
+		netTask.routeName				= intent.getExtras().getString("Route");
+		netTask.destinationFromIntent 	= intent.getExtras().getString("Destination");
+		netTask.vehicleNumber			= intent.getExtras().getString("VehicleNumber");
+        netTask.notificationTime		= intent.getExtras().getInt("NotificationTime", 120);
 		
 		netTask.cleanParameters();
 		
