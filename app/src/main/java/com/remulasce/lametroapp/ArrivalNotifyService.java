@@ -200,7 +200,7 @@ public class ArrivalNotifyService extends Service {
 			String destination = getDestinationText();
 
 			if (destination != null) {
-            	return msg + "\n" + netTask.lastDestination;
+            	return msg + "\n" + destination;
 			}
 
 			return msg;
@@ -239,15 +239,14 @@ public class ArrivalNotifyService extends Service {
 		 * Makes the text body of the notification
 		 */
         private String makeMessageBody(
+        		boolean hasPrediction,
 				int secondsTillArrival,
 				int secondsSinceEstimate) {
 			String msg2;
 
-			if ( !netTask.hasPrediction || secondsSinceEstimate < 0 ) {
+			if ( !hasPrediction || secondsSinceEstimate < 0 ) {
 				msg2 = "Getting prediction...";
-				if (netTask.destinationFromIntent != null) {
-					msg2 = maybeAddStopAndDestinationBody(msg2);
-				}
+				msg2 = maybeAddStopAndDestinationBody(msg2);
 			} else {
 				msg2 = makeVehiclePredictionText(secondsTillArrival);
 				msg2 = maybeAddStopAndDestinationBody(msg2);
