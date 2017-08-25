@@ -25,6 +25,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
+import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -149,39 +150,132 @@ public class ArrivalNotifyService extends Service {
 	}
 
 	private class NotificationTask implements Runnable {
-		
-	    public boolean run = true;
 
-	    public int lastDisplayedEstimateSeconds = 10000;
-	    
-	    public NotificationTask() {
-	    }
-	    
-		@Override
-		public void run() {
+        public boolean run = true;
 
-			NotificationCompat.Builder mBuilder =
-			        new NotificationCompat.Builder(ArrivalNotifyService.this);
+        public int lastDisplayedEstimateSeconds = 10000;
+
+        public NotificationTask() {
+        }
+
+        @Override
+        public void run() {
+
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(ArrivalNotifyService.this);
             Intent cancelIntent = new Intent();
             cancelIntent.setAction("com.remulasce.lametroapp.cancel_notification");
 
             PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.addAction(R.drawable.ic_action_remove, "Cancel", cancelPendingIntent);
 
-			while (run) {
-				Log.d(TAG, "Notification update thread loop...");
-				updateNotificationText(mBuilder);
-				try {
+            while (run) {
+                Log.d(TAG, "Notification update thread loop...");
+                updateNotificationText(mBuilder);
+                try {
                     if (netTask != null && netTask.hasPrediction) {
                         Thread.sleep(5000);
                     } else {
                         Thread.sleep(100);
                     }
-				} catch (InterruptedException e) {e.printStackTrace();}
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /** Appends the stop name if we know it */
+        private String maybeAppendStopName(String msg) {
+			String stop = getStopText();
+
+			if (stop != null) {
+				return msg + "\n" + netTask.stopName;
 			}
+
+			return msg;
+        }
+
+        /** Appends the destination name if we know it, from either network or intent. */
+        private String maybeAppendDestination(String msg) {
+			String destination = getDestinationText();
+
+			if (destination != null) {
+            	return msg + "\n" + netTask.lastDestination;
+			}
+
+			return msg;
+        }
+
+        private String maybeAddStopAndDestinationBody(String msg) {
+            msg = maybeAppendStopName(msg);
+            msg = maybeAppendDestination(msg);
+
+            return msg;
+        }
+
+        private String getStopText() {
+			if (netTask.stopName != null && !netTask.stopName.isEmpty()) {
+				return netTask.stopName;
+			}
+
+			return null;
 		}
 
-        public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
+		/**
+		 * Gets the destination, either from the most recent network return or from the original
+		 * intent, or null
+		 */
+		private String getDestinationText() {
+			if (netTask.lastDestination != null && !netTask.lastDestination.isEmpty()) {
+				return netTask.lastDestination;
+			} else if (netTask.destinationFromIntent != null && !netTask.destinationFromIntent.isEmpty()) {
+				return netTask.destinationFromIntent;
+			}
+
+			return null;
+		}
+
+		/**
+		 * Makes the text body of the notification
+		 */
+        private String makeMessageBody(
+				int secondsTillArrival,
+				int secondsSinceEstimate) {
+			String msg2;
+
+			if ( !netTask.hasPrediction || secondsSinceEstimate < 0 ) {
+				msg2 = "Getting prediction...";
+				if (netTask.destinationFromIntent != null) {
+					msg2 = maybeAddStopAndDestinationBody(msg2);
+				}
+			} else {
+				msg2 = makeVehiclePredictionText(secondsTillArrival);
+				msg2 = maybeAddStopAndDestinationBody(msg2);
+
+				if (secondsSinceEstimate >= 0) {
+					msg2 += "\nupdated " + secondsSinceEstimate + " seconds ago";
+				}
+			}
+
+			return msg2;
+		}
+
+		/**
+		 * Makes either the "x seconds" or "arrived" text line
+		 */
+		private String makeVehiclePredictionText(int secondsTillArrival) {
+			String msg2;
+			if (secondsTillArrival <= 0) {
+                msg2 = "Vehicle arrived";
+            } else if (secondsTillArrival <= 90) {
+                msg2 = secondsTillArrival + " seconds";
+            } else {
+                msg2 = (secondsTillArrival / 60) + " minutes";
+            }
+			return msg2;
+		}
+
+		public void updateNotificationText( final NotificationCompat.Builder mBuilder ) {
 	        if (netTask == null) {
 				Log.w(TAG, "Notification thread waiting on null netTask");
 				return;
@@ -193,14 +287,10 @@ public class ArrivalNotifyService extends Service {
 	        String msg2;
 	        
 	        final int secondsTillArrival = (int)(netTask.arrivalTime - System.currentTimeMillis()) / 1000;
-	        final int minutesSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000 / 60; 
 	        final int secondsSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000;
 
-	        final String destination = netTask.destinationFromIntent;
-	        final String lastDestination = netTask.lastDestination;
 	        final String vehicleNumber = netTask.vehicleNumber;
 	        final String routeName = netTask.routeName;
-            final String stopName = netTask.stopName;
 	        final String stopID = netTask.stopID;
             final int notificationTime = netTask.notificationTime;
 	        
@@ -227,40 +317,19 @@ public class ArrivalNotifyService extends Service {
     		    */
 	        }
 	        
-	        if ( !netTask.hasPrediction || minutesSinceEstimate < 0 ) {
-	            msg2 = "Getting prediction...";
-	            if (destination != null) {
-                    msg2 += "\n";
-	                msg2 += "\n" + destination;
-	            }
-	        }
-	        else {
-	            if (secondsTillArrival <= 0) {
-                    msg2 = "Vehicle arrived";
-                    msg2 += "\n" + stopName;
-                    msg2 += "\n" + lastDestination;
-                } else if (secondsTillArrival <= 90) {
-                    msg2 = secondsTillArrival + " seconds";
-                    msg2 += "\n" + stopName;
-                    msg2 += "\n" + lastDestination;
-                } else {
-                    msg2 = (secondsTillArrival / 60) + " minutes";
-                    msg2 += "\n" + stopName;
-                    msg2 += "\n" + lastDestination;
-                }
+			msg2 = makeMessageBody(secondsTillArrival, secondsSinceEstimate);
 
-                // Vibrate when notification time is hit
-                if (lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
-                    vibrate = true;
-                }
+			// Check whether to show the notification / vibration
+			if (netTask.hasPrediction && secondsSinceEstimate > 0) {
+				// Vibrate when notification time is hit
+				if (lastDisplayedEstimateSeconds > notificationTime && secondsTillArrival < notificationTime) {
+					vibrate = true;
+				}
 
-                // Pass forward last displayed seconds
-                lastDisplayedEstimateSeconds = secondsTillArrival;
-            }
-	            
-	        if (minutesSinceEstimate >= 0) { msg2 += "\nupdated "+secondsSinceEstimate+" seconds ago"; }
-	        
-	        
+				// Pass forward last displayed seconds
+				lastDisplayedEstimateSeconds = secondsTillArrival;
+			}
+
 	        if (vehicleNumber != null) {
 	            msg1 = "Waiting for veh #" + vehicleNumber;
 	        }
