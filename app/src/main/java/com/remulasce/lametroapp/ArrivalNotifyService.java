@@ -55,7 +55,6 @@ public class ArrivalNotifyService extends Service {
         boolean run = true;
 
         public String stopID;
-        public String stopName;
         public String vehicleNumber;
         public String agency;
         public String routeName;
@@ -70,7 +69,8 @@ public class ArrivalNotifyService extends Service {
         public long arrivalTime = 0;
         public long arrivalUpdatedAt = 0;
 
-        public String lastDestination = "";
+        public String stopNameFromNetwork;
+        public String destinationFromNetwork = "";
 
         @Override
         public void run() {
@@ -91,8 +91,8 @@ public class ArrivalNotifyService extends Service {
 
                 if (seconds != -1) {
                     hasPrediction = true;
-                    lastDestination = arrival.destination;
-                    stopName = arrival.stopName;
+                    destinationFromNetwork = arrival.destination;
+                    stopNameFromNetwork = arrival.stopName;
                     arrivalTime = System.currentTimeMillis() + seconds * 1000;
                     arrivalUpdatedAt = System.currentTimeMillis();
 
@@ -223,8 +223,8 @@ public class ArrivalNotifyService extends Service {
          * Gets the stop name from recent network, the original intent, or null
          */
         private String getStopText() {
-            if (netTask.stopName != null && !netTask.stopName.isEmpty()) {
-                return netTask.stopName;
+            if (netTask.stopNameFromNetwork != null && !netTask.stopNameFromNetwork.isEmpty()) {
+                return netTask.stopNameFromNetwork;
             } else if (netTask.stopNameFromIntent != null && !netTask.stopNameFromIntent.isEmpty()) {
                 return netTask.stopNameFromIntent;
             }
@@ -237,8 +237,8 @@ public class ArrivalNotifyService extends Service {
          * intent, or null
          */
         private String getDestinationText() {
-            if (netTask.lastDestination != null && !netTask.lastDestination.isEmpty()) {
-                return netTask.lastDestination;
+            if (netTask.destinationFromNetwork != null && !netTask.destinationFromNetwork.isEmpty()) {
+                return netTask.destinationFromNetwork;
             } else if (netTask.destinationFromIntent != null && !netTask.destinationFromIntent.isEmpty()) {
                 return netTask.destinationFromIntent;
             }
