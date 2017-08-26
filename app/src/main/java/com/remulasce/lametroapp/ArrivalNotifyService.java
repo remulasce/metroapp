@@ -347,9 +347,9 @@ public class ArrivalNotifyService extends Service {
             if (vehicleNumber != null) {
                 notificationTitle = "Waiting for veh #" + vehicleNumber;
             } else if (routeName != null && !routeName.isEmpty()) {
-                notificationTitle = "Waiting for line " + routeName;
+                notificationTitle = "Waiting for line " + getDestinationText();
             } else {
-                notificationTitle = "Waiting at stop " + stopID;
+                notificationTitle = "Waiting at stop " + getStopText();
             }
 
             final String dispTitle = notificationTitle;
