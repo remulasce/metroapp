@@ -25,7 +25,6 @@ import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
-import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -60,18 +59,19 @@ public class ArrivalNotifyService extends Service {
 	    public String vehicleNumber;
 	    public String agency;
 	    public String routeName;
+		public String stopNameFromIntent;
 	    public String destinationFromIntent;
         public int notificationTime = 90;
 
 	    public boolean hasPrediction = false;
-	    
+
 	    int runNum = 0;
 
 	    public long arrivalTime = 0;
 	    public long arrivalUpdatedAt = 0;
-	    
+
 	    public String lastDestination = "";
-	    
+
 		@Override
 		public void run() {
 			// Prevents confusion in the notification handler
@@ -189,7 +189,7 @@ public class ArrivalNotifyService extends Service {
 			String stop = getStopText();
 
 			if (stop != null) {
-				return msg + "\n" + netTask.stopName;
+				return msg + "\nFrom: " + stop;
 			}
 
 			return msg;
@@ -200,7 +200,7 @@ public class ArrivalNotifyService extends Service {
 			String destination = getDestinationText();
 
 			if (destination != null) {
-            	return msg + "\n" + destination;
+            	return msg + "\nDirection: " + destination;
 			}
 
 			return msg;
@@ -214,11 +214,13 @@ public class ArrivalNotifyService extends Service {
         }
 
 		/**
-		 * Gets the stop name from recent network, or null
+		 * Gets the stop name from recent network, the original intent, or null
 		 */
 		private String getStopText() {
 			if (netTask.stopName != null && !netTask.stopName.isEmpty()) {
 				return netTask.stopName;
+			} else if (netTask.stopNameFromIntent != null && !netTask.stopNameFromIntent.isEmpty()) {
+				return netTask.stopNameFromIntent;
 			}
 
 			return null;
@@ -241,22 +243,22 @@ public class ArrivalNotifyService extends Service {
 		/**
 		 * Makes the text body of the notification
 		 */
-        private String makeMessageBody(
+        private String makeNotificationBody(
         		boolean hasPrediction,
 				int secondsTillArrival,
 				int secondsSinceEstimate) {
-			String msg2;
+			String notificationBody;
 
 			if ( !hasPrediction || secondsSinceEstimate < 0 ) {
-				msg2 = "Getting prediction...";
-				msg2 = maybeAddStopAndDestinationBody(msg2);
+				notificationBody = "Getting prediction...";
+				notificationBody = maybeAddStopAndDestinationBody(notificationBody);
 			} else {
-				msg2 = makeVehiclePredictionText(secondsTillArrival);
-				msg2 = maybeAddStopAndDestinationBody(msg2);
-				msg2 = maybeAddTimeSinceEstimate(secondsSinceEstimate, msg2);
+				notificationBody = makeVehiclePredictionText(secondsTillArrival);
+				notificationBody = maybeAddStopAndDestinationBody(notificationBody);
+				notificationBody = maybeAddTimeSinceEstimate(secondsSinceEstimate, notificationBody);
 			}
 
-			return msg2;
+			return notificationBody;
 		}
 
 		private String maybeAddTimeSinceEstimate(int secondsSinceEstimate, String msg2) {
@@ -289,8 +291,8 @@ public class ArrivalNotifyService extends Service {
 
 			Handler h = new Handler(ArrivalNotifyService.this.getMainLooper());
 	        
-	        String msg1;
-	        String msg2;
+	        String notificationTitle;
+	        String notificationBody;
 	        
 	        final int secondsTillArrival = (int)(netTask.arrivalTime - System.currentTimeMillis()) / 1000;
 	        final int secondsSinceEstimate = (int)(System.currentTimeMillis() - netTask.arrivalUpdatedAt) / 1000;
@@ -323,7 +325,7 @@ public class ArrivalNotifyService extends Service {
     		    */
 	        }
 	        
-			msg2 = makeMessageBody(netTask.hasPrediction, secondsTillArrival, secondsSinceEstimate);
+			notificationBody = makeNotificationBody(netTask.hasPrediction, secondsTillArrival, secondsSinceEstimate);
 
 			// Check whether to show the notification / vibration
 			if (netTask.hasPrediction && secondsSinceEstimate > 0) {
@@ -337,17 +339,17 @@ public class ArrivalNotifyService extends Service {
 			}
 
 	        if (vehicleNumber != null) {
-	            msg1 = "Waiting for veh #" + vehicleNumber;
+	            notificationTitle = "Waiting for veh #" + vehicleNumber;
 	        }
 	        else if (routeName != null && !routeName.isEmpty()) {
-	            msg1 = "Waiting for line "+routeName;
+	            notificationTitle = "Waiting for line "+routeName;
 	        }
 	        else {
-	            msg1 = "Waiting at stop "+stopID;
+	            notificationTitle = "Waiting at stop "+stopID;
 	        }
 	        
-	        final String dispTitle = msg1;
-	        final String dispText = msg2;
+	        final String dispTitle = notificationTitle;
+	        final String dispText = notificationBody;
 	        final boolean doVibrate = vibrate;
 			final boolean useImportantIcon = secondsTillArrival < notificationTime;
 	        
@@ -423,6 +425,7 @@ public class ArrivalNotifyService extends Service {
         
 		netTask.agency					= intent.getExtras().getString("Agency");
 		netTask.stopID					= intent.getExtras().getString("StopID");
+		netTask.stopNameFromIntent		= intent.getExtras().getString("StopName");
 		netTask.routeName				= intent.getExtras().getString("Route");
 		netTask.destinationFromIntent 	= intent.getExtras().getString("Destination");
 		netTask.vehicleNumber			= intent.getExtras().getString("VehicleNumber");
