@@ -213,7 +213,10 @@ public class ArrivalNotifyService extends Service {
             return msg;
         }
 
-        private String getStopText() {
+		/**
+		 * Gets the stop name from recent network, or null
+		 */
+		private String getStopText() {
 			if (netTask.stopName != null && !netTask.stopName.isEmpty()) {
 				return netTask.stopName;
 			}
