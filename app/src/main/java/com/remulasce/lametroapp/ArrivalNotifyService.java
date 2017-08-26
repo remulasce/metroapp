@@ -250,12 +250,16 @@ public class ArrivalNotifyService extends Service {
 			} else {
 				msg2 = makeVehiclePredictionText(secondsTillArrival);
 				msg2 = maybeAddStopAndDestinationBody(msg2);
-
-				if (secondsSinceEstimate >= 0) {
-					msg2 += "\nupdated " + secondsSinceEstimate + " seconds ago";
-				}
+				msg2 = maybeAddTimeSinceEstimate(secondsSinceEstimate, msg2);
 			}
 
+			return msg2;
+		}
+
+		private String maybeAddTimeSinceEstimate(int secondsSinceEstimate, String msg2) {
+			if (secondsSinceEstimate >= 0) {
+                msg2 += "\nupdated " + secondsSinceEstimate + " seconds ago";
+            }
 			return msg2;
 		}
 
@@ -316,7 +320,7 @@ public class ArrivalNotifyService extends Service {
     		    */
 	        }
 	        
-			msg2 = makeMessageBody(secondsTillArrival, secondsSinceEstimate);
+			msg2 = makeMessageBody(netTask.hasPrediction, secondsTillArrival, secondsSinceEstimate);
 
 			// Check whether to show the notification / vibration
 			if (netTask.hasPrediction && secondsSinceEstimate > 0) {
