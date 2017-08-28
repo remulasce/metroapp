@@ -193,7 +193,7 @@ public class ArrivalNotifyService extends Service {
             String stop = getStopText();
 
             if (stop != null) {
-                return msg + "\nFrom: " + stop;
+                return msg + "\nFrom " + stop;
             }
 
             return msg;
@@ -206,7 +206,7 @@ public class ArrivalNotifyService extends Service {
             String destination = getDestinationText();
 
             if (destination != null) {
-                return msg + "\nDirection: " + destination;
+                return msg + "\nLine " + netTask.routeName + ": " + destination;
             }
 
             return msg;
