@@ -10,13 +10,13 @@ import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 public class HardcodedMetroColors implements RouteColorer {
     @Override
     public RouteColor getColor(Route r) {
-        if (r == null || !r.isValid()) { return null; }
+        if (r == null || !r.isValid() || r.getAgency() == null) { return null; }
 
         String raw = r.getString();
 
         // Hardcoded. LA-Metro only.
         // Currently backwards-compatible, assumes we're in LA.
-        if (r.getAgency() == null || r.getAgency().raw.equals("lametro") || r.getAgency().raw.equals("lametro-rail")) {
+        if (r.getAgency().raw.equals("lametro") || r.getAgency().raw.equals("lametro-rail")) {
             // Rail lines
             if (raw.equals("801")) { return new RouteColor("#004DAC"); }
             if (raw.equals("802")) { return new RouteColor("#EE3A43"); }
@@ -30,6 +30,8 @@ public class HardcodedMetroColors implements RouteColorer {
             // Rapid routes
             if (raw.matches("^7\\d\\d$")) { return new RouteColor("#000000"); }
         }
+
+
         return null;
     }
 }
