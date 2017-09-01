@@ -11,12 +11,11 @@ public class HardcodedRouteColors implements RouteColorer {
 
     private HardcodedLaMetroColors laMetroColors = new HardcodedLaMetroColors();
     private HardcodedCaltrainColors caltrainColors = new HardcodedCaltrainColors();
+    private HardcodedBartColors bartColors = new HardcodedBartColors();
 
     @Override
     public RouteColor getColor(Route route) {
         if (route == null || !route.isValid() || route.getAgency() == null) { return null; }
-
-        String raw = route.getString();
 
         // Hardcoded. LA-Metro only.
         // Currently backwards-compatible, assumes we're in LA.
@@ -24,6 +23,8 @@ public class HardcodedRouteColors implements RouteColorer {
             return laMetroColors.getColor(route);
         } else if (route.getAgency().raw.equals("caltrain")) {
             return caltrainColors.getColor(route);
+        } else if (route.getAgency().raw.equals("BART")) {
+            return bartColors.getColor(route);
         }
 
         return null;
