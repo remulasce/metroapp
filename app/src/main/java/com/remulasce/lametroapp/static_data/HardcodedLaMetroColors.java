@@ -5,12 +5,13 @@ import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 
 /**
- * Created by Remulasce on 2/25/2015.
+ * Hardcoded rail, brt, and rapid bus for lametro and lametro-rail
  */
-public class HardcodedMetroColors implements RouteColorer {
+
+public class HardcodedLaMetroColors implements RouteColorer {
     @Override
     public RouteColor getColor(Route r) {
-        if (r == null || !r.isValid() || r.getAgency() == null) { return null; }
+        if (r == null || !r.isValid()) { return null; }
 
         String raw = r.getString();
 
@@ -31,8 +32,6 @@ public class HardcodedMetroColors implements RouteColorer {
             if (raw.matches("^7\\d\\d$")) { return new RouteColor("#000000"); }
         }
 
-
         return null;
     }
 }
-

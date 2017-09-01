@@ -40,7 +40,6 @@ import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
-import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.GlobalLocationProvider;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
@@ -54,12 +53,11 @@ import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestLis
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
-import com.remulasce.lametroapp.static_data.HardcodedMetroColors;
+import com.remulasce.lametroapp.static_data.HardcodedRouteColors;
 import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
@@ -282,7 +280,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         staticsProvider = new MetroStaticsProvider(this);
         staticsProvider.initialize();
 
-        routeColorer = new HardcodedMetroColors();
+        routeColorer = new HardcodedRouteColors();
 
         // ugh.
         LaMetroUtil.locationTranslator = staticsProvider;
