@@ -7,7 +7,6 @@ import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 /**
  * Hardcoded rail, brt, and rapid bus for lametro and lametro-rail
  */
-
 public class HardcodedLaMetroColors implements RouteColorer {
     @Override
     public RouteColor getColor(Route r) {

@@ -10,6 +10,7 @@ import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 public class HardcodedRouteColors implements RouteColorer {
 
     private HardcodedLaMetroColors laMetroColors = new HardcodedLaMetroColors();
+    private HardcodedCaltrainColors caltrainColors = new HardcodedCaltrainColors();
 
     @Override
     public RouteColor getColor(Route route) {
@@ -21,6 +22,8 @@ public class HardcodedRouteColors implements RouteColorer {
         // Currently backwards-compatible, assumes we're in LA.
         if (route.getAgency().raw.equals("lametro") || route.getAgency().raw.equals("lametro-rail")) {
             return laMetroColors.getColor(route);
+        } else if (route.getAgency().raw.equals("caltrain")) {
+            return caltrainColors.getColor(route);
         }
 
         return null;
