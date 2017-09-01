@@ -81,7 +81,11 @@ public class StopRouteDestinationArrival implements Serializable {
     // Some of the values aren't quite filled in all the way from the server
     // So just check if it's close enough.
     public boolean stopBasicallyMatches(Stop a, Stop b) {
-        return (a.getAgency().equals(b.getAgency()) && a.getStopID().equals(b.getStopID()));
+        if (a == b) { return true; }
+        if (a.getAgency() == b.getAgency()) { return true; }
+
+        return (a.getAgency().equals(b.getAgency())
+                && a.getStopID().equals(b.getStopID()));
     }
 
     public void updateArrivalTimes(Collection<Arrival> updatedArrivals) {

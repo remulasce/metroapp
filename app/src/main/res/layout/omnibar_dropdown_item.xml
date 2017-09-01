@@ -11,9 +11,8 @@
         android:layout_height="fill_parent"
         android:paddingLeft="1dp"
         android:paddingRight="4dp"
-        android:minWidth="20dp"
-        >
-    </LinearLayout>
+        android:minWidth="30dp"
+        />
 
     <TextView
         android:id="@+id/omnibar_item_station_name"

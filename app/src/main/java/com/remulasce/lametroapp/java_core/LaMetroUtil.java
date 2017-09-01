@@ -191,6 +191,8 @@ public class LaMetroUtil {
                             Stop s          = new Stop(stopIDAttribute);
                             Vehicle v       = new Vehicle(vehicleAttribute);
 
+                            r.setAgency(agency);
+//                            s.setAgency(agency);
                             s.setStopName(stopTitleAttribute);
                             addNewArrival(ret, seconds, d, r, s, null);
                         }
@@ -224,7 +226,10 @@ public class LaMetroUtil {
                                     // No bus #s here as well. Unfortunate.
                                     Vehicle v       = null;
 
+                                    r.setAgency(agency);
+//                                    s.setAgency(agency);
                                     s.setStopName(stop.getAttribute("name"));
+
                                     addNewArrival(ret, seconds, d, r, s, v);
                                 }
                             }
@@ -261,6 +266,8 @@ public class LaMetroUtil {
                                 Stop s          = new Stop(stopIDAttribute);
                                 Vehicle v       = new Vehicle(vehicleAttribute);
 
+                                r.setAgency(agency);
+//                                s.setAgency(agency);
                                 s.setStopName(stopTitleAttribute);
                                 addNewArrival(ret, seconds, d, r, s, v);
                             }
