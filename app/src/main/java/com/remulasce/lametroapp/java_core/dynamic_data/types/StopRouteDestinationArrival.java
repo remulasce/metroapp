@@ -82,7 +82,7 @@ public class StopRouteDestinationArrival implements Serializable {
     // So just check if it's close enough.
     public boolean stopBasicallyMatches(Stop a, Stop b) {
         if (a == b) { return true; }
-        if (a.getAgency() == b.getAgency()) { return true; }
+        if (a.getAgency() != b.getAgency()) { return false; }
 
         return (a.getAgency().equals(b.getAgency())
                 && a.getStopID().equals(b.getStopID()));

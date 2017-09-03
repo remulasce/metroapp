@@ -192,7 +192,6 @@ public class LaMetroUtil {
                             Vehicle v       = new Vehicle(vehicleAttribute);
 
                             r.setAgency(agency);
-//                            s.setAgency(agency);
                             s.setStopName(stopTitleAttribute);
                             addNewArrival(ret, seconds, d, r, s, null);
                         }
@@ -226,10 +225,8 @@ public class LaMetroUtil {
                                     // No bus #s here as well. Unfortunate.
                                     Vehicle v       = null;
 
-                                    r.setAgency(agency);
-//                                    s.setAgency(agency);
                                     s.setStopName(stop.getAttribute("name"));
-
+                                    r.setAgency(agency);
                                     addNewArrival(ret, seconds, d, r, s, v);
                                 }
                             }
@@ -267,7 +264,6 @@ public class LaMetroUtil {
                                 Vehicle v       = new Vehicle(vehicleAttribute);
 
                                 r.setAgency(agency);
-//                                s.setAgency(agency);
                                 s.setStopName(stopTitleAttribute);
                                 addNewArrival(ret, seconds, d, r, s, v);
                             }
@@ -440,9 +436,8 @@ public class LaMetroUtil {
             return;
         }
         for (Arrival a : arrivals) {
-            if (a.getStop().getAgency() != null || a.getRoute().getAgency() != null) {
+            if (a.getStop().getAgency() != null) {
                 Log.w(TAG, "fillinAgency tried to fill an agency that already existed");
-                return;
             }
 
             a.getStop().setAgency(agency);
