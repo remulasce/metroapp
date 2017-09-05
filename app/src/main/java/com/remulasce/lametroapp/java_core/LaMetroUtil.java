@@ -29,6 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.remulasce.lametroapp.java_core.RegionalizationHelper;
+import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 
 
 // OK, I'm modifying this to do the correct thing if we ask it to handle GTFS instead of nextbus
@@ -186,12 +187,16 @@ public class LaMetroUtil {
                             // BART doesn't give us bus numbers, maybe we can use the length of the car to be helpful with a hack?
                             vehicleAttribute = prediction.getElementsByTagName("length").item(0).getTextContent();
 
+                            // Like "#ffff33'. Needed for Bart because they don't respect their gtfs route names.
+                            String hexColor = prediction.getElementsByTagName("hexcolor").item(0).getTextContent();
+
                             Destination d   = new Destination(directionAttribute);
                             Route r         = new Route(routeAttribute);
                             Stop s          = new Stop(stopIDAttribute);
                             Vehicle v       = new Vehicle(vehicleAttribute);
 
                             r.setAgency(agency);
+                            r.setColor(new RouteColor(hexColor));
                             s.setStopName(stopTitleAttribute);
                             addNewArrival(ret, seconds, d, r, s, null);
                         }

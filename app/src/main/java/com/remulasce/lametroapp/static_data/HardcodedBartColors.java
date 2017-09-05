@@ -14,10 +14,18 @@ public class HardcodedBartColors implements RouteColorer {
 
         if (r == null || !r.isValid()) { return null; }
 
-        // TODO: Bug at some higher level results in routes like " ROUTE 11"
+        // Bug at some higher level results in routes like " ROUTE 11"
+        // TODO: clean this at the scraper level
         String raw = r.getString().trim();
 
         if (r.getAgency().raw.equals("BART")) {
+            // The Bart arrivals api does not use the same route designations as the gtfs tables.
+            // We must use the colors returned alongside the predictions, then.
+            if (r.getColor() != null) {
+                return r.getColor();
+            }
+
+            // Otherwise check for known routes from the scraper.
             if (raw.equals("ROUTE 1")) { return new RouteColor("#FFFF33"); }
             if (raw.equals("ROUTE 2")) { return new RouteColor("#FFFF33"); }
             if (raw.equals("ROUTE 3")) { return new RouteColor("#FF9933"); }
