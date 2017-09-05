@@ -6,7 +6,7 @@
     android:id="@+id/color_box1"
     android:layout_width="3dp"
     android:layout_height="fill_parent"
-    android:layout_marginLeft="3dp"
+    android:layout_marginLeft="2dp"
     android:layout_marginBottom="4dp"
     android:layout_marginTop="4dp"
     android:background="#ffff0000"
