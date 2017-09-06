@@ -68,6 +68,19 @@ public class SerializedFileFieldSaver implements FieldSaver {
             ObjectInputStream in = new ObjectInputStream(fileIn);
 
             Object o = in.readObject();
+            try {
+                long saveTime = in.readLong();
+                int staleness = 5000;
+
+                // Don't return stale trips
+                if (saveTime >= System.currentTimeMillis() + staleness) {
+                    Log.i(TAG, "Saved requests are stale, skipping");
+                    return null;
+                }
+            } catch(Exception e) {
+                Log.i(TAG, "No timestamp found for saved requests, assuming fresh");
+            }
+
             Collection<ServiceRequest> ret;
 
             try {
