@@ -27,9 +27,7 @@ import java.util.Collection;
  */
 public class SerializedFileFieldSaver implements FieldSaver {
     private static final String SERVICE_REQUESTS_SER = "serviceRequests.ser";
-    private static final String TAG = "SettingFieldSaver";
-
-
+    private static final String TAG = "FileFieldSaver";
 
     private final Context context;
 
