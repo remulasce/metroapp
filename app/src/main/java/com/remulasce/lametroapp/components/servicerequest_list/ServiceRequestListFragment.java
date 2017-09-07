@@ -31,6 +31,7 @@ import java.util.List;
  */
 public class ServiceRequestListFragment extends Fragment {
     private static final String TAG = "ServiceRequestFragment";
+    public static final int MAX_PERSISTED_REQEUST_STALENESS_MS = 14400000;
 
     private ServiceRequestListFragmentSupport mListener;
     private ListView requestList;
@@ -155,7 +156,8 @@ public class ServiceRequestListFragment extends Fragment {
         Log.d(TAG, "Loading saved requests");
 
         clearAllRequests(false);
-        Collection<ServiceRequest> serviceRequests = mListener.getFieldSaver().loadServiceRequests();
+        Collection<ServiceRequest> serviceRequests = mListener.getFieldSaver().loadServiceRequests
+                (MAX_PERSISTED_REQEUST_STALENESS_MS);
         if (serviceRequests != null && !serviceRequests.contains(null)) {
             this.requests.addAll(serviceRequests);
         } else {

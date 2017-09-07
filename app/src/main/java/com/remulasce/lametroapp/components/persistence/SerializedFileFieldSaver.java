@@ -47,6 +47,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
             oos = new ObjectOutputStream(fos);
 
             oos.writeObject(requests);
+            oos.writeLong(System.currentTimeMillis());
 
             oos.close();
         } catch (IOException e) {
@@ -58,7 +59,7 @@ public class SerializedFileFieldSaver implements FieldSaver {
     }
 
     @Override
-    public Collection<ServiceRequest> loadServiceRequests() {
+    public Collection<ServiceRequest> loadServiceRequests(long stalenessMillis) {
         Log.d(TAG, "Loading service requests");
 
         Collection<ServiceRequest> emptyRequests = new ArrayList<ServiceRequest>();
@@ -70,10 +71,12 @@ public class SerializedFileFieldSaver implements FieldSaver {
             Object o = in.readObject();
             try {
                 long saveTime = in.readLong();
-                int staleness = 5000;
 
+                Log.i(TAG, "Persisted stops last saved " +
+                        (System.currentTimeMillis() - saveTime) + " ago");
                 // Don't return stale trips
-                if (saveTime >= System.currentTimeMillis() + staleness) {
+                if (stalenessMillis != -1 &&
+                        System.currentTimeMillis() >= saveTime + stalenessMillis) {
                     Log.i(TAG, "Saved requests are stale, skipping");
                     return null;
                 }

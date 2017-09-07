@@ -12,7 +12,14 @@ import java.util.Collection;
  */
 public interface FieldSaver {
     public void saveServiceRequests(Collection<ServiceRequest> requests);
-    public Collection<ServiceRequest> loadServiceRequests();
+
+    /**
+     * Retrieves saved service requests more recent than stalenessMillis
+     * @param stalenessMillis The maximum time servicerequests will stay cached before being thrown
+     *                        out, in ms, or -1 for unlimited cache duration.
+     *
+     */
+    public Collection<ServiceRequest> loadServiceRequests(long stalenessMillis);
 
     public void saveObject(String key, Object object);
     public Object loadObject(String key);
