@@ -1,3 +1,5 @@
+#!python2
+
 import requests
 import xml.etree.ElementTree as ET
 import sqlite3
