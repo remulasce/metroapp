@@ -41,7 +41,7 @@ for child in root:
 		
 		routesListRequestString = "http://api.bart.gov/api/stn.aspx?cmd=stninfo&orig="+newstopID+"&key=MW9S-E7SL-26DU-VV8V"
 		routesListResponse = requests.get(routesListRequestString)
-		routesRoot = ET.fromstring(routesListResponse.text)
+		routesRoot = ET.fromstring(routesListResponse.content)
 		
 		routesRoot = routesRoot[1][0]
 		
