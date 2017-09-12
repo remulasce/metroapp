@@ -9,7 +9,7 @@ import sys
 print "Bay Area 511.org scraper"
 print "Specify which agencies to scrape as command-line arguments"
 print "Or leave none to scrape all agencies"
-print "Command-line agencies won't have their proper titles scraped"
+print "GTFS stops.txt must be supplied to _gtfs/<agencyname>/stops.txt for each agency"
 
 agencyList = []
 
@@ -38,7 +38,7 @@ for agencyParam in agencyList:
         # Bay area online service does not provide stop locations.
         # So we must parse them ourselves from individual agency gtfs files.
         stops_dict = dict()
-        with open(agencyName+"_gtfs/stops.txt") as stops_gtfs:
+        with open("_gtfs/" + agencyName + "/stops.txt") as stops_gtfs:
             format = stops_gtfs.readline()
             format = format.split(",")
             format = [s.strip('"') for s in format]
