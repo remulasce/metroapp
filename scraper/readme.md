@@ -1,5 +1,17 @@
-LA Metro Companion Readme
+# LA Metro Companion Scraper
+
 This directory contains the offline scraping tools to generate stop files for the LA Metro Companion App.
+
+## Basic usage:
+
+Just run scrapeAllSupportedAgencies.bat
+
+Output .db files go to _out.
+
+They will need to be moved to lametroapp/app/src/main/assets/databases to get them into the Android app.
+
+
+## Advanced Usage:
 
 There are three scrapers, each for a different online prediction service:
 
