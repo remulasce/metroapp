@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 import sqlite3
 import sys
 
+OUTPUT_DIR = "_out/"
 
 print "Bay Area 511.org scraper"
 print "Specify which agencies to scrape as command-line arguments"
@@ -192,7 +193,7 @@ for agencyParam in agencyList:
                                                         #print stoproutesList
 
         print "Finished scraping "+agencyName+", saving to SQL...";
-        conn = sqlite3.connect(agencyName + '.db')
+        conn = sqlite3.connect(OUTPUT_DIR + agencyName + '.db')
 
         c = conn.cursor()
         # Delete old contents, if any

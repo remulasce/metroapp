@@ -4,6 +4,7 @@ import requests
 import xml.etree.ElementTree as ET
 import sqlite3
 
+OUTPUT_DIR = "_out/"
 stopListRequestString = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=MW9S-E7SL-26DU-VV8V"
 stopListResponse = requests.get(stopListRequestString)
 root = ET.fromstring(stopListResponse.text)
@@ -59,7 +60,7 @@ agencyid = agencyName
 agencytitle = "BART"
 
 print "Finished scraping "+agencyName+", saving to SQL...";
-conn = sqlite3.connect(agencyName + '.db')
+conn = sqlite3.connect(OUTPUT_DIR + agencyName + '.db')
 
 c = conn.cursor()
 # Delete old contents, if any
