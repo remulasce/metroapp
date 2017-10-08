@@ -1,6 +1,6 @@
 echo running Nextrip scraper...
 
-scraper.py lametro lametro-rail actransit sf-muni
+scraper_nextrip.py lametro lametro-rail actransit sf-muni
 
 echo running Bart scraper...
 
