@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Created by Remulasce on 1/26/2015.
- *
+ * <p>
  * It's a service request added to show what vehicles are arriving.
  */
 
@@ -35,6 +35,7 @@ public class StopServiceRequest extends ServiceRequest {
 
         this.statusTrip = new RequestStatusTrip(this);
     }
+
     public StopServiceRequest(Stop stop, String displayName) {
         stops = new ArrayList<Stop>();
         stops.add(stop);
@@ -46,7 +47,9 @@ public class StopServiceRequest extends ServiceRequest {
 
     //Returns if the service request makes any sense to fulfill
     public boolean isValid() {
-        if ( stops == null || stops.isEmpty() || stops.contains( null ) || displayName == null || displayName.isEmpty()) { return false; }
+        if (stops == null || stops.isEmpty() || stops.contains(null) || displayName == null || displayName.isEmpty()) {
+            return false;
+        }
 
         return true;
     }
@@ -64,7 +67,7 @@ public class StopServiceRequest extends ServiceRequest {
         for (Prediction p : this.predictions) {
             if (p instanceof StopRouteDestinationPrediction) {
 
-                for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction)p).getArrivals()) {
+                for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction) p).getArrivals()) {
                     trips.add(srda.getTrip());
                 }
             }
@@ -197,6 +200,7 @@ public class StopServiceRequest extends ServiceRequest {
         SPINNER,
         ERROR
     }
+
     // Figure out if we should show an error message, progress bar, or nothing.
     NetworkStatusState determineNetworkStatusState() {
         boolean anyFetching = false;
@@ -241,6 +245,7 @@ public class StopServiceRequest extends ServiceRequest {
     public String getAgencyName() {
         return "Network";
     }
+
     public NetworkStatusState getNetworkStatus() {
         return determineNetworkStatusState();
     }
