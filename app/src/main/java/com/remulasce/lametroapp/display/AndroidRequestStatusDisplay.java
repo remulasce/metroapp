@@ -64,7 +64,7 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
                 progres_spinner.setVisibility(View.INVISIBLE);
                 status_text.setVisibility(View.VISIBLE);
 
-                status_text.setText("No predictions found :(");
+                status_text.setText("No arrivals found :(");
                 break;
             case ERROR:
                 progres_spinner.setVisibility(View.INVISIBLE);
