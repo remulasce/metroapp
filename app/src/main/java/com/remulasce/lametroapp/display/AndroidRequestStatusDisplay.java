@@ -60,6 +60,12 @@ public class AndroidRequestStatusDisplay implements AndroidDisplay {
 
                 status_text.setText("Getting predictions from " + parentTrip.getAgencyName() + ".");
                 break;
+            case EMPTY:
+                progres_spinner.setVisibility(View.INVISIBLE);
+                status_text.setVisibility(View.VISIBLE);
+
+                status_text.setText("No predictions found :(");
+                break;
             case ERROR:
                 progres_spinner.setVisibility(View.INVISIBLE);
                 status_text.setVisibility(View.VISIBLE);

@@ -58,15 +58,16 @@ public class StopServiceRequest extends ServiceRequest {
     public Collection<Trip> getTrips() {
         Collection<Trip> trips = new ArrayList<Trip>();
 
-        if (statusTrip != null && statusTrip.isValid() // TripPopulator can't handle empty / null Trips
-                && determineNetworkStatusState() == NetworkStatusState.ERROR || determineNetworkStatusState() == NetworkStatusState.SPINNER) {
-//                ) { // Testing, keep the status up.
+        // "Loading", "Empty", and "Error" states
+        if (statusTrip != null && statusTrip.isValid()
+                && determineNetworkStatusState() == NetworkStatusState.ERROR
+                || determineNetworkStatusState() == NetworkStatusState.SPINNER
+                || determineNetworkStatusState() == NetworkStatusState.EMPTY) {
             trips.add(statusTrip);
         }
 
         for (Prediction p : this.predictions) {
             if (p instanceof StopRouteDestinationPrediction) {
-
                 for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction) p).getArrivals()) {
                     trips.add(srda.getTrip());
                 }
@@ -198,17 +199,27 @@ public class StopServiceRequest extends ServiceRequest {
     public enum NetworkStatusState {
         NOTHING,
         SPINNER,
-        ERROR
+        ERROR,
+        EMPTY
     }
 
     // Figure out if we should show an error message, progress bar, or nothing.
     NetworkStatusState determineNetworkStatusState() {
-        boolean anyFetching = false;
-        boolean anyGood = false;
-        boolean anyCached = false;
-        boolean anyBad = false;
+        boolean anyFetching = false;    // Any with no arrivals, going to net for first time
+        boolean anyGood = false;        // Meaning any successful network fetches
+        boolean anyCached = false;      // Network failed, but we have older predictions
+        boolean anyBad = false;         // Network failed, and we don't have any predictions.
+        boolean anyTrips = false;       // Whether we picked up any time predictions at all. Could
+                                        // be good, maybe cached. We care whether this request at
+                                        // least has _any_ times to display.
 
         for (Prediction p : predictions) {
+            if (p instanceof StopRouteDestinationPrediction) {
+                for (StopRouteDestinationArrival srda : ((StopRouteDestinationPrediction) p).getArrivals()) {
+                    anyTrips = true;
+                }
+            }
+
             switch (p.getPredictionState()) {
                 case GOOD:
                     anyGood = true;
@@ -238,12 +249,17 @@ public class StopServiceRequest extends ServiceRequest {
             return NetworkStatusState.ERROR;
         }
 
-        // Otherwise don't display anything special.
-        return NetworkStatusState.NOTHING;
+        // If there's any useful info to display, we don't need anything special.
+        if (anyTrips) {
+            return NetworkStatusState.NOTHING;
+        }
+
+        // But if we really have nothing, we make sure to note that we're basically useless.
+        return NetworkStatusState.EMPTY;
     }
 
     public String getAgencyName() {
-        return "Network";
+        return "network";
     }
 
     public NetworkStatusState getNetworkStatus() {
