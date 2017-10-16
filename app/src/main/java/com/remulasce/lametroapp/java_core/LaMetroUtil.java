@@ -81,7 +81,8 @@ public class LaMetroUtil {
         String URI = new String();
         if (agency.raw.equals("BART")) {
             URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
-        } else if (agency.raw.equals("vta") || agency.raw.equals("caltrain")) { // Uh oh.
+        } else if (agency.raw.matches("(?i:vta)" /* ?i: case insensitive */)
+                || agency.raw.matches("(?i:caltrain)")) { // Uh oh.
             URI = BAY_511_FEED_URL + "&stopcode="+stop.getStopID();
         } else {
             URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
