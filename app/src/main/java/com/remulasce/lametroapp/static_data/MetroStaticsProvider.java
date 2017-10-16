@@ -29,9 +29,6 @@ import java.util.Random;
 public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteCombinedFiller {
     private static final String TAG = "MetroStaticsProvider";
 
-
-    private SQLPreloadedStopsReader stopsReader;
-
     private Map<Agency, SQLPreloadedStopsReader> regionalStopsReaders = new HashMap<Agency, SQLPreloadedStopsReader>();
 
     private final AutoCompleteHistoryFiller autoCompleteHistoryFiller;
@@ -66,7 +63,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
             Log.w(TAG, "No regions set!");
         }
 
-        stopsReader = new SQLPreloadedStopsReader(context, "StopNames.db", null);
     }
 
     private String getFileName(Agency agency) {
@@ -91,8 +87,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
     }
 
     public void initialize() {
-        stopsReader.initialize();
-
         for (SQLPreloadedStopsReader reader : regionalStopsReaders.values()) {
             reader.initialize();
         }
@@ -163,66 +157,17 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
 
     @Override
-    public BasicLocation getStopLocation(Stop stop) {
-        Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
-
-        if (stopLocationCache == null) {
-            Log.d(TAG, "Initializing stoplocation cache");
-            stopLocationCache = new HashMap<String, BasicLocation>();
-        }
-
-        if (stopLocationCache.containsKey(stop)) {
-            Log.v(TAG, "stoplocation cache hit");
-            return stopLocationCache.get(stop);
-        }
-
-        BasicLocation ret = stopsReader.getStopLocation(stop);
-
-        addToCache(stop, ret, stopLocationCache, 20, 4);
-
-        return ret;
-    }
-
-    @Override
     public String getStopName(String stopID) {
         Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
 
-        if (stopNameCache == null) {
-            Log.d(TAG, "Initializing stopname cache");
-            stopNameCache = new HashMap<String, String>();
-        }
-
-        if (stopNameCache.containsKey(stopID)) {
-            Log.v(TAG, "stopname cache hit");
-            return stopNameCache.get(stopID);
-        }
-
-        String ret = stopsReader.getStopName(stopID);
-
-        addToCache(stopID, ret, stopNameCache, 20, 4);
-
-        return ret;
+        return null;
     }
 
     @Override
     public Collection<String> getStopID(String stopName) {
         Log.w(TAG, "WARNING: REGIONALIZATION NOT IMPLEMENTED IN THIS FUNCTION");
 
-        if (stopIDCache == null) {
-            Log.d(TAG, "Initializing stopID cache");
-            stopIDCache = new HashMap<String, Collection<String>>();
-        }
-
-        if (stopIDCache.containsKey(stopName)) {
-            Log.v(TAG, "stopID cache hit");
-            return stopIDCache.get(stopName);
-        }
-
-        Collection<String> ret = stopsReader.getStopID(stopName);
-
-        addToCache(stopName, ret, stopIDCache, 20, 4);
-
-        return ret;
+        return null;
     }
 
     @Override
@@ -268,5 +213,10 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
         return ret;
 
+    }
+
+    @Override
+    public BasicLocation getStopLocation(Stop stop) {
+        return null;
     }
 }
