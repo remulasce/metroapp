@@ -17,8 +17,8 @@ public class HardcodedVTAColors implements RouteColorer {
         String raw = r.getString();
 
         if (r.getAgency().matches("VTA")) {
-            if (raw.equals("522")) { return new RouteColor("#000000"); }
-            if (raw.equals("523")) { return new RouteColor("#000000"); }
+            if (raw.startsWith("522")) { return new RouteColor("#000000"); }
+            if (raw.startsWith("523")) { return new RouteColor("#000000"); }
         }
 
         return null;
