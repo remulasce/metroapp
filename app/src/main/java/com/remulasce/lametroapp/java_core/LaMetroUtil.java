@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.remulasce.lametroapp.java_core.RegionalizationHelper;
 import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
+import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 
 
 // OK, I'm modifying this to do the correct thing if we ask it to handle GTFS instead of nextbus
@@ -79,17 +80,18 @@ public class LaMetroUtil {
 
         // Kinda sketchy, should work
         String URI = new String();
-        if (agency.matches("BART")) {
+        if (HardcodedHacks.useBart(agency)) {
             URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
-        } else if (agency.matches("vta")
-                || agency.matches("caltrain")) { // Uh oh.
+        } else if (HardcodedHacks.useBay511(agency)) {
             URI = BAY_511_FEED_URL + "&stopcode="+stop.getStopID();
-        } else {
+        } else if (HardcodedHacks.useNextrip(agency)){
             URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
                     + stop.getString();
             if ( isValidRoute(route) ) {
                 URI += "&routeTag=" + route.getString();
             }
+        } else {
+            Log.w(TAG, "Don't know how to get predictions for agency: " + agency.raw);
         }
 
         Log.w(TAG,"Request string: " + URI);
@@ -152,7 +154,7 @@ public class LaMetroUtil {
 
             int seconds = 0;
 
-            if (uriTags != null && uriTags.getLength() > 0 ) {
+            if (HardcodedHacks.useBart(agency)) {
                 //We've gotten GTFS data
                 // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do this tomorrow when I'm not so tired.
                 //
@@ -203,7 +205,7 @@ public class LaMetroUtil {
                         }
                     }
                 }
-            } else if (agency.matches("vta") || agency.matches("caltrain")){
+            } else if (HardcodedHacks.useBay511(agency)){
                 // We need like a "type" field in the agency at some (later) point.
                 // This format is Bay Area 511 transit. Another custom-rigged XML.
                 NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();
@@ -239,7 +241,7 @@ public class LaMetroUtil {
                         }
                     }
                 }
-            } else {
+            } else if (HardcodedHacks.useNextrip(agency)){
                 //We've gotten NextBus Data
                 NodeList predictions = docEle.getElementsByTagName("predictions");
                 if (predictions != null && predictions.getLength() > 0) {
@@ -276,6 +278,8 @@ public class LaMetroUtil {
                         }
                     }
                 }
+            } else {
+                Log.w(TAG, "Couldn't find an agency to parse prediction response for: " + agency);
             }
         }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
