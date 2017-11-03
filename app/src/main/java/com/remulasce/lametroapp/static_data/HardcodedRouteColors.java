@@ -12,6 +12,7 @@ public class HardcodedRouteColors implements RouteColorer {
     private HardcodedLaMetroColors laMetroColors = new HardcodedLaMetroColors();
     private HardcodedCaltrainColors caltrainColors = new HardcodedCaltrainColors();
     private HardcodedBartColors bartColors = new HardcodedBartColors();
+    private HardcodedVTAColors vtaColors = new HardcodedVTAColors();
 
     @Override
     public RouteColor getColor(Route route) {
@@ -25,6 +26,8 @@ public class HardcodedRouteColors implements RouteColorer {
             return caltrainColors.getColor(route);
         } else if (route.getAgency().raw.equals("BART")) {
             return bartColors.getColor(route);
+        } else if (route.getAgency().raw.equals("VTA")) {
+            return vtaColors.getColor(route);
         }
 
         return null;
