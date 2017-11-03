@@ -94,7 +94,7 @@ public class LaMetroUtil {
             Log.w(TAG, "Don't know how to get predictions for agency: " + agency.raw);
         }
 
-        Log.w(TAG,"Request string: " + URI);
+        Log.d(TAG,"Request string: " + URI);
         return URI;
     }
 
