@@ -18,7 +18,7 @@ public class HardcodedBartColors implements RouteColorer {
         // TODO: clean this at the scraper level
         String raw = r.getString().trim();
 
-        if (r.getAgency().raw.equals("BART")) {
+        if (r.getAgency().matches("BART")) {
             // The Bart arrivals api does not use the same route designations as the gtfs tables.
             // We must use the colors returned alongside the predictions, then.
             if (r.getColor() != null) {

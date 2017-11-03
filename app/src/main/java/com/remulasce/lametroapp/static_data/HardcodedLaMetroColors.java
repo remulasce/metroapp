@@ -16,7 +16,7 @@ public class HardcodedLaMetroColors implements RouteColorer {
 
         // Hardcoded. LA-Metro only.
         // Currently backwards-compatible, assumes we're in LA.
-        if (r.getAgency().raw.equals("lametro") || r.getAgency().raw.equals("lametro-rail")) {
+        if (r.getAgency().matches("lametro") || r.getAgency().matches("lametro-rail")) {
             // Rail lines
             if (raw.equals("801")) { return new RouteColor("#004DAC"); }
             if (raw.equals("802")) { return new RouteColor("#EE3A43"); }

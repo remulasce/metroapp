@@ -20,13 +20,13 @@ public class HardcodedRouteColors implements RouteColorer {
 
         // Hardcoded. LA-Metro only.
         // Currently backwards-compatible, assumes we're in LA.
-        if (route.getAgency().raw.equals("lametro") || route.getAgency().raw.equals("lametro-rail")) {
+        if (route.getAgency().matches("lametro") || route.getAgency().matches("lametro-rail")) {
             return laMetroColors.getColor(route);
-        } else if (route.getAgency().raw.equals("caltrain")) {
+        } else if (route.getAgency().matches("caltrain")) {
             return caltrainColors.getColor(route);
-        } else if (route.getAgency().raw.equals("BART")) {
+        } else if (route.getAgency().matches("BART")) {
             return bartColors.getColor(route);
-        } else if (route.getAgency().raw.equals("VTA")) {
+        } else if (route.getAgency().matches("VTA")) {
             return vtaColors.getColor(route);
         }
 

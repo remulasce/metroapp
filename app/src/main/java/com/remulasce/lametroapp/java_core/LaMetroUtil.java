@@ -79,10 +79,10 @@ public class LaMetroUtil {
 
         // Kinda sketchy, should work
         String URI = new String();
-        if (agency.raw.equals("BART")) {
+        if (agency.matches("BART")) {
             URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
-        } else if (agency.raw.matches("(?i:vta)" /* ?i: case insensitive */)
-                || agency.raw.matches("(?i:caltrain)")) { // Uh oh.
+        } else if (agency.matches("vta")
+                || agency.matches("caltrain")) { // Uh oh.
             URI = BAY_511_FEED_URL + "&stopcode="+stop.getStopID();
         } else {
             URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
@@ -203,7 +203,7 @@ public class LaMetroUtil {
                         }
                     }
                 }
-            } else if (agency.raw.equals("vta") || agency.raw.equals("caltrain")){
+            } else if (agency.matches("vta") || agency.matches("caltrain")){
                 // We need like a "type" field in the agency at some (later) point.
                 // This format is Bay Area 511 transit. Another custom-rigged XML.
                 NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();

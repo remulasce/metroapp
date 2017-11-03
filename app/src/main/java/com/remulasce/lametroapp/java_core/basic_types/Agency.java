@@ -61,6 +61,9 @@ public class Agency implements Serializable{
      * transcriptions (capitalization).
      *
      * It's basically a developer-level hack.
+     *
+     * Warning: This is not the same as .equals(), which requires a precise agency string match.
+     * This is only for developer's convenience for hardcoding.
      */
     public boolean matches(String agency) {
         return (!isNameBad()) && raw.matches("(?i:"+agency+")");
