@@ -56,6 +56,16 @@ public class Agency implements Serializable{
         return false;
     }
 
+    /**
+     * Returns whether this Agency matches the provided agency string, plus or minus some common
+     * transcriptions (capitalization).
+     *
+     * It's basically a developer-level hack.
+     */
+    public boolean matches(String agency) {
+        return (!isNameBad()) && raw.matches("(?i:"+agency+")");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
