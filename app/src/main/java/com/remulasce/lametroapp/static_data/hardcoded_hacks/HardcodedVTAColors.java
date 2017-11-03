@@ -19,6 +19,15 @@ public class HardcodedVTAColors implements RouteColorer {
         if (r.getAgency().matches("VTA")) {
             if (raw.startsWith("522")) { return new RouteColor("#000000"); }
             if (raw.startsWith("523")) { return new RouteColor("#000000"); }
+            if (raw.startsWith("900")) { return new RouteColor("#E4691C"); }
+            if (raw.startsWith("901")) {
+                if (raw.startsWith("901X")) {
+                    return new RouteColor("#FdF303");
+                } else {
+                    return new RouteColor("#01ACD8");
+                }
+            }
+            if (raw.startsWith("902")) { return new RouteColor("#99CC66"); }
         }
 
         return null;
