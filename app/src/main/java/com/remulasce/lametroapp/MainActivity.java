@@ -53,7 +53,7 @@ import com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestLis
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 import com.remulasce.lametroapp.platform_support.AndroidApacheHTTP;
-import com.remulasce.lametroapp.static_data.HardcodedRouteColors;
+import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedRouteColors;
 import com.remulasce.lametroapp.static_data.InstalledAgencyChecker;
 import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;

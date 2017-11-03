@@ -1,4 +1,4 @@
-package com.remulasce.lametroapp.static_data;
+package com.remulasce.lametroapp.static_data.hardcoded_hacks;
 
 import com.remulasce.lametroapp.java_core.basic_types.Route;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
