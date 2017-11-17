@@ -88,7 +88,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
 
         double distance = trip.getCurrentDistanceToStop();
 
-        distance_text.setText(convertMeteresToDistanceDisplay(distance));
+        distance_text.setText(LaMetroUtil.convertMetersToDistanceDisplay(distance));
 
         boolean destinationStartsWithNum = destString.startsWith( routeString );
         String routeDestString = (destinationStartsWithNum ? "" : routeString + ": " ) + destString ;
@@ -178,24 +178,6 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         return rowView;
-    }
-
-    private String convertMeteresToDistanceDisplay(double distance) {
-        double yards = distance * 1.09361;
-
-        if (yards > 100) {
-            double miles = distance * 0.000621371;
-
-            if (miles < 10) {
-                return (int) (miles * 10) / 10.0 + "mi";
-            } else if (miles < 100){
-                return (int) (miles + 0.5) + "mi";
-            } else {
-                return "Far!";
-            }
-        } else {
-            return (int) yards + "yd";
-        }
     }
 
     @Override

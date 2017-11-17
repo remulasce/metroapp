@@ -439,6 +439,24 @@ public class LaMetroUtil {
         return (seconds % 60)+"s";
     }
 
+    public static String convertMetersToDistanceDisplay(double distance) {
+        double yards = distance * 1.09361;
+
+        if (yards > 100) {
+            double miles = distance * 0.000621371;
+
+            if (miles < 10) {
+                return (int) (miles * 10) / 10.0 + "mi";
+            } else if (miles < 100){
+                return (int) (miles + 0.5) + "mi";
+            } else {
+                return "Far!";
+            }
+        } else {
+            return (int) yards + "yd";
+        }
+    }
+
     //  The nextbus return data doesn't properly note which agency the request was for
     // So once we figure it out, fill it all in for us.
     public static void fillinAgencyAndStopID(List<Arrival> arrivals, Agency agency, String stopID) {
