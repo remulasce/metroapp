@@ -442,7 +442,7 @@ public class LaMetroUtil {
     public static String convertMetersToDistanceDisplay(double distance) {
         double yards = distance * 1.09361;
 
-        if (yards > 100) {
+        if (yards > 200) {
             double miles = distance * 0.000621371;
 
             if (miles < 10) {

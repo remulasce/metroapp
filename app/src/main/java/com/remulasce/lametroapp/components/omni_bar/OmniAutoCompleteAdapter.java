@@ -160,6 +160,12 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable
         colorsLayout.setTag(routeColorerTask);
         routeColorerTask.execute(omniAutoCompleteEntry.getStops());
 
+        TextView distance = (TextView) view.findViewById(R.id.omnibar_item_distance_text);
+        distance.setText(
+                LaMetroUtil.convertMetersToDistanceDisplay(
+                        locations.getCurrentDistanceToStop(
+                                omniAutoCompleteEntry.getStops().get(0))));
+
         return view;
     }
 
