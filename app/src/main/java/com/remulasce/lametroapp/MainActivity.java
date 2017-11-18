@@ -360,13 +360,13 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         Tracking.setScreenName("Main Screen");
         locationService.startLocating(this);
 
-        tryShowDropdown();
+        maybeShowAutocompleteDropdown();
     }
 
     // Ugly hack to show history suggestions as soon as app loads
     // Except, Android won't actually tell you when it's ok with dialogs showing
     // So instead we check every xms until we actually have a window.
-    private void tryShowDropdown() {
+    private void maybeShowAutocompleteDropdown() {
         // The whole thing doesn't really work on Gingerbread.
         // Not that anyone actually still uses Gingerbread.
         // Check if we're in the about pane, cause that's whack
