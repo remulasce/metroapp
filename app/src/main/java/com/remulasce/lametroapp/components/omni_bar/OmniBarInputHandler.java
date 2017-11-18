@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -196,8 +197,18 @@ public class OmniBarInputHandler {
         // But if the text was already empty, then hide the dropdown, since why else did the user
         // hit the X button
         if (wasEmpty) {
+            hideSoftKeyboard();
+
             omniField.dismissDropDown();
+            omniField.clearFocus();
         }
         Tracking.sendEvent("MainScreen", "Clear Fields");
+    }
+
+    private void hideSoftKeyboard() {
+        // Hide soft keyboard- https://stackoverflow.com/questions/1109022
+        Context context = omniField.getContext();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
     }
 }
