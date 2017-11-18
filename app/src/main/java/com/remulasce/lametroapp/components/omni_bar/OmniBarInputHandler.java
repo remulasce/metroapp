@@ -188,11 +188,16 @@ public class OmniBarInputHandler {
     }
 
     public void clearFields() {
+
+        boolean wasEmpty = omniField.getText().toString().isEmpty();
+
         omniField.setText("");
-        // Normally textChanged from setText would launch another dropdown
-        // But it's confusing for the big X button to launch the dropdown.
-        // So just squash that right here.
-        omniField.dismissDropDown();
+        // textChanged from setText launches another dropdown.
+        // But if the text was already empty, then hide the dropdown, since why else did the user
+        // hit the X button
+        if (wasEmpty) {
+            omniField.dismissDropDown();
+        }
         Tracking.sendEvent("MainScreen", "Clear Fields");
     }
 }
