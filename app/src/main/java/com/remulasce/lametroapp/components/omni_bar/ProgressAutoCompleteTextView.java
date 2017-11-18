@@ -1,12 +1,15 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.Editable;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filterable;
 import android.widget.ListAdapter;
@@ -94,5 +97,24 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView implement
         } else {
             Log.d(TAG, "Filter returned results, but not for current text, so leave up progress spinner");
         }
+    }
+
+    // Defocus ourselves (hide text pointer) on back button
+    @Override
+    public boolean onKeyPreIme( int key_code, KeyEvent event )
+    {
+        if ( event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP ) {
+            this.clearFocus();
+            hideSoftKeyboard(this);
+        }
+
+        return super.onKeyPreIme( key_code, event );
+    }
+
+    private void hideSoftKeyboard(View view) {
+        // Hide soft keyboard- https://stackoverflow.com/questions/1109022
+        Context context = view.getContext();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

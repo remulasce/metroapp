@@ -197,7 +197,7 @@ public class OmniBarInputHandler {
         // But if the text was already empty, then hide the dropdown, since why else did the user
         // hit the X button
         if (wasEmpty) {
-            hideSoftKeyboard();
+            hideSoftKeyboard(omniField);
 
             omniField.dismissDropDown();
             omniField.clearFocus();
@@ -205,10 +205,11 @@ public class OmniBarInputHandler {
         Tracking.sendEvent("MainScreen", "Clear Fields");
     }
 
-    private void hideSoftKeyboard() {
+    private void hideSoftKeyboard(View view) {
         // Hide soft keyboard- https://stackoverflow.com/questions/1109022
-        Context context = omniField.getContext();
+        Context context = view.getContext();
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(omniField.getWindowToken(), 0);
     }
+
 }
