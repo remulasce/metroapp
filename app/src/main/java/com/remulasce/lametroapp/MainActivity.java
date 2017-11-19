@@ -118,6 +118,19 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
         setupTutorials();
 
         setupDefaults(getIntent());
+
+        if (savedInstanceState == null) {
+            maybeShowAutocompleteDropdown();
+        } else {
+            if (savedInstanceState.getBoolean("show_omnicomplete")) {
+                showDropdownOnStart.run();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        state.putBoolean("show_omnicomplete", omniField.isPopupShowing());
     }
 
     private void setupRegionalization() {
@@ -359,8 +372,6 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         Tracking.setScreenName("Main Screen");
         locationService.startLocating(this);
-
-        maybeShowAutocompleteDropdown();
     }
 
     // Ugly hack to show history suggestions as soon as app loads
