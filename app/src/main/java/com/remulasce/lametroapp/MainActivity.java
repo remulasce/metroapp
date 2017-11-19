@@ -374,6 +374,10 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
         Tracking.setScreenName("Main Screen");
         locationService.startLocating(this);
+
+        if (omniField.hasFocus()) {
+            omniField.showDropDown();
+        }
     }
 
     // Ugly hack to show history suggestions as soon as app loads
