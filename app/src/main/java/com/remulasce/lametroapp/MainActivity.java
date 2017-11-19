@@ -130,6 +130,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     @Override
     public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
         state.putBoolean("show_omnicomplete", omniField.isPopupShowing());
     }
 
