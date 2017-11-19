@@ -400,6 +400,9 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
                 Log.i(TAG, "Showing omni dropdown after startup");
                 omniField.clearFocus();
                 omniField.requestFocus();
+
+                InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(omniField.getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
             } else {
                 Handler h = new Handler(Looper.getMainLooper());
                 h.postDelayed(showDropdownOnStart, 100);
