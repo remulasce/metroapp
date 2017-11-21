@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Help make this app better! Swipe left to learn more."
+            android:text="Email me your bugs \& feedback. Swipe left for contact info"
             android:id="@+id/about_tutorial"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
