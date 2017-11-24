@@ -47,7 +47,7 @@ for child in root:
 		routesRoot = routesRoot[1][0]
 		
 		for routeChild in routesRoot:
-			if routeChild.tag == "north_routes" or routeChild.tag == "south_roots":
+			if routeChild.tag == "north_routes" or routeChild.tag == "south_routes":
 				for route in routeChild:
 					stoproutesList.append([newstopID,route.text])
 
