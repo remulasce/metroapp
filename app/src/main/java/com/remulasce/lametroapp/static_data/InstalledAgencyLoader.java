@@ -9,6 +9,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
+import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 
 /**
  * Created by Remulasce on 8/23/2015.
@@ -17,7 +18,7 @@ import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
  */
 public class InstalledAgencyLoader extends SQLiteAssetHelper {
     // Note: Must be changed in SQLPreloadedStopsReader as well
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = HardcodedHacks.DATABASE_VERSION;
     public static final String INFOTABLE = "agencyinfo";
     public static final String TAG = "AgencyLoader";
 
@@ -29,7 +30,7 @@ public class InstalledAgencyLoader extends SQLiteAssetHelper {
         this.filename = fileName;
 
         // Just rewrite the db when upgrading.
-        setForcedUpgrade();
+        setForcedUpgrade(DATABASE_VERSION);
     }
 
 

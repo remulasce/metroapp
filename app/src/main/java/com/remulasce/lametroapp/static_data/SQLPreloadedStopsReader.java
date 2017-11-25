@@ -18,6 +18,7 @@ import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteEntry;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopNameTranslator;
 import com.remulasce.lametroapp.java_core.static_data.StopRoutesTranslator;
+import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     private String DATABASE_NAME;
     private Agency agency;
     // Must be changed for InstalledAgencyLoader as well
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = HardcodedHacks.DATABASE_VERSION;
 
     // Only send one in trackDivider hits
     // It's kind of like an average.
@@ -86,7 +87,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         this.agency = agency;
 
         // Just rewrite the db when upgrading.
-        setForcedUpgrade();
+        setForcedUpgrade(DATABASE_VERSION);
     }
 
     public void initialize() {

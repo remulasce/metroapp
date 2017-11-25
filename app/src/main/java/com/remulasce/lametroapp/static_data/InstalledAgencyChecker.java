@@ -21,7 +21,6 @@ import java.util.Collection;
  */
 public class InstalledAgencyChecker {
 
-
     public static final String DATABASES = "databases";
     public static final String TAG = "InstalledAgencies";
     Context c;
