@@ -22,3 +22,7 @@ lametroapp/ has the Android source.
 scraper/ has the offline scraping utility, which generates the stopname databases.
 
 Due to bad history, there's some random directories on the root level, including an iOS port and older Android project.
+
+## Release Guide
+
+See file HOW_TO_DEPLOY for a reminder of how to actually make releases.
