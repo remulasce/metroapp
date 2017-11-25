@@ -1,0 +1,20 @@
+
+1.0 Release
+
+- Fixed miscellaneous keyboard focus issues
+- Show distance to stop in autocomplete dropdown
+- Show a "No Arrivals Found" message when prediction service reports 0 arrivals. Previously this was an infinite spinner, which hid whether the fetch had failed, or if there really were no more arrivals.
+- Clear the active stop list if the app hasn't been used in 4 hours
+- Minor changes to the arrival notification service text
+- Remove "Donate" button.
+
+
+I started this project over 3 years ago while I was taking the Green and Silver Lines to school. It evolved from a barebones tool to a quick and intuitive app. I initially released to the public in early 2015. It was my first public release & first "big" app.
+
+At the same time, I was finishing up my CS degree. Talking about the app became a talking point while interviewing for a CS job.
+
+About a year after starting the project, I received an offer with one of the big tech companies. I moved to Silicon Valley, and development on LA Metro Companion halted while I worked on software full time.
+
+But secretly, I have added support for major Bay Area transit providers... So I've been using the app at least monthly for the past 2 years. Now I've made time to fix the last annoying issues, and I believe it is time for "1.0".
+
+This project has been hugely important for me. Thank you all for using, emailing me, and donating. I'll continue maintaining the app into the forceeable future, since, of course, there still isn't a faster way to get from Stop to Prediction.
