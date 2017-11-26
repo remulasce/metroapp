@@ -28,6 +28,7 @@ import java.util.Random;
  */
 public class MetroStaticsProvider implements StopLocationTranslator, StopNameTranslator, AutoCompleteCombinedFiller {
     private static final String TAG = "MetroStaticsProvider";
+    private final InstalledAgencyChecker installedAgencyChecker;
 
     private Map<Agency, SQLPreloadedStopsReader> regionalStopsReaders = new HashMap<Agency, SQLPreloadedStopsReader>();
 
@@ -39,7 +40,8 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
 
 
 
-    public MetroStaticsProvider(Context context) {
+    public MetroStaticsProvider(Context context, InstalledAgencyChecker installedAgencyChecker) {
+        this.installedAgencyChecker = installedAgencyChecker;
         setupRegion(context);
 
         autoCompleteHistoryFiller = new AndroidAutocompleteHistory(context);
@@ -51,7 +53,9 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
             for (Agency agency : installedAgencies) {
                 if (!regionalStopsReaders.containsKey(agency)) {
                     // add agency
-                    SQLPreloadedStopsReader reader = new SQLPreloadedStopsReader(context, getFileName(agency), agency);
+                    SQLPreloadedStopsReader reader = new SQLPreloadedStopsReader(
+                            context, installedAgencyChecker
+                                .getDatabaseFileNameForAgency(agency), agency);
 
                     regionalStopsReaders.put(agency, reader);
                     Log.i(TAG, "Made autocomplete filler for agency "+agency.raw);
@@ -63,10 +67,6 @@ public class MetroStaticsProvider implements StopLocationTranslator, StopNameTra
             Log.w(TAG, "No regions set!");
         }
 
-    }
-
-    private String getFileName(Agency agency) {
-        return agency.raw+".db";
     }
 
     private void addToCache(Object k, Object v, Map cache, int maxCacheEntries, int numRemoveFull) {

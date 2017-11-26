@@ -96,6 +96,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private InstalledAgencyChecker installedAgencyChecker;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -138,8 +139,8 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     private void setupRegionalization() {
         RegionalizationHelper.setPersistence(getFieldSaver());
 
-        InstalledAgencyChecker checker = new InstalledAgencyChecker(this);
-        Collection<Agency> installedAgencies = checker.getInstalledAgencies();
+        installedAgencyChecker = new InstalledAgencyChecker(this);
+        Collection<Agency> installedAgencies = installedAgencyChecker.getInstalledAgencies();
 
         RegionalizationHelper.getInstance().setInstalledAgencies(installedAgencies);
         RegionalizationHelper.getInstance().loadPersistedAgencies();
@@ -292,7 +293,7 @@ public class MainActivity extends ActionBarActivity implements ServiceRequestLis
     }
 
     private void initializeStaticData() {
-        staticsProvider = new MetroStaticsProvider(this);
+        staticsProvider = new MetroStaticsProvider(this, installedAgencyChecker);
         staticsProvider.initialize();
 
         routeColorer = new HardcodedRouteColors();

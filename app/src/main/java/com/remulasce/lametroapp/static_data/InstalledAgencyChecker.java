@@ -10,6 +10,8 @@ import com.remulasce.lametroapp.java_core.basic_types.Agency;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Remulasce on 8/23/2015.
@@ -25,6 +27,13 @@ public class InstalledAgencyChecker {
     public static final String TAG = "InstalledAgencies";
     Context c;
 
+    /*
+     * Agency -> the sqlite db file.
+     *
+     * Eg. {VTA} -> vta.db
+     */
+    private Map<Agency, String> agencyFileNames = new HashMap<Agency, String>();
+
     public InstalledAgencyChecker(Context c) {
         this.c = c;
     }
@@ -39,14 +48,16 @@ public class InstalledAgencyChecker {
             String[] fileList = am.list(DATABASES);
 
             for (int i = 0; i < fileList.length; i++) {
-                Log.d("", fileList[i]);
+                String fileName = fileList[i];
 
                 // We need to properly open the details for each db file
-                Agency a = new InstalledAgencyLoader(c, fileList[i]).getAgency();
-                Log.d(TAG, "Found agency for " + fileList[i] + ", " + a);
+                Agency a = new InstalledAgencyLoader(c, fileName).getAgency();
+
+                Log.d(TAG, "Found agency for " + fileName + ", " + a);
 
                 if (a != null) {
                     ret.add(a);
+                    agencyFileNames.put(a, fileName);
                 }
             }
         } catch (IOException e) {
@@ -56,5 +67,10 @@ public class InstalledAgencyChecker {
 
         Log.i(TAG, "Found installed agencies: "+ret);
         return ret;
+    }
+
+    /** For a given agency, get the name of the .db file that represents it. */
+    public String getDatabaseFileNameForAgency(Agency agency) {
+        return agencyFileNames.get(agency);
     }
 }
