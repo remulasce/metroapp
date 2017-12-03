@@ -17,9 +17,9 @@ public class HardcodedCaltrainColors implements RouteColorer {
         String raw = r.getString();
 
         if (r.getAgency().matches("caltrain")) {
-            if (raw.equals("LOCAL")) { return new RouteColor("#FFFFFF"); }
-            if (raw.equals("LIMITED")) { return new RouteColor("#F7E89D"); }
-            if (raw.equals("BABY BULLET")) { return new RouteColor("#F0B2A1"); }
+            if (raw.equals("LOCAL")) { return new RouteColor("#77787B"); }
+            if (raw.equals("LIMITED")) { return new RouteColor("#FEF0B5"); }
+            if (raw.equals("BABY BULLET")) { return new RouteColor("#E31837"); }
         }
 
         return null;
