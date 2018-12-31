@@ -10,6 +10,7 @@ import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class RegionalizationHelper {
     private static final RegionalizationHelper instance = new RegionalizationHelper();
@@ -108,12 +109,14 @@ public class RegionalizationHelper {
         if (retriever == null) {
             Log.w(TAG, "Couldn't automatically update current region from helper");
             lastRegionUpdateTime = System.currentTimeMillis() - 55000;
+            activeAgencies = getDefaultRegions();
             return;
         }
         BasicLocation current = retriever.getCurrentLocation();
         if (current == null) {
             Log.w(TAG, "Couldn't automatically update current region from helper");
             lastRegionUpdateTime = System.currentTimeMillis() - 55000;
+            activeAgencies = getDefaultRegions();
         } else {
             lastRegionUpdateTime = System.currentTimeMillis();
             Collection<Agency> newActiveAgencies = new ArrayList<Agency>();
@@ -137,6 +140,11 @@ public class RegionalizationHelper {
         }
 
         Log.d(TAG, "RegionalizationHelper pulled current location: "+current);
+    }
+
+    /** Because Android location thing doesn't work so much any more... Default to Los Angeles */
+    private ArrayList<Agency> getDefaultRegions() {
+        return new ArrayList<Agency>(installedAgencies);
     }
 
     public void setActiveAgencies(Collection<Agency> agencies) {
