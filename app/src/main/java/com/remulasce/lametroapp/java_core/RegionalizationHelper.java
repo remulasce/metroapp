@@ -142,7 +142,7 @@ public class RegionalizationHelper {
         Log.d(TAG, "RegionalizationHelper pulled current location: "+current);
     }
 
-    /** Because Android location thing doesn't work so much any more... Default to Los Angeles */
+    /** Because Android location thing doesn't work so much any more... Default to all agencies */
     private ArrayList<Agency> getDefaultRegions() {
         return new ArrayList<Agency>(installedAgencies);
     }
