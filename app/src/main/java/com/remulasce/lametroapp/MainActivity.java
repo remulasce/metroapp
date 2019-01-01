@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.Menu;
@@ -60,7 +60,7 @@ import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 
 import java.util.Collection;
 
-public class MainActivity extends ActionBarActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
+public class MainActivity extends AppCompatActivity implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
     private static final String TAG = "MainActivity";
 
     private ProgressAutoCompleteTextView omniField;
