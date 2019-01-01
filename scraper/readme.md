@@ -7,9 +7,7 @@ This directory contains the offline scraping tools to generate stop files for th
 Just run scrapeAllSupportedAgencies.bat
 
 Output .db files go to _out.
-
-They will need to be moved to lametroapp/app/src/main/assets/databases to get them into the Android app.
-
+They will need to be moved to "lametroapp/app/src/main/assets/databases" to get them into the Android app.
 
 ## Advanced Usage:
 
