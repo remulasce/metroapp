@@ -3,18 +3,13 @@ package com.remulasce.lametroapp.platform_support;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by Remulasce on 3/6/2015.
@@ -28,38 +23,38 @@ public class AndroidApacheHTTP extends HTTPGetter{
     @Override
     public String doGetHTTPResponse(String request, NetworkStatusReporter statusReporter) {
         StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-        String URI = request;
 
-        HttpGet httpGet = new HttpGet(URI);
+        URL url;
         try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-            } else {
-                if (statusReporter != null) {
-                    statusReporter.reportFailure();
-                }
-            }
-        } catch (ClientProtocolException e) {
-            if (statusReporter != null) {
-                statusReporter.reportFailure();
-            }
-            e.printStackTrace();
-        } catch (IOException e) {
-            if (statusReporter != null) {
-                statusReporter.reportFailure();
-            }
-            e.printStackTrace();
+            url = new URL(request);
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();
+            statusReporter.reportFailure();
+            return builder.toString();
         }
+
+        HttpURLConnection cxn = null;
+        try {
+            cxn = (HttpURLConnection) url.openConnection();
+            InputStream content = cxn.getInputStream();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            statusReporter.reportFailure();
+        } catch (IOException e) {
+            e.printStackTrace();
+            statusReporter.reportFailure();
+        } finally {
+            if (cxn != null) {
+                cxn.disconnect();
+            }
+        }
+
         return builder.toString();
     }
 
