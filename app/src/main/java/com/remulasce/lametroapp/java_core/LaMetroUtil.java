@@ -37,15 +37,15 @@ import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 // GTFS conveniently provides us with a tag called <uri></uri> that will let us know if it's GTFS or not, as well as the request URL
 
 public class LaMetroUtil {
-    private static final String NEXTBUS_FEED_URL = "http://webservices.nextbus.com/service/publicXMLFeed";
-    private static final String BART_FEED_URL = "http://api.bart.gov/api/etd.aspx";
+    private static final String NEXTBUS_FEED_URL = "https://webservices.nextbus.com/service/publicXMLFeed";
+    private static final String BART_FEED_URL = "https://api.bart.gov/api/etd.aspx";
 
     private static final String BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
     public static final String TAG = "LaMetroUtil";
     // See, if we had code reviews, we wouldn't be able to just slip a hardcoded API key into the public repo.
     // Instead we'd have to spend several days coming up with proper opsec and key handling procedures, wasting valuable time.
     // And that's why we don't have code reviews.
-    public static final String BAY_511_FEED_URL = "http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
+    public static final String BAY_511_FEED_URL = "https://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
 
     public static StopLocationTranslator locationTranslator;
     public static RouteColorer routeColorer;
