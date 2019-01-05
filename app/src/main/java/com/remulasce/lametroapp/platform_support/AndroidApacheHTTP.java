@@ -11,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by Remulasce on 3/6/2015.
  *
@@ -32,6 +34,7 @@ public class AndroidApacheHTTP extends HTTPGetter {
       return builder.toString();
     }
 
+    // Not necessarily HttpsURLConnection, becouse our ancient gov't backends don't support HTTPS.
     HttpURLConnection cxn = null;
     try {
       cxn = (HttpURLConnection) url.openConnection();
