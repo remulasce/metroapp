@@ -5,8 +5,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -164,13 +166,13 @@ public class ArrivalNotifyService extends Service {
 
       NotificationCompat.Builder mBuilder =
           new NotificationCompat.Builder(ArrivalNotifyService.this, CHANNEL_ID);
-      mBuilder.setCategory(NotificationCompat.CATEGORY_ALARM);
-      Intent cancelIntent = new Intent();
-      cancelIntent.setAction("com.remulasce.lametroapp.cancel_notification");
+      mBuilder.setCategory(NotificationCompat.CATEGORY_EVENT);
+      mBuilder.setVibrate(null);
+      Intent cancelIntent = new Intent("com.remulasce.lametroapp.cancel_notification");
 
       PendingIntent cancelPendingIntent =
           PendingIntent.getBroadcast(
-              ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+              ArrivalNotifyService.this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT);
       mBuilder.addAction(R.drawable.ic_action_remove, "Cancel", cancelPendingIntent);
 
       while (run) {
@@ -429,6 +431,11 @@ public class ArrivalNotifyService extends Service {
   }
 
   public int onStartCommand(Intent intent, int flags, int startId) {
+    BroadcastReceiver r = new CancelReceiver();
+
+    IntentFilter filter = new IntentFilter("com.remulasce.lametroapp.cancel_notification");
+    this.registerReceiver(r, filter );
+
     test_started = true;
 
     // Meh good measure

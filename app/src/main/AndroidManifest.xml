@@ -30,12 +30,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="CancelReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="com.remulasce.lametroapp.cancel_notification" />
-            </intent-filter>
-        </receiver>
-
         <service android:name="ArrivalNotifyService"/>
 
         <meta-data android:name="com.google.android.gms.version"
