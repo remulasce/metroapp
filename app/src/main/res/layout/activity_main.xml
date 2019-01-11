@@ -1,5 +1,5 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,12 +15,36 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="com.remulasce.lametroapp.MainActivity" >
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:contentInsetStart="5dp"
+            app:contentInsetEnd="10dp"
+            >
+
+            <ImageButton
+                android:id="@+id/navigation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher"
+                android:background="@android:color/transparent"
+                android:paddingRight="4dp"
+                android:paddingEnd="4dp"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
         <fragment
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:name="com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment"
                 android:id="@+id/service_request_fragment"
                 tools:layout="@layout/fragment_service_request_list"
+                android:layout_below="@+id/toolbar"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 

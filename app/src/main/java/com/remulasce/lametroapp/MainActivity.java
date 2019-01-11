@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -19,14 +20,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -132,10 +136,10 @@ public class MainActivity extends AppCompatActivity
 
     checkFirstRunPresentation(savedInstanceState, missingPermissions);
 
-      BroadcastReceiver r = new CancelReceiver();
+    BroadcastReceiver r = new CancelReceiver();
 
-      IntentFilter filter = new IntentFilter("com.remulasce.lametroapp.cancel_notification");
-      this.registerReceiver(r, filter );
+    IntentFilter filter = new IntentFilter("com.remulasce.lametroapp.cancel_notification");
+    this.registerReceiver(r, filter);
   }
 
   /**
@@ -295,12 +299,14 @@ public class MainActivity extends AppCompatActivity
   }
 
   private void setupActionBar() {
-    android.support.v7.app.ActionBar mActionBar = getSupportActionBar();
+    Toolbar toolbar = findViewById(R.id.toolbar);
+    toolbar.setTitle("Toolbar Title");
 
-    mActionBar.setDisplayHomeAsUpEnabled(true);
-    mActionBar.setDisplayShowTitleEnabled(false);
-    mActionBar.setCustomView(R.layout.omni_search_box);
-    mActionBar.setDisplayShowCustomEnabled(true);
+    setSupportActionBar(toolbar);
+
+    ImageButton navigationButton = findViewById(R.id.navigation_button);
+
+    this.getLayoutInflater().inflate(R.layout.omni_search_box, toolbar);
 
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerToggle =
@@ -321,8 +327,6 @@ public class MainActivity extends AppCompatActivity
             Tracking.sendEvent("About Page", "Pane Opened");
           }
         };
-
-    mDrawerLayout.setDrawerListener(mDrawerToggle);
   }
 
   void setupAboutPage() {
