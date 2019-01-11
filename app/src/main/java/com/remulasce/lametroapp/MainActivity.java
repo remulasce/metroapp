@@ -305,6 +305,14 @@ public class MainActivity extends AppCompatActivity
     setSupportActionBar(toolbar);
 
     ImageButton navigationButton = findViewById(R.id.navigation_button);
+    navigationButton.setOnClickListener(
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                mDrawerLayout.openDrawer(mDrawerLayout.findViewById(R.id.left_drawer));
+              }
+            }
+    );
 
     this.getLayoutInflater().inflate(R.layout.omni_search_box, toolbar);
 

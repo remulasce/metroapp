@@ -29,12 +29,12 @@
                 android:id="@+id/navigation_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
+                android:layout_margin="8dp"
                 android:background="@android:color/transparent"
-                android:paddingStart="-2dp"
-                android:paddingLeft="-2dp"
-                android:paddingEnd="-4dp"
-                android:paddingRight="-4dp"
+                android:paddingStart="-4dp"
+                android:paddingLeft="-4dp"
+                android:paddingEnd="-6dp"
+                android:paddingRight="-6dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_launcher" />
 
