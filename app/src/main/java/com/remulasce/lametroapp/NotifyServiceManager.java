@@ -34,7 +34,6 @@ public class NotifyServiceManager {
         }
 
         try {
-            // TODO make sure this works
             i.putExtra( "Agency", stop.getAgency().raw );
             i.putExtra( "StopID", stop.getString() );
             i.putExtra( "StopName", stop.getStopName() );

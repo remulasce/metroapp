@@ -5,10 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -43,8 +41,10 @@ public class ArrivalNotifyService extends Service {
 
   public static final String TAG = "NotifyService";
   public static final String CHANNEL_NAME = "Arrival Notifications";
-  public static final String CHANNEL_DESCRIPTION = "Notification and alerts when your ride is about to arrive";
+  public static final String CHANNEL_DESCRIPTION =
+      "Notification and alerts when your ride is about to arrive";
   public static final String CHANNEL_ID = "ARRIVAL_CHANNEL_ID";
+  public static final int NOTIFICATION_ID = 294;
   private NetTask netTask;
   private NotificationTask notificationTask;
 
@@ -167,7 +167,7 @@ public class ArrivalNotifyService extends Service {
       NotificationCompat.Builder mBuilder =
           new NotificationCompat.Builder(ArrivalNotifyService.this, CHANNEL_ID);
       mBuilder.setCategory(NotificationCompat.CATEGORY_EVENT);
-      mBuilder.setVibrate(null);
+      mBuilder.setOnlyAlertOnce(true);
       Intent cancelIntent = new Intent("com.remulasce.lametroapp.cancel_notification");
 
       PendingIntent cancelPendingIntent =
@@ -408,7 +408,6 @@ public class ArrivalNotifyService extends Service {
 
               Notification n = mBuilder.build();
               startForeground(294, n);
-              mNotificationManager.notify(294, n);
             }
           });
     }
@@ -420,9 +419,11 @@ public class ArrivalNotifyService extends Service {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       CharSequence name = CHANNEL_NAME;
       String description = CHANNEL_DESCRIPTION;
-      int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      int importance = NotificationManager.IMPORTANCE_HIGH;
       NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
       channel.setDescription(description);
+      // This is the one and only chance to set this... You can't change it later.
+      channel.setSound(null, null);
       // Register the channel with the system; you can't change the importance
       // or other notification behaviors after this
       NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -431,11 +432,6 @@ public class ArrivalNotifyService extends Service {
   }
 
   public int onStartCommand(Intent intent, int flags, int startId) {
-    BroadcastReceiver r = new CancelReceiver();
-
-    IntentFilter filter = new IntentFilter("com.remulasce.lametroapp.cancel_notification");
-    this.registerReceiver(r, filter );
-
     test_started = true;
 
     // Meh good measure
@@ -508,7 +504,12 @@ public class ArrivalNotifyService extends Service {
             new Runnable() {
               @Override
               public void run() {
-                stopForeground(true);
+                stopForeground(false);
+                NotificationManager notificationManager =
+                    (NotificationManager)
+                        ArrivalNotifyService.this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.cancel(NOTIFICATION_ID);
               }
             });
   }

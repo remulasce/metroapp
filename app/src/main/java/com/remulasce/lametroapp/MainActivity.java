@@ -131,6 +131,11 @@ public class MainActivity extends AppCompatActivity
     setupDefaults(getIntent());
 
     checkFirstRunPresentation(savedInstanceState, missingPermissions);
+
+      BroadcastReceiver r = new CancelReceiver();
+
+      IntentFilter filter = new IntentFilter("com.remulasce.lametroapp.cancel_notification");
+      this.registerReceiver(r, filter );
   }
 
   /**
