@@ -9,126 +9,128 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="0dp"
-        android:paddingRight="0dp"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.remulasce.lametroapp.MainActivity" >
+        android:paddingRight="0dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context="com.remulasce.lametroapp.MainActivity">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
-            android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:contentInsetStart="5dp"
+            android:minHeight="?attr/actionBarSize"
             app:contentInsetEnd="10dp"
-            >
+            app:contentInsetStart="5dp">
 
             <ImageButton
                 android:id="@+id/navigation_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher"
+                android:layout_margin="6dp"
                 android:background="@android:color/transparent"
-                android:paddingRight="4dp"
-                android:paddingEnd="4dp"
-                />
+                android:paddingStart="-2dp"
+                android:paddingLeft="-2dp"
+                android:paddingEnd="-4dp"
+                android:paddingRight="-4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
 
         </android.support.v7.widget.Toolbar>
 
         <fragment
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:name="com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment"
-                android:id="@+id/service_request_fragment"
-                tools:layout="@layout/fragment_service_request_list"
-                android:layout_below="@+id/toolbar"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+            android:id="@+id/service_request_fragment"
+            android:name="com.remulasce.lametroapp.components.servicerequest_list.ServiceRequestListFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            tools:layout="@layout/fragment_service_request_list" />
 
         <View
+            android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:background="#ffe25725"
-            android:id="@+id/separator"
             android:layout_below="@+id/service_request_fragment"
+            android:layout_centerHorizontal="true"
+            android:background="#ffe25725"
             android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:layout_centerHorizontal="true" />
+            android:paddingRight="40dp" />
 
         <ListView
             android:id="@+id/tripList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:layout_below="@+id/separator"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            tools:listitem="@layout/trip_item"
-            android:layout_below="@+id/separator">
-        </ListView>
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            tools:listitem="@layout/trip_item"></ListView>
 
         <TextView
+            android:id="@+id/trip_list_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/trip_list_hint"
-            android:id="@+id/trip_list_hint"
-            android:padding="20dp"
-            android:textAlignment="center"
-            android:visibility="invisible"
-            android:gravity="center_vertical"
             android:layout_below="@+id/separator"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:gravity="center_vertical"
+            android:padding="20dp"
+            android:text="@string/trip_list_hint"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="invisible" />
 
         <TextView
+            android:id="@+id/about_tutorial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Email me your bugs and feedback. Swipe left for contact info"
-            android:id="@+id/about_tutorial"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
             android:paddingLeft="20dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            android:text="Email me your bugs and feedback. Swipe left for contact info"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ProgressBar
+            android:id="@+id/trip_list_progress"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/trip_list_progress"
-            android:indeterminate="true"
-            android:progress="1"
-            android:visibility="invisible"
             android:layout_below="@+id/trip_list_hint"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="57dp" />
+            android:layout_marginTop="57dp"
+            android:indeterminate="true"
+            android:progress="1"
+            android:visibility="invisible" />
 
         <include
+            android:id="@+id/network_status_bar"
+            layout="@layout/network_status_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            layout="@layout/network_status_bar"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/network_status_bar" />
+            android:layout_centerHorizontal="true" />
 
         <TextView
+            android:id="@+id/trip_list_secondary_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Predicted Arrivals"
-            android:id="@+id/trip_list_secondary_hint"
             android:layout_below="@+id/separator"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="Predicted Arrivals"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>
 
     <!-- The navigation drawer -->
-    <RelativeLayout android:id="@+id/left_drawer"
+    <RelativeLayout
+        android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -137,12 +139,12 @@
         android:dividerHeight="0dp">
 
         <include
+            layout="@layout/about_pane"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            layout="@layout/about_pane"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 
-     </RelativeLayout>
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>
