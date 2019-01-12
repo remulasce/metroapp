@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -27,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -306,13 +304,12 @@ public class MainActivity extends AppCompatActivity
 
     ImageButton navigationButton = findViewById(R.id.navigation_button);
     navigationButton.setOnClickListener(
-            new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                mDrawerLayout.openDrawer(mDrawerLayout.findViewById(R.id.left_drawer));
-              }
-            }
-    );
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mDrawerLayout.openDrawer(mDrawerLayout.findViewById(R.id.left_drawer));
+          }
+        });
 
     this.getLayoutInflater().inflate(R.layout.omni_search_box, toolbar);
 
