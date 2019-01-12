@@ -386,9 +386,9 @@ public class ArrivalNotifyService extends Service {
               }
 
               if (useImportantIcon) {
-                mBuilder.setSmallIcon(R.mipmap.important_icon_3);
+                mBuilder.setSmallIcon(R.drawable.notif_icon_2_transp_important);
               } else {
-                mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                mBuilder.setSmallIcon(R.drawable.notif_icon_2_transp);
               }
 
               Intent resultIntent = new Intent(ArrivalNotifyService.this, MainActivity.class);
