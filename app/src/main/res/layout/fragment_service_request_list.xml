@@ -6,6 +6,8 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:id="@+id/service_request_list"
         android:layout_gravity="center_horizontal|top"
