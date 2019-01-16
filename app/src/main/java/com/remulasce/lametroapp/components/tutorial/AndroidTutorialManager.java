@@ -116,11 +116,14 @@ public class AndroidTutorialManager extends TutorialManager{
         return getUserExperienceCount() < 3;
     }
 
-    @Override
-    public boolean aboutPaneNeedsHint() {
-//        return true;
-        return getUserExperienceCount() >= 10 && !userKnows(TUTORIAL_USER_KNOWS_ABOUT_PANE);
-    }
+  @Override
+  public boolean aboutPaneNeedsHint() {
+    //        return true;
+    int userExperienceCount = getUserExperienceCount();
+    return userExperienceCount >= 10
+        && userExperienceCount < 15
+        && !userKnows(TUTORIAL_USER_KNOWS_ABOUT_PANE);
+  }
 
     @Override
     public void userOpenedApp() {
