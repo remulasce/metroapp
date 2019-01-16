@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -104,7 +103,6 @@ public class MainActivity extends AppCompatActivity
   private TripPopulator tripPopulator;
 
   private DrawerLayout mDrawerLayout;
-  private ActionBarDrawerToggle mDrawerToggle;
   private InstalledAgencyChecker installedAgencyChecker;
 
   @Override
@@ -314,15 +312,9 @@ public class MainActivity extends AppCompatActivity
     this.getLayoutInflater().inflate(R.layout.omni_search_box, toolbar);
 
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    mDrawerToggle =
-        new ActionBarDrawerToggle(
-            this, /* host Activity */
-            mDrawerLayout, /* DrawerLayout object */
-            R.drawable.ic_drawer, /* nav drawer icon to replace 'Up' caret */
-            R.string.drawer_open, /* "open drawer" description */
-            R.string.drawer_close /* "close drawer" description */) {
-
-          /** Called when a drawer has settled in a completely open state. */
+    mDrawerLayout.addDrawerListener(
+        new DrawerLayout.SimpleDrawerListener() {
+          @Override
           public void onDrawerOpened(View drawerView) {
             super.onDrawerOpened(drawerView);
 
@@ -331,7 +323,7 @@ public class MainActivity extends AppCompatActivity
             Tracking.setScreenName("About Page");
             Tracking.sendEvent("About Page", "Pane Opened");
           }
-        };
+        });
   }
 
   void setupAboutPage() {
@@ -491,14 +483,11 @@ public class MainActivity extends AppCompatActivity
   @Override
   protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
-    // Sync the toggle state after onRestoreInstanceState has occurred.
-    mDrawerToggle.syncState();
   }
 
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    mDrawerToggle.onConfigurationChanged(newConfig);
   }
 
   @Override
@@ -600,7 +589,7 @@ public class MainActivity extends AppCompatActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
