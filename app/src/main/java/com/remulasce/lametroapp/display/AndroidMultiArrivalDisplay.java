@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -219,7 +220,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         }
 
         Boolean hasTrips = !trip.parentArrival.getArrivals().isEmpty();
-        if (hasTrips == false) {
+        if (!hasTrips) {
             RadioButton consistencyButton = new RadioButton(context);
             consistencyButton.setText("No vehicles available");
             radios.addView(consistencyButton);
@@ -233,7 +234,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         launchNotificationConfirmation(context, dialogView, hasTrips);
     }
 
-    private void setTrackingEventListeners(EditText time, RadioGroup vehicleRadio) {
+    private void setTrackingEventListeners(NumberPicker time, RadioGroup vehicleRadio) {
         time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,10 +250,10 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         });
     }
 
-    private int getTime(int seconds, EditText time) {
+    private int getTime(int seconds, NumberPicker time) {
         try {
             // Add 60 for rounding.
-            seconds = Integer.valueOf(String.valueOf(time.getText())) * 60 + 60;
+            seconds = time.getValue() * 60 + 60;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -276,18 +277,13 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
     }
 
     private void launchNotificationConfirmation(final Context context, final View dialogView, Boolean allowOk) {
-        final EditText time = (EditText) dialogView.findViewById(R.id.notify_dialog_time);
+        final NumberPicker time = dialogView.findViewById(R.id.notify_dialog_time);
         final RadioGroup vehicleRadio = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
-        time.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                InputMethodManager imm = (InputMethodManager)context.getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
-                return true;
-            }
-        });
+        time.setWrapSelectorWheel(false);
+        time.setMinValue(0);
+        time.setMaxValue(60);
+        time.setValue(2);
 
         setTrackingEventListeners(time, vehicleRadio);
 
