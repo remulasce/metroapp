@@ -12,21 +12,6 @@
         android:paddingBottom="20dp">
 
 
-        <!--<EditText-->
-            <!--android:id="@+id/notify_dialog_time"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignLeft="@+id/notification_confirmation_time_description"-->
-            <!--android:layout_alignStart="@+id/notification_confirmation_time_description"-->
-            <!--android:gravity="center"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_below="@+id/textView"-->
-            <!--android:ems="2"-->
-            <!--android:inputType="number"-->
-            <!--android:text="@string/default_notification_time"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--android:layout_marginRight="20dp" />-->
-
         <NumberPicker
             android:id="@+id/notify_dialog_time"
             android:layout_width="wrap_content"
