@@ -9,7 +9,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Agency;
 
 public class HardcodedHacks {
 
-    public static final int DATABASE_VERSION = 25;
+    public static final int DATABASE_VERSION = 26;
 
     public static boolean useBay511(Agency agency) {
         return agencyMatchesAny(agency, "caltrain", "SamTrans", "VTA");
