@@ -15,8 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
+import com.remulasce.lametroapp.components.omni_bar.InterestedLocationsProvider;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 
@@ -29,7 +31,7 @@ import java.util.List;
   List of active ServiceRequests
   Handles adding and removing them from the TripPopulator
  */
-public class ServiceRequestListFragment extends Fragment {
+public class ServiceRequestListFragment extends Fragment implements InterestedLocationsProvider {
     private static final String TAG = "ServiceRequestFragment";
     public static final int MAX_PERSISTED_REQEUST_STALENESS_MS = 14400000;
 
@@ -38,7 +40,7 @@ public class ServiceRequestListFragment extends Fragment {
     private TextView hintText;
     private TextView secondaryHintText;
 
-    private final List<ServiceRequest> requests = new ArrayList<ServiceRequest>();
+    private final List<ServiceRequest> serviceRequests = new ArrayList<ServiceRequest>();
 
     private ArrayAdapter<ServiceRequest> makeAdapter(List<ServiceRequest> items) {
         //noinspection unchecked
@@ -52,13 +54,13 @@ public class ServiceRequestListFragment extends Fragment {
         }
 
         Log.d(TAG, "Adding service request " + serviceRequest);
-        requests.add(serviceRequest);
+        serviceRequests.add(serviceRequest);
 
         requestsChanged(true);
     }
 
     private boolean duplicateRequest(ServiceRequest serviceRequest) {
-        for (ServiceRequest r : requests ) {
+        for (ServiceRequest r : serviceRequests) {
             if (r.getDisplayName().equals(serviceRequest.getDisplayName())) {
                 return true;
             }
@@ -67,17 +69,17 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     private void requestsChanged(boolean saveRequests) {
-        requestList.setAdapter(makeAdapter(requests));
-        updateTripPopulator(requests);
+        requestList.setAdapter(makeAdapter(serviceRequests));
+        updateTripPopulator(serviceRequests);
         if (saveRequests) {
-            saveServiceRequests(requests);
+            saveServiceRequests(serviceRequests);
         }
 
         updateHintVisibility();
     }
 
     private void updateHintVisibility() {
-        if (requests.size() > 0) {
+        if (serviceRequests.size() > 0) {
             hintText.setVisibility(View.INVISIBLE);
             secondaryHintText.setVisibility(View.INVISIBLE);
         } else {
@@ -92,7 +94,7 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     public int numRequests() {
-        return requests.size();
+        return serviceRequests.size();
     }
 
     public ServiceRequestListFragment() {
@@ -128,7 +130,7 @@ public class ServiceRequestListFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        saveServiceRequests(requests);
+        saveServiceRequests(serviceRequests);
 
         super.onDetach();
         mListener = null;
@@ -138,7 +140,7 @@ public class ServiceRequestListFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
-        saveServiceRequests(requests);
+        saveServiceRequests(serviceRequests);
     }
 
     private void updateTripPopulator(List<ServiceRequest> requests) {
@@ -159,7 +161,7 @@ public class ServiceRequestListFragment extends Fragment {
         Collection<ServiceRequest> serviceRequests = mListener.getFieldSaver().loadServiceRequests
                 (MAX_PERSISTED_REQEUST_STALENESS_MS);
         if (serviceRequests != null && !serviceRequests.contains(null)) {
-            this.requests.addAll(serviceRequests);
+            this.serviceRequests.addAll(serviceRequests);
         } else {
             Log.w(TAG, "Saved requests loaded something it shouldn't have!");
         }
@@ -168,10 +170,10 @@ public class ServiceRequestListFragment extends Fragment {
     }
 
     private void clearAllRequests(boolean saveRequests) {
-        for (ServiceRequest each : requests) {
+        for (ServiceRequest each : serviceRequests) {
             each.descope();
         }
-        requests.clear();
+        serviceRequests.clear();
         requestsChanged(saveRequests);
     }
 
@@ -208,7 +210,7 @@ public class ServiceRequestListFragment extends Fragment {
         Log.d(TAG, "Cancelling request: "+s);
         s.descope();
         s.cancelRequest();
-        requests.remove(s);
+        serviceRequests.remove(s);
         requestsChanged(true);
     }
 
@@ -219,6 +221,16 @@ public class ServiceRequestListFragment extends Fragment {
             cancelRequest(request);
         }
     };
+
+    @Override
+    public Collection<BasicLocation> getInterestingLocations() {
+        ArrayList<BasicLocation> ret = new ArrayList<>();
+        for (ServiceRequest sr : serviceRequests) {
+            ret.addAll(sr.getInterestingLocations());
+        }
+
+        return ret;
+    }
 
     public interface ServiceRequestListFragmentSupport {
         public ServiceRequestHandler getTripPopulator();

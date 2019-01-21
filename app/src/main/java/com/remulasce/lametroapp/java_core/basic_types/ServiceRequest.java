@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
+import android.location.Location;
+
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 
 import java.io.Serializable;
@@ -52,6 +54,10 @@ public abstract class ServiceRequest implements Serializable {
     public boolean isInScope() {
         return inScope;
     }
+
+    // Returns a collection of Locations that should be prioritized in autocomplete.
+    // Pretty much, a Stop should prioritize other Stops near it, for transfers.
+    public abstract Collection<BasicLocation> getInterestingLocations();
 
     // Platform UI layer uses this hook to do all its display, via ServiceRequestHandler
     public abstract Collection<Trip> getTrips();

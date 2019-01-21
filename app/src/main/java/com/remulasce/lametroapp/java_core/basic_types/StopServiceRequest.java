@@ -1,5 +1,7 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
+import android.location.Location;
+
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.RequestStatusTrip;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.StopRouteDestinationArrival;
@@ -111,6 +113,17 @@ public class StopServiceRequest extends ServiceRequest {
         }
 
         predictions.clear();
+    }
+
+    @Override
+    public Collection<BasicLocation> getInterestingLocations() {
+        ArrayList<BasicLocation> ret = new ArrayList<>();
+
+        for (Stop stop : stops) {
+            ret.add(stop.getLocation());
+        }
+
+        return ret;
     }
 
     @Override
