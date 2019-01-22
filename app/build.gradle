@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "com.remulasce.lametroapp"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 28
     }
 
