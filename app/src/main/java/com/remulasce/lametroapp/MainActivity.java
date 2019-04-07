@@ -37,6 +37,7 @@ import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
+import com.remulasce.lametroapp.components.omni_bar.InterestedLocationsProvider;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
@@ -52,6 +53,7 @@ import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.basic_types.Agency;
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
@@ -73,12 +75,10 @@ public class MainActivity extends AppCompatActivity
 
   private ProgressAutoCompleteTextView omniField;
   private Button clearButton;
-  private Button donateButton;
   private Button legalButton;
   private Button settingsButton;
   private TextView aboutPaneHint;
   private TextView versionNumber;
-  private TextView donateButtonPresses;
   private ProgressBar autocompleteProgress;
 
   private OmniBarInputHandler omniHandler;
@@ -271,12 +271,18 @@ public class MainActivity extends AppCompatActivity
   private void setupOmniBar() {
     autoCompleteAdapter =
         new OmniAutoCompleteAdapter(
-            this,
-            R.layout.omnibar_dropdown_item,
-            R.id.omnibar_item_station_name,
-            staticsProvider,
-            locationService,
-            routeColorer);
+                this,
+                new InterestedLocationsProvider() {
+                  @Override
+                  public Collection<BasicLocation> getInterestingLocations() {
+                    return null;
+                  }
+                },
+                R.layout.omnibar_dropdown_item,
+                R.id.omnibar_item_station_name,
+                staticsProvider,
+                locationService,
+                routeColorer);
     omniField.setAdapter(autoCompleteAdapter);
     omniField.setThreshold(0);
 
@@ -327,60 +333,6 @@ public class MainActivity extends AppCompatActivity
   }
 
   void setupAboutPage() {
-    donateButton.setOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-            Tracking.sendEvent("Monetization", "Donate Opened", "About Page Button");
-
-            Intent browserIntent =
-                new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(
-                        "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=85JRNL5K6T7XE&lc=US&item_name=LA%20Metro%20Companion%20%7c%20Fintan%20O%27Grady&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted"));
-            startActivity(browserIntent);
-
-            Toast.makeText(
-                    MainActivity.this, "Thanks! I'm linking you to paypal now.", Toast.LENGTH_LONG)
-                .show();
-
-            Handler uiHandler = new Handler(MainActivity.this.getMainLooper());
-            uiHandler.postDelayed(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    Toast.makeText(
-                            MainActivity.this,
-                            "I do this as a hobby, and donations really encourage me to keep working.",
-                            Toast.LENGTH_LONG)
-                        .show();
-                  }
-                },
-                3000);
-            uiHandler.postDelayed(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    Toast.makeText(
-                            MainActivity.this,
-                            "If you have any specific annoyance with the app, email me and I'll get right on it.",
-                            Toast.LENGTH_LONG)
-                        .show();
-                  }
-                },
-                5000);
-          }
-        });
-
-    final SpannableStringBuilder str = new SpannableStringBuilder("2 people donated");
-    str.setSpan(
-        new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-        0,
-        1,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    donateButtonPresses.setText(str);
-
     try {
       versionNumber.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
     } catch (PackageManager.NameNotFoundException e) {
@@ -392,13 +344,11 @@ public class MainActivity extends AppCompatActivity
   void linkViewReferences() {
     omniField = (ProgressAutoCompleteTextView) findViewById(R.id.omni_text);
     clearButton = (Button) findViewById(R.id.omni_clear_button);
-    donateButton = (Button) findViewById(R.id.donate_button);
     legalButton = (Button) findViewById(R.id.legal_info_button);
     settingsButton = (Button) findViewById(R.id.settings_button);
     versionNumber = (TextView) findViewById(R.id.about_version_number);
     autocompleteProgress = (ProgressBar) findViewById(R.id.autocomplete_progress);
     aboutPaneHint = (TextView) findViewById(R.id.about_tutorial);
-    donateButtonPresses = (TextView) findViewById(R.id.donate_button_press_count_text);
 
     tripList = (ListView) findViewById(R.id.tripList);
     tripListHint = (TextView) findViewById(R.id.trip_list_hint);

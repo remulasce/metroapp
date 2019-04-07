@@ -9,8 +9,6 @@ import java.io.Serializable;
  * Each trip provides information, and can provide additional response
  * to being 'taken'
  * 
- * @author Fintan
- *
  */
 public class Trip implements Serializable {
 	private String text = "...";

@@ -16,7 +16,7 @@ package com.remulasce.lametroapp.libraries;
  * limitations under the License.
  *
  * <
- * MODIFIED by Fintan O'Grady Copyright 2015
+ * MODIFIED by Faelyn O'Grady Copyright 2015
  * Modifications are denoted with comments including my name.
  * >
  *
@@ -119,7 +119,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          *                               order for convenience.
          */
         void onDismiss(ListView listView, int[] reverseSortedPositions);
-        // Mod Fintan O'Grady: onBeginDismiss callback so we know when to stop messing with the TRipList.
+        // Mod Faelyn O'Grady: onBeginDismiss callback so we know when to stop messing with the TRipList.
         void onBeginDismiss(ListView listView);
     }
 
@@ -237,7 +237,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 }
                 if (dismiss) {
                     // dismiss
-                    //Fintan O'Grady modification: Notify when dismiss begins, so we know to stop
+                    // Faelyn O'Grady modification: Notify when dismiss begins, so we know to stop
                     // messing with the ListView.
                     // Also, only allow one dismiss at a time, including final animation.
                     mCallback.onBeginDismiss(mListView);
@@ -344,7 +344,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     }
                     mCallback.onDismiss(mListView, dismissPositions);
 
-                    // Mod Fintan O'Grady: Only one dismissal at a time.
+                    // Mod Faelyn O'Grady: Only one dismissal at a time.
                     mPaused = false;
 
                     ViewGroup.LayoutParams lp;
@@ -353,7 +353,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                         setAlpha(pendingDismiss.view, 1f);
                         setTranslationX(pendingDismiss.view, 0);
                         lp = pendingDismiss.view.getLayoutParams();
-//                        lp.height = originalHeight; ugh. Modification Fintan O'Grady.
+//                        lp.height = originalHeight; ugh. Modification Faelyn O'Grady.
                         lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         pendingDismiss.view.setLayoutParams(lp);
                     }

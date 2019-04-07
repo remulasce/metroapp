@@ -84,8 +84,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@id/about_title"
                 android:autoLink="email" />
-
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,44 +91,9 @@
                 android:text="@string/donate_pitch"
                 android:id="@+id/donate_text"
                 android:layout_marginTop="50dp"
-                android:layout_below="@+id/feedback_call_action"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:visibility="gone"
-                android:enabled="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/donate_button_text"
-                android:id="@+id/donate_button"
-                android:layout_below="@+id/donate_text"
-                android:layout_centerHorizontal="true"
-                android:padding="10dp"
-                android:layout_marginTop="10dp"
-                android:textSize="20dp" />
-
-            <TextView
-                android:visibility="gone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                tools:text="X person has donated"
-                android:id="@+id/donate_button_press_count_text"
-                android:layout_below="@id/donate_button"
-                android:layout_centerHorizontal="true"
-                android:textSize="12dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Email me with suggestions"
-                android:id="@+id/feedback_call_action"
                 android:layout_below="@+id/about_author"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
-
 
         </RelativeLayout>
     </ScrollView>
