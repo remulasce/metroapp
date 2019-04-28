@@ -218,6 +218,37 @@ public class MetroStaticsProvider
   @Override
   public Collection<OmniAutoCompleteEntry> autocompleteLocationSuggestions(
       Collection<BasicLocation> locations) {
-    return null;
+    Collection<OmniAutoCompleteEntry> ret = new ArrayList<>();
+
+    // Duplicate station names across databases should be treated as the same stop.
+    // Eg. Vermont / Athens has both lametr and lametro-rail components
+    // So we need a quick way to get existing entries to add additional stops to them.
+    Map<String, OmniAutoCompleteEntry> usedStops = new HashMap<String, OmniAutoCompleteEntry>();
+
+    Collection<Agency> activeAgencies = RegionalizationHelper.getInstance().getActiveAgencies();
+
+    for (Agency a : regionalStopsReaders.keySet()) {
+      if (!activeAgencies.contains(a)) {
+        continue;
+      }
+      SQLPreloadedStopsReader reader = regionalStopsReaders.get(a);
+
+      Collection<OmniAutoCompleteEntry> entries = reader.autocompleteLocationSuggestions(locations);
+
+      for (OmniAutoCompleteEntry newEntry : entries) {
+        if (usedStops.containsKey(newEntry.toString())) {
+          OmniAutoCompleteEntry exstEntry = usedStops.get(newEntry.toString());
+          List<Stop> exstStops = exstEntry.getStops();
+          exstStops.addAll(newEntry.getStops());
+
+          exstEntry.setStops(exstStops);
+        } else {
+          usedStops.put(newEntry.toString(), newEntry);
+        }
+      }
+    }
+
+    ret.addAll(usedStops.values());
+    return ret;
   }
 }

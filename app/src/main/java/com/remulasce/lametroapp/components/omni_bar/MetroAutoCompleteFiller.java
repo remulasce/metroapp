@@ -8,6 +8,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import com.remulasce.lametroapp.static_data.AutoCompleteCombinedFiller;
 import com.remulasce.lametroapp.static_data.AutoCompleteHistoryFiller;
+import com.remulasce.lametroapp.static_data.AutoCompleteLocationFiller;
 import com.remulasce.lametroapp.static_data.AutoCompleteStopFiller;
 
 import java.util.ArrayList;
@@ -15,25 +16,28 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Created by Remulasce on 3/20/2015. Just puts together autocompleteText entries from history and
+ * Created by Remulasce on 3/20/2015. Just puts together autoCompleteStops entries from history and
  * from a search of the stopname table
  */
 public class MetroAutoCompleteFiller implements AutoCompleteFiller {
   private static final String TAG = "MetroAutoCompleteFiller";
-  private AutoCompleteStopFiller autocompleteText;
+  private AutoCompleteStopFiller autoCompleteStops;
   private AutoCompleteHistoryFiller autocompleteHistory;
+  private AutoCompleteLocationFiller autoCompleteLocationFiller;
   private InterestedLocationsProvider interestedLocationsProvider;
   private LocationRetriever stopLocations;
 
   public MetroAutoCompleteFiller(
-      AutoCompleteCombinedFiller autocompleteText,
+      AutoCompleteCombinedFiller autoCompleteStops,
       AutoCompleteHistoryFiller autocompleteHistory,
+      AutoCompleteLocationFiller autoCompleteLocation,
       InterestedLocationsProvider interestedLocationsProvider,
       LocationRetriever locations) {
     this.interestedLocationsProvider = interestedLocationsProvider;
     this.stopLocations = locations;
-    this.autocompleteText = autocompleteText;
+    this.autoCompleteStops = autoCompleteStops;
     this.autocompleteHistory = autocompleteHistory;
+    this.autoCompleteLocationFiller = autoCompleteLocation;
   }
 
   @Override
@@ -45,26 +49,37 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
 
     Collection<OmniAutoCompleteEntry> historySuggestions =
         autocompleteHistory.autocompleteHistorySuggestions(input);
-    Collection<OmniAutoCompleteEntry> autocompleteSuggestions =
-        autocompleteText.autocompleteStopName(input);
-//    Collection<OmniAutoCompleteEntry> nearbySuggestions =
-//            autoco
+    Collection<OmniAutoCompleteEntry> textSuggestions =
+        autoCompleteStops.autocompleteStopName(input);
+    Collection<OmniAutoCompleteEntry> locationSuggestions =
+            autoCompleteLocationFiller.autocompleteLocationSuggestions(
+                    interestedLocationsProvider.getInterestingLocations());
 
-    prioritizeNearbySuggestions(autocompleteSuggestions);
+    prioritizeNearbySuggestions(textSuggestions);
     prioritizeNearbySuggestions(historySuggestions, 0.5f);
 
     // Tempting to put these before priority work, but don't do it.
     limitNumberSuggestions(historySuggestions, 4);
-    limitNumberSuggestions(autocompleteSuggestions, 16);
+    limitNumberSuggestions(textSuggestions, 16);
+    limitNumberSuggestions(locationSuggestions, 4);
 
     results.addAll(historySuggestions);
+    addInSuggestions(results, textSuggestions);
+    addInSuggestions(results, locationSuggestions);
 
+
+    Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
+    return results;
+  }
+
+  private void addInSuggestions(Collection<OmniAutoCompleteEntry> original,
+                                Collection<OmniAutoCompleteEntry> other) {
     // N^2. Fantastic.
-    // If both history and text suggest the same entry, we need to combine the priorities.
-    for (OmniAutoCompleteEntry newEntry : autocompleteSuggestions) {
+    // If both original and other are the same suggestion, we need to combine the priorities.
+    for (OmniAutoCompleteEntry newEntry : other) {
       OmniAutoCompleteEntry matchingEntry = null;
 
-      for (OmniAutoCompleteEntry exstEntry : results) {
+      for (OmniAutoCompleteEntry exstEntry : original) {
         if (exstEntry.toString().equals(newEntry.toString())) {
           matchingEntry = exstEntry;
           break;
@@ -74,12 +89,9 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
       if (matchingEntry != null) {
         matchingEntry.addPriority(newEntry.getPriority());
       } else {
-        results.add(newEntry);
+        original.add(newEntry);
       }
     }
-
-    Tracking.sendTime("AutoComplete", "Perform Filtering", "Total", t);
-    return results;
   }
 
   // We don't want to overwhelm users with choices.

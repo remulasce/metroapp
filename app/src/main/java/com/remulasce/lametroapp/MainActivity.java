@@ -66,7 +66,9 @@ import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedRouteColors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity
     implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
@@ -271,18 +273,18 @@ public class MainActivity extends AppCompatActivity
   private void setupOmniBar() {
     autoCompleteAdapter =
         new OmniAutoCompleteAdapter(
-                this,
-                new InterestedLocationsProvider() {
-                  @Override
-                  public Collection<BasicLocation> getInterestingLocations() {
-                    return null;
-                  }
-                },
-                R.layout.omnibar_dropdown_item,
-                R.id.omnibar_item_station_name,
-                staticsProvider,
-                locationService,
-                routeColorer);
+            this,
+            new InterestedLocationsProvider() {
+              @Override
+              public Collection<BasicLocation> getInterestingLocations() {
+                return Collections.singletonList(locationService.getCurrentLocation());
+              }
+            },
+            R.layout.omnibar_dropdown_item,
+            R.id.omnibar_item_station_name,
+            staticsProvider,
+            locationService,
+            routeColorer);
     omniField.setAdapter(autoCompleteAdapter);
     omniField.setThreshold(0);
 
