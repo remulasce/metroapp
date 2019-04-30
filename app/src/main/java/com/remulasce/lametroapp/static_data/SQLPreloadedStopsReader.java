@@ -25,8 +25,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Reads the stops database file preloaded in assets somewhere.
@@ -72,6 +75,22 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     public String stopName;
     public double latitude;
     public double longitude;
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      SQLStopNamesEntry that = (SQLStopNamesEntry) o;
+      return Double.compare(that.latitude, latitude) == 0 &&
+              Double.compare(that.longitude, longitude) == 0 &&
+              Objects.equals(stopID, that.stopID) &&
+              Objects.equals(stopName, that.stopName);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(stopID, stopName, latitude, longitude);
+    }
   }
 
   private class SQLStopRouteEntry {
@@ -199,14 +218,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
       for (SQLStopNamesEntry entry : matchingEntries) {
         // Try to only put stuff in once
         if (!tmp.containsKey(entry.stopName)) {
-          OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, 1);
-          Stop newStop = new Stop(entry.stopID);
-          newStop.setStopName(entry.stopName);
-          newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
-          ArrayList<Stop> s1 = new ArrayList<Stop>();
-          s1.add(newStop);
-          newEntry.setStops(s1);
-          newStop.setAgency(agency);
+          OmniAutoCompleteEntry newEntry = makeOmniAutocompleteEntryFromSql(entry, 1);
           tmp.put(entry.stopName, newEntry);
         } else {
           // Actually, let's put all matching stops in now.
@@ -246,10 +258,51 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
     return ret.values();
   }
 
+  @NonNull
+  private OmniAutoCompleteEntry makeOmniAutocompleteEntryFromSql(SQLStopNamesEntry entry, float priority) {
+    OmniAutoCompleteEntry newEntry = new OmniAutoCompleteEntry(entry.stopName, priority);
+    Stop newStop = new Stop(entry.stopID);
+    newStop.setStopName(entry.stopName);
+    newStop.setLocation(new BasicLocation(entry.latitude, entry.longitude));
+    ArrayList<Stop> s1 = new ArrayList<Stop>();
+    s1.add(newStop);
+    newEntry.setStops(s1);
+    newStop.setAgency(agency);
+    return newEntry;
+  }
+
   @Override
   public Collection<OmniAutoCompleteEntry> autocompleteLocationSuggestions(
       Collection<BasicLocation> locations) {
-    return null;
+
+    Set<SQLStopNamesEntry> sqlEntries = getMergedAutocompleteLocationSqlEntries(locations);
+
+    return convertToOmniAutoCompleteEntries(sqlEntries);
+  }
+
+  @NonNull
+  private Collection<OmniAutoCompleteEntry> convertToOmniAutoCompleteEntries(Set<SQLStopNamesEntry> sqlEntries) {
+    Collection<OmniAutoCompleteEntry> ret = new ArrayList<>();
+
+    for (SQLStopNamesEntry sqlEntry : sqlEntries) {
+      OmniAutoCompleteEntry e =
+              makeOmniAutocompleteEntryFromSql(sqlEntry, 1);
+      ret.add(e);
+    }
+    return ret;
+  }
+
+  @NonNull
+  private Set<SQLStopNamesEntry> getMergedAutocompleteLocationSqlEntries(Collection<BasicLocation> locations) {
+    Set<SQLStopNamesEntry> ret = new HashSet<>();
+    SQLiteDatabase db = getReadableDatabase();
+
+    for (BasicLocation loc : locations) {
+      Collection<SQLStopNamesEntry> stops = getNearestStops(db, loc, 10, 1000 /* 1km */);
+
+      ret.addAll(stops);
+    }
+    return ret;
   }
 
   @Override
@@ -398,12 +451,14 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
               StopNameEntry.COLUMN_NAME_LATITUDE,
               StopNameEntry.COLUMN_NAME_LONGITUDE,
             },
-            makeNearestStopsSelection(location, maxLatDiff, maxLongDiff, maxStops),
+            makeNearestStopsSelection(location, maxLatDiff, maxLongDiff),
             null,
             null,
             null,
-            null)) {
+            null,
+                String.valueOf(maxStops))) {
 
+      cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             SQLStopNamesEntry add = extractStopFromStopNamesCursor(cursor);
             ret.add(add);
@@ -602,13 +657,9 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
   }
 
   private String makeNearestStopsSelection(
-      BasicLocation loc, double maxLatDiff, double maxLongDiff, int numResults) {
-    return "SELECT TOP "
-        + numResults
-        + " FROM "
-        + StopNameEntry.TABLE_NAME
-        + " WHERE "
-        + StopNameEntry.COLUMN_NAME_LATITUDE
+      BasicLocation loc, double maxLatDiff, double maxLongDiff) {
+    return
+        StopNameEntry.COLUMN_NAME_LATITUDE
         + " >= "
         + (loc.latitude - maxLatDiff)
         + " AND "

@@ -1,9 +1,11 @@
 package com.remulasce.lametroapp.components.omni_bar;
 
 import android.arch.core.util.Function;
+import android.location.Location;
 import android.util.Log;
 
 import com.remulasce.lametroapp.java_core.analytics.Tracking;
+import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.location.LocationRetriever;
 import com.remulasce.lametroapp.static_data.AutoCompleteCombinedFiller;
@@ -184,7 +186,25 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         new Function<Void, Double>() {
           @Override
           public Double apply(Void input) {
-            return stopLocations.getCurrentDistanceToStop(entry.getStops().get(0));
+            float minDistance = Float.MAX_VALUE;
+
+            for (BasicLocation interestingLoc : interestedLocationsProvider.getInterestingLocations()) {
+              float dist = getDistanceBetween(interestingLoc, entry.getStops().get(0).getLocation());
+
+              minDistance = Math.min(dist, minDistance);
+            }
+
+            return (double) minDistance;
+          }
+
+          private float getDistanceBetween(BasicLocation interestingLoc, BasicLocation stopLocation) {
+            float[] results = new float[4];
+
+            Location.distanceBetween(
+                    interestingLoc.latitude, interestingLoc.longitude,
+                    stopLocation.latitude, stopLocation.longitude, results);
+
+            return results[0];
           }
         },
         scaleFactor);

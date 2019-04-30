@@ -58,6 +58,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
         new MetroAutoCompleteFiller(
             autoCompleteCombinedFiller,
             autoCompleteCombinedFiller,
+            autoCompleteCombinedFiller,
             interestedLocationsProvider,
             locations);
   }

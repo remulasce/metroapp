@@ -69,6 +69,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class MainActivity extends AppCompatActivity
     implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
@@ -270,23 +272,36 @@ public class MainActivity extends AppCompatActivity
     TutorialManager.setTutorialManager(tutorialManager);
   }
 
-  private void setupOmniBar() {
-    autoCompleteAdapter =
-        new OmniAutoCompleteAdapter(
-            this,
-            new InterestedLocationsProvider() {
-              @Override
-              public Collection<BasicLocation> getInterestingLocations() {
-                return Collections.singletonList(locationService.getCurrentLocation());
-              }
-            },
-            R.layout.omnibar_dropdown_item,
-            R.id.omnibar_item_station_name,
-            staticsProvider,
-            locationService,
-            routeColorer);
-    omniField.setAdapter(autoCompleteAdapter);
-    omniField.setThreshold(0);
+    private void setupOmniBar() {
+        autoCompleteAdapter =
+                new OmniAutoCompleteAdapter(
+                        this,
+                        new InterestedLocationsProvider() {
+                            @Override
+                            public Collection<BasicLocation> getInterestingLocations() {
+                                ArrayList<BasicLocation> ret = new ArrayList<>();
+
+                                ret.addAll(requestFragment.getInterestingLocations());
+                                ret.addAll(currentLocationOrEmpty());
+
+                                return ret;
+                            }
+
+                            @NonNull
+                            private List<BasicLocation> currentLocationOrEmpty() {
+                                BasicLocation currentLocation = locationService.getCurrentLocation();
+                                return currentLocation == null ?
+                                        Collections.<BasicLocation>emptyList() :
+                                        Collections.singletonList(currentLocation);
+                            }
+                        },
+                        R.layout.omnibar_dropdown_item,
+                        R.id.omnibar_item_station_name,
+                        staticsProvider,
+                        locationService,
+                        routeColorer);
+        omniField.setAdapter(autoCompleteAdapter);
+        omniField.setThreshold(0);
 
     omniHandler =
         new OmniBarInputHandler(
