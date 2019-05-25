@@ -55,10 +55,15 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         autoCompleteStops.autocompleteStopName(input);
     Collection<OmniAutoCompleteEntry> locationSuggestions =
             autoCompleteLocationFiller.autocompleteLocationSuggestions(
-                    interestedLocationsProvider.getInterestingLocations());
+                    interestedLocationsProvider.getInterestingLocations(),
+                    10 /* maxStops */, 500 /* .5km, ~1/4mi */
+            );
 
     prioritizeNearbySuggestions(textSuggestions);
     prioritizeNearbySuggestions(historySuggestions, 0.5f);
+    // The location suggestions are not prioritize by distance, they come with priority 1 each.
+    // We apply a specialized walking distance function here to prioritize them.
+    prioritizeNearbySuggestions(locationSuggestions, 0.5f);
 
     // Tempting to put these before priority work, but don't do it.
     limitNumberSuggestions(historySuggestions, 4);

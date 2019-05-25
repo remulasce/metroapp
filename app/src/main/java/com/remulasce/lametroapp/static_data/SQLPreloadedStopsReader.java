@@ -44,7 +44,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
         StopRoutesTable {
   private static final String TAG = "StopNameSQLHelper";
 
-  private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 3;
+  private static final int MINIMUM_AUTOCOMPLETE_PROMPT = 2; // We need to match 'st'
 
   private String DATABASE_NAME;
   private Agency agency;
@@ -273,32 +273,38 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
 
   @Override
   public Collection<OmniAutoCompleteEntry> autocompleteLocationSuggestions(
-      Collection<BasicLocation> locations) {
+          Collection<BasicLocation> locations,
+          float maxDistanceMeters, int maxResults) {
 
-    Set<SQLStopNamesEntry> sqlEntries = getMergedAutocompleteLocationSqlEntries(locations);
+    Set<SQLStopNamesEntry> sqlEntries = getMergedAutocompleteLocationSqlEntries(
+            locations, maxResults, maxDistanceMeters);
 
-    return convertToOmniAutoCompleteEntries(sqlEntries);
+    return convertToOmniAutoCompleteEntries(sqlEntries, 1 /* default priority */);
   }
 
   @NonNull
-  private Collection<OmniAutoCompleteEntry> convertToOmniAutoCompleteEntries(Set<SQLStopNamesEntry> sqlEntries) {
+  private Collection<OmniAutoCompleteEntry> convertToOmniAutoCompleteEntries(Set<SQLStopNamesEntry> sqlEntries, float priority) {
     Collection<OmniAutoCompleteEntry> ret = new ArrayList<>();
 
     for (SQLStopNamesEntry sqlEntry : sqlEntries) {
       OmniAutoCompleteEntry e =
-              makeOmniAutocompleteEntryFromSql(sqlEntry, 1);
+              makeOmniAutocompleteEntryFromSql(sqlEntry, priority);
       ret.add(e);
     }
     return ret;
   }
 
   @NonNull
-  private Set<SQLStopNamesEntry> getMergedAutocompleteLocationSqlEntries(Collection<BasicLocation> locations) {
+  private Set<SQLStopNamesEntry> getMergedAutocompleteLocationSqlEntries(
+          Collection<BasicLocation> locations,
+          int maxStops,
+          float maxDistMeters
+  ) {
     Set<SQLStopNamesEntry> ret = new HashSet<>();
     SQLiteDatabase db = getReadableDatabase();
 
     for (BasicLocation loc : locations) {
-      Collection<SQLStopNamesEntry> stops = getNearestStops(db, loc, 10, 1000 /* 1km */);
+      Collection<SQLStopNamesEntry> stops = getNearestStops(db, loc, maxStops, maxDistMeters);
 
       ret.addAll(stops);
     }
@@ -455,7 +461,7 @@ public class SQLPreloadedStopsReader extends SQLiteAssetHelper
             null,
             null,
             null,
-            null,
+            null /* orderBy. Would be better to loosely sort geographically in SQL */,
                 String.valueOf(maxStops))) {
 
       cursor.moveToFirst();

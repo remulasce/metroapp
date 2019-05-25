@@ -7,6 +7,10 @@ import java.util.Collection;
 
 /** Given a location, return stops near the location */
 public interface AutoCompleteLocationFiller {
+  /**
+   * Returns up to maxResults stops within maxDistanceMeters. No guarantee that those stops will
+   * be the closest ones. All returned entries come with priority 1 by default.
+   */
   Collection<OmniAutoCompleteEntry> autocompleteLocationSuggestions(
-      Collection<BasicLocation> locations);
+      Collection<BasicLocation> locations, float maxDistanceMeters, int maxResults);
 }
