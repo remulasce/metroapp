@@ -15,12 +15,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.remulasce.lametroapp.R;
-import com.remulasce.lametroapp.components.omni_bar.InterestedLocationsProvider;
+import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.tutorial.TutorialManager;
 import com.remulasce.lametroapp.java_core.ServiceRequestHandler;
 import com.remulasce.lametroapp.java_core.basic_types.BasicLocation;
 import com.remulasce.lametroapp.java_core.basic_types.ServiceRequest;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
+import com.remulasce.lametroapp.java_core.basic_types.Stop;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.List;
   List of active ServiceRequests
   Handles adding and removing them from the TripPopulator
  */
-public class ServiceRequestListFragment extends Fragment implements InterestedLocationsProvider {
+public class ServiceRequestListFragment extends Fragment implements UserStateProvider {
     private static final String TAG = "ServiceRequestFragment";
     public static final int MAX_PERSISTED_REQEUST_STALENESS_MS = 14400000;
 
@@ -227,6 +228,16 @@ public class ServiceRequestListFragment extends Fragment implements InterestedLo
         ArrayList<BasicLocation> ret = new ArrayList<>();
         for (ServiceRequest sr : serviceRequests) {
             ret.addAll(sr.getInterestingLocations());
+        }
+
+        return ret;
+    }
+
+    @Override
+    public Collection<Stop> getCurrentlyTrackedStops() {
+        ArrayList<Stop> ret = new ArrayList<>();
+        for(ServiceRequest sr : serviceRequests) {
+            ret.addAll(sr.getStops());
         }
 
         return ret;

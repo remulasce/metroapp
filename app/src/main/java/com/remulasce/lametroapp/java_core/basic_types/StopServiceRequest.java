@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -124,6 +126,11 @@ public class StopServiceRequest extends ServiceRequest {
         }
 
         return ret;
+    }
+
+    @Override
+    public Collection<Stop> getStops() {
+        return new ArrayList<>(stops);
     }
 
     @Override

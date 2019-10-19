@@ -26,16 +26,16 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
   private AutoCompleteStopFiller autoCompleteStops;
   private AutoCompleteHistoryFiller autocompleteHistory;
   private AutoCompleteLocationFiller autoCompleteLocationFiller;
-  private InterestedLocationsProvider interestedLocationsProvider;
+  private UserStateProvider userStateProvider;
   private LocationRetriever stopLocations;
 
   public MetroAutoCompleteFiller(
       AutoCompleteCombinedFiller autoCompleteStops,
       AutoCompleteHistoryFiller autocompleteHistory,
       AutoCompleteLocationFiller autoCompleteLocation,
-      InterestedLocationsProvider interestedLocationsProvider,
+      UserStateProvider userStateProvider,
       LocationRetriever locations) {
-    this.interestedLocationsProvider = interestedLocationsProvider;
+    this.userStateProvider = userStateProvider;
     this.stopLocations = locations;
     this.autoCompleteStops = autoCompleteStops;
     this.autocompleteHistory = autocompleteHistory;
@@ -55,9 +55,13 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         autoCompleteStops.autocompleteStopName(input);
     Collection<OmniAutoCompleteEntry> locationSuggestions =
             autoCompleteLocationFiller.autocompleteLocationSuggestions(
-                    interestedLocationsProvider.getInterestingLocations(),
+                    userStateProvider.getInterestingLocations(),
                     10 /* maxStops */, 500 /* .5km, ~1/4mi */
             );
+
+    removeExistingStops(historySuggestions, userStateProvider.getCurrentlyTrackedStops());
+    removeExistingStops(textSuggestions, userStateProvider.getCurrentlyTrackedStops());
+    removeExistingStops(locationSuggestions, userStateProvider.getCurrentlyTrackedStops());
 
     prioritizeNearbySuggestions(textSuggestions);
     prioritizeNearbySuggestions(historySuggestions, 0.5f);
@@ -99,6 +103,19 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
         original.add(newEntry);
       }
     }
+  }
+
+  /** Removes all suggestions which are the same as existingStops */
+  private void removeExistingStops(Collection<OmniAutoCompleteEntry> suggestions, Collection<Stop>
+                                   existingStops) {
+    Collection<OmniAutoCompleteEntry> rem = new ArrayList<>();
+    for (OmniAutoCompleteEntry entry : suggestions) {
+      if (existingStops.containsAll(entry.getStops())) {
+        rem.add(entry);
+      }
+    }
+
+    suggestions.removeAll(rem);
   }
 
   // We don't want to overwhelm users with choices.
@@ -193,7 +210,7 @@ public class MetroAutoCompleteFiller implements AutoCompleteFiller {
           public Double apply(Void input) {
             float minDistance = Float.MAX_VALUE;
 
-            for (BasicLocation interestingLoc : interestedLocationsProvider.getInterestingLocations()) {
+            for (BasicLocation interestingLoc : userStateProvider.getInterestingLocations()) {
               float dist = getDistanceBetween(interestingLoc, entry.getStops().get(0).getLocation());
 
               minDistance = Math.min(dist, minDistance);

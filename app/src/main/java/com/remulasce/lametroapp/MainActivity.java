@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,8 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -37,7 +34,7 @@ import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
-import com.remulasce.lametroapp.components.omni_bar.InterestedLocationsProvider;
+import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
@@ -66,11 +63,9 @@ import com.remulasce.lametroapp.static_data.MetroStaticsProvider;
 import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedRouteColors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class MainActivity extends AppCompatActivity
     implements ServiceRequestListFragment.ServiceRequestListFragmentSupport {
@@ -276,7 +271,7 @@ public class MainActivity extends AppCompatActivity
         autoCompleteAdapter =
                 new OmniAutoCompleteAdapter(
                         this,
-                        new InterestedLocationsProvider() {
+                        new UserStateProvider() {
                             @Override
                             public Collection<BasicLocation> getInterestingLocations() {
                                 ArrayList<BasicLocation> ret = new ArrayList<>();
@@ -287,7 +282,12 @@ public class MainActivity extends AppCompatActivity
                                 return ret;
                             }
 
-                            @NonNull
+                          @Override
+                          public Collection<Stop> getCurrentlyTrackedStops() {
+                            return requestFragment.getCurrentlyTrackedStops();
+                          }
+
+                          @NonNull
                             private List<BasicLocation> currentLocationOrEmpty() {
                                 BasicLocation currentLocation = locationService.getCurrentLocation();
                                 return currentLocation == null ?

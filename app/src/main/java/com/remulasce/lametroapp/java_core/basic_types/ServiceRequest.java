@@ -59,6 +59,9 @@ public abstract class ServiceRequest implements Serializable {
     // Pretty much, a Stop should prioritize other Stops near it, for transfers.
     public abstract Collection<BasicLocation> getInterestingLocations();
 
+    // Returns a collection of Stops that are currently being tracked by this ServiceRequest.
+    public abstract Collection<Stop> getStops();
+
     // Platform UI layer uses this hook to do all its display, via ServiceRequestHandler
     public abstract Collection<Trip> getTrips();
 

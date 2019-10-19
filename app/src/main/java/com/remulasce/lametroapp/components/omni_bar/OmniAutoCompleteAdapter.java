@@ -31,7 +31,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
   private final String TAG = "OmniAutoCompleteAdapter";
 
   private ArrayList<OmniAutoCompleteEntry> resultList = new ArrayList<OmniAutoCompleteEntry>();
-  private final InterestedLocationsProvider interestedLocationsProvider;
+  private final UserStateProvider userStateProvider;
   private final AutoCompleteCombinedFiller autoCompleteCombinedFiller;
   private final LocationRetriever locations;
   private final RouteColorer colors;
@@ -42,7 +42,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
   // Colors optional.
   public OmniAutoCompleteAdapter(
       Context context,
-      InterestedLocationsProvider interestedLocationsProvider,
+      UserStateProvider userStateProvider,
       int resource,
       int textView,
       AutoCompleteCombinedFiller t,
@@ -50,7 +50,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
       RouteColorer colors) {
     super(context, resource, textView);
     autoCompleteCombinedFiller = t;
-    this.interestedLocationsProvider = interestedLocationsProvider;
+    this.userStateProvider = userStateProvider;
     this.locations = locations;
     this.colors = colors;
 
@@ -59,7 +59,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
             autoCompleteCombinedFiller,
             autoCompleteCombinedFiller,
             autoCompleteCombinedFiller,
-            interestedLocationsProvider,
+                userStateProvider,
             locations);
   }
 
