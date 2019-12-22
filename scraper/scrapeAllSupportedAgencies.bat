@@ -11,3 +11,5 @@ echo running Bay 511 scraper...
 scraper_bayarea_511.py Caltrain SamTrans VTA
 
 echo Finished scraping all supported agencies.
+
+pause

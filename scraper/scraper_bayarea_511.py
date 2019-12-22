@@ -146,7 +146,7 @@ for agencyParam in agencyList:
 
                                                 # Bay area 511 is generally fucked. So just don't bother.
                                                 if not str(stoptag) in stops_dict:
-                                                    print "Skipping "+stoptag+" on "+routeTag+" for "+agencytitle+" because we couldn't find the stop in stops.txt"
+                                                    print "Skipping "+stoptag+", "+stopname+" on "+routeTag+"~"+routeDir+" for "+agencytitle+" because we couldn't find the stop in stops.txt"
                                                     continue
 
                                                 stopnameroutetagTuple = (stopname, routeTag, stoptag)
