@@ -37,10 +37,6 @@ public class Stop implements Serializable {
         return LaMetroUtil.isValidStop( raw );
     }
 
-    public int getNum() {
-        return Integer.valueOf( raw );
-    }
-
     public String getStopID() {
         return raw;
     }

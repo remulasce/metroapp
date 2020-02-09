@@ -195,7 +195,7 @@ public class AndroidMultiArrivalDisplay implements AndroidDisplay{
         RadioGroup radios = (RadioGroup) dialogView.findViewById(R.id.trip_options_radio_group);
 
 
-        // Had to add support for null vechicle number.
+        // Had to add support for null vehicle number.
 
         for (Arrival a : trip.parentArrival.getArrivals()) {
             if (a.isInScope() && a.getEstimatedArrivalSeconds() > 0) {

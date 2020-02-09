@@ -1,7 +1,5 @@
 package com.remulasce.lametroapp.java_core.basic_types;
 
-import android.location.Location;
-
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Trip;
 
 import java.io.Serializable;
@@ -38,7 +36,6 @@ public abstract class ServiceRequest implements Serializable {
     //   needs to make sure /everything/ it needs is set up.
     //   Specifically, that its predictions are getting updated, since the
     //      entire activity may have been killed since pause.
-//    public void start(){ inScope = true; }
     // eg. start request
     public void startRequest() { lifecycleState = RequestLifecycleState.RUNNING; }
     public void pauseRequest() { lifecycleState = RequestLifecycleState.PAUSED; }
@@ -74,27 +71,10 @@ public abstract class ServiceRequest implements Serializable {
     // Subclasses do more useful checks than this.
     // eg. StopServiceRequest makes sure it has a stop to track
     public boolean isValid() {
-        if ( displayName == null || displayName.isEmpty()) { return false; }
-
-        return true;
+        return displayName != null && !displayName.isEmpty();
     }
 
-    // These were useful early in development. Might be nice for testing.
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
     public String getDisplayName() { return displayName; }
-
-    // This was supposed to make the looping threads update immediately when stuff changed.
-    // They do this in some cases, but based on other factors. These can go away.
-    public abstract boolean updateAvailable();
-    public abstract void updateTaken();
-
-    // This was used to decide whether to show the "loading" progress circle spinner.
-    // So a request that was just added would return true and get a spinner while it loaded
-    // But a request which had all its trips dismissed wouldn't.
-    // It never quite worked, and sure doesn't now.
-    public abstract boolean hasTripsToDisplay();
 
     // This was used for serialization, because serialization used to be stupid simple.
     // Now we just serialize the whole thing, which is easier for big request types.

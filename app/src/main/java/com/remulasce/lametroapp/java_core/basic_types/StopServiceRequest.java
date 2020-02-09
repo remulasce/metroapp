@@ -141,26 +141,6 @@ public class StopServiceRequest extends ServiceRequest {
         statusTrip.restore();
     }
 
-    @Override
-    public boolean updateAvailable() {
-        return updateAvailable;
-    }
-
-    @Override
-    public boolean hasTripsToDisplay() {
-        for (Prediction p : predictions) {
-            if (p.hasAnyPredictions()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void updateTaken() {
-        updateAvailable = false;
-    }
-
     private void makePredictions() {
         // Assume Stop
         if (!isValid()) {
@@ -172,7 +152,6 @@ public class StopServiceRequest extends ServiceRequest {
             for (Stop s : stops) {
                 StopRouteDestinationPrediction stopRouteDestinationPrediction = new StopRouteDestinationPrediction(s, null);
                 predictions.add(stopRouteDestinationPrediction);
-//                stopRouteDestinationPrediction.startPredicting();
             }
         }
     }

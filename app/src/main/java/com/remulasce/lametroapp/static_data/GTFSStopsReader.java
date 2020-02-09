@@ -213,7 +213,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
         Long t = Tracking.startTime();
         SQLiteDatabase db = getReadableDatabase();
 
-//        Collection<String> matching = getStringsFromSQL(makeStopNameRequest(stopID), db, StopNameEntry.COLUMN_NAME_STOPNAME);
         Collection<SQLEntry> matching = getMatchingEntries(StopNameEntry.TABLE_NAME, makeStopNameParameterizedSelection(),
                 new String[] {stopID}, db);
 
@@ -466,7 +465,6 @@ public class GTFSStopsReader extends SQLiteOpenHelper
 
         return inputStream;
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {

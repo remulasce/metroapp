@@ -12,11 +12,6 @@ import java.io.*;
  */
 public class HTTPGetter {
     private static final String TAG = "HTTPGetter";
-
-    public static String getHTTPResponse(String message, NetworkStatusReporter reporter) {
-        return getHTTPGetter().doGetHTTPResponse(message, reporter);
-    }
-
     private String readStream(InputStream is) {
         try {
             ByteArrayOutputStream bo = new ByteArrayOutputStream();

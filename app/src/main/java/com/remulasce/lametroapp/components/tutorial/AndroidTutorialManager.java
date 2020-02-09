@@ -106,19 +106,16 @@ public class AndroidTutorialManager extends TutorialManager{
 
     @Override
     public boolean requestListNeedsHint() {
-//        return true;
         return getUserExperienceCount() < 3;
     }
 
     @Override
     public boolean tripListNeedsHint() {
-//        return true;
         return getUserExperienceCount() < 3;
     }
 
   @Override
   public boolean aboutPaneNeedsHint() {
-    //        return true;
     int userExperienceCount = getUserExperienceCount();
     return userExperienceCount >= 10
         && userExperienceCount < 15

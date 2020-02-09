@@ -12,13 +12,9 @@ import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,7 +24,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.remulasce.lametroapp.java_core.RegionalizationHelper;
+
 import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
 import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 
@@ -118,11 +114,7 @@ public class LaMetroUtil {
             return null;
         }
 
-
-
-        List< Arrival > ret = parseWithJavaLibs(response, agency);
-
-        return ret;
+        return parseWithJavaLibs(response, agency);
     }
 
     private static List < Arrival > parseWithJavaLibs(String response, Agency agency) {
@@ -150,11 +142,11 @@ public class LaMetroUtil {
             // Figure out if it's nextbus or GTFS
             NodeList uriTags = docEle.getElementsByTagName("uri");
 
-            String directionAttribute = new String();
-            String routeAttribute = new String();
-            String stopIDAttribute = new String();
-            String stopTitleAttribute = new String();
-            String vehicleAttribute = new String();
+            String directionAttribute = "";
+            String routeAttribute;
+            String stopIDAttribute = "";
+            String stopTitleAttribute;
+            String vehicleAttribute;
 
             int seconds = 0;
 
@@ -285,16 +277,10 @@ public class LaMetroUtil {
             } else {
                 Log.w(TAG, "Couldn't find an agency to parse prediction response for: " + agency);
             }
-        }catch(ParserConfigurationException pce) {
+        }catch(ParserConfigurationException | SAXException | IOException pce) {
             pce.printStackTrace();
             return null;
-        }catch(SAXException se) {
-            se.printStackTrace();
-            return null;
-        }catch(IOException ioe) {
-            ioe.printStackTrace();
-            return null;
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.w(TAG, "Unaddressed exception! " + e.getMessage());
             return null;
         }
@@ -302,98 +288,8 @@ public class LaMetroUtil {
         return ret;
     }
 
-    // Metro adds _etc to the end of stops sometimes. It's related to multiple entrances per station
-    // or something. This gets rid of that.
-    private static String cleanupStopID(String stopIDAttribute) {
-        int indexOf_ = stopIDAttribute.indexOf( '_' );
-        if ( indexOf_ > 0 ) {
-            stopIDAttribute = stopIDAttribute.substring(0, stopIDAttribute.indexOf('_'));
-        }
-        return stopIDAttribute;
-    }
-
-    private static void parseWithAndroidLibs(String response, List<Arrival> ret) {
-        XmlPullParserFactory factory;
-        try {
-            factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware( true );
-            XmlPullParser xpp = factory.newPullParser();
-
-            xpp.setInput( new StringReader( response ) );
-            int eventType = xpp.getEventType();
-
-            String curStopName = "";
-            String curDestination = "";
-            String curRoute = "";
-            String curStopTag = "";
-
-            while ( eventType != XmlPullParser.END_DOCUMENT ) {
-                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
-                    String name = xpp.getName();
-
-                    if ( name.equals( "predictions" ) ) {
-                        curStopTag = xpp.getAttributeValue( null, "stopTag" );
-                        curStopName = xpp.getAttributeValue( null, "stopTitle" );
-                        curRoute = xpp.getAttributeValue( null, "routeTag" );
-                    }
-                    if ( name.equals( "direction" ) ) {
-                        curDestination = xpp.getAttributeValue( null, "title" );
-                    }
-                    if ( name.equals( "prediction" ) ) {
-                        String vehicleNum;
-                        int seconds = -1;
-
-                        String timeString = xpp.getAttributeValue( null, "seconds" );
-                        seconds = Integer.valueOf( timeString );
-
-                        vehicleNum = xpp.getAttributeValue( null, "vehicle" );
-
-                        boolean updated = false;
-                        for ( Arrival aa : ret ) {
-                            if ( aa.getDirection().equals( curDestination ) ) {
-                                updated = true;
-                                if ( aa.getEstimatedArrivalSeconds() > seconds ) {
-                                    aa.setEstimatedArrivalSeconds( seconds );
-                                }
-                            }
-                        }
-
-                        if ( !updated ) {
-                            curStopTag = cleanupStopID(curStopTag);
-
-                            Destination d = new Destination( curDestination );
-                            Route r = new Route( curRoute );
-                            Stop s = new Stop( curStopTag );
-                            s.setStopName( curStopName );
-                            Vehicle v = new Vehicle( vehicleNum );
-
-                            addNewArrival(ret, seconds, d, r, s, v);
-                        }
-                    }
-                } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
-                eventType = xpp.next();
-            }
-        } catch ( XmlPullParserException e1 ) {
-            e1.printStackTrace();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
-    }
-
     private static void addNewArrival(List<Arrival> ret, int seconds, Destination d, Route r, Stop s, Vehicle v) {
         Log.v(TAG, "Adding new arrival "+seconds+" "+d+" "+r+" "+s+" "+v);
-
-        if (locationTranslator != null) {
-            // This has been changed!
-            // MetroUtil shouldn't have to deal with regionalization or state of the rest of the app.
-            // It should just be convenience methods.
-            // To get the stop locations from here, MetroUtil would need to know what region the stop is.
-            // But, this is called only from parseArrivals from the xml stream, which doesn't include
-            // the agency.
-            // We could provide it, but again, we shouldn't be requesting info in Util.
-            // We should just parse the xml conveniently, and let the rest of the app deal with it.
-//            s.setLocation(locationTranslator.getStopLocation(s));
-        }
 
         if (routeColorer != null) {
             r.setColor(routeColorer.getColor(r));

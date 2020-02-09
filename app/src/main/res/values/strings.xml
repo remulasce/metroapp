@@ -22,7 +22,7 @@
     <string name="example_arrival_time_minutes">5 min</string>
     <string name="crash_toast_text">Looks like Metro Companion App crashed! Could you tell me what happened, please?</string>
     <string name="crash_dialog_title">Metro Companion has crashed</string>
-    <string name="crash_dialog_text">Something went wrong, and the app couldn\'t handle it.\nI\'m just one guy making apps in my free time, so it was bound to happen.\nCould you please send me an email of what happened? Just hit OK and select your favorite email app. I\'ve already prepared a message with some error logs in it. You just need to hit send!</string>
+    <string name="crash_dialog_text">Something went wrong, and the app couldn\'t handle it.\nI\'m just one girl making apps in my free time, so it was bound to happen.\nCould you please send me an email of what happened? Just hit OK and select your favorite email app. I\'ve already prepared a message with some error logs in it. You just need to hit send!</string>
     <string name="crash_dialog_comment_prompt">You can add your own comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you !</string>
     <string name="example_vehicle_text">Veh 434</string>

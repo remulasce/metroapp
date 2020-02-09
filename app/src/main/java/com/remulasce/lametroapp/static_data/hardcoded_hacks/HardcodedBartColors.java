@@ -15,7 +15,6 @@ public class HardcodedBartColors implements RouteColorer {
         if (r == null || !r.isValid()) { return null; }
 
         // Bug at some higher level results in routes like " ROUTE 11"
-        // TODO: clean this at the scraper level
         String raw = r.getString().trim();
 
         if (r.getAgency().matches("BART")) {

@@ -306,15 +306,11 @@ public class MainActivity extends AppCompatActivity
     omniHandler =
         new OmniBarInputHandler(
             omniField,
-            null,
-            clearButton,
+                clearButton,
             autocompleteProgress,
             requestFragment,
-            staticsProvider,
-            staticsProvider,
-            staticsProvider,
-            null,
-            this);
+                staticsProvider,
+                this);
   }
 
   private void setupActionBar() {

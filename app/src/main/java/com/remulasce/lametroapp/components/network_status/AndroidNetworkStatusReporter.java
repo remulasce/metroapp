@@ -55,26 +55,4 @@ public class AndroidNetworkStatusReporter implements NetworkStatusReporter {
             }
         }, 3000);
     }
-
-    @Override
-    public void reportGettingUpdate() {
-        if (uiHandler == null || textView == null || statusBar == null) {
-            Log.w("AndroidStatusReporter", "No statusBar sent to report to");
-            return;
-        }
-
-        uiHandler.post( new Runnable() {
-            @Override
-            public void run() {
-                statusBar.setVisibility(View.VISIBLE);
-                textView.setText("Getting update...");
-            }
-        });
-        uiHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                statusBar.setVisibility(View.INVISIBLE);
-            }
-        }, 3000);
-    }
 }

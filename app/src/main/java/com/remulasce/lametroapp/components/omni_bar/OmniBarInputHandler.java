@@ -41,38 +41,26 @@ public class OmniBarInputHandler {
     private static final String TAG = "OmniBarInputHandler";
 
     private final ProgressAutoCompleteTextView omniField;
-    private final ImageButton addButton;
     private final Button clearButton;
     private final ServiceRequestListFragment requestList;
     private final ProgressBar autocompleteProgress;
-    private final StopNameTranslator stopNames;
-    private final StopLocationTranslator stopLocations;
     private final AutoCompleteHistoryFiller autoCompleteHistory;
-    private final Tracker t;
-
-    // We keep the dropdown open a little while after something's added to give you a chance
-    //   to quickly add multiple stops.
-    // We use this info to know if we should close it after that time.
-    private long lastInteraction;
 
     //Poor form to require Context, we just need to show Toasts occasionally.
     private final Context c;
 
-    public OmniBarInputHandler(ProgressAutoCompleteTextView textView, ImageButton addButton, Button clearButton,
+    public OmniBarInputHandler(ProgressAutoCompleteTextView textView,
+                               Button clearButton,
                                ProgressBar autocompleteProgress,
-                               ServiceRequestListFragment requestList, StopNameTranslator stopNames,
-                               StopLocationTranslator locations, AutoCompleteHistoryFiller autoCompleteHistory,
-                               Tracker t, Context c) {
+                               ServiceRequestListFragment requestList,
+                               AutoCompleteHistoryFiller autoCompleteHistory,
+                               Context c) {
         this.omniField = textView;
-        this.addButton = addButton;
         this.autocompleteProgress = autocompleteProgress;
         this.clearButton = clearButton;
         this.requestList = requestList;
-        this.stopNames = stopNames;
-        this.stopLocations = locations;
         this.autoCompleteHistory = autoCompleteHistory;
 
-        this.t = t;
         this.c = c;
 
         linkViewHandlers();
@@ -82,16 +70,7 @@ public class OmniBarInputHandler {
         clearButton.setOnClickListener(clearButtonListener);
         omniField.setOnEditorActionListener(omniDoneListener);
         omniField.setOnItemClickListener(autocompleteSelectedListener);
-        omniField.addTextChangedListener(textWatcher);
         omniField.setLoadingIndicator(autocompleteProgress);
-        omniField.setOnTouchListener(touchListener);
-
-        omniField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userInteractedWithDropdown();
-            }
-        });
     }
 
     private final AdapterView.OnItemClickListener autocompleteSelectedListener = new AdapterView.OnItemClickListener() {
@@ -122,46 +101,10 @@ public class OmniBarInputHandler {
         }
     };
 
-    // This prevents us from auto-closing recent dropdown if user is using it.
-    private final TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            userInteractedWithDropdown();
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    };
-    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            userInteractedWithDropdown();
-            return false;
-        }
-    };
-
-    public void userInteractedWithDropdown() {
-        Log.i(TAG, "User interacted with dropdown");
-        lastInteraction = System.currentTimeMillis();
-    }
-
     private final TextView.OnEditorActionListener omniDoneListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
             long t = Tracking.startTime();
-
-//            String requestText = textView.getText().toString();
-//            makeServiceRequestFromOmniInput(requestText);
-            // TODO
-            // Something with the "done" button
-            // I don't even know how this should work.
 
             Tracking.sendUITime("OmniBarInputHandler", "omniDoneListener", t);
             return true;

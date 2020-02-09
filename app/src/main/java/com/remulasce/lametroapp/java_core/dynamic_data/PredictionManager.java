@@ -21,8 +21,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * ridiculously high requested frequencies, and it shuts down and restarts everything when the
  * app opens/closes.
  */
-
-
 public class PredictionManager {
     private static final String TAG = "PredictionManager";
 	private static int PREDICTION_UPDATE_MAX_INTERVAL = 5000;
@@ -241,11 +239,6 @@ public class PredictionManager {
 
 			String request = prediction.getRequestString();
 			Log.v(TAG, "Handling request "+request);
-
-            if (statusReporter != null) {
-                // Testing purposes for now.
-//                statusReporter.reportGettingUpdate();
-            }
 
 			String response = sendRequest( request );
 

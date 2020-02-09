@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
   List of active ServiceRequests
   Handles adding and removing them from the TripPopulator

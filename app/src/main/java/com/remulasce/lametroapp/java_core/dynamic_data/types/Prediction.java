@@ -9,9 +9,6 @@ import java.io.Serializable;
  * Each subclass of Prediction returns one Nextrip-style string format
  * It does whatever it wants with the response
  * And it makes Trips to do UI for it, which it puts through its callback.
- * 
- * @author Fintan
- *
  */
 public abstract class Prediction implements Serializable{
 
@@ -47,14 +44,6 @@ public abstract class Prediction implements Serializable{
 
     // It's really more of a shutdown mechanism. Only called when a stop is removed from list.
     public abstract void cancelTrips();
-
-    // I think this was supposed to do something at some point.
-    public boolean isInScope() {
-		return inScope;
-	}
-
-    // Unused, basically was used to check when to display the 'fetching updates' spinner
-    public abstract boolean hasAnyPredictions();
 	
 	// ms
 	public abstract int getRequestedUpdateInterval();

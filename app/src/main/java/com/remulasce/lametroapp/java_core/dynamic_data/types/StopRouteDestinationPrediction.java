@@ -36,7 +36,6 @@ public class StopRouteDestinationPrediction extends Prediction {
 
     @Override
     public void restoreTrips() {
-//        inScope = true;
         for ( StopRouteDestinationArrival arrival : trackedArrivals ) {
             arrival.setScope(true);
         }
@@ -50,17 +49,6 @@ public class StopRouteDestinationPrediction extends Prediction {
             e.setScope( false );
         }
         stopPredicting();
-    }
-
-    @Override
-    public boolean hasAnyPredictions() {
-        for (StopRouteDestinationArrival arrival : trackedArrivals) {
-            if (arrival.isInScope()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override

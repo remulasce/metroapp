@@ -8,5 +8,4 @@ package com.remulasce.lametroapp.java_core.network_status;
  */
 public interface NetworkStatusReporter {
     void reportFailure();
-    void reportGettingUpdate();
 }
