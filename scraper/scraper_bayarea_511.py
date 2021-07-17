@@ -7,20 +7,20 @@ import sys
 
 OUTPUT_DIR = "_out/"
 
-print "Bay Area 511.org scraper"
-print "Specify which agencies to scrape as command-line arguments"
-print "Or leave none to scrape all agencies"
-print "GTFS stops.txt must be supplied to _gtfs/<agencyname>/stops.txt for each agency"
+print("Bay Area 511.org scraper")
+print("Specify which agencies to scrape as command-line arguments")
+print("Or leave none to scrape all agencies")
+print("GTFS stops.txt must be supplied to _gtfs/<agencyname>/stops.txt for each agency")
 
 agencyList = []
 
 
 for arg in sys.argv[1:]:
-        print arg
+        print(arg)
         agencyList.append( (arg, arg) )
 
 if len(agencyList) == 0:
-        print "No arguments given; scraping all available agencies"
+        print("No arguments given; scraping all available agencies")
         
         agencyListRequestString = "http://services.my511.org/Transit2.0/GetAgencies.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471"
         agencyListResponse = requests.get(agencyListRequestString)
@@ -30,11 +30,11 @@ if len(agencyList) == 0:
                 if child.tag == "Agency":
                         agencyList.append( (child.attrib['Name'], child.attrib['Name']) )
 
-print "Scraping " + str(len(agencyList)) + " agencies"          
+print("Scraping " + str(len(agencyList)) + " agencies")          
                 
 for agencyParam in agencyList:
         agencyName = agencyParam[0]
-        print "Now scraping: " + agencyName
+        print("Now scraping: " + agencyName)
 
         # Bay area online service does not provide stop locations.
         # So we must parse them ourselves from individual agency gtfs files.
@@ -79,7 +79,7 @@ for agencyParam in agencyList:
                 else:
                         routeList.append( (child.attrib['Code'], None) )
 
-        print "Found "+str(len(routeList))+" routes for agency "+agencyName
+        print("Found "+str(len(routeList))+" routes for agency "+agencyName)
         #routelist contains a list of all routes
 
         agencyid = agencyName
@@ -127,13 +127,13 @@ for agencyParam in agencyList:
                 routeTag = route[0]
                 routeDir = route[1]
                 i = i + 1
-                print agencyName + " " + str(int(100*i/len(routeList))) + "%"
+                print(agencyName + " " + str(int(100*i/len(routeList))) + "%")
                 routeRequestString = "http://services.my511.org/Transit2.0/GetStopsForRoute.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471&routeIDF="+agencyName+"~"+routeTag
                 if routeDir != None:
                         routeRequestString = routeRequestString + "~" + routeDir
                 routeResponse = requests.get(routeRequestString)
         
-                print routeRequestString
+                print(routeRequestString)
 
                 root = ET.fromstring(routeResponse.text).find("AgencyList").find("Agency").find("RouteList")
                 for routeObject in root:
@@ -146,7 +146,7 @@ for agencyParam in agencyList:
 
                                                 # Bay area 511 is generally fucked. So just don't bother.
                                                 if not str(stoptag) in stops_dict:
-                                                    print "Skipping "+stoptag+", "+stopname+" on "+routeTag+"~"+routeDir+" for "+agencytitle+" because we couldn't find the stop in stops.txt"
+                                                    print("Skipping "+stoptag+", "+stopname+" on "+routeTag+"~"+routeDir+" for "+agencytitle+" because we couldn't find the stop in stops.txt")
                                                     continue
 
                                                 stopnameroutetagTuple = (stopname, routeTag, stoptag)
@@ -192,7 +192,7 @@ for agencyParam in agencyList:
                                                         stoproutesList.append( stoprouteTuple )
                                                         #print stoproutesList
 
-        print "Finished scraping "+agencyName+", saving to SQL...";
+        print("Finished scraping "+agencyName+", saving to SQL...");
         conn = sqlite3.connect(OUTPUT_DIR + agencyName + '.db')
 
         c = conn.cursor()
@@ -227,7 +227,7 @@ for agencyParam in agencyList:
         # Just be sure any changes have been committed or they will be lost.
         conn.close()
 
-        print "Done with "+agencyName
+        print("Done with "+agencyName)
 
-print "Complete."
+print("Complete.")
         
