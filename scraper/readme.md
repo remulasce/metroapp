@@ -13,9 +13,7 @@ Don't run Nextrip without any agency params, rate-limiting kicks in when scrapin
 Just run scrapeAllSupportedAgencies.bat
 
 Output .db files go to _out.
-
 They will need to be moved to lametroapp/app/src/main/assets/databases to get them into the Android app.
-
 
 ## Advanced Usage:
 
