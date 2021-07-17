@@ -84,6 +84,8 @@ public class RegionSettingsDialogFragment extends DialogFragment {
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            // Manually changing agencies should disable autoconfig.
+            autodetectCheckBox.setChecked(false);
             setCheckedAgenciesActive();
         }
     };
