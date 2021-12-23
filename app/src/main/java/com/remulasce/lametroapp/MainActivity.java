@@ -34,10 +34,10 @@ import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
-import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
+import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.regions.RegionSettingsDialogFragment;
@@ -267,50 +267,45 @@ public class MainActivity extends AppCompatActivity
     TutorialManager.setTutorialManager(tutorialManager);
   }
 
-    private void setupOmniBar() {
-        autoCompleteAdapter =
-                new OmniAutoCompleteAdapter(
-                        this,
-                        new UserStateProvider() {
-                            @Override
-                            public Collection<BasicLocation> getInterestingLocations() {
-                                ArrayList<BasicLocation> ret = new ArrayList<>();
+  private void setupOmniBar() {
+    autoCompleteAdapter =
+        new OmniAutoCompleteAdapter(
+            this,
+            new UserStateProvider() {
+              @Override
+              public Collection<BasicLocation> getInterestingLocations() {
+                ArrayList<BasicLocation> ret = new ArrayList<>();
 
-                                ret.addAll(requestFragment.getInterestingLocations());
-                                ret.addAll(currentLocationOrEmpty());
+                ret.addAll(requestFragment.getInterestingLocations());
+                ret.addAll(currentLocationOrEmpty());
 
-                                return ret;
-                            }
+                return ret;
+              }
 
-                          @Override
-                          public Collection<Stop> getCurrentlyTrackedStops() {
-                            return requestFragment.getCurrentlyTrackedStops();
-                          }
+              @Override
+              public Collection<Stop> getCurrentlyTrackedStops() {
+                return requestFragment.getCurrentlyTrackedStops();
+              }
 
-                          @NonNull
-                            private List<BasicLocation> currentLocationOrEmpty() {
-                                BasicLocation currentLocation = locationService.getCurrentLocation();
-                                return currentLocation == null ?
-                                        Collections.<BasicLocation>emptyList() :
-                                        Collections.singletonList(currentLocation);
-                            }
-                        },
-                        R.layout.omnibar_dropdown_item,
-                        R.id.omnibar_item_station_name,
-                        staticsProvider,
-                        locationService,
-                        routeColorer);
-        omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(0);
+              @NonNull
+              private List<BasicLocation> currentLocationOrEmpty() {
+                BasicLocation currentLocation = locationService.getCurrentLocation();
+                return currentLocation == null
+                    ? Collections.<BasicLocation>emptyList()
+                    : Collections.singletonList(currentLocation);
+              }
+            },
+            R.layout.omnibar_dropdown_item,
+            R.id.omnibar_item_station_name,
+            staticsProvider,
+            locationService,
+            routeColorer);
+    omniField.setAdapter(autoCompleteAdapter);
+    omniField.setThreshold(0); // Really means 1.
 
     omniHandler =
         new OmniBarInputHandler(
-            omniField,
-                clearButton,
-            autocompleteProgress,
-            requestFragment,
-                staticsProvider,
-                this);
+            omniField, clearButton, autocompleteProgress, requestFragment, staticsProvider, this);
   }
 
   private void setupActionBar() {
