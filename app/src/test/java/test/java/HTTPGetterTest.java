@@ -4,6 +4,7 @@ import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 
 import junit.framework.TestCase;
 
+// It's funny that I had tests at all ever.
 public class HTTPGetterTest extends TestCase {
 
 
