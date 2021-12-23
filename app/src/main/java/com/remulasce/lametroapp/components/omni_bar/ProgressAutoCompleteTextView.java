@@ -3,12 +3,10 @@ package com.remulasce.lametroapp.components.omni_bar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
@@ -23,7 +21,8 @@ import com.remulasce.lametroapp.java_core.analytics.Log;
  *
  * <p>Also, show suggestion drop-down on 0 text input (as soon as it's focused)
  */
-public class ProgressAutoCompleteTextView extends AutoCompleteTextView
+public class ProgressAutoCompleteTextView
+    extends android.support.v7.widget.AppCompatAutoCompleteTextView
     implements FilterTaskCompleteListener {
 
   public static final String TAG = "Autocompleteview";
@@ -43,14 +42,22 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView
   protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
 
-    if (focused
-        && getWindowVisibility() != View.GONE
-        && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+    if (focused && getWindowVisibility() != View.GONE) {
+      Log.i(TAG, "Showing dropdown again on focus change");
+      // Load-bearing for the unfocus-refocus case, without rotation or leaving the app.
       performFiltering(getText(), 0);
-      showDropDown();
-    } else {
-      Log.w(TAG, "Couldn't show dropdown because we don't have focus / window visibility");
+      showDropDown(); // Must be invoked separately.
     }
+  }
+
+  @Override
+  public void onWindowFocusChanged(boolean hasWindowFocus) {
+    // Load bearing for initial entry.
+    performFiltering(getText(), 0);
+
+    // The standard behavior is faulty and omitted completely.
+    // It hides the popup window, which is not necessary, and forces the rest of the system to
+    // recover after returning to the window from the app switcher.
   }
 
   @Override
@@ -62,7 +69,12 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView
   public <T extends ListAdapter & Filterable> void setAdapter(T adapter) {
     super.setAdapter(adapter);
 
-    // Ugh.
+    // Recheck filtering using the new adapter.
+    // This is load-bearing for the initial inflation case.
+    Log.i(TAG, "Refilter on adapter set");
+    performFiltering(getText(), 0);
+    // showDropDown(); Can't. Window isn't attached yet.
+
     if (adapter instanceof OmniAutoCompleteAdapter) {
       ((OmniAutoCompleteAdapter) adapter).setCompleteListener(this);
       showLoadingIndicator = true;
@@ -71,7 +83,7 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView
       mLoadingIndicator.setVisibility(GONE);
       Log.w(
           TAG,
-          "Expected adapter to bea OmniAutoCompleteAdapter, but it didn't. Progress spinner won't work.");
+          "Expected adapter to be a OmniAutoCompleteAdapter, but it didn't. Progress spinner won't work.");
     }
   }
 
@@ -113,6 +125,7 @@ public class ProgressAutoCompleteTextView extends AutoCompleteTextView
   }
 
   private void hideSoftKeyboard(View view) {
+    Log.i(TAG, "hideSoftKeyboard in ProgressAutoCompleteTextView");
     // Hide soft keyboard- https://stackoverflow.com/questions/1109022
     Context context = view.getContext();
     InputMethodManager imm =

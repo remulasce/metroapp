@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Remulasce/AppData/Local/Android/Sdk/platforms/android-28/data/res/layout/simple_list_item_1.xml" value="0.14792299898682879" />
+        <entry key="..\:/Users/Remulasce/projects/lametroapp/metroapp/app/src/main/res/layout/omni_search_box.xml" value="0.15374873353596757" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
