@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity
             locationService,
             routeColorer);
     omniField.setAdapter(autoCompleteAdapter);
-    omniField.setThreshold(0); // Really means 1.
+    omniField.setThreshold(0);
 
     omniHandler =
         new OmniBarInputHandler(
