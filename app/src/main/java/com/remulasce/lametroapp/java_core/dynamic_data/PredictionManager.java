@@ -242,13 +242,19 @@ public class PredictionManager {
       String request = prediction.getRequestString();
       Log.v(TAG, "Handling request " + request);
 
-      String response = sendRequest(request);
+      try {
+        String response = sendRequest(request);
 
-      Log.v(TAG, "Response received: " + response);
+        Log.v(TAG, "Response received: " + response);
 
-      prediction.handleResponse(response);
+        prediction.handleResponse(response);
 
-      prediction.setUpdated();
+        prediction.setUpdated();
+      } catch (Exception e) {
+        // Don't busy-loop failed network requests.
+        prediction.setUpdated();
+        Log.d(TAG, "URL fetching exception");
+      }
 
       Tracking.sendTime("PredictionManager", "UpdateRunner", "Total Run", t);
     }

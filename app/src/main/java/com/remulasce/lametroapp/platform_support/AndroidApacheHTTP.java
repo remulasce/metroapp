@@ -32,7 +32,7 @@ public class AndroidApacheHTTP extends HTTPGetter {
       return builder.toString();
     }
 
-    // Not necessarily HttpsURLConnection, becouse our ancient gov't backends don't support HTTPS.
+    // Not necessarily HttpsURLConnection, because our ancient gov't backends don't support HTTPS.
     HttpURLConnection cxn = null;
     try {
       cxn = (HttpURLConnection) url.openConnection();

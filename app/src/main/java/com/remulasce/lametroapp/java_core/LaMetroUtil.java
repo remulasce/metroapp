@@ -48,7 +48,7 @@ public class LaMetroUtil {
   // And that's why we don't have code reviews.
   // Also ugh, Bay 511 doesn't have a valid SSL cert.
   public static final String BAY_511_FEED_URL =
-      "http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
+      "https://api.511.org/transit/stopmonitoring?api_key=f036cd72-4465-425d-9ce2-df2478c7f804";
 
   public static StopLocationTranslator locationTranslator;
   public static RouteColorer routeColorer;
@@ -83,11 +83,11 @@ public class LaMetroUtil {
     }
 
     // Kinda sketchy, should work
-    String URI = new String();
+    String URI = "";
     if (HardcodedHacks.useBart(agency)) {
       URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
     } else if (HardcodedHacks.useBay511(agency)) {
-      URI = BAY_511_FEED_URL + "&stopcode=" + stop.getStopID();
+      URI = BAY_511_FEED_URL + "&stopcode=" + stop.getStopID() + "&agency=" + agency;
     } else if (HardcodedHacks.useNextrip(agency)) {
       URI =
           NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId=" + stop.getString();
