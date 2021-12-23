@@ -11,9 +11,9 @@ import java.util.Collection;
  * of stops which are already being tracked.
  */
 public interface UserStateProvider {
-    /** Return locations the user may be interested in navigating to or near */
-    Collection<BasicLocation> getInterestingLocations();
+  /** Return locations the user may be interested in navigating to or near */
+  Collection<BasicLocation> getInterestingLocations();
 
-    /** Return stops that are currently being tracked. */
-    Collection<Stop> getCurrentlyTrackedStops();
+  /** Return stops that are currently being tracked. */
+  Collection<Stop> getCurrentlyTrackedStops();
 }
