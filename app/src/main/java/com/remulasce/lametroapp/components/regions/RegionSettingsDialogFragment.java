@@ -39,7 +39,7 @@ public class RegionSettingsDialogFragment extends DialogFragment {
 
     addAgencyItems();
     autodetectCheckBox.setChecked(RegionalizationHelper.getInstance().getAutoDetect());
-    autodetectCheckBox.setOnCheckedChangeListener(checkedChangeListener);
+    autodetectCheckBox.setOnCheckedChangeListener(autodetectCheckedChangeListener);
 
     return new AlertDialog.Builder(getActivity())
         .setTitle(getString(R.string.settings_dialog_title))
@@ -47,7 +47,7 @@ public class RegionSettingsDialogFragment extends DialogFragment {
         .create();
   }
 
-  CompoundButton.OnCheckedChangeListener checkedChangeListener =
+  CompoundButton.OnCheckedChangeListener autodetectCheckedChangeListener =
       new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -74,18 +74,19 @@ public class RegionSettingsDialogFragment extends DialogFragment {
         agencyItem.setChecked(true);
       }
 
-      agencyItem.setOnCheckedChangeListener(onCheckedChangeListener);
+      agencyItem.setOnCheckedChangeListener(onAgencyCheckedChangeListener);
 
       checkBoxList.addView(agencyItem);
     }
   }
 
-  private CompoundButton.OnCheckedChangeListener onCheckedChangeListener =
+  private CompoundButton.OnCheckedChangeListener onAgencyCheckedChangeListener =
       new CompoundButton.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
           setCheckedAgenciesActive();
+          autodetectCheckBox.setChecked(false);
         }
       };
 
