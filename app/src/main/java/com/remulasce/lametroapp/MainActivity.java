@@ -222,7 +222,9 @@ public class MainActivity extends AppCompatActivity
         }
       }
 
-      if (!permissionsSucceeded) {
+      if (permissionsSucceeded) {
+        omniField.requestFocus();
+      } else {
         Toast.makeText(
                 this,
                 "Listen it's a transit arrivals app. It needs your location. "
