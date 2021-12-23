@@ -34,7 +34,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class LaMetroUtil {
   // Nextbus doesn't have a valid SSL certificate. Ugh.
   private static final String NEXTBUS_FEED_URL =
-      "http://webservices.nextbus.com/service/publicXMLFeed";
+      "https://retro.umoiq.com/service/publicXMLFeed";
 
   // THANK YOU. BART supports HTTPS.
   private static final String BART_FEED_URL = "https://api.bart.gov/api/etd.aspx";
