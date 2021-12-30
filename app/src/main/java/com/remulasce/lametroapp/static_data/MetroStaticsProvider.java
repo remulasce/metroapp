@@ -217,10 +217,8 @@ public class MetroStaticsProvider
 
   @Override
   public Collection<OmniAutoCompleteEntry> autocompleteLocationSuggestions(
-          Collection<BasicLocation> locations,
-          float maxDistanceMeters, int maxResults
+      Collection<BasicLocation> locations, float maxDistanceMeters, int maxResults) {
 
-  ) {
     Collection<OmniAutoCompleteEntry> ret = new ArrayList<>();
 
     // Duplicate station names across databases should be treated as the same stop.
@@ -236,8 +234,8 @@ public class MetroStaticsProvider
       }
       SQLPreloadedStopsReader reader = regionalStopsReaders.get(a);
 
-      Collection<OmniAutoCompleteEntry> entries = reader.autocompleteLocationSuggestions(
-              locations, maxDistanceMeters, maxResults);
+      Collection<OmniAutoCompleteEntry> entries =
+          reader.autocompleteLocationSuggestions(locations, maxDistanceMeters, maxResults);
 
       for (OmniAutoCompleteEntry newEntry : entries) {
         if (usedStops.containsKey(newEntry.toString())) {

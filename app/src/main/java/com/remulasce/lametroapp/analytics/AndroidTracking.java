@@ -13,82 +13,85 @@ import java.util.HashMap;
 /**
  * Created by Remulasce on 3/5/2015.
  *
- * It's basically a straight pass-through to Google Analytics.
+ * <p>It's basically a straight pass-through to Google Analytics.
  */
 public class AndroidTracking extends Tracking {
 
-    private Tracker t;
-    public AndroidTracking( Context c ) {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance( c );
+  private Tracker t;
 
-        t = analytics.newTracker(R.xml.lametro_tracker);
-        t.enableAdvertisingIdCollection(true);
-        t.enableExceptionReporting(true);
+  public AndroidTracking(Context c) {
+    GoogleAnalytics analytics = GoogleAnalytics.getInstance(c);
+
+    t = analytics.newTracker(R.xml.lametro_tracker);
+    t.enableAdvertisingIdCollection(true);
+    t.enableExceptionReporting(true);
+  }
+
+  private final HashMap<String, HashMap<String, AveragedDatum>> averagedValues =
+      new HashMap<String, HashMap<String, AveragedDatum>>();
+  // Avg. for like frame updates that are too numerous to send directly.
+  public void do_averageUITime(String name, String label, long startTime) {
+
+    AveragedDatum data;
+
+    HashMap<String, AveragedDatum> labels = averagedValues.get(name);
+    if (labels == null) {
+      labels = new HashMap<String, AveragedDatum>();
+      averagedValues.put(name, labels);
     }
 
+    data = labels.get(label);
+    if (data == null) {
+      data = new AveragedDatum();
+      labels.put(label, data);
+    }
 
-    private final HashMap<String, HashMap<String, AveragedDatum>> averagedValues = new HashMap<String, HashMap<String, AveragedDatum>>();
-    // Avg. for like frame updates that are too numerous to send directly.
-    public void do_averageUITime( String name, String label, long startTime ) {
+    data.totalValue += timeSpent(startTime);
+    data.numPoints += 1;
 
-        AveragedDatum data;
-
-        HashMap<String, AveragedDatum> labels = averagedValues.get(name);
-        if (labels == null) {
-            labels = new HashMap<String, AveragedDatum>();
-            averagedValues.put(name, labels);
+    if (data.numPoints >= 1000) {
+      synchronized (data) {
+        if (data.numPoints > 0) {
+          sendRawUITime(name, label, (long) (data.totalValue / data.numPoints));
         }
 
-        data = labels.get(label);
-        if (data == null) {
-            data = new AveragedDatum();
-            labels.put(label, data);
-        }
+        data.numPoints = 0;
+        data.totalValue = 0;
+      }
+    }
+  }
 
-        data.totalValue += timeSpent(startTime);
-        data.numPoints += 1;
+  @Override
+  public void do_sendEvent(String category, String action, String label) {
+    t.send(
+        new HitBuilders.EventBuilder()
+            .setCategory(category)
+            .setAction(action)
+            .setLabel(label)
+            .build());
+  }
 
-        if (data.numPoints >= 1000) {
-            synchronized (data) {
-                if (data.numPoints > 0) {
-                    sendRawUITime(name, label, (long) (data.totalValue / data.numPoints));
-                }
+  @Override
+  public void do_setScreenName(String name) {
+    t.setScreenName(name);
+    t.send(new HitBuilders.AppViewBuilder().build());
+  }
 
-                data.numPoints = 0;
-                data.totalValue = 0;
-            }
-        }
+  @Override
+  public void do_sendRawTime(String category, String name, String label, long timeSpent) {
+    android.util.Log.v(category, name + " " + label + ": " + timeSpent);
+
+    if (t == null) {
+      android.util.Log.w(category, "No tracker set, unable to send analytics");
+      return;
     }
 
-    @Override
-    public void do_sendEvent(String category, String action, String label) {
-        t.send( new HitBuilders.EventBuilder()
-                .setCategory( category )
-                .setAction( action )
-                .setLabel( label )
-                .build() );
-    }
-
-    @Override
-    public void do_setScreenName(String name) {
-        t.setScreenName(name);
-        t.send(new HitBuilders.AppViewBuilder().build());
-    }
-
-    @Override
-    public void do_sendRawTime(String category, String name, String label, long timeSpent) {
-        android.util.Log.v(category, name + " " + label + ": " + timeSpent);
-
-        if (t == null) {
-            android.util.Log.w(category, "No tracker set, unable to send analytics");
-            return;
-        }
-
-        t.send( new HitBuilders.TimingBuilder()
-                .setCategory( category )
-                .setValue( timeSpent )
-                .setVariable( name )
-                .setLabel( label )
-                .build() );
-    }
+    t.send(
+        new HitBuilders.TimingBuilder()
+            .setCategory(category)
+            .setValue(timeSpent)
+            .setVariable(name)
+            .setLabel(label)
+            .build());
+  }
 }

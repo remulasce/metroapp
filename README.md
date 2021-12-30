@@ -18,10 +18,29 @@ Combined with the arrival notification feature, Metro Companion aims to put as l
 
 ## Developers Guide
 
-lametroapp/ has the Android source.
+app/ has the Android source.
 scraper/ has the offline scraping utility, which generates the stopname databases.
 
-Due to bad history, there's some random directories on the root level, including an iOS port and older Android project.
+The app/ folder is structured to separate pure Java business logic from the Android-specific stuff. At one point there was an iOS port which used the java things.
+
+### Top-Level App Directories
+like, under main/java/com/remulasce/lametroapps
+
+Directory | Purpose
+--- | ---
+java_core | Pure Java business logic that runs the prediction service. See below.
+components | Android Activity, autocomplete, etc classes. Most of the user-touching logic is implemented here.
+display | Just the implementation of the trip View class.
+static_data | Android-aware SQL readers
+Raw Files | Mostly older stuff for the notify service, which was written first.
+
+### Under java_core
+
+Directory | Purpose
+--- | ---
+basic_types | Raw base classes for Stop, etc. These have a tendency to do a bit of logic themseles.
+dynamic_data | An awful Java-threaded implementation of going to network and updating various objects.
+
 
 ## Release Guide
 
