@@ -9,16 +9,16 @@ print("Specify which agencies to scrape as command-line arguments")
 print("Or leave none to scrape only supported agencies")
 print("Command-line agencies won't have their proper titles scraped")
 
-agencies_to_scrape = []
+agency_tags_to_scrape = []
 
 for arg in sys.argv[1:]:
     print(arg)
-    agencies_to_scrape.append((arg, arg))
+    agency_tags_to_scrape.append((arg, arg))
 
-if len(agencies_to_scrape) == 0:
+if len(agency_tags_to_scrape) == 0:
     print("No arguments given; scraping sane defaults")
 
-    agencies_to_scrape = ["lametro", "lametro-rail", "sf-muni"]
+    agency_tags_to_scrape = ["lametro", "lametro-rail", "sf-muni"]
 
 
 # This likely trips their ratelimiting
@@ -33,17 +33,15 @@ def get_all_agencies_dict():
             display_name = tree_child.attrib['title']
             all_agencies[tag] = display_name
     if not len(all_agencies):
-        raise Error("Couldn't create agencies mapping")
+        raise Exception("Couldn't create agencies mapping")
     return all_agencies
-
-
-print("Scraping " + str(len(agencies_to_scrape)) + " agencies")
 
 
 def main():
     agency_names_dict = get_all_agencies_dict()
-    
-    for agency_tag in agencies_to_scrape:
+    print("Scraping " + str(len(agency_tags_to_scrape)) + " agencies")
+
+    for agency_tag in agency_tags_to_scrape:
         agency_display_name = agency_names_dict[agency_tag]
         print("Now scraping: " + agency_tag + ", " + agency_display_name)
         search_string = "http://retro.umoiq.com/service/publicXMLFeed?command=routeList&a=" + agency_tag
