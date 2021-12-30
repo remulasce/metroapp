@@ -16,61 +16,61 @@ import java.util.Map;
 /**
  * Created by Remulasce on 8/23/2015.
  *
- * This thing should be consulted at startup to figure out what agency .db files are actually present on-device.
- * That's, ah. Basically it.
+ * <p>This thing should be consulted at startup to figure out what agency .db files are actually
+ * present on-device. That's, ah. Basically it.
  *
- * It'll look in the assets folder for every .db file, and pull the overview info out.
+ * <p>It'll look in the assets folder for every .db file, and pull the overview info out.
  */
 public class InstalledAgencyChecker {
 
-    public static final String DATABASES = "databases";
-    public static final String TAG = "InstalledAgencies";
-    Context c;
+  public static final String DATABASES = "databases";
+  public static final String TAG = "InstalledAgencies";
+  Context c;
 
-    /*
-     * Agency -> the sqlite db file.
-     *
-     * Eg. {VTA} -> vta.db
-     */
-    private Map<Agency, String> agencyFileNames = new HashMap<Agency, String>();
+  /*
+   * Agency -> the sqlite db file.
+   *
+   * Eg. {VTA} -> vta.db
+   */
+  private Map<Agency, String> agencyFileNames = new HashMap<Agency, String>();
 
-    public InstalledAgencyChecker(Context c) {
-        this.c = c;
-    }
+  public InstalledAgencyChecker(Context c) {
+    this.c = c;
+  }
 
-    public Collection<Agency> getInstalledAgencies() {
-        Collection<Agency> ret = new ArrayList<Agency>();
+  public Collection<Agency> getInstalledAgencies() {
+    Collection<Agency> ret = new ArrayList<Agency>();
 
-        Resources res = c.getResources();
-        AssetManager am = res.getAssets();
+    Resources res = c.getResources();
+    AssetManager am = res.getAssets();
 
-        try {
-            String[] fileList = am.list(DATABASES);
+    try {
+      String[] fileList = am.list(DATABASES);
 
-            for (int i = 0; i < fileList.length; i++) {
-                String fileName = fileList[i];
+      for (int i = 0; i < fileList.length; i++) {
+        String fileName = fileList[i];
 
-                // We need to properly open the details for each db file
-                Agency a = new InstalledAgencyLoader(c, fileName).getAgency();
+        // We need to properly open the details for each db file
+        Agency a = new InstalledAgencyLoader(c, fileName).getAgency();
 
-                Log.d(TAG, "Found agency for " + fileName + ", " + a);
+        Log.d(TAG, "Found agency for " + fileName + ", " + a);
 
-                if (a != null) {
-                    ret.add(a);
-                    agencyFileNames.put(a, fileName);
-                }
-            }
-        } catch (IOException e) {
-            Log.w(TAG, "No databases/ asset folder present");
-            return null;
+        if (a != null) {
+          ret.add(a);
+          agencyFileNames.put(a, fileName);
         }
-
-        Log.i(TAG, "Found installed agencies: "+ret);
-        return ret;
+      }
+    } catch (IOException e) {
+      Log.w(TAG, "No databases/ asset folder present");
+      return null;
     }
 
-    /** For a given agency, get the name of the .db file that represents it. */
-    public String getDatabaseFileNameForAgency(Agency agency) {
-        return agencyFileNames.get(agency);
-    }
+    Log.i(TAG, "Found installed agencies: " + ret);
+    return ret;
+  }
+
+  /** For a given agency, get the name of the .db file that represents it. */
+  public String getDatabaseFileNameForAgency(Agency agency) {
+    return agencyFileNames.get(agency);
+  }
 }

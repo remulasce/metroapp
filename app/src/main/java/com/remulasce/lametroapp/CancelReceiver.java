@@ -7,9 +7,9 @@ import android.util.Log;
 
 public class CancelReceiver extends BroadcastReceiver {
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.i("CancelReceiver", "OnReceive");
-        NotifyServiceManager.stopNotifyService(context);
-    }
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    Log.i("CancelReceiver", "OnReceive");
+    NotifyServiceManager.stopNotifyService(context);
+  }
 }

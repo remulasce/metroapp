@@ -14,106 +14,104 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by nighelles on 3/7/2015.
  *
- * At this point it's basically just a list of Requests, plus some lifecycle handling.
- * It just also lets you get all total Trips made by those requests.
- *
+ * <p>At this point it's basically just a list of Requests, plus some lifecycle handling. It just
+ * also lets you get all total Trips made by those requests.
  */
-
 public class ServiceRequestHandler {
-    private static final String TAG = "ServiceRequestHandler";
+  private static final String TAG = "ServiceRequestHandler";
 
+  private boolean running = false;
+  private final List<ServiceRequest> serviceRequests = new CopyOnWriteArrayList<ServiceRequest>();
 
-    private boolean running = false;
-    private final List< ServiceRequest > serviceRequests = new CopyOnWriteArrayList< ServiceRequest >();
-
-
-    final Comparator<Trip> tripPriorityComparator = new Comparator<Trip>() {
+  final Comparator<Trip> tripPriorityComparator =
+      new Comparator<Trip>() {
         @Override
         public int compare(Trip lhs, Trip rhs) {
-            float lhsPriority = lhs.getPriority();
-            float rhsPriority = rhs.getPriority();
+          float lhsPriority = lhs.getPriority();
+          float rhsPriority = rhs.getPriority();
 
-            if (lhsPriority < rhsPriority) {
-                return 1;
-            } else if (lhsPriority == rhsPriority) {
-                return 0;
-            } else {
-                return -1;
-            }
+          if (lhsPriority < rhsPriority) {
+            return 1;
+          } else if (lhsPriority == rhsPriority) {
+            return 0;
+          } else {
+            return -1;
+          }
         }
-    };
+      };
 
-    List<Trip> sortTrips(Collection<Trip> trips) {
-        List<Trip> sortedTrips = new ArrayList<Trip>(trips);
-        Collections.sort(sortedTrips, tripPriorityComparator);
+  List<Trip> sortTrips(Collection<Trip> trips) {
+    List<Trip> sortedTrips = new ArrayList<Trip>(trips);
+    Collections.sort(sortedTrips, tripPriorityComparator);
 
-        return sortedTrips;
+    return sortedTrips;
+  }
+
+  public List<Trip> GetSortedTripList() {
+    List<Trip> ret = new ArrayList<Trip>();
+
+    for (ServiceRequest request : serviceRequests) {
+      ret.addAll(request.getTrips());
     }
 
-    public List<Trip> GetSortedTripList() {
-        List<Trip> ret = new ArrayList<Trip>();
+    return sortTrips(ret);
+  }
 
-        for (ServiceRequest request : serviceRequests) {
-            ret.addAll(request.getTrips());
-        }
+  public boolean isRunning() {
+    return running;
+  }
 
-        return sortTrips(ret);
+  public int numRequests() {
+    return serviceRequests.size();
+  }
+
+  public void StartPopulating() {
+    if (running) {
+      Log.e(TAG, "Started an already-populating populator");
+      return;
+    }
+    Log.d(TAG, "Starting TripPopulator");
+
+    for (ServiceRequest r : serviceRequests) {
+      r.startRequest();
     }
 
-    public boolean isRunning() {
-        return running;
+    running = true;
+  }
+
+  public void StopPopulating() {
+    Log.d(TAG, "Stopping TripPopulator");
+
+    if (!running) {
+      Log.e(TAG, "Stopping an already-stopped populator");
+      return;
     }
-    public int numRequests() {
-        return serviceRequests.size();
+    for (ServiceRequest r : serviceRequests) {
+      r.pauseRequest();
     }
+    running = false;
+  }
 
-    public void StartPopulating() {
-        if ( running ) {
-            Log.e( TAG, "Started an already-populating populator" );
-            return;
-        }
-        Log.d( TAG, "Starting TripPopulator" );
+  void rawSetServiceRequests(Collection<ServiceRequest> requests) {
+    Log.d(TAG, "Setting service requests");
 
-        for (ServiceRequest r : serviceRequests) {
-            r.startRequest();
-        }
-
-        running = true;
-    }
-
-    public void StopPopulating() {
-        Log.d( TAG, "Stopping TripPopulator" );
-
-        if (!running) {
-            Log.e( TAG, "Stopping an already-stopped populator");
-            return;
-        }
-        for (ServiceRequest r : serviceRequests) {
-            r.pauseRequest();
-        }
-        running = false;
+    for (ServiceRequest r : requests) {
+      if (!serviceRequests.contains(r)) {
+        r.startRequest();
+      }
     }
 
-    void rawSetServiceRequests(Collection<ServiceRequest> requests) {
-        Log.d(TAG, "Setting service requests");
+    serviceRequests.clear();
+    serviceRequests.addAll(requests);
+  }
 
-        for (ServiceRequest r : requests) {
-            if (!serviceRequests.contains(r)) {
-                r.startRequest();
-            }
-        }
+  // This helps with automated testing.
+  public Collection<ServiceRequest> getRequests() {
+    return serviceRequests;
+  }
 
-        serviceRequests.clear();
-        serviceRequests.addAll(requests);
-    }
-
-    // This helps with automated testing.
-    public Collection<ServiceRequest> getRequests() {
-        return serviceRequests;
-    }
-
-    public void SetServiceRequests( Collection<ServiceRequest> requests) {
-        //Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
-        rawSetServiceRequests(requests);
-    }
+  public void SetServiceRequests(Collection<ServiceRequest> requests) {
+    // Log.d(TAG, "SetServiceRequests on "+requests.size()+" requests");
+    rawSetServiceRequests(requests);
+  }
 }

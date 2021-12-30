@@ -59,7 +59,7 @@ public class OmniAutoCompleteAdapter extends ArrayAdapter implements Filterable 
             autoCompleteCombinedFiller,
             autoCompleteCombinedFiller,
             autoCompleteCombinedFiller,
-                userStateProvider,
+            userStateProvider,
             locations);
   }
 

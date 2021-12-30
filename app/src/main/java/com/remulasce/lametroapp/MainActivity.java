@@ -12,8 +12,6 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,10 +32,10 @@ import com.remulasce.lametroapp.analytics.AndroidLog;
 import com.remulasce.lametroapp.analytics.AndroidTracking;
 import com.remulasce.lametroapp.components.location.CachedLocationRetriever;
 import com.remulasce.lametroapp.components.network_status.AndroidNetworkStatusReporter;
-import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.omni_bar.OmniAutoCompleteAdapter;
 import com.remulasce.lametroapp.components.omni_bar.OmniBarInputHandler;
 import com.remulasce.lametroapp.components.omni_bar.ProgressAutoCompleteTextView;
+import com.remulasce.lametroapp.components.omni_bar.UserStateProvider;
 import com.remulasce.lametroapp.components.persistence.FieldSaver;
 import com.remulasce.lametroapp.components.persistence.SerializedFileFieldSaver;
 import com.remulasce.lametroapp.components.regions.RegionSettingsDialogFragment;
@@ -144,11 +142,8 @@ public class MainActivity extends AppCompatActivity
   private void checkFirstRunPresentation(Bundle savedInstanceState, boolean missingPermissions) {
     if (!missingPermissions) {
       if (savedInstanceState == null) {
-        maybeShowAutocompleteDropdown();
-      } else {
-        if (savedInstanceState.getBoolean("show_omnicomplete")) {
-          showDropdownOnStart.run();
-        }
+        // XML focus methods steal it back on rotation. We'd rather a dismissed popup stay gone.
+        omniField.requestFocus();
       }
     }
   }
@@ -156,8 +151,6 @@ public class MainActivity extends AppCompatActivity
   @Override
   public void onSaveInstanceState(Bundle state) {
     super.onSaveInstanceState(state);
-
-    state.putBoolean("show_omnicomplete", omniField.isPopupShowing());
   }
 
   private void setupRegionalization() {
@@ -230,8 +223,7 @@ public class MainActivity extends AppCompatActivity
       }
 
       if (permissionsSucceeded) {
-        // Re-check location.
-        maybeShowAutocompleteDropdown();
+        omniField.requestFocus();
       } else {
         Toast.makeText(
                 this,
@@ -267,54 +259,45 @@ public class MainActivity extends AppCompatActivity
     TutorialManager.setTutorialManager(tutorialManager);
   }
 
-    private void setupOmniBar() {
-        autoCompleteAdapter =
-                new OmniAutoCompleteAdapter(
-                        this,
-                        new UserStateProvider() {
-                            @Override
-                            public Collection<BasicLocation> getInterestingLocations() {
-                                ArrayList<BasicLocation> ret = new ArrayList<>();
+  private void setupOmniBar() {
+    autoCompleteAdapter =
+        new OmniAutoCompleteAdapter(
+            this,
+            new UserStateProvider() {
+              @Override
+              public Collection<BasicLocation> getInterestingLocations() {
+                ArrayList<BasicLocation> ret = new ArrayList<>();
 
-                                ret.addAll(requestFragment.getInterestingLocations());
-                                ret.addAll(currentLocationOrEmpty());
+                ret.addAll(requestFragment.getInterestingLocations());
+                ret.addAll(currentLocationOrEmpty());
 
-                                return ret;
-                            }
+                return ret;
+              }
 
-                          @Override
-                          public Collection<Stop> getCurrentlyTrackedStops() {
-                            return requestFragment.getCurrentlyTrackedStops();
-                          }
+              @Override
+              public Collection<Stop> getCurrentlyTrackedStops() {
+                return requestFragment.getCurrentlyTrackedStops();
+              }
 
-                          @NonNull
-                            private List<BasicLocation> currentLocationOrEmpty() {
-                                BasicLocation currentLocation = locationService.getCurrentLocation();
-                                return currentLocation == null ?
-                                        Collections.<BasicLocation>emptyList() :
-                                        Collections.singletonList(currentLocation);
-                            }
-                        },
-                        R.layout.omnibar_dropdown_item,
-                        R.id.omnibar_item_station_name,
-                        staticsProvider,
-                        locationService,
-                        routeColorer);
-        omniField.setAdapter(autoCompleteAdapter);
-        omniField.setThreshold(0);
+              @NonNull
+              private List<BasicLocation> currentLocationOrEmpty() {
+                BasicLocation currentLocation = locationService.getCurrentLocation();
+                return currentLocation == null
+                    ? Collections.<BasicLocation>emptyList()
+                    : Collections.singletonList(currentLocation);
+              }
+            },
+            R.layout.omnibar_dropdown_item,
+            R.id.omnibar_item_station_name,
+            staticsProvider,
+            locationService,
+            routeColorer);
+    omniField.setAdapter(autoCompleteAdapter);
+    omniField.setThreshold(0);
 
     omniHandler =
         new OmniBarInputHandler(
-            omniField,
-            null,
-            clearButton,
-            autocompleteProgress,
-            requestFragment,
-            staticsProvider,
-            staticsProvider,
-            staticsProvider,
-            null,
-            this);
+            omniField, clearButton, autocompleteProgress, requestFragment, staticsProvider, this);
   }
 
   private void setupActionBar() {
@@ -491,40 +474,6 @@ public class MainActivity extends AppCompatActivity
     locationService.startLocating(this);
   }
 
-  // Ugly hack to show history suggestions as soon as app loads
-  // Except, Android won't actually tell you when it's ok with dialogs showing
-  // So instead we check every xms until we actually have a window.
-  private void maybeShowAutocompleteDropdown() {
-    // The whole thing doesn't really work on Gingerbread.
-    // Not that anyone actually still uses Gingerbread.
-    // Check if we're in the about pane, cause that's whack
-    if (requestHandler.getRequests().size() == 0
-        && Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-      Handler h = new Handler(Looper.getMainLooper());
-      h.postDelayed(showDropdownOnStart, 100);
-    }
-  }
-
-  Runnable showDropdownOnStart =
-      new Runnable() {
-        @Override
-        public void run() {
-          if (omniField.getWindowVisibility() != View.GONE) { // && omniField.isFocused()) {
-            Log.i(TAG, "Showing omni dropdown after startup");
-            omniField.clearFocus();
-            omniField.requestFocus();
-
-            InputMethodManager inputMethodManager =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.toggleSoftInputFromWindow(
-                omniField.getApplicationWindowToken(), InputMethodManager.SHOW_IMPLICIT, 0);
-          } else {
-            Handler h = new Handler(Looper.getMainLooper());
-            h.postDelayed(showDropdownOnStart, 100);
-          }
-        }
-      };
-
   @Override
   public boolean dispatchTouchEvent(MotionEvent event) {
     if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -532,6 +481,7 @@ public class MainActivity extends AppCompatActivity
         Rect outRect = new Rect();
         omniField.getGlobalVisibleRect(outRect);
         if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+          Log.i(TAG, "Clearing omni focus due to tap outside of rect");
           omniField.clearFocus();
           //
           // Hide keyboard

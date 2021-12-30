@@ -9,16 +9,14 @@ import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 import com.remulasce.lametroapp.java_core.static_data.RouteColorer;
 import com.remulasce.lametroapp.java_core.static_data.StopLocationTranslator;
+import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
+import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,453 +26,364 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.remulasce.lametroapp.java_core.RegionalizationHelper;
-import com.remulasce.lametroapp.java_core.static_data.types.RouteColor;
-import com.remulasce.lametroapp.static_data.hardcoded_hacks.HardcodedHacks;
-
 
 // OK, I'm modifying this to do the correct thing if we ask it to handle GTFS instead of nextbus
-// GTFS conveniently provides us with a tag called <uri></uri> that will let us know if it's GTFS or not, as well as the request URL
+// GTFS conveniently provides us with a tag called <uri></uri> that will let us know if it's GTFS or
+// not, as well as the request URL
 
 public class LaMetroUtil {
-    // Nextbus doesn't have a valid SSL certificate. Ugh.
-    private static final String NEXTBUS_FEED_URL = "https://retro.umoiq.com/service/publicXMLFeed";
+  // Nextbus doesn't have a valid SSL certificate. Ugh.
+  private static final String NEXTBUS_FEED_URL =
+      "https://retro.umoiq.com/service/publicXMLFeed";
 
-    // THANK YOU. BART supports HTTPS.
-    private static final String BART_FEED_URL = "https://api.bart.gov/api/etd.aspx";
+  // THANK YOU. BART supports HTTPS.
+  private static final String BART_FEED_URL = "https://api.bart.gov/api/etd.aspx";
 
-    private static final String BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
-    public static final String TAG = "LaMetroUtil";
-    // See, if we had code reviews, we wouldn't be able to just slip a hardcoded API key into the public repo.
-    // Instead we'd have to spend several days coming up with proper opsec and key handling procedures, wasting valuable time.
-    // And that's why we don't have code reviews.
-    // Also ugh, Bay 511 doesn't have a valid SSL cert.
-    public static final String BAY_511_FEED_URL = "http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
+  private static final String BART_API_KEY = "MW9S-E7SL-26DU-VV8V";
+  public static final String TAG = "LaMetroUtil";
+  // See, if we had code reviews, we wouldn't be able to just slip a hardcoded API key into the
+  // public repo.
+  // Instead we'd have to spend several days coming up with proper opsec and key handling
+  // procedures, wasting valuable time.
+  // And that's why we don't have code reviews.
+  // Also ugh, Bay 511 doesn't have a valid SSL cert.
+  public static final String BAY_511_FEED_URL =
+      "http://services.my511.org/Transit2.0/GetNextDeparturesByStopCode.aspx?token=7a0b4b7b-6a70-46d7-85aa-8a202fc44471";
 
-    public static StopLocationTranslator locationTranslator;
-    public static RouteColorer routeColorer;
+  public static StopLocationTranslator locationTranslator;
+  public static RouteColorer routeColorer;
 
-
-    public static boolean isValidStop( String stop ) {
-        if ( stop == null ) {
-            return false;
-        }
-        if ( stop.isEmpty() ) {
-            return false;
-        }
-
-        return true;
+  public static boolean isValidStop(String stop) {
+    if (stop == null) {
+      return false;
+    }
+    if (stop.isEmpty()) {
+      return false;
     }
 
-    public static boolean isValidRoute( Route route ) {
-        if (route == null || !route.isValid()) {
-            return false;
-        }
+    return true;
+  }
 
-        return true;
+  public static boolean isValidRoute(Route route) {
+    if (route == null || !route.isValid()) {
+      return false;
     }
 
-    public static String makePredictionsRequest( Stop stop, Route route ) {
-        Agency agency = stop.getAgency();
+    return true;
+  }
 
-        if (agency == null || !agency.isValid()) {
-            Log.e(TAG, "No agency attached to stop, old functions removed. Specify the agency as part of your stops.");
-            return null;
-        }
+  public static String makePredictionsRequest(Stop stop, Route route) {
+    Agency agency = stop.getAgency();
 
-        // Kinda sketchy, should work
-        String URI = new String();
-        if (HardcodedHacks.useBart(agency)) {
-            URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
-        } else if (HardcodedHacks.useBay511(agency)) {
-            URI = BAY_511_FEED_URL + "&stopcode="+stop.getStopID();
-        } else if (HardcodedHacks.useNextrip(agency)){
-            URI = NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId="
-                    + stop.getString();
-            if ( isValidRoute(route) ) {
-                URI += "&routeTag=" + route.getString();
+    if (agency == null || !agency.isValid()) {
+      Log.e(
+          TAG,
+          "No agency attached to stop, old functions removed. Specify the agency as part of your stops.");
+      return null;
+    }
+
+    // Kinda sketchy, should work
+    String URI = new String();
+    if (HardcodedHacks.useBart(agency)) {
+      URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
+    } else if (HardcodedHacks.useBay511(agency)) {
+      URI = BAY_511_FEED_URL + "&stopcode=" + stop.getStopID();
+    } else if (HardcodedHacks.useNextrip(agency)) {
+      URI =
+          NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId=" + stop.getString();
+      if (isValidRoute(route)) {
+        URI += "&routeTag=" + route.getString();
+      }
+    } else {
+      Log.w(TAG, "Don't know how to get predictions for agency: " + agency.raw);
+    }
+
+    Log.d(TAG, "Request string: " + URI);
+    return URI;
+  }
+
+  // Returns null if there's errors.
+  // Change: No longer fills in locations to the stops!
+  // This avoids having to regionalize in here.
+  // Instead, we are aiming to only produce the information that is actually contained in
+  //    the xml feed.
+  //
+  // We should probably make a new data type that only can contain what the xml feed has,
+  //    but for now reusing Arrival / Stop is just too convenient.
+  //
+  // Agency required to tell between Nextrip / Bart / Bay 511. Null assumes Nextrip.
+  public static List<Arrival> parseAllArrivals(String response, Agency agency) {
+    if (response == null || response.isEmpty()) {
+      Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
+      return null;
+    }
+
+    return parseWithJavaLibs(response, agency);
+  }
+
+  private static List<Arrival> parseWithJavaLibs(String response, Agency agency) {
+    List<Arrival> ret = new ArrayList<Arrival>();
+    // get the factory
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+    try {
+
+      // Using factory get an instance of document builder
+      DocumentBuilder db = dbf.newDocumentBuilder();
+
+      // parse using builder to get DOM representation of the XML file
+      Document dom = db.parse(new InputSource(new StringReader(response)));
+
+      // get the root element
+      Element docEle = dom.getDocumentElement();
+
+      NodeList errors = docEle.getElementsByTagName("Error");
+      if (errors != null && errors.getLength() != 0) {
+        Log.d(TAG, "NexTrip/GTFS returned an error");
+        return null;
+      }
+
+      // Figure out if it's nextbus or GTFS
+      NodeList uriTags = docEle.getElementsByTagName("uri");
+
+      String directionAttribute = "";
+      String routeAttribute;
+      String stopIDAttribute = "";
+      String stopTitleAttribute;
+      String vehicleAttribute;
+
+      int seconds = 0;
+
+      if (HardcodedHacks.useBart(agency)) {
+        // We've gotten GTFS data
+        // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do
+        // this tomorrow when I'm not so tired.
+        //
+
+        Element station = (Element) docEle.getElementsByTagName("station").item(0);
+        stopIDAttribute = station.getElementsByTagName("abbr").item(0).getTextContent();
+        stopTitleAttribute = station.getElementsByTagName("name").item(0).getTextContent();
+
+        NodeList predictions = docEle.getElementsByTagName("etd");
+        if (predictions != null && predictions.getLength() > 0) {
+          for (int i = 0; i < predictions.getLength(); i++) {
+            Element prediction = (Element) predictions.item(i);
+
+            NodeList directions = prediction.getElementsByTagName("destination");
+            if (directions != null && directions.getLength() > 0) {
+              Element direction = (Element) directions.item(0);
+              directionAttribute = direction.getTextContent();
             }
-        } else {
-            Log.w(TAG, "Don't know how to get predictions for agency: " + agency.raw);
-        }
 
-        Log.d(TAG,"Request string: " + URI);
-        return URI;
-    }
+            NodeList arrivals = prediction.getElementsByTagName("estimate");
+            for (int j = 0; j < arrivals.getLength(); j++) {
+              Element arrival = (Element) arrivals.item(j);
+              int minutes;
+              try {
+                minutes =
+                    Integer.parseInt(
+                        arrival.getElementsByTagName("minutes").item(0).getTextContent());
+              } catch (Exception e) {
+                minutes = 0;
+              }
+              seconds = minutes * 60; // BART doesn't provide seconds
+              routeAttribute =
+                  prediction.getElementsByTagName("abbreviation").item(0).getTextContent();
 
-    // Returns null if there's errors.
-    // Change: No longer fills in locations to the stops!
-    // This avoids having to regionalize in here.
-    // Instead, we are aiming to only produce the information that is actually contained in
-    //    the xml feed.
-    //
-    // We should probably make a new data type that only can contain what the xml feed has,
-    //    but for now reusing Arrival / Stop is just too convenient.
-    //
-    // Agency required to tell between Nextrip / Bart / Bay 511. Null assumes Nextrip.
-    public static List< Arrival > parseAllArrivals( String response, Agency agency ) {
-        if (response == null || response.isEmpty()) {
-            Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
-            return null;
-        }
+              // BART doesn't give us bus numbers, maybe we can use the length of the car to be
+              // helpful with a hack?
+              vehicleAttribute = prediction.getElementsByTagName("length").item(0).getTextContent();
 
+              // Like "#ffff33'. Needed for Bart because they don't respect their gtfs route names.
+              String hexColor =
+                  prediction.getElementsByTagName("hexcolor").item(0).getTextContent();
 
+              Destination d = new Destination(directionAttribute);
+              Route r = new Route(routeAttribute);
+              Stop s = new Stop(stopIDAttribute);
+              Vehicle v = new Vehicle(vehicleAttribute);
 
-        List< Arrival > ret = parseWithJavaLibs(response, agency);
-
-        return ret;
-    }
-
-    private static List < Arrival > parseWithJavaLibs(String response, Agency agency) {
-        List<Arrival> ret = new ArrayList<Arrival>();
-        //get the factory
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-        try {
-
-            //Using factory get an instance of document builder
-            DocumentBuilder db = dbf.newDocumentBuilder();
-
-            //parse using builder to get DOM representation of the XML file
-            Document dom = db.parse(new InputSource( new StringReader(response)));
-
-            //get the root element
-            Element docEle = dom.getDocumentElement();
-
-            NodeList errors = docEle.getElementsByTagName("Error");
-            if (errors != null && errors.getLength() != 0) {
-                Log.d(TAG, "NexTrip/GTFS returned an error");
-                return null;
+              r.setAgency(agency);
+              r.setColor(new RouteColor(hexColor));
+              s.setStopName(stopTitleAttribute);
+              addNewArrival(ret, seconds, d, r, s, null);
             }
+          }
+        }
+      } else if (HardcodedHacks.useBay511(agency)) {
+        // We need like a "type" field in the agency at some (later) point.
+        // This format is Bay Area 511 transit. Another custom-rigged XML.
+        NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();
+        if (routes != null && routes.getLength() > 0) {
+          for (int i = 0; i < routes.getLength(); i++) {
+            Element route = (Element) routes.item(i);
 
-            // Figure out if it's nextbus or GTFS
-            NodeList uriTags = docEle.getElementsByTagName("uri");
+            NodeList directions =
+                route.getElementsByTagName("RouteDirectionList").item(0).getChildNodes();
+            for (int j = 0; j < directions.getLength(); j++) {
+              Element direction = (Element) directions.item(j);
 
-            String directionAttribute = new String();
-            String routeAttribute = new String();
-            String stopIDAttribute = new String();
-            String stopTitleAttribute = new String();
-            String vehicleAttribute = new String();
+              NodeList stops = direction.getElementsByTagName("Stop");
+              for (int k = 0; k < stops.getLength(); k++) {
+                Element stop = (Element) stops.item(k);
 
-            int seconds = 0;
+                NodeList arrivals = stop.getElementsByTagName("DepartureTime");
+                for (int l = 0; l < arrivals.getLength(); l++) {
+                  Element arrival = (Element) arrivals.item(l);
 
-            if (HardcodedHacks.useBart(agency)) {
-                //We've gotten GTFS data
-                // Some/Most of this is basically code reuse, but I'll try to figure out a nice way to do this tomorrow when I'm not so tired.
-                //
+                  seconds = Integer.parseInt(arrival.getFirstChild().getTextContent()) * 60;
 
-                Element station = (Element)docEle.getElementsByTagName("station").item(0);
-                stopIDAttribute = station.getElementsByTagName("abbr").item(0).getTextContent();
-                stopTitleAttribute = station.getElementsByTagName("name").item(0).getTextContent();
+                  Destination d = new Destination(direction.getAttribute("Name"));
+                  Route r = new Route(route.getAttribute("Name"));
+                  Stop s = new Stop(stopIDAttribute);
+                  // No bus #s here as well. Unfortunate.
+                  Vehicle v = null;
 
-                NodeList predictions = docEle.getElementsByTagName("etd");
-                if (predictions != null && predictions.getLength() > 0) {
-                    for (int i = 0; i < predictions.getLength();i++) {
-                        Element prediction = (Element)predictions.item(i);
-
-                        NodeList directions = prediction.getElementsByTagName("destination");
-                        if (directions != null && directions.getLength() > 0) {
-                            Element direction = (Element)directions.item(0);
-                            directionAttribute = direction.getTextContent();
-                        }
-
-                        NodeList arrivals = prediction.getElementsByTagName("estimate");
-                        for (int j = 0; j<arrivals.getLength();j++) {
-                            Element arrival = (Element)arrivals.item(j);
-                            int minutes;
-                            try {
-                                minutes = Integer.parseInt(arrival.getElementsByTagName("minutes").item(0).getTextContent());
-                            } catch (Exception e)
-                            {
-                                minutes = 0;
-                            }
-                            seconds = minutes * 60; // BART doesn't provide seconds
-                            routeAttribute = prediction.getElementsByTagName("abbreviation").item(0).getTextContent();
-
-                            // BART doesn't give us bus numbers, maybe we can use the length of the car to be helpful with a hack?
-                            vehicleAttribute = prediction.getElementsByTagName("length").item(0).getTextContent();
-
-                            // Like "#ffff33'. Needed for Bart because they don't respect their gtfs route names.
-                            String hexColor = prediction.getElementsByTagName("hexcolor").item(0).getTextContent();
-
-                            Destination d   = new Destination(directionAttribute);
-                            Route r         = new Route(routeAttribute);
-                            Stop s          = new Stop(stopIDAttribute);
-                            Vehicle v       = new Vehicle(vehicleAttribute);
-
-                            r.setAgency(agency);
-                            r.setColor(new RouteColor(hexColor));
-                            s.setStopName(stopTitleAttribute);
-                            addNewArrival(ret, seconds, d, r, s, null);
-                        }
-                    }
+                  s.setStopName(stop.getAttribute("name"));
+                  r.setAgency(agency);
+                  addNewArrival(ret, seconds, d, r, s, v);
                 }
-            } else if (HardcodedHacks.useBay511(agency)){
-                // We need like a "type" field in the agency at some (later) point.
-                // This format is Bay Area 511 transit. Another custom-rigged XML.
-                NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();
-                if (routes != null && routes.getLength() > 0) {
-                    for (int i = 0; i < routes.getLength(); i++) {
-                        Element route = (Element) routes.item(i);
-
-                        NodeList directions = route.getElementsByTagName("RouteDirectionList").item(0).getChildNodes();
-                        for (int j = 0; j < directions.getLength(); j++) {
-                            Element direction = (Element) directions.item(j);
-
-                            NodeList stops = direction.getElementsByTagName("Stop");
-                            for (int k = 0; k < stops.getLength(); k++) {
-                                Element stop = (Element) stops.item(k);
-
-                                NodeList arrivals = stop.getElementsByTagName("DepartureTime");
-                                for (int l = 0; l < arrivals.getLength(); l++) {
-                                    Element arrival = (Element) arrivals.item(l);
-
-                                    seconds = Integer.parseInt(arrival.getFirstChild().getTextContent()) * 60;
-
-                                    Destination d   = new Destination(direction.getAttribute("Name"));
-                                    Route r         = new Route(route.getAttribute("Name"));
-                                    Stop s          = new Stop(stopIDAttribute);
-                                    // No bus #s here as well. Unfortunate.
-                                    Vehicle v       = null;
-
-                                    s.setStopName(stop.getAttribute("name"));
-                                    r.setAgency(agency);
-                                    addNewArrival(ret, seconds, d, r, s, v);
-                                }
-                            }
-                        }
-                    }
-                }
-            } else if (HardcodedHacks.useNextrip(agency)){
-                //We've gotten NextBus Data
-                NodeList predictions = docEle.getElementsByTagName("predictions");
-                if (predictions != null && predictions.getLength() > 0) {
-                    for (int i = 0; i < predictions.getLength(); i++) {
-                        Element prediction = (Element) predictions.item(i);
-
-                        NodeList directions = prediction.getElementsByTagName("direction");
-                        for (int j = 0; j < directions.getLength(); j++) {
-                            Element direction = (Element) directions.item(j);
-
-                            NodeList arrivals = direction.getElementsByTagName("prediction");
-                            for (int k = 0; k < arrivals.getLength(); k++) {
-                                Element arrival = (Element) arrivals.item(k);
-
-                                seconds = Integer.parseInt(arrival.getAttribute("seconds"));
-
-                                directionAttribute = direction.getAttribute("title");
-                                routeAttribute = prediction.getAttribute("routeTag");
-                                //stopIDAttribute = prediction.getAttribute("stopID");
-                                stopTitleAttribute = prediction.getAttribute("stopTitle");
-                                vehicleAttribute = arrival.getAttribute("vehicle");
-
-                                //stopIDAttribute = cleanupStopID(stopIDAttribute);
-
-                                Destination d   = new Destination(directionAttribute);
-                                Route r         = new Route(routeAttribute);
-                                Stop s          = new Stop(stopIDAttribute);
-                                Vehicle v       = new Vehicle(vehicleAttribute);
-
-                                r.setAgency(agency);
-                                s.setStopName(stopTitleAttribute);
-                                addNewArrival(ret, seconds, d, r, s, v);
-                            }
-                        }
-                    }
-                }
-            } else {
-                Log.w(TAG, "Couldn't find an agency to parse prediction response for: " + agency);
+              }
             }
-        }catch(ParserConfigurationException pce) {
-            pce.printStackTrace();
-            return null;
-        }catch(SAXException se) {
-            se.printStackTrace();
-            return null;
-        }catch(IOException ioe) {
-            ioe.printStackTrace();
-            return null;
-        }catch (Exception e) {
-            Log.w(TAG, "Unaddressed exception! " + e.getMessage());
-            return null;
+          }
         }
+      } else if (HardcodedHacks.useNextrip(agency)) {
+        // We've gotten NextBus Data
+        NodeList predictions = docEle.getElementsByTagName("predictions");
+        if (predictions != null && predictions.getLength() > 0) {
+          for (int i = 0; i < predictions.getLength(); i++) {
+            Element prediction = (Element) predictions.item(i);
 
-        return ret;
-    }
+            NodeList directions = prediction.getElementsByTagName("direction");
+            for (int j = 0; j < directions.getLength(); j++) {
+              Element direction = (Element) directions.item(j);
 
-    // Metro adds _etc to the end of stops sometimes. It's related to multiple entrances per station
-    // or something. This gets rid of that.
-    private static String cleanupStopID(String stopIDAttribute) {
-        int indexOf_ = stopIDAttribute.indexOf( '_' );
-        if ( indexOf_ > 0 ) {
-            stopIDAttribute = stopIDAttribute.substring(0, stopIDAttribute.indexOf('_'));
-        }
-        return stopIDAttribute;
-    }
+              NodeList arrivals = direction.getElementsByTagName("prediction");
+              for (int k = 0; k < arrivals.getLength(); k++) {
+                Element arrival = (Element) arrivals.item(k);
 
-    private static void parseWithAndroidLibs(String response, List<Arrival> ret) {
-        XmlPullParserFactory factory;
-        try {
-            factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware( true );
-            XmlPullParser xpp = factory.newPullParser();
+                seconds = Integer.parseInt(arrival.getAttribute("seconds"));
 
-            xpp.setInput( new StringReader( response ) );
-            int eventType = xpp.getEventType();
+                directionAttribute = direction.getAttribute("title");
+                routeAttribute = prediction.getAttribute("routeTag");
+                // stopIDAttribute = prediction.getAttribute("stopID");
+                stopTitleAttribute = prediction.getAttribute("stopTitle");
+                vehicleAttribute = arrival.getAttribute("vehicle");
 
-            String curStopName = "";
-            String curDestination = "";
-            String curRoute = "";
-            String curStopTag = "";
+                // stopIDAttribute = cleanupStopID(stopIDAttribute);
 
-            while ( eventType != XmlPullParser.END_DOCUMENT ) {
-                if ( eventType == XmlPullParser.START_DOCUMENT ) {} else if ( eventType == XmlPullParser.START_TAG ) {
-                    String name = xpp.getName();
+                Destination d = new Destination(directionAttribute);
+                Route r = new Route(routeAttribute);
+                Stop s = new Stop(stopIDAttribute);
+                Vehicle v = new Vehicle(vehicleAttribute);
 
-                    if ( name.equals( "predictions" ) ) {
-                        curStopTag = xpp.getAttributeValue( null, "stopTag" );
-                        curStopName = xpp.getAttributeValue( null, "stopTitle" );
-                        curRoute = xpp.getAttributeValue( null, "routeTag" );
-                    }
-                    if ( name.equals( "direction" ) ) {
-                        curDestination = xpp.getAttributeValue( null, "title" );
-                    }
-                    if ( name.equals( "prediction" ) ) {
-                        String vehicleNum;
-                        int seconds = -1;
-
-                        String timeString = xpp.getAttributeValue( null, "seconds" );
-                        seconds = Integer.valueOf( timeString );
-
-                        vehicleNum = xpp.getAttributeValue( null, "vehicle" );
-
-                        boolean updated = false;
-                        for ( Arrival aa : ret ) {
-                            if ( aa.getDirection().equals( curDestination ) ) {
-                                updated = true;
-                                if ( aa.getEstimatedArrivalSeconds() > seconds ) {
-                                    aa.setEstimatedArrivalSeconds( seconds );
-                                }
-                            }
-                        }
-
-                        if ( !updated ) {
-                            curStopTag = cleanupStopID(curStopTag);
-
-                            Destination d = new Destination( curDestination );
-                            Route r = new Route( curRoute );
-                            Stop s = new Stop( curStopTag );
-                            s.setStopName( curStopName );
-                            Vehicle v = new Vehicle( vehicleNum );
-
-                            addNewArrival(ret, seconds, d, r, s, v);
-                        }
-                    }
-                } else if ( eventType == XmlPullParser.END_TAG ) {} else if ( eventType == XmlPullParser.TEXT ) {}
-                eventType = xpp.next();
+                r.setAgency(agency);
+                s.setStopName(stopTitleAttribute);
+                addNewArrival(ret, seconds, d, r, s, v);
+              }
             }
-        } catch ( XmlPullParserException e1 ) {
-            e1.printStackTrace();
-        } catch ( IOException e ) {
-            e.printStackTrace();
+          }
         }
+      } else {
+        Log.w(TAG, "Couldn't find an agency to parse prediction response for: " + agency);
+      }
+    } catch (ParserConfigurationException | SAXException | IOException pce) {
+      pce.printStackTrace();
+      return null;
+    } catch (Exception e) {
+      Log.w(TAG, "Unaddressed exception! " + e.getMessage());
+      return null;
     }
 
-    private static void addNewArrival(List<Arrival> ret, int seconds, Destination d, Route r, Stop s, Vehicle v) {
-        Log.v(TAG, "Adding new arrival "+seconds+" "+d+" "+r+" "+s+" "+v);
+    return ret;
+  }
 
-        if (locationTranslator != null) {
-            // This has been changed!
-            // MetroUtil shouldn't have to deal with regionalization or state of the rest of the app.
-            // It should just be convenience methods.
-            // To get the stop locations from here, MetroUtil would need to know what region the stop is.
-            // But, this is called only from parseArrivals from the xml stream, which doesn't include
-            // the agency.
-            // We could provide it, but again, we shouldn't be requesting info in Util.
-            // We should just parse the xml conveniently, and let the rest of the app deal with it.
-//            s.setLocation(locationTranslator.getStopLocation(s));
-        }
+  private static void addNewArrival(
+      List<Arrival> ret, int seconds, Destination d, Route r, Stop s, Vehicle v) {
+    Log.v(TAG, "Adding new arrival " + seconds + " " + d + " " + r + " " + s + " " + v);
 
-        if (routeColorer != null) {
-            r.setColor(routeColorer.getColor(r));
-        }
-
-        Arrival a = new Arrival();
-
-        a.setDestination(d);
-        a.setRoute(r);
-        a.setStop(s);
-        a.setEstimatedArrivalSeconds( seconds );
-        a.setVehicle(v);
-
-        ret.add( a );
+    if (routeColorer != null) {
+      r.setColor(routeColorer.getColor(r));
     }
 
-    public static String timeToDisplay(int seconds) {
-        if ( seconds > 60 ) {
-            return "in " + standaloneTimeToDisplay(seconds);
-        }
-        if ( seconds > 1 ) {
-            return "in " + standaloneTimeToDisplay(seconds);
-        }
-        if ( seconds == 0 ) {
-            return "in " + standaloneTimeToDisplay(seconds);
-        }
-        return standaloneTimeToDisplay(seconds);
+    Arrival a = new Arrival();
+
+    a.setDestination(d);
+    a.setRoute(r);
+    a.setStop(s);
+    a.setEstimatedArrivalSeconds(seconds);
+    a.setVehicle(v);
+
+    ret.add(a);
+  }
+
+  public static String timeToDisplay(int seconds) {
+    if (seconds > 60) {
+      return "in " + standaloneTimeToDisplay(seconds);
     }
-
-    public static String standaloneTimeToDisplay(int seconds) {
-        if ( seconds > 60 ) {
-            return String.valueOf( seconds / 60 ) + " min";
-        }
-        if ( seconds >= 1 ) {
-            return String.valueOf( seconds ) + "s";
-        }
-        return "arrived";
+    if (seconds > 1) {
+      return "in " + standaloneTimeToDisplay(seconds);
     }
-
-    /** Returns the number of seconds to display as a subtext to the timeToDisplay methods.
-     * Returns % 60 normally
-     * Returns empty string if seconds <= 60, because timeToDisplay will display seconds remaining
-     *  in the main display.
-     */
-    public static String standaloneSecondsRemainderTime(int seconds) {
-        if (seconds <= 60) { return ""; }
-        return (seconds % 60)+"s";
+    if (seconds == 0) {
+      return "in " + standaloneTimeToDisplay(seconds);
     }
+    return standaloneTimeToDisplay(seconds);
+  }
 
-    public static String convertMetersToDistanceDisplay(double distance) {
-        double yards = distance * 1.09361;
-
-        if (yards > 200) {
-            double miles = distance * 0.000621371;
-
-            if (miles < 10) {
-                return (int) (miles * 10) / 10.0 + "mi";
-            } else if (miles < 100){
-                return (int) (miles + 0.5) + "mi";
-            } else {
-                return "Far!";
-            }
-        } else {
-            return (int) yards + "yd";
-        }
+  public static String standaloneTimeToDisplay(int seconds) {
+    if (seconds > 60) {
+      return String.valueOf(seconds / 60) + " min";
     }
-
-    //  The nextbus return data doesn't properly note which agency the request was for
-    // So once we figure it out, fill it all in for us.
-    public static void fillinAgencyAndStopID(List<Arrival> arrivals, Agency agency, String stopID) {
-        if (arrivals == null) {
-            return;
-        }
-        for (Arrival a : arrivals) {
-            if (a.getStop().getAgency() != null) {
-                Log.w(TAG, "fillinAgency tried to fill an agency that already existed");
-            }
-
-            a.getStop().setAgency(agency);
-            a.getRoute().setAgency(agency);
-            a.getStop().setStopID(stopID);
-        }
+    if (seconds >= 1) {
+      return String.valueOf(seconds) + "s";
     }
+    return "arrived";
+  }
+
+  /**
+   * Returns the number of seconds to display as a subtext to the timeToDisplay methods. Returns %
+   * 60 normally Returns empty string if seconds <= 60, because timeToDisplay will display seconds
+   * remaining in the main display.
+   */
+  public static String standaloneSecondsRemainderTime(int seconds) {
+    if (seconds <= 60) {
+      return "";
+    }
+    return (seconds % 60) + "s";
+  }
+
+  public static String convertMetersToDistanceDisplay(double distance) {
+    double yards = distance * 1.09361;
+
+    if (yards > 200) {
+      double miles = distance * 0.000621371;
+
+      if (miles < 10) {
+        return (int) (miles * 10) / 10.0 + "mi";
+      } else if (miles < 100) {
+        return (int) (miles + 0.5) + "mi";
+      } else {
+        return "Far!";
+      }
+    } else {
+      return (int) yards + "yd";
+    }
+  }
+
+  //  The nextbus return data doesn't properly note which agency the request was for
+  // So once we figure it out, fill it all in for us.
+  public static void fillinAgencyAndStopID(List<Arrival> arrivals, Agency agency, String stopID) {
+    if (arrivals == null) {
+      return;
+    }
+    for (Arrival a : arrivals) {
+      if (a.getStop().getAgency() != null) {
+        Log.w(TAG, "fillinAgency tried to fill an agency that already existed");
+      }
+
+      a.getStop().setAgency(agency);
+      a.getRoute().setAgency(agency);
+      a.getStop().setStopID(stopID);
+    }
+  }
 }

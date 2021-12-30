@@ -1,7 +1,7 @@
 package com.remulasce.lametroapp.platform_support;
 
-import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
+import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,9 +35,9 @@ public class AndroidApacheHTTP extends HTTPGetter {
     }
 
     // Not necessarily HttpsURLConnection, becouse our ancient gov't backends don't support HTTPS.
-    HttpURLConnection cxn = null;
+    HttpsURLConnection cxn = null;
     try {
-      cxn = (HttpURLConnection) url.openConnection();
+      cxn = (HttpsURLConnection) url.openConnection();
       InputStream content = cxn.getInputStream();
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(content));
