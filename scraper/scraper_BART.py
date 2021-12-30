@@ -51,15 +51,15 @@ for child in root:
 				for route in routeChild:
 					stoproutesList.append([newstopID,route.text])
 
-print stopnamesList
-print stoproutesList
+print(stopnamesList)
+print(stoproutesList)
 		
 agencyName = "BART"
 
 agencyid = agencyName
 agencytitle = "BART"
 
-print "Finished scraping "+agencyName+", saving to SQL...";
+print("Finished scraping "+agencyName+", saving to SQL...");
 conn = sqlite3.connect(OUTPUT_DIR + agencyName + '.db')
 
 c = conn.cursor()
@@ -87,5 +87,5 @@ conn.commit()
 # Just be sure any changes have been committed or they will be lost.
 conn.close()
 
-print "Done with "+agencyName
+print("Done with "+agencyName)
 

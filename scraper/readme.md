@@ -2,14 +2,18 @@
 
 This directory contains the offline scraping tools to generate stop files for the LA Metro Companion App.
 
+## Notes:
+Bay Area 511 no longer offers the API. This probably means most of the dbs in here are broken.
+Recently migrated to py3. Good luck.
+Don't run Nextrip without any agency params, rate-limiting kicks in when scraping all agencies.
+
+
 ## Basic usage:
 
 Just run scrapeAllSupportedAgencies.bat
 
 Output .db files go to _out.
-
 They will need to be moved to lametroapp/app/src/main/assets/databases to get them into the Android app.
-
 
 ## Advanced Usage:
 
