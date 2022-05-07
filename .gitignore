@@ -48,3 +48,13 @@ Thumbs.db
 .idea/dataSources.ids
 .idea/libraries
 .idea/
+
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
