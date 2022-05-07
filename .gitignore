@@ -51,6 +51,7 @@ Thumbs.db
 
 *.iml
 .idea/
+.idea2/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
