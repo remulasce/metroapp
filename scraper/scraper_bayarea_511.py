@@ -1,5 +1,3 @@
-#!python2
-
 import requests
 import xml.etree.ElementTree as ET
 import sqlite3
@@ -20,22 +18,21 @@ for arg in sys.argv[1:]:
     agency_tags_to_scrape.append(arg)
 
 if len(agency_tags_to_scrape) == 0:
-    print("No arguments given; scraping sane agencies")
-
     agency_tags_to_scrape = ["CT", "SM", "SC", "AC"]
-
+    agency_tags_to_scrape = ["SC"] # FIXME: Return to ^above
+    print("No arguments given; scraping sane agencies: " + str(agency_tags_to_scrape))
 
 def get_all_agencies_dict():
     all_agencies = dict()  # raw, displayname
     agency_list_response = requests.get(all_agencies_request)
     tree_root = ET.fromstring(agency_list_response.text)
-    for tree_child in tree_root.iter("Operator"):
-        if tree_child.tag == "Operator":
-            tag = tree_child.attrib['id']
-            display_name = tree_child.attrib['name']
-            all_agencies[tag] = display_name
+    for tree_child in tree_root.iter("{http://www.netex.org.uk/netex}Operator"):
+        tag = tree_child.attrib['id']
+        display_name = tree_child.find("{http://www.netex.org.uk/netex}Name").text
+        all_agencies[tag] = display_name
     if not len(all_agencies):
         raise Exception("Couldn't create agencies mapping")
+    print("Created agencies map: " + str(all_agencies))
     return all_agencies
 
 
