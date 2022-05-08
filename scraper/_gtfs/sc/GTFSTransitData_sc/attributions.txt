@@ -1,0 +1,2 @@
+organization_name,is_producer,attribution_url,attribution_email
+511 SF Bay,1,https://511.org/open-data,transitdata@511.org

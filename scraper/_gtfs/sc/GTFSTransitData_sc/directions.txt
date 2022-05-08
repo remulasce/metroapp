@@ -1,0 +1,143 @@
+route_id,direction_id,direction
+"Blue Line S",0,North
+"Blue Line S",1,South
+"26",0,East
+"26",1,West
+"Rapid 568",1,South
+"Rapid 568",0,North
+"Rapid 500",0,North
+"Rapid 500",1,South
+"72",1,South
+"72",0,North
+"31",0,North
+"31",1,South
+"37",1,West
+"37",0,East
+"39",0,North
+"39",1,South
+"57",1,South
+"57",0,North
+"55",0,North
+"55",1,South
+"60",0,North
+"60",1,South
+"66",1,South
+"66",0,North
+"68",1,South
+"68",0,North
+"School 287",1,Outbound
+"Orange Line",0,East
+"Orange Line",1,West
+"Blue/Green Bus Bridge",0,North
+"Blue/Green Bus Bridge",1,South
+"83",1,South
+"83",0,North
+"School 288",0,North
+"School 288",1,South
+"Blue Line N",1,South
+"Blue Line N",0,North
+"Green Line S",1,South
+"Green Line S",0,North
+"27",1,West
+"27",0,East
+"Rapid 522",0,East
+"Rapid 522",1,West
+"School 288M",0,North
+"School 288M",1,South
+"School 256",0,East
+"School 256",1,West
+"73",1,South
+"73",0,North
+"School 270",0,North
+"School 288L",0,North
+"School 288L",1,South
+"25",0,East
+"25",1,West
+"Blue Line",0,North
+"Blue Line",1,South
+"23",0,East
+"23",1,West
+"Rapid 523",1,West
+"Rapid 523",0,East
+"71",0,North
+"71",1,South
+"21",0,East
+"21",1,West
+"51H",0,North
+"51H",1,South
+"61",0,North
+"61",1,South
+"Express 102",0,North
+"Express 102",1,South
+"Express 103",1,West
+"Express 103",0,East
+"Express 104",0,East
+"Express 104",1,West
+"ACE Gray",0,North
+"ACE Gray",1,South
+"ACE Green",1,West
+"ACE Green",0,East
+"ACE Orange",0,East
+"ACE Orange",1,West
+"ACE Purple",1,West
+"ACE Purple",0,East
+"ACE Red",0,East
+"ACE Red",1,West
+"ACE Yellow",0,North
+"ACE Yellow",1,South
+"SCVMC",0,East
+"SCVMC",1,West
+"ACE Brown",0,East
+"ACE Brown",1,West
+"ACE Violet",1,West
+"ACE Violet",0,East
+"70",1,South
+"70",0,North
+"47",0,North
+"47",1,South
+"Express 101",0,North
+"Express 101",1,South
+"School 247",0,East
+"School 247",1,West
+"44",1,South
+"44",0,North
+"Green Line",1,South
+"Green Line",0,North
+"School 246",1,West
+"School 246",0,East
+"Green Line N",0,North
+"Green Line N",1,South
+"56",0,North
+"56",1,South
+"59",1,South
+"59",0,North
+"20",0,East
+"20",1,West
+"40",1,South
+"40",0,North
+"51",1,South
+"51",0,North
+"64A",0,North
+"64A",1,South
+"64B",0,North
+"64B",1,South
+"86",1,South
+"86",0,North
+"84",0,North
+"84",1,South
+"85",0,North
+"85",1,South
+"87",0,North
+"87",1,South
+"52",0,North
+"52",1,South
+"89",0,North
+"89",1,South
+"53",1,West
+"53",0,East
+"42",1,South
+"42",0,North
+"77",0,North
+"77",1,South
+"22",0,East
+"22",1,West

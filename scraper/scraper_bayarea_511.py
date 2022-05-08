@@ -3,6 +3,10 @@ import xml.etree.ElementTree as ET
 import sqlite3
 from collections import defaultdict
 import sys
+import gtfs_auto_db
+from pathlib import Path
+import contextlib
+
 
 BAY_511_FEED_URL = "http://api.511.org/transit/"
 API_KEY = "f036cd72-4465-425d-9ce2-df2478c7f804&"
@@ -43,18 +47,34 @@ def main():
         operator_display_name = operator_names[operator_id]
         scrape_operator(operator_display_name, operator_id)
 
+# Probably a list of tuples, [stop_id, route_id]
+def get_routes_for_stopid(gtfs_db, stopid):
+    cursor = gtfs_db.execute("SELECT DISTINCT stop_id, route_id FROM stop_times" +
+                                 " WHERE stopid == " + stopid +
+                                 " INNER JOIN trips" +
+                                 " ON stop_times.trip_id == trips.trip_id" +
+                                 " ORDER BY stop_id")
+    results = cursor.fetchall()
+    return results
+
+
+# Probably a list of tuples, [stop_id, route_id]
+def get_all_stopid_routes(gtfs_db):
+    cursor = gtfs_db.execute("SELECT DISTINCT stop_id, route_id FROM stop_times" +
+                                 " INNER JOIN trips" +
+                                 " ON stop_times.trip_id == trips.trip_id" +
+                                 " ORDER BY stop_id")
+    results = cursor.fetchall()
+    return results
+
 
 def scrape_operator(operator_display_name, operator_id):
     print("Now scraping: " + operator_id + ", " + operator_display_name)
 
+    gtfs_db = get_gtfs_database(operator_id)
+
     # [AGENCYID, AGENCYTITLE, LATMIN, LATMAX, LONMIN, LONMAX]
     agencyInfo = []
-
-    # Building up min/maxes for the overall agency boundaries
-    agencyLatMin = None;
-    agencyLatMax = None;
-    agencyLonMin = None;
-    agencyLonMax = None;
 
     # I think uniqueId was a SQL misunderstanding.
     # I think this should be sufficient, if the provider gives it to you in a recognizable way.
@@ -71,12 +91,34 @@ def scrape_operator(operator_display_name, operator_id):
     stoproutesList = []
 
     # Initial, kinda-close values, but married to the API side, to be lightly converted forward.
-    raw_stops = []  # stopid, stopname, lat, lon
-    raw_stop_routes = []  # stopid, route
-
-    # Well if they give it all to us, may as well.
     print("Parsing all stops in one go. This could take a while with no progress report.")
-    raw_stops = get_all_stops(operator_id)
+    raw_stops = get_all_stops_from_network(operator_id)  # stopid, stopname, lat, lon
+    # [ stopid, routeid ]
+    raw_stop_routes = get_all_stopid_routes(gtfs_db)
+
+
+    stopnames_list = raw_stops
+    stoproutesList = raw_stop_routes
+    stopnameroutetagList = [(stop, route, stop) for stop, route in raw_stop_routes]
+    agencyLatMin = 0
+    agencyLatMax = 0
+    agencyLonMin = 0
+    agencyLonMax = 0
+
+    print("stopnamest " + str(stopnames_list))
+    print("stoproutes " + str(stoproutesList))
+    print("snrt: " + str(stopnameroutetagList))
+
+    print("Finished scraping " + operator_id + ", found " + str(len(stopnames_list)) + ", saving to SQL...");
+    commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, operator_display_name, operator_id,
+                       stopnameroutetagList, stopnames_list, stoproutesList)
+    print("Done with " + operator_id)
+    gtfs_db.close()
+
+
+# You can't actually call this because the api is limited by call, to 60 per hour.
+def scrape_stoproutes_one_at_a_time(operator_id):
+    raw_stop_routes = []
 
     i = 0.0
     uniquetag = 1
@@ -89,36 +131,10 @@ def scrape_operator(operator_display_name, operator_id):
         # Stops on this route. [stop_id, stop_name, ...] for all stops on the route.
         raw = scrape_route_stops(operator_id, route)
         raw_stop_routes.append((route, raw[0]))  # [route, stopid]
-
-    # Before here, we need:
-    # stopid, stopname, lat, long, route
-    # And don't forget the locations.
-
-    stopnames_list = raw_stops # easy
-    # [stop_id, stop_route, stop_id (nom tag)]
-    # Double list comprehension bullshit
-    stop_route_dict = defaultdict(list)
-    [stop_route_dict[stop].append(route) for stop, route in raw_stop_routes]
-
-    print("stopnames_list " + str(stopnames_list))
-    print("stoproutedict " + str(stop_route_dict))
-    # stopnameroutetagList = [[(stop_id, route, stop_id) for route in stop_route_dict[stop_id]] for stop_id, *_ in raw_stops]
-    stopnameroutetagList = []
-    for stop, *_ in raw_stops:
-        print(stop, *_)
-        for route in stop_route_dict[stop]:
-            print(route)
-            stopnameroutetagList.append(stop, route, stop)
-
-    print("snrt: " + str(stopnameroutetagList))
-
-    print("Finished scraping " + operator_id + ", found " + str(len(stopnames_list)) + ", saving to SQL...");
-    commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, operator_display_name, operator_id,
-                       stopnameroutetagList, stopnames_list, stoproutesList)
-    print("Done with " + operator_id)
+    return raw_stop_routes
 
 
-   # Add to the tuple tables here
+# Add to the tuple tables here
    #      # And update the agency region here as well.
    #      # We should do this _after_ we have all the stop-per-route details.
    #      if (agencyLatMin == None):
@@ -191,7 +207,7 @@ def commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, o
 
 
 # stopid, stopname, lat, long
-def get_all_stops(operator_id):
+def get_all_stops_from_network(operator_id):
     stops = [] # stopid, stopname, lat, long
     route_response = requests.get(all_stops_query(operator_id))
 
@@ -235,6 +251,19 @@ def get_gtfs_stops_dict(operator_id):
             stops_dict[split[stop_id_index].strip('"')] = (
                 float(split[lat_index].strip('"')), float(split[lon_index].strip('"')))
     return stops_dict
+
+
+def get_gtfs_database(operator_id):
+    subfolder = Path("./_gtfs/")
+    match operator_id:
+        case "SC":
+            subfolder = subfolder / "sc" / "GTFSTransitData_sc"
+        case _:
+            raise Exception("oh noes")
+
+    dbconn = gtfs_auto_db.load_gtfs_as_database(subfolder)
+    print ("Loaded sql: " + str(dbconn))
+    return dbconn
 
 
 def get_operators_to_scrape():
