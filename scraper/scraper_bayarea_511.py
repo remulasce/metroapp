@@ -5,6 +5,8 @@ from collections import defaultdict
 import sys
 import gtfs_auto_db
 from pathlib import Path
+from collections import namedtuple
+from operator import attrgetter
 import contextlib
 
 
@@ -73,47 +75,37 @@ def scrape_operator(operator_display_name, operator_id):
 
     gtfs_db = get_gtfs_database(operator_id)
 
-    # [AGENCYID, AGENCYTITLE, LATMIN, LATMAX, LONMIN, LONMAX]
-    agencyInfo = []
-
-    # I think uniqueId was a SQL misunderstanding.
-    # I think this should be sufficient, if the provider gives it to you in a recognizable way.
-    # [UNIQUEID, STOPID, STOPNAME, LAT, LONG]
-    stopnames_list = []
-
-    # If the provider does things weirdly, then these are necessary to query arrivals. However, stopid directly should
-    # be sufficient
-    # [STOPNAME, ROUTE, STOPTAG]
-    stopnameroutetagList = []
-
-    # Necessary for stop special colors, which are hardcoded at the route level in-app.
-    # [STOPID, ROUTE]
-    stoproutesList = []
-
     # Initial, kinda-close values, but married to the API side, to be lightly converted forward.
     print("Parsing all stops in one go. This could take a while with no progress report.")
-    raw_stops = get_all_stops_from_network(operator_id)  # stopid, stopname, lat, lon
+    raw_stops = get_all_stops_from_network(operator_id)  # NamedTuple(stopid, stopname, lat, lon)
     # [ stopid, routeid ]
     raw_stop_routes = get_all_stopid_routes(gtfs_db)
 
 
-    stopnames_list = raw_stops
-    stoproutesList = raw_stop_routes
-    stopnameroutetagList = [(stop, route, stop) for stop, route in raw_stop_routes]
-    agencyLatMin = 0
-    agencyLatMax = 0
-    agencyLonMin = 0
-    agencyLonMax = 0
+    # agencyInfo: [agency_id, agency_nme, latmin, latmax, lonmin, lonmax]
+    # agencyInfo, stops, stoproutes, stopnameroutetags
+    final_lists = do_final_operations(
+        operator_id,
+        operator_display_name,
+        raw_stops,
+        raw_stop_routes)
 
-    print("stopnamest " + str(stopnames_list))
-    print("stoproutes " + str(stoproutesList))
-    print("snrt: " + str(stopnameroutetagList))
-
-    print("Finished scraping " + operator_id + ", found " + str(len(stopnames_list)) + ", saving to SQL...");
-    commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, operator_display_name, operator_id,
-                       stopnameroutetagList, stopnames_list, stoproutesList)
+    print("Finished scraping " + operator_id + ", found " + str(len(final_lists.stops)) + " stops, saving to SQL...");
+    commit_to_database(final_lists.agency_info, final_lists.stops, final_lists.stoproutes, final_lists.stoproutetags)
     print("Done with " + operator_id)
     gtfs_db.close()
+
+
+# stops must be a named tuple thing
+def do_final_operations(agency_id, agency_name, raw_stops, raw_stop_routes):
+    stoproutetags = [(stop, route, stop) for stop, route in raw_stop_routes]
+
+    lats, lons = zip(*[(stop.lat, stop.lon) for stop in raw_stops])
+    agency_bounds = (min(lats) -.5, max(lats) +.5, min(lons) -.5, max(lons) +.5) # .5 is about 30 miles around here.
+    agency_info = (agency_id, agency_name) + agency_bounds
+
+    FinalTypes = namedtuple("FinalTypes", "agency_info stops stoproutes stoproutetags")
+    return FinalTypes(agency_info, raw_stops, raw_stop_routes, stoproutetags)
 
 
 # You can't actually call this because the api is limited by call, to 60 per hour.
@@ -134,21 +126,6 @@ def scrape_stoproutes_one_at_a_time(operator_id):
     return raw_stop_routes
 
 
-# Add to the tuple tables here
-   #      # And update the agency region here as well.
-   #      # We should do this _after_ we have all the stop-per-route details.
-   #      if (agencyLatMin == None):
-   #          agencyLatMin = routeLatMin
-   #          agencyLatMax = routeLatMax
-   #          agencyLonMin = routeLonMin
-   #          agencyLonMax = routeLonMax
-   #      else:
-   #          agencyLatMin = min(routeLatMin, agencyLatMin)
-   #          agencyLatMax = max(routeLatMax, agencyLatMax)
-   #          agencyLonMin = min(routeLonMin, agencyLonMin)
-   #          agencyLonMax = max(routeLonMax, agencyLonMax)
-
-
 # Returns list of [stop_id, stop_name, lat, lon]
 def scrape_route_stops(operator_id, route):
     route_request_string = stops_on_route_query(operator_id, route)
@@ -164,17 +141,18 @@ def scrape_route_stops(operator_id, route):
     return route_stops
 
 # Returns individual tuple details of the stop.
-# [stop_name, stop_id, lat, lon]
+# [stop_id, stop_name, lat, lon]
 def parse_stop_element(stop_point_element):
     stop_id = stop_point_element.attrib["id"]
     stop_name = stop_point_element.find(XMLNS_NAMESPACE_PREFIX + "Name").text
-    lat = next(stop_point_element.iter(XMLNS_NAMESPACE_PREFIX + "Latitude")).text
-    lon = next(stop_point_element.iter(XMLNS_NAMESPACE_PREFIX + "Longitude")).text
+    lat = float(next(stop_point_element.iter(XMLNS_NAMESPACE_PREFIX + "Latitude")).text)
+    lon = float(next(stop_point_element.iter(XMLNS_NAMESPACE_PREFIX + "Longitude")).text)
     return stop_id, stop_name, lat, lon
 
 
-def commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, operator_display_name, operator_id,
-                       stopnameroutetagList, stopnamesList, stoproutesList):
+def commit_to_database(agency_info, stops, stoproutes, stoproutetags):
+    (operator_id, operator_display_name, agencyLatMin, agencyLatMax, agencyLonMin, agencyLonMax) = agency_info
+
     conn = sqlite3.connect(OUTPUT_DIR + operator_id + '.db')
     c = conn.cursor()
     # Delete old contents, if any
@@ -194,11 +172,11 @@ def commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, o
     # Overall info about the agency. Agencyid should be internal id, like lametro-rail, with the name being user-facing
     c.execute('''CREATE TABLE agencyinfo
                          ( agencyid text, agencyname text, latMin real, latMax real, lonMin real, lonMax real )''')
-    c.executemany('INSERT INTO stopnames VALUES (?,?,?,?)', stopnamesList)
-    c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutesList)
-    c.executemany('INSERT INTO stopnameroutetags VALUES (?,?,?)', stopnameroutetagList)
+    c.executemany('INSERT INTO stopnames VALUES (?,?,?,?)', stops)
+    c.executemany('INSERT INTO stoproutes VALUES (?,?)', stoproutes)
+    c.executemany('INSERT INTO stopnameroutetags VALUES (?,?,?)', stoproutetags)
     c.execute('INSERT INTO agencyinfo VALUES (?,?,?,?,?,?)',
-              ((operator_id), operator_display_name, agencyLatMin, agencyLatMax, agencyLonMin, agencyLonMax))
+              (operator_id, operator_display_name, agencyLatMin, agencyLatMax, agencyLonMin, agencyLonMax))
     # Save (commit) the changes
     conn.commit()
     # We can also close the connection if we are done with it.
@@ -208,14 +186,15 @@ def commit_to_database(agencyLatMax, agencyLatMin, agencyLonMax, agencyLonMin, o
 
 # stopid, stopname, lat, long
 def get_all_stops_from_network(operator_id):
-    stops = [] # stopid, stopname, lat, long
+    Stop = namedtuple("Stop", "id name lat lon")
+    stops = []
     route_response = requests.get(all_stops_query(operator_id))
 
     root = ET.fromstring(route_response.text)
     for scheduled_stop_points in root.iter(XMLNS_NAMESPACE_PREFIX + "scheduledStopPoints"):
         # Dunno what we do if there's more than one element here, but leaving the element for posterity.
         for stop_point_element in scheduled_stop_points.iter(XMLNS_NAMESPACE_PREFIX + "ScheduledStopPoint"):
-            stops.append(parse_stop_element(stop_point_element))
+            stops.append(Stop(*parse_stop_element(stop_point_element)))
     return stops
 
 
