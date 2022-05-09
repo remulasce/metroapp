@@ -17,33 +17,34 @@ import java.nio.charset.StandardCharsets;
 /*
  * Created by Remulasce on 3/7/2015.
  */
-public class HTTPGetter {
+public abstract class HTTPGetter {
   private static final String TAG = "HTTPGetter";
+//
+//  private String readStream(InputStream is) {
+//    try {
+//      BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8.name()));
+//      return IOUtils.toString(br);
+//    } catch (IOException e) {
+//      return "";
+//    }
+//  }
 
-  private String readStream(InputStream is) {
-    try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8.name()));
-      return IOUtils.toString(br);
-    } catch (IOException e) {
-      return "";
-    }
-  }
-
-  public String doGetHTTPResponse(String message, NetworkStatusReporter reporter) {
-    try {
-      URL url = new URL(message);
-      HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-      String response;
-      response = readStream(urlConnection.getInputStream());
-      urlConnection.disconnect();
-      Log.v(TAG, "HTTP Response: " + response);
-      return response;
-    } catch (IOException e) {
-      return "";
-    } catch (Exception e) {
-      return null;
-    }
-  }
+  public abstract InputStream doGetHTTPResponse(String message, NetworkStatusReporter reporter) throws Exception;
+//  {
+//    try {
+//      URL url = new URL(message);
+//      HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//      String response;
+//      response = readStream(urlConnection.getInputStream());
+//      urlConnection.disconnect();
+//      Log.v(TAG, "HTTP Response: " + response);
+//      return response;
+//    } catch (IOException e) {
+//      return "";
+//    } catch (Exception e) {
+//      return null;
+//    }
+//  }
 
   private static HTTPGetter getter;
 
@@ -52,9 +53,9 @@ public class HTTPGetter {
   }
 
   public static HTTPGetter getHTTPGetter() {
-    if (getter == null) {
-      getter = new HTTPGetter();
-    }
+//    if (getter == null) {
+//      getter = new HTTPGetter();
+//    }
     return getter;
   }
 }

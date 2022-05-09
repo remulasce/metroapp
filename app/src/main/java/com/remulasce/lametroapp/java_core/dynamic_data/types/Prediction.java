@@ -1,5 +1,6 @@
 package com.remulasce.lametroapp.java_core.dynamic_data.types;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 /**
@@ -71,7 +72,7 @@ public abstract class Prediction implements Serializable {
   // PredictionManager uses these.
   public abstract String getRequestString();
 
-  public void handleResponse(String response) {
+  public void handleResponse(InputStream response) {
     predictionState = PredictionState.GOOD;
     lastUpdate = System.currentTimeMillis();
   }

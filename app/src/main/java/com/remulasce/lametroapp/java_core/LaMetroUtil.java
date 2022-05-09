@@ -19,6 +19,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -113,8 +114,8 @@ public class LaMetroUtil {
   //    but for now reusing Arrival / Stop is just too convenient.
   //
   // Agency required to tell between Nextrip / Bart / Bay 511. Null assumes Nextrip.
-  public static List<Arrival> parseAllArrivals(String response, Agency agency) {
-    if (response == null || response.isEmpty()) {
+  public static List<Arrival> parseAllArrivals(InputStream response, Agency agency) {
+    if (response == null) {
       Log.d(TAG, "Error in input given to parseAllArrivals, possible network failure");
       return null;
     }
@@ -122,7 +123,7 @@ public class LaMetroUtil {
     return parseWithJavaLibs(response, agency);
   }
 
-  private static List<Arrival> parseWithJavaLibs(String response, Agency agency) {
+  private static List<Arrival> parseWithJavaLibs(InputStream response, Agency agency) {
     List<Arrival> ret = new ArrayList<Arrival>();
     // get the factory
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -133,10 +134,10 @@ public class LaMetroUtil {
       DocumentBuilder db = dbf.newDocumentBuilder();
 
       // parse using builder to get DOM representation of the XML file
-      InputSource is = new InputSource(new StringReader(response));
-      is.setEncoding(StandardCharsets.UTF_8.displayName());
+//      InputSource is = new InputSource(new StringReader(response));
+//      is.setEncoding(StandardCharsets.UTF_8.displayName());
 
-      Document dom = db.parse(is);
+      Document dom = db.parse(response);
 
       // get the root element
       Element docEle = dom.getDocumentElement();

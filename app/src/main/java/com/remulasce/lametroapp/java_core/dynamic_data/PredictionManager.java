@@ -5,6 +5,7 @@ import com.remulasce.lametroapp.java_core.analytics.Tracking;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Prediction;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -243,7 +244,7 @@ public class PredictionManager {
       Log.v(TAG, "Handling request " + request);
 
       try {
-        String response = sendRequest(request);
+        InputStream response = sendRequest(request);
 
         Log.v(TAG, "Response received: " + response);
 
@@ -251,6 +252,8 @@ public class PredictionManager {
 
         prediction.setUpdated();
       } catch (Exception e) {
+        e.printStackTrace();
+        statusReporter.reportFailure();
         // Don't busy-loop failed network requests.
         prediction.setUpdated();
         Log.d(TAG, "URL fetching exception");
@@ -259,7 +262,7 @@ public class PredictionManager {
       Tracking.sendTime("PredictionManager", "UpdateRunner", "Total Run", t);
     }
 
-    public String sendRequest(String request) {
+    public InputStream sendRequest(String request) throws Exception{
       Log.v(TAG, "Trying request: " + request);
       return network.doGetHTTPResponse(request, statusReporter);
     }

@@ -9,6 +9,7 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.dynamic_data.PredictionManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class StopRouteDestinationPrediction extends Prediction {
   }
 
   @Override
-  public void handleResponse(String response) {
+  public void handleResponse(InputStream response) {
     super.handleResponse(response);
 
     List<Arrival> arrivals = LaMetroUtil.parseAllArrivals(response, stop.getAgency());

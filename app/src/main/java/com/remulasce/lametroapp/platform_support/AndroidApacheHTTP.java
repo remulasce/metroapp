@@ -23,39 +23,20 @@ import java.nio.charset.StandardCharsets;
 public class AndroidApacheHTTP extends HTTPGetter {
 
   @Override
-  public String doGetHTTPResponse(String request, NetworkStatusReporter statusReporter) {
-    StringBuilder builder = new StringBuilder();
+  public InputStream doGetHTTPResponse(String request, NetworkStatusReporter statusReporter) throws Exception {
 
-    URL url;
-    try {
-      url = new URL(request);
-    } catch (MalformedURLException e1) {
-      e1.printStackTrace();
-      statusReporter.reportFailure();
-      return builder.toString();
-    }
+    URL url = new URL(request);
 
     // Not necessarily HttpsURLConnection, because our ancient gov't backends don't support HTTPS.
     HttpURLConnection cxn = null;
     try {
       cxn = (HttpURLConnection) url.openConnection();
-      InputStream content = cxn.getInputStream();
-
-      String s = IOUtils.toString(content, StandardCharsets.UTF_8.name());
-      return s;
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-      statusReporter.reportFailure();
-    } catch (IOException e) {
-      e.printStackTrace();
-      statusReporter.reportFailure();
+      return cxn.getInputStream();
     } finally {
       if (cxn != null) {
         cxn.disconnect();
       }
     }
-
-    return builder.toString();
   }
 
   // Singleton.

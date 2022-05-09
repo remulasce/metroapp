@@ -28,6 +28,8 @@ import com.remulasce.lametroapp.java_core.basic_types.Stop;
 import com.remulasce.lametroapp.java_core.basic_types.Vehicle;
 import com.remulasce.lametroapp.java_core.dynamic_data.types.Arrival;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class ArrivalNotifyService extends Service {
@@ -543,7 +546,15 @@ public class ArrivalNotifyService extends Service {
       String xml, String destination, String vehicleNumber, String agency) {
 
     List<Arrival> parsedArrivals =
-        LaMetroUtil.parseAllArrivals(xml, new Agency(agency, null, null, null));
+            null;
+    try {
+      parsedArrivals = LaMetroUtil.parseAllArrivals(
+          IOUtils.toInputStream(xml, StandardCharsets.UTF_8.name()),
+          new Agency(agency, null, null, null));
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
 
     if (parsedArrivals == null) {
       return null;
