@@ -22,8 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -218,40 +224,40 @@ public class LaMetroUtil {
       } else if (HardcodedHacks.useBay511(agency)) {
         // We need like a "type" field in the agency at some (later) point.
         // This format is Bay Area 511 transit. Another custom-rigged XML.
-        NodeList routes = docEle.getElementsByTagName("RouteList").item(0).getChildNodes();
-        if (routes != null && routes.getLength() > 0) {
-          for (int i = 0; i < routes.getLength(); i++) {
-            Element route = (Element) routes.item(i);
 
-            NodeList directions =
-                route.getElementsByTagName("RouteDirectionList").item(0).getChildNodes();
-            for (int j = 0; j < directions.getLength(); j++) {
-              Element direction = (Element) directions.item(j);
+        // Each stopVisit is essentially a different arrival, hopefully with a single time.
+        NodeList stopVisits = ((Element)docEle.getElementsByTagName("StopMonitoringDelivery").item(0)).getElementsByTagName("MonitoredStopVisit");
+        for (int i = 0; i < stopVisits.getLength(); i++) {
+          Element stopVisit = (Element) stopVisits.item(i); // nodeList somehow isn't iterable.
 
-              NodeList stops = direction.getElementsByTagName("Stop");
-              for (int k = 0; k < stops.getLength(); k++) {
-                Element stop = (Element) stops.item(k);
+          Element stopRef = (Element) stopVisit.getElementsByTagName("MonitoringRef").item(0);
+          Element line = (Element) stopVisit.getElementsByTagName("LineRef").item(0);
+          Element direction = (Element) stopVisit.getElementsByTagName("DirectionRef").item(0);
+          Element destination = (Element) stopVisit.getElementsByTagName("DestinationName").item(0);
+          Element vehicle = (Element) stopVisit.getElementsByTagName("VehicleRef").item(0);
+          Element monitoredCall = (Element) stopVisit.getElementsByTagName("MonitoredCall").item(0);
+          Element stopElement = (Element) monitoredCall.getElementsByTagName("StopPointName").item(0);
+          // <MonitoredCall>
+          // <StopPointRef>65024</StopPointRef>
+          // <StopPointName>Moffett Park Station</StopPointName>
+          // <VehicleAtStop>false</VehicleAtStop>
+          // <ExpectedArrivalTime>2022-05-09T19:36:52Z</ExpectedArrivalTime>
+          // </MonitoredCall>
+          Element expectedArrivalTimeElement = (Element) monitoredCall.getElementsByTagName("ExpectedArrivalTime").item(0);
+          // eg. 2022-05-09T19:38:02Z
+          Date arrival = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.ENGLISH)
+                  .parse(expectedArrivalTimeElement.getTextContent());
+          seconds = (int) (arrival.getTime() - System.currentTimeMillis() / 1000);
 
-                NodeList arrivals = stop.getElementsByTagName("DepartureTime");
-                for (int l = 0; l < arrivals.getLength(); l++) {
-                  Element arrival = (Element) arrivals.item(l);
-
-                  seconds = Integer.parseInt(arrival.getFirstChild().getTextContent()) * 60;
-
-                  Destination d = new Destination(direction.getAttribute("Name"));
-                  Route r = new Route(route.getAttribute("Name"));
-                  Stop s = new Stop(stopIDAttribute);
-                  // No bus #s here as well. Unfortunate.
-                  Vehicle v = null;
-
-                  s.setStopName(stop.getAttribute("name"));
-                  r.setAgency(agency);
-                  addNewArrival(ret, seconds, d, r, s, v);
-                }
-              }
-            }
-          }
+          Destination d = new Destination(destination.getTextContent());
+          Route r = new Route(line.getTextContent());
+          r.setAgency(agency);
+          Stop s = new Stop(stopRef.getTextContent());
+          s.setStopName(stopElement.getTextContent());
+          Vehicle v = new Vehicle(vehicle.getTextContent());
+          addNewArrival(ret, seconds, d, r, s, v);
         }
+
       } else if (HardcodedHacks.useNextrip(agency)) {
         // We've gotten NextBus Data
         NodeList predictions = docEle.getElementsByTagName("predictions");
@@ -296,6 +302,7 @@ public class LaMetroUtil {
       pce.printStackTrace();
       return null;
     } catch (Exception e) {
+      e.printStackTrace();
       Log.w(TAG, "Unaddressed exception! " + e.getMessage());
       return null;
     }
