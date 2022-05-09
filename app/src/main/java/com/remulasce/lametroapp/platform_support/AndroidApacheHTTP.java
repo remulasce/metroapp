@@ -3,6 +3,8 @@ package com.remulasce.lametroapp.platform_support;
 import com.remulasce.lametroapp.java_core.dynamic_data.HTTPGetter;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Remulasce on 3/6/2015.
@@ -38,11 +41,8 @@ public class AndroidApacheHTTP extends HTTPGetter {
       cxn = (HttpURLConnection) url.openConnection();
       InputStream content = cxn.getInputStream();
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-      String line;
-      while ((line = reader.readLine()) != null) {
-        builder.append(line);
-      }
+      String s = IOUtils.toString(content, StandardCharsets.UTF_8.name());
+      return s;
     } catch (MalformedURLException e) {
       e.printStackTrace();
       statusReporter.reportFailure();

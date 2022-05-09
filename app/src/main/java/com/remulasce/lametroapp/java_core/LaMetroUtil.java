@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class LaMetroUtil {
   // And that's why we don't have code reviews.
   // Also ugh, Bay 511 doesn't have a valid SSL cert.
   public static final String BAY_511_FEED_URL =
-      "https://api.511.org/transit/stopmonitoring?api_key=f036cd72-4465-425d-9ce2-df2478c7f804";
+      "https://api.511.org/transit/stopmonitoring?api_key=f036cd72-4465-425d-9ce2-df2478c7f804&format=xml";
 
   public static StopLocationTranslator locationTranslator;
   public static RouteColorer routeColorer;
@@ -87,7 +88,7 @@ public class LaMetroUtil {
     if (HardcodedHacks.useBart(agency)) {
       URI = BART_FEED_URL + "?cmd=etd&orig=" + stop.getString() + "&key=" + BART_API_KEY;
     } else if (HardcodedHacks.useBay511(agency)) {
-      URI = BAY_511_FEED_URL + "&stopcode=" + stop.getStopID() + "&agency=" + agency;
+      URI = BAY_511_FEED_URL + "&stopcode=" + stop.getStopID() + "&agency=" + agency.raw;
     } else if (HardcodedHacks.useNextrip(agency)) {
       URI =
           NEXTBUS_FEED_URL + "?command=predictions&a=" + agency.raw + "&stopId=" + stop.getString();
@@ -132,7 +133,10 @@ public class LaMetroUtil {
       DocumentBuilder db = dbf.newDocumentBuilder();
 
       // parse using builder to get DOM representation of the XML file
-      Document dom = db.parse(new InputSource(new StringReader(response)));
+      InputSource is = new InputSource(new StringReader(response));
+      is.setEncoding(StandardCharsets.UTF_8.displayName());
+
+      Document dom = db.parse(is);
 
       // get the root element
       Element docEle = dom.getDocumentElement();

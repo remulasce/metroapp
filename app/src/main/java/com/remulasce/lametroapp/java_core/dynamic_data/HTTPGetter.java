@@ -3,12 +3,16 @@ package com.remulasce.lametroapp.java_core.dynamic_data;
 import com.remulasce.lametroapp.java_core.analytics.Log;
 import com.remulasce.lametroapp.java_core.network_status.NetworkStatusReporter;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
+import org.apache.commons.io.IOUtils;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /*
  * Created by Remulasce on 3/7/2015.
@@ -18,13 +22,8 @@ public class HTTPGetter {
 
   private String readStream(InputStream is) {
     try {
-      ByteArrayOutputStream bo = new ByteArrayOutputStream();
-      int i = is.read();
-      while (i != -1) {
-        bo.write(i);
-        i = is.read();
-      }
-      return bo.toString();
+      BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8.name()));
+      return IOUtils.toString(br);
     } catch (IOException e) {
       return "";
     }
@@ -35,9 +34,7 @@ public class HTTPGetter {
       URL url = new URL(message);
       HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
       String response;
-      InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-      response = readStream(in);
+      response = readStream(urlConnection.getInputStream());
       urlConnection.disconnect();
       Log.v(TAG, "HTTP Response: " + response);
       return response;
